@@ -1,0 +1,33 @@
+# Ambiente e credenciais
+.env
+.env.*
+!.env.example
+
+# Dependências
+node_modules/
+vendor/
+vendor.zip
+
+# Logs
+*.log
+logs/
+cupom_aplicacao.log
+inscricoes_pagamentos.log
+php_errors.log
+webhook_mp.log
+
+# IDE e editores
+.vscode/
+.cursor/
+
+# Dumps SQL (opcional - descomente se não quiser versionar)
+# *.sql
+# brunor90_movamazon.sql
+
+# Arquivos temporários e cache
+output.json
+form_data_example.json
+
+# OS
+.DS_Store
+Thumbs.db

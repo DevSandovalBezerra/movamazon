@@ -1,0 +1,26 @@
+RewriteEngine On
+RewriteBase /
+
+# Inscrição: retorno Checkout Pro (sucesso/pendente/erro)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^inscricao/sucesso$ frontend/paginas/inscricao/sucesso.php [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^inscricao/sucesso\.php$ frontend/paginas/inscricao/sucesso.php [L,QSA]
+
+# Redirecionar /panel/acesso para o arquivo correto
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^panel/acesso$ frontend/paginas/panel/acesso.php [L]
+
+# Redirecionar /panel para /panel/acesso
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^panel/?$ frontend/paginas/panel/acesso.php [L]
+
+# Redirecionar outras rotas /panel/* para frontend/paginas/panel/*
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^panel/(.*)$ frontend/paginas/panel/$1 [L]
+

@@ -1,0 +1,731 @@
+/* Custom CSS para complementar o Tailwind CSS */
+
+/* Cores da marca MovAmazon */
+:root {
+  --brand-green:#0b4340;
+  --brand-yellow: #f5c113;
+  --brand-red: #ad1f22;
+  --brand-azul: #1E90FF;
+  --brand-red: #C8102E;
+  --brand-greenlight:#0b4340;
+
+  
+}
+
+/* 
+
+| Verde Floresta        | #2E8B57  #0b4340        | Vitalidade, natureza, saúde |
+| Azul Rio                  | #1E90FF          | Movimento, confiança, fluidez |
+| Laranja Energia       | #FF7F00          | Ação, entusiasmo, calor humano |
+| Vermelho Bandeira | #C8102E         | Regionalidade, força |
+| Branco Neve           | #FFFFFF          | Clareza, espaço, leveza |
+
+ */
+
+ /* Adicione isso ao seu CSS global se necessário */
+img {
+    max-height: none !important;
+    height: auto;
+  }
+  
+  .swiper-slide {
+    height: auto;
+  }
+
+.text-brand-greenlight {
+            color: var(--brand-greenlight);
+        }
+        
+        .text-brand-yellow {
+            color: var(--brand-yellow);
+        }
+        
+        .text-brand-red {
+            color: var(--brand-red);
+        }
+
+/* Classes primary para compatibilidade com Tailwind */
+.text-primary-600 {
+    color: var(--brand-green);
+}
+
+.text-primary-700 {
+    color: var(--brand-greenlight);
+}
+
+.text-primary-500 {
+    color: var(--brand-green);
+}
+
+.bg-primary-600 {
+    background-color: var(--brand-green);
+}
+
+.bg-primary-700 {
+    background-color: var(--brand-greenlight);
+}
+
+.bg-primary-500 {
+    background-color: var(--brand-green);
+}
+
+.border-primary-500 {
+    border-color: var(--brand-green);
+}
+
+.focus\:ring-primary-500:focus {
+    --tw-ring-color: var(--brand-green);
+}
+
+.focus\:border-primary-500:focus {
+    border-color: var(--brand-green);
+}
+
+.hover\:text-primary-500:hover {
+    color: var(--brand-green);
+}
+
+.hover\:text-primary-700:hover {
+    color: var(--brand-greenlight);
+}
+
+.hover\:bg-primary-700:hover {
+    background-color: var(--brand-greenlight);
+}
+
+
+
+
+
+/* Estilos customizados para componentes específicos */
+.btn-primary {
+    background-color: var(--brand-green);
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #0a3a37;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(11, 67, 64, 0.3);
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: #1f2937;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: #16a34a;
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    background-color: #15803d;
+    transform: translateY(-1px);
+}
+
+.btn-warning {
+    background-color: var(--brand-red);
+    color: #1f2937;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-warning:hover {
+    background-color: #e6b012;
+    transform: translateY(-1px);
+}
+
+.btn-error {
+    background-color: var(--brand-red);
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-error:hover {
+    background-color: #9a1b1e;
+    transform: translateY(-1px);
+}
+
+/* Cards modernos */
+.card {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Forms modernos */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+    font-size: 0.875rem;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 3px rgba(11, 67, 64, 0.1);
+}
+
+.form-input:invalid {
+    border-color: var(--brand-red);
+}
+
+.form-input:invalid:focus {
+    border-color: var(--brand-red);
+    box-shadow: 0 0 0 3px rgba(173, 31, 34, 0.1);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+    resize: vertical;
+    font-size: 0.875rem;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 3px rgba(11, 67, 64, 0.1);
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+    font-size: 0.875rem;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 3px rgba(11, 67, 64, 0.1);
+}
+
+/* Alerts modernos */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.alert-info {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e40af;
+}
+
+/* Tables modernos */
+.table {
+    min-width: 100%;
+    border-collapse: collapse;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.table th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table td {
+    padding: 1rem 1.5rem;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    color: #111827;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* Navigation moderna */
+.nav-link {
+    color: #4b5563;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: block;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: var(--brand-green);
+    background-color: #f0f9ff;
+}
+
+.nav-link.active {
+    color: var(--brand-green);
+    background-color: #eff6ff;
+    font-weight: 600;
+}
+
+/* Loading e Spinner */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid var(--brand-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+    .mobile-hidden {
+        display: none;
+    }
+}
+
+@media (min-width: 641px) {
+    .desktop-hidden {
+        display: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
+/* Animações customizadas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Estilos para badges e tags */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-success {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badge-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-info {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Estilos para gradientes modernos */
+.gradient-brand {
+    background: linear-gradient(135deg, var(--brand-green) 0%, #0a3a37 100%);
+}
+
+.gradient-hero {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+}
+
+/* Estilos para sombras modernas */
+.shadow-brand {
+    box-shadow: 0 4px 6px -1px rgba(11, 67, 64, 0.1), 0 2px 4px -1px rgba(11, 67, 64, 0.06);
+}
+
+.shadow-brand-lg {
+    box-shadow: 0 10px 15px -3px rgba(11, 67, 64, 0.1), 0 4px 6px -2px rgba(11, 67, 64, 0.05);
+} 
+
+/* Estilos específicos para cards de eventos */
+.evento-card {
+    transition: all 0.3s ease;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.evento-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15);
+}
+
+.evento-imagem {
+    position: relative;
+    height: 12rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+}
+
+.evento-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.evento-card:hover .evento-imagem img {
+    transform: scale(1.05);
+}
+
+.evento-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Switch/Toggle Moderno */
+.toggle-switch:checked + .relative .w-12 {
+    background-color: var(--brand-green);
+}
+
+.toggle-switch:checked + .relative .toggle-dot {
+    transform: translateX(1.5rem);
+}
+
+.toggle-switch:focus + .relative .w-12 {
+    box-shadow: 0 0 0 3px rgba(11, 67, 64, 0.1);
+}
+
+.toggle-switch:checked + .relative + span {
+    color: var(--brand-green);
+    font-weight: 600;
+}
+
+/* Indicadores de Progresso */
+.step-indicator {
+    transition: all 0.3s ease;
+}
+
+.step-indicator.active .w-10 {
+    background: linear-gradient(135deg, var(--brand-green) 0%, #0a3a37 100%);
+    box-shadow: 0 4px 12px rgba(11, 67, 64, 0.3);
+}
+
+.step-indicator.completed .w-10 {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.step-indicator.completed .w-10 i {
+    color: white;
+}
+
+.step-indicator.completed span {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+/* Animações para formulários */
+.step-content {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(11, 67, 64, 0.15);
+}
+
+/* Melhorias nos cards */
+.card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.12);
+}
+
+/* Botões com micro-interações */
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-warning,
+.btn-error {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before,
+.btn-secondary::before,
+.btn-success::before,
+.btn-warning::before,
+.btn-error::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before,
+.btn-secondary:hover::before,
+.btn-success:hover::before,
+.btn-warning:hover::before,
+.btn-error:hover::before {
+    left: 100%;
+}
+
+/* Responsividade melhorada */
+@media (max-width: 640px) {
+    .step-indicator span {
+        display: none;
+    }
+    
+    .step-indicator .w-10 {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    
+    .card {
+        padding: 1rem;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
+    .btn-success {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Estados de validação */
+.form-input.is-valid {
+    border-color: #16a34a;
+    background-color: #f0fdf4;
+}
+
+.form-input.is-invalid {
+    border-color: var(--brand-red);
+    background-color: #fef2f2;
+}
+
+.form-input.is-valid:focus {
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.form-input.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(173, 31, 34, 0.1);
+}
+
+/* Loading states */
+.btn-loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin: -0.5rem 0 0 -0.5rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Melhorias no layout geral */
+.container-form {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Animações de entrada */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-slide-in-left {
+    animation: slideInFromLeft 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInFromRight 0.6s ease-out;
+}

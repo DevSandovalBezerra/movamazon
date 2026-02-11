@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /panel/
+Disallow: /api/
+Disallow: /logs/
+Disallow: /vendor/
+Disallow: /migrations/
+
+Allow: /frontend/paginas/public/
+Allow: /frontend/assets/
+
+Sitemap: https://seudominio.com.br/sitemap.xml
+

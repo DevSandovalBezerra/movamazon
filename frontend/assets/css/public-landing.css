@@ -1,0 +1,545 @@
+/* CSS Principal para a Landing Page Pública - MovAmazon */
+
+/* ============================================
+   BACKGROUND E LAYOUT BASE
+   ============================================ */
+body {
+  background-color: #f9fafb;
+  /* Imagem de fundo removida - usando cor sólida */
+}
+
+section,
+header,
+footer,
+nav,
+main,
+div {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   ANIMAÇÕES DE ENTRADA
+   ============================================ */
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-left {
+  animation: slideInFromLeft 0.10s ease-out forwards;
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.8s ease-out forwards;
+}
+
+/* ============================================
+   ESTILOS BASE (MOBILE FIRST)
+   ============================================ */
+.main-content {
+  z-index: 10;
+  position: relative;
+}
+
+/* Cards laterais - ocultos por padrão, visíveis apenas em xl (1280px+) */
+.side-cards {
+  display: none; /* Oculto por padrão (mobile-first) */
+}
+
+/* Breakpoints do Tailwind:
+   sm: 640px
+   md: 768px
+   lg: 1024px
+   xl: 1280px
+   2xl: 1536px
+   
+   As classes Tailwind responsivas já cobrem isso.
+   Mantemos apenas estilos customizados que não podem ser feitos com Tailwind.
+*/
+
+/* ============================================
+   DESIGN MODERNO E INOVADOR PARA O HERO
+   ============================================ */
+
+/* Gradiente Animado para o texto "Corrida" */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hero-gradient-text {
+  background: linear-gradient(45deg,
+      #000000, /* black */
+      #fbbf24, /* brand-yellow */
+      #f59e0b, /* amber-500 */
+      #000000, /* black */
+      #d97706, /* amber-600 */
+      #fbbf24, /* brand-yellow */
+      #000000, /* black */
+      #10b981, /* emerald-500 */
+      #fbbf24  /* brand-yellow */
+    );
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 4s ease-in-out infinite;
+  text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+}
+
+/* Ondas de Energia Animadas */
+@keyframes waveFlow {
+  0% {
+    transform: translateX(-100%) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(100%) rotate(360deg);
+    opacity: 0.3;
+  }
+}
+
+@keyframes waveFlowReverse {
+  0% {
+    transform: translateX(100%) rotate(0deg);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-100%) rotate(-360deg);
+    opacity: 0.2;
+  }
+}
+
+.energy-wave {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at center,
+      rgba(16, 185, 129, 0.1) 0%,
+      rgba(59, 130, 246, 0.08) 30%,
+      rgba(251, 191, 36, 0.05) 60%,
+      transparent 100%);
+  border-radius: 50%;
+  animation: waveFlow 8s linear infinite;
+  pointer-events: none;
+}
+
+.energy-wave:nth-child(2) {
+  animation: waveFlowReverse 10s linear infinite;
+  background: radial-gradient(ellipse at center,
+      rgba(251, 191, 36, 0.08) 0%,
+      rgba(16, 185, 129, 0.06) 40%,
+      rgba(59, 130, 246, 0.04) 70%,
+      transparent 100%);
+}
+
+.energy-wave:nth-child(3) {
+  animation: waveFlow 12s linear infinite;
+  background: radial-gradient(ellipse at center,
+      rgba(59, 130, 246, 0.06) 0%,
+      rgba(251, 191, 36, 0.04) 50%,
+      rgba(16, 185, 129, 0.02) 80%,
+      transparent 100%);
+}
+
+/* Container das Ondas */
+.hero-energy-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Efeito de Pulsação Sutil */
+@keyframes subtlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+.hero-content {
+  animation: subtlePulse 6s ease-in-out infinite;
+  position: relative;
+  z-index: 10;
+}
+
+/* Sombras Dinâmicas */
+.hero-shadow {
+  text-shadow:
+    0 0 20px rgba(251, 191, 36, 0.3),
+    0 0 40px rgba(16, 185, 129, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Efeito de Partículas Flutuantes */
+@keyframes floatParticles {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.8;
+  }
+}
+
+.floating-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(251, 191, 36, 0.6);
+  border-radius: 50%;
+  animation: floatParticles 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.floating-particle:nth-child(odd) {
+  background: rgba(16, 185, 129, 0.5);
+  animation-delay: -2s;
+}
+
+.floating-particle:nth-child(3n) {
+  background: rgba(59, 130, 246, 0.4);
+  animation-delay: -4s;
+}
+
+/* ============================================
+   OTIMIZAÇÕES DE IMAGENS
+   ============================================ */
+.event-card-image {
+  transition: opacity 0.3s ease;
+}
+
+.event-card-image[data-loaded="false"] {
+  opacity: 0.5;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ============================================
+   ESTILOS PARA FILTROS
+   ============================================ */
+#filtro-busca,
+#filtro-cidade {
+  background-color: white !important;
+  color: #1f2937 !important;
+  border: 2px solid #d1d5db !important;
+  font-weight: 500;
+  /* Touch-friendly: tamanho mínimo recomendado */
+  min-height: 44px;
+  font-size: 16px; /* Previne zoom no iOS */
+}
+
+#filtro-busca:focus,
+#filtro-cidade:focus {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1) !important;
+  outline: none !important;
+}
+
+#filtro-busca::placeholder {
+  color: #6b7280 !important;
+  font-weight: 400;
+}
+
+#filtro-cidade option {
+  background-color: white !important;
+  color: #1f2937 !important;
+  padding: 8px 12px;
+}
+
+/* Garantir que o select seja visível */
+#filtro-cidade {
+  appearance: auto !important;
+  -webkit-appearance: menulist !important;
+  -moz-appearance: menulist !important;
+}
+
+/* Estilo para o dropdown arrow */
+#filtro-cidade::-ms-expand {
+  display: block;
+}
+
+/* ============================================
+   TOUCH-FRIENDLY: Melhorias para Mobile
+   ============================================ */
+/* Tamanho mínimo recomendado para elementos touch (44x44px) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Melhor feedback visual para toque */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Espaçamento adequado entre elementos touch */
+.touch-spacing > * + * {
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .touch-spacing > * + * {
+    margin-top: 1rem;
+  }
+}
+
+/* ============================================
+   DRAWER LATERAL (Mobile Menu)
+   ============================================ */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  transition: opacity 0.3s ease;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 85%;
+  max-width: 320px;
+  background-color: white;
+  z-index: 50;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.drawer.translate-x-0 {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drawer-body {
+  padding: 1.5rem;
+}
+
+.drawer-item {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.drawer-item:hover,
+.drawer-item:active {
+  background-color: #f3f4f6;
+}
+
+/* ============================================
+   ESTILOS PARA CONTADOR DE EVENTOS
+   ============================================ */
+#eventos-count {
+  transition: all 0.3s ease-in-out;
+}
+
+#eventos-count .animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animação suave para mudanças de estado */
+#eventos-count > div {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+#eventos-count.fade-in > div {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#eventos-count.fade-out > div {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ============================================
+   ESTILOS PARA CARROSSEL DE BANNERS
+   ============================================ */
+.hero-section {
+  width: 100%;
+  min-height: clamp(520px, 80vh, 900px);
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    min-height: clamp(620px, 90vh, 1100px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-section {
+    min-height: clamp(720px, 95vh, 1300px);
+  }
+}
+
+.hero-carousel {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-section .swiper,
+.hero-section .swiper-wrapper,
+.hero-section .swiper-slide {
+  height: 100%;
+}
+
+.hero-carousel .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-carousel .swiper-pagination-bullet {
+  background: white;
+  opacity: 0.5;
+  width: 12px;
+  height: 12px;
+}
+
+.hero-carousel .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: var(--brand-yellow);
+}
+
+.hero-carousel .swiper-button-next,
+.hero-carousel .swiper-button-prev {
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.hero-carousel .swiper-button-next:hover,
+.hero-carousel .swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.1);
+}
+
+.hero-carousel .swiper-button-next::after,
+.hero-carousel .swiper-button-prev::after {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.hero-header {
+  position: relative;
+  z-index: 10;
+  background-color: var(--brand-green);
+  color: #fff;
+  border-bottom: 3px solid rgba(245, 193, 19, 0.4);
+  box-shadow: inset 0 -8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.hero-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.15));
+  pointer-events: none;
+}
+
+.hero-header > div {
+  position: relative;
+  z-index: 2;
+}
+
+/* Cards menores no header */
+.hero-header .bg-white.rounded-lg {
+  transition: all 0.2s ease;
+}
+
+.hero-header .bg-white.rounded-lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Filtros no header */
+.hero-header .bg-white.rounded-xl {
+  border-color: var(--brand-yellow);
+}
+

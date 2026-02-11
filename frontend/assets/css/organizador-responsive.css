@@ -1,0 +1,142 @@
+/* =====================================================
+   RESPONSIVE MEDIA QUERIES - MÓDULO ORGANIZADOR
+   ===================================================== */
+
+/* TELAS GRANDES - 1200px e acima */
+@media (min-width: 1200px) {
+    .organizador-container {
+        max-width: 1600px;
+    }
+    
+    .organizador-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* TABLETS - até 1200px */
+@media (max-width: 1199px) {
+    .organizador-container {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+    
+    .organizador-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    
+    .organizador-card {
+        min-height: auto;
+    }
+}
+
+/* TABLETS PEQUENOS - até 768px */
+@media (max-width: 768px) {
+    .organizador-container {
+        padding: 0 0.5rem;
+    }
+    
+    .organizador-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .organizador-card {
+        padding: 1rem;
+    }
+    
+    .organizador-filters {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .organizador-filters > div {
+        margin-bottom: 0.5rem;
+    }
+    
+    .organizador-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .organizador-header h1 {
+        font-size: 1.25rem;
+    }
+    
+    .organizador-btn {
+        width: 100%;
+    }
+}
+
+/* MOBILE - até 500px */
+@media (max-width: 500px) {
+    .organizador-container {
+        padding: 0 0.25rem;
+    }
+    
+    .organizador-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .organizador-card {
+        padding: 0.75rem;
+    }
+    
+    .organizador-filters {
+        padding: 0.75rem;
+    }
+    
+    .organizador-header h1 {
+        font-size: 1.125rem;
+    }
+    
+    .organizador-header p {
+        font-size: 0.875rem;
+    }
+    
+    .organizador-nav-tabs {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .organizador-nav-tabs a {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Ajustes para modais */
+@media (max-width: 768px) {
+    .organizador-modal {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .organizador-modal .modal-content {
+        padding: 1rem;
+    }
+    
+    .organizador-modal .modal-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .organizador-modal .modal-footer {
+        padding: 0.75rem 1rem;
+        flex-direction: column-reverse;
+    }
+    
+    .organizador-modal .modal-footer button {
+        width: 100%;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .organizador-modal {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+}
+

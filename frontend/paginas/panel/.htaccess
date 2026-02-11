@@ -1,0 +1,20 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+Options -Indexes
+
+<IfModule mod_headers.c>
+    Header set X-Robots-Tag "noindex, nofollow"
+    Header set X-Frame-Options "DENY"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "no-referrer"
+</IfModule>
+
+<FilesMatch "\.(log|sql|bak|backup)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+

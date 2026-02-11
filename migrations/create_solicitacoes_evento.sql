@@ -1,0 +1,36 @@
+-- Migration: solicitações de evento com dados do responsável
+
+CREATE TABLE IF NOT EXISTS `solicitacoes_evento` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `responsavel_nome` VARCHAR(255) NOT NULL,
+  `responsavel_email` VARCHAR(150) NOT NULL,
+  `responsavel_telefone` VARCHAR(40) NOT NULL,
+  `responsavel_documento` VARCHAR(30) DEFAULT NULL,
+  `responsavel_rg` VARCHAR(30) DEFAULT NULL,
+  `responsavel_cargo` VARCHAR(120) DEFAULT NULL,
+  `empresa` VARCHAR(150) NOT NULL,
+  `regiao` CHAR(2) NOT NULL,
+  `cidade_evento` VARCHAR(120) NOT NULL,
+  `uf_evento` CHAR(2) NOT NULL,
+  `modalidade_esportiva` VARCHAR(120) NOT NULL,
+  `quantidade_eventos` VARCHAR(20) DEFAULT NULL,
+  `nome_evento` VARCHAR(150) NOT NULL,
+  `data_prevista` DATE DEFAULT NULL,
+  `estimativa_participantes` INT DEFAULT NULL,
+  `regulamento_status` VARCHAR(60) DEFAULT NULL,
+  `link_regulamento` VARCHAR(255) DEFAULT NULL,
+  `possui_autorizacao` VARCHAR(40) DEFAULT NULL,
+  `link_autorizacao` VARCHAR(255) DEFAULT NULL,
+  `necessidades` TEXT,
+  `descricao_evento` TEXT,
+  `indicacao` VARCHAR(150) DEFAULT NULL,
+  `preferencia_contato` VARCHAR(40) DEFAULT NULL,
+  `documentos_link` VARCHAR(255) DEFAULT NULL,
+  `status` ENUM('novo','em_analise','aprovado','recusado') DEFAULT 'novo',
+  `criado_em` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `atualizado_em` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_email` (`responsavel_email`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

@@ -1,0 +1,15 @@
+/* Arquivo de entrada do Tailwind CSS */
+/* Este arquivo contém apenas as diretivas do Tailwind */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mobile-first input sizing */
+input, select, textarea, button {
+  min-height: 44px;
+}
+
+input, select, textarea {
+  font-size: 16px; /* evita zoom no iOS */
+}

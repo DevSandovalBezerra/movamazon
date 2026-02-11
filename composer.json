@@ -1,0 +1,21 @@
+{
+    "name": "acer/movamazon",
+    "autoload": {
+        "psr-4": {
+            "Acer\\Movamazon\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "DevSandovalBezerra",
+            "email": "devsandovalbezerra@gmail.com"
+        }
+    ],
+    "require": {
+        "mercadopago/dx-php": "3.0",
+        "vlucas/phpdotenv": "^5.6",
+        "phpmailer/phpmailer": "^6.10",
+        "intervention/image": "^3.11",
+        "endroid/qr-code": "4.0"
+    }
+}

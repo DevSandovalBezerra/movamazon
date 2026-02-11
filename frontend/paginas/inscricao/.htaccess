@@ -1,0 +1,6 @@
+# Remover CSP vinda do servidor/painel (nonce/sha256) e usar a nossa, que permite Mercado Pago + CDNs
+<IfModule mod_headers.c>
+    Header unset Content-Security-Policy
+    Header unset Content-Security-Policy-Report-Only
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net https://unpkg.com https://infird.com https://sdk.mercadopago.com https://secure-fields.mercadopago.com https://www.mercadopago.com https://www.mercadopago.com.br https://http2.mlstatic.com; frame-src 'self' https://www.mercadopago.com https://www.mercadopago.com.br https://secure-fields.mercadopago.com https://www.mercadolibre.com; connect-src 'self' https://api.mercadopago.com https://api.mercadolibre.com https://secure-fields.mercadopago.com https://www.mercadolibre.com https://http2.mlstatic.com https://www.google-analytics.com https://www.googletagmanager.com; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://fonts.googleapis.com https://http2.mlstatic.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com"
+</IfModule>

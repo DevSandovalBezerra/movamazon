@@ -1,0 +1,507 @@
+/* Estilos específicos para área administrativa - Modern & Clean (2025) */
+
+/* Cores MovAmazon */
+:root {
+    --movamazon-green: #0b4340;
+    --movamazon-green-light: #1a5f5a;
+    --movamazon-yellow: #f5c113;
+    --movamazon-red: #ad1f22;
+    
+    /* Variaveis de Layout */
+    --sidebar-width: 16rem; /* 64 * 0.25rem = 16rem */
+    --header-height: 4rem;
+}
+
+/* ===== AI PROVIDER BUTTONS ===== */
+.btn-config-provider {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-config-provider:hover {
+    background: #e5e7eb;
+}
+
+/* ===== CATEGORY CHIPS ===== */
+.category-chip {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.category-chip:hover {
+    border-color: #0b4340;
+    color: #0b4340;
+}
+
+.category-chip.active {
+    background: #0b4340;
+    color: white;
+    border-color: #0b4340;
+}
+
+/* ===== SCROLLBAR CUSTOMIZADA ===== */
+.scrollbar-custom {
+    scrollbar-width: thin;
+    scrollbar-color: #0b4340 #f3f4f6;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 10px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+    background: #0b4340;
+    border-radius: 10px;
+    border: 2px solid #f3f4f6;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    background: #065f5a;
+}
+
+/* Layout Base */
+body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
+}
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fa;
+    overflow-x: hidden;
+}
+
+.admin-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, #0b3a34 0%, #0f5b52 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 40;
+    box-shadow: 0 10px 40px rgba(11, 58, 52, 0.35);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.admin-sidebar.is-open {
+    transform: translateX(0);
+}
+
+.admin-sidebar__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 30;
+}
+
+.admin-sidebar__overlay.hidden {
+    display: none;
+}
+
+.admin-sidebar__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.admin-sidebar__brand {
+    padding: 2rem 1.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+.admin-sidebar__logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-sidebar__logo-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.admin-sidebar__logo-subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.admin-sidebar__profile {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.admin-sidebar__profile-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+}
+
+.admin-sidebar__profile-email {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.admin-sidebar__nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem 0;
+    min-height: 0;
+}
+
+/* Scrollbar customizado para o sidebar administrativo */
+.admin-sidebar__nav::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-sidebar__nav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin: 0.5rem 0;
+}
+
+.admin-sidebar__nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar__nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Para navegadores Firefox */
+.admin-sidebar__nav {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+.admin-sidebar__section {
+    margin-bottom: 1.75rem;
+}
+
+.admin-sidebar__section-title {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    padding: 0 1.5rem;
+    margin-bottom: 0.65rem;
+}
+
+.admin-sidebar__menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.admin-sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.55rem 1.5rem;
+    border-radius: 0.9rem;
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-sidebar__link .admin-sidebar__icon {
+    width: 20px;
+    text-align: center;
+    color: rgba(245, 193, 19, 0.75);
+}
+
+.admin-sidebar__link.is-active {
+    background: rgba(15, 91, 82, 0.9);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(245, 193, 19, 0.15);
+}
+
+.admin-sidebar__link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.admin-sidebar__footer {
+    padding: 1.2rem 1.5rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+.admin-sidebar__logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1.2rem;
+    border-radius: 0.85rem;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+}
+
+.admin-sidebar__logout:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.admin-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+}
+
+@media (min-width: 1024px) {
+    .admin-sidebar {
+        transform: translateX(0);
+    }
+
+    .admin-sidebar__overlay {
+        display: none !important;
+    }
+
+    .admin-content {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+.admin-topbar {
+    padding: 1.5rem 2rem;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-main {
+    flex: 1;
+    padding: 1.5rem 2rem 2.5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.admin-page {
+    width: min(1280px, 100%);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.admin-footer {
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    padding: 1rem 2rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Sidebar */
+#admin-sidebar {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Conteúdo Principal */
+main {
+    @apply transition-all duration-300 ease-in-out;
+}
+
+/* Cards Admin (Clean) */
+.admin-card {
+    @apply bg-white rounded-lg border border-gray-200 shadow-sm p-6 transition-all duration-200;
+}
+
+.admin-card:hover {
+    @apply shadow-md border-gray-300;
+}
+
+/* Headers de Cards */
+.admin-card-header {
+    @apply flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4;
+}
+
+.admin-card-title {
+    @apply text-lg font-semibold text-gray-900 flex items-center gap-2;
+}
+
+/* Inputs & Forms (Modern) */
+.admin-input, 
+.admin-form-input, 
+.admin-form-textarea {
+    @apply w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm 
+    placeholder-gray-400 focus:outline-none focus:border-[#0b4340] focus:ring-1 focus:ring-[#0b4340] 
+    disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 transition-colors duration-200;
+}
+
+.admin-label, 
+.admin-form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1.5;
+}
+
+.admin-input-wrapper {
+    position: relative;
+}
+
+.admin-input-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.admin-input--with-icon {
+    padding-left: 2.5rem;
+}
+
+/* Botões (Flat & Modern) */
+.btn-primary, .admin-btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#0b4340] hover:bg-[#093633] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0b4340] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200;
+}
+
+.btn-secondary, .admin-btn-secondary {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0b4340] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200;
+}
+
+.btn-danger, .admin-btn-danger {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200;
+}
+
+/* Tabelas (Clean) */
+.admin-table-wrapper {
+    @apply overflow-hidden border border-gray-200 rounded-lg;
+}
+
+.admin-table {
+    @apply min-w-full divide-y divide-gray-200;
+}
+
+.admin-table thead {
+    @apply bg-gray-50;
+}
+
+.admin-table th {
+    @apply px-4 py-2.5 text-left text-[0.72rem] font-semibold text-gray-500 uppercase tracking-wider;
+}
+
+.admin-table tbody {
+    @apply bg-white divide-y divide-gray-200;
+}
+
+.admin-table td {
+    @apply px-4 py-3 whitespace-nowrap text-[0.85rem] text-gray-900;
+}
+
+.admin-table tr:hover {
+    @apply bg-gray-50/50;
+}
+
+/* Badges (Pill Style) */
+.admin-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.admin-badge-success { @apply bg-green-100 text-green-800; }
+.admin-badge-warning { @apply bg-yellow-100 text-yellow-800; }
+.admin-badge-danger { @apply bg-red-100 text-red-800; }
+.admin-badge-info { @apply bg-blue-100 text-blue-800; }
+.admin-badge-gray { @apply bg-gray-100 text-gray-800; }
+
+/* Modais */
+.admin-modal-overlay {
+    @apply fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity z-50 flex items-center justify-center p-4;
+}
+
+.admin-modal {
+    @apply bg-white rounded-lg shadow-xl w-full max-w-2xl transform transition-all max-h-[90vh] flex flex-col;
+}
+
+.admin-modal-header {
+    @apply px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50/50 rounded-t-lg;
+}
+
+.admin-modal-title {
+    @apply text-lg font-medium text-gray-900;
+}
+
+.admin-modal-body {
+    @apply p-6 overflow-y-auto;
+}
+
+.admin-modal-footer {
+    @apply px-6 py-4 border-t border-gray-200 bg-gray-50/50 rounded-b-lg flex items-center justify-end gap-3;
+}
+
+/* Scrollbar Personalizada Global */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+

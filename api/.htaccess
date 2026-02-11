@@ -1,0 +1,16 @@
+# Permitir acesso a arquivos PHP sem extensão
+RewriteEngine On
+
+# Se a requisição não termina com .php e não é um arquivo/diretório existente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Se o arquivo .php existe, redirecionar para ele
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Permitir acesso direto a arquivos PHP
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
