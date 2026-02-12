@@ -40,7 +40,7 @@ Se a hospedagem não tiver PHP 8.2+, o `MercadoPagoClient` continua funcionando 
 | `api/inscricao/create_boleto.php` | Passa a usar `MercadoPagoClient::createPayment()` |
 | `api/mercadolivre/webhook.php` | Consulta ao pagamento via `MercadoPagoClient::getPayment()` |
 | `api/mercadolivre/get_payment_status.php` | Passa a usar `MercadoPagoClient` em vez de `MercadoLivrePayment`; inclui `require db.php` |
-| `composer.json` | Dependência `"mercadopago/dx-php": "3.0"` (ou `"^3.0"`) |
+| `composer.json` | Dependência `"mercadopago/dx-php": "^3.4"` (versão 3.8.0 corrige avisos PHP 8.2 de dynamic property) |
 
 ### 2.3 Pasta vendor (quando for usar o SDK)
 

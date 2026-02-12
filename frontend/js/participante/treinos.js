@@ -357,10 +357,21 @@ export async function salvarAnamnese(dados) {
     return await response.json();
 }
 
-export async function gerarTreino(inscricaoId) {
+export async function buscarTermosTreino() {
+    const apiBase = window.API_BASE || (window.location.pathname.indexOf('/frontend/') > 0 ? window.location.pathname.slice(0, window.location.pathname.indexOf('/frontend/')) : '');
+    const url = `${apiBase}/api/inscricao/get_termos.php?tipo=treino`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return (data.success && data.termos && data.termos.conteudo) ? data.termos : null;
+}
+
+export async function gerarTreino(inscricaoId, opts = {}) {
+    const termosIdTreino = opts.termos_id_treino || null;
     console.log('🚀 [gerarTreino] Iniciando geração de treino para inscrição:', inscricaoId);
     console.log('📡 [gerarTreino] URL da API:', `${API_BASE_PARTICIPANTE}/treino/generate.php`);
-    console.log('📦 [gerarTreino] Payload:', { inscricao_id: inscricaoId });
+    const payload = { inscricao_id: inscricaoId };
+    if (termosIdTreino) payload.termos_id_treino = termosIdTreino;
+    console.log('📦 [gerarTreino] Payload:', payload);
     
     try {
         const controller = new AbortController();
@@ -378,7 +389,7 @@ export async function gerarTreino(inscricaoId) {
                 'Content-Type': 'application/json'
             },
             credentials: 'same-origin',
-            body: JSON.stringify({ inscricao_id: inscricaoId }),
+            body: JSON.stringify(payload),
             signal: controller.signal
         });
 
@@ -1038,28 +1049,56 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
     console.log('🚀 [gerarTreinoParaInscricao] Iniciando geração de treino para inscrição:', inscricaoId);
     
     try {
-        if (typeof Swal !== 'undefined') {
-            console.log('💬 [gerarTreinoParaInscricao] Exibindo confirmação...');
-            const confirmResult = await Swal.fire({
-                icon: 'question',
-                title: 'Gerar Treino Personalizado?',
-                text: 'Isso pode levar alguns segundos. Deseja continuar?',
-                showCancelButton: true,
-                confirmButtonText: 'Sim, Gerar Treino',
-                cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#10b981'
-            });
+        let termosIdTreino = null;
+        const termosTreino = await buscarTermosTreino();
 
-            if (!confirmResult.isConfirmed) {
-                console.log('❌ [gerarTreinoParaInscricao] Usuário cancelou a geração');
-                if (button) {
-                    button.disabled = originalDisabled;
-                    button.innerHTML = originalText;
+        if (typeof Swal !== 'undefined') {
+            if (termosTreino) {
+                console.log('💬 [gerarTreinoParaInscricao] Exibindo termos de treino...');
+                const confirmResult = await Swal.fire({
+                    icon: 'info',
+                    title: 'Termo de Responsabilidade',
+                    html: `
+                        <div class="text-left max-h-64 overflow-y-auto mb-4 p-4 bg-gray-50 rounded-lg text-sm prose prose-sm max-w-none">${termosTreino.conteudo}</div>
+                        <label class="flex items-start gap-3 cursor-pointer mt-4">
+                            <input type="checkbox" id="swal-aceite-termos-treino" class="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600">
+                            <span class="text-sm">Li e concordo com o termo de responsabilidade pela prática de treinos</span>
+                        </label>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceitar e Gerar Treino',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#10b981',
+                    focusCancel: false,
+                    preConfirm: () => {
+                        const checkbox = document.getElementById('swal-aceite-termos-treino');
+                        if (!checkbox.checked) {
+                            Swal.showValidationMessage('É necessário aceitar o termo para continuar.');
+                            return false;
+                        }
+                        return true;
+                    }
+                });
+                if (!confirmResult.isConfirmed) {
+                    if (button) { button.disabled = originalDisabled; button.innerHTML = originalText; }
+                    return;
                 }
-                return;
+                termosIdTreino = termosTreino.id;
+            } else {
+                const confirmResult = await Swal.fire({
+                    icon: 'question',
+                    title: 'Gerar Treino Personalizado?',
+                    text: 'Isso pode levar alguns segundos. Deseja continuar?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, Gerar Treino',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#10b981'
+                });
+                if (!confirmResult.isConfirmed) {
+                    if (button) { button.disabled = originalDisabled; button.innerHTML = originalText; }
+                    return;
+                }
             }
-            
-            console.log('✅ [gerarTreinoParaInscricao] Usuário confirmou, prosseguindo...');
 
             Swal.fire({
                 icon: 'info',
@@ -1068,20 +1107,15 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+                didOpen: () => { Swal.showLoading(); }
             });
         } else if (!confirm('Deseja gerar um treino personalizado para esta corrida? Isso pode levar alguns segundos.')) {
-            if (button) {
-                button.disabled = originalDisabled;
-                button.innerHTML = originalText;
-            }
+            if (button) { button.disabled = originalDisabled; button.innerHTML = originalText; }
             return;
         }
 
         console.log('⏳ [gerarTreinoParaInscricao] Aguardando resultado da geração...');
-        const resultado = await gerarTreino(inscricaoId);
+        const resultado = await gerarTreino(inscricaoId, termosIdTreino ? { termos_id_treino: termosIdTreino } : {});
         console.log('📦 [gerarTreinoParaInscricao] Resultado recebido:', resultado);
         
         if (typeof Swal !== 'undefined') {

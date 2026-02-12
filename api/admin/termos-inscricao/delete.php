@@ -30,7 +30,7 @@ if (!$termoId || $termoId <= 0) {
 
 try {
     // Verificar se o termo existe
-    $stmtCheck = $pdo->prepare("SELECT id, organizador_id, ativo FROM termos_eventos WHERE id = :id LIMIT 1");
+    $stmtCheck = $pdo->prepare("SELECT id, ativo FROM termos_eventos WHERE id = :id LIMIT 1");
     $stmtCheck->execute(['id' => $termoId]);
     $termo = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
@@ -49,7 +49,7 @@ try {
     if ($termo['ativo'] == 1 && $totalAceites > 0) {
         http_response_code(400);
         echo json_encode([
-            'success' => false, 
+            'success' => false,
             'message' => 'Não é possível excluir um termo ativo que possui aceites. Desative o termo primeiro.'
         ]);
         exit;
@@ -68,4 +68,3 @@ try {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erro ao excluir termo']);
 }
-

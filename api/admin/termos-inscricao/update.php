@@ -26,7 +26,13 @@ $termoId = isset($payload['id']) ? (int)$payload['id'] : 0;
 $titulo = isset($payload['titulo']) ? trim($payload['titulo']) : null;
 $conteudo = isset($payload['conteudo']) ? trim($payload['conteudo']) : null;
 $versao = isset($payload['versao']) ? trim($payload['versao']) : null;
+$tipo = isset($payload['tipo']) ? trim($payload['tipo']) : null;
 $ativo = isset($payload['ativo']) !== null ? ($payload['ativo'] === true || $payload['ativo'] === '1' || $payload['ativo'] === 1) : null;
+
+$tiposValidos = ['inscricao', 'anamnese', 'treino'];
+if ($tipo !== null && !in_array($tipo, $tiposValidos)) {
+    $tipo = 'inscricao';
+}
 
 if ($termoId <= 0) {
     http_response_code(400);
@@ -38,7 +44,7 @@ try {
     $pdo->beginTransaction();
 
     // Verificar se o termo existe
-    $stmtCheck = $pdo->prepare("SELECT organizador_id, ativo FROM termos_eventos WHERE id = :id LIMIT 1");
+    $stmtCheck = $pdo->prepare("SELECT id, ativo, COALESCE(tipo, 'inscricao') as tipo FROM termos_eventos WHERE id = :id LIMIT 1");
     $stmtCheck->execute(['id' => $termoId]);
     $termoAtual = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
@@ -46,16 +52,13 @@ try {
         throw new RuntimeException('Termo não encontrado');
     }
 
-    $organizadorId = (int)$termoAtual['organizador_id'];
     $ativoAtual = (bool)$termoAtual['ativo'];
+    $tipoTermo = $termoAtual['tipo'] ?? 'inscricao';
 
-    // Se está ativando este termo, desativar outros termos ativos do mesmo organizador
+    // Se está ativando este termo, desativar os outros do mesmo tipo (um ativo por tipo)
     if ($ativo !== null && $ativo && !$ativoAtual) {
-        $stmtDeactivate = $pdo->prepare("UPDATE termos_eventos SET ativo = 0 WHERE organizador_id = :organizador_id AND id != :termo_id AND ativo = 1");
-        $stmtDeactivate->execute([
-            'organizador_id' => $organizadorId,
-            'termo_id' => $termoId
-        ]);
+        $stmtDeactivate = $pdo->prepare("UPDATE termos_eventos SET ativo = 0 WHERE tipo = :tipo AND id != :termo_id AND ativo = 1");
+        $stmtDeactivate->execute(['tipo' => $tipoTermo, 'termo_id' => $termoId]);
     }
 
     // Montar query de atualização
@@ -88,6 +91,11 @@ try {
         $params['ativo'] = $ativo ? 1 : 0;
     }
 
+    if ($tipo !== null) {
+        $updates[] = 'tipo = :tipo';
+        $params['tipo'] = $tipo;
+    }
+
     if (empty($updates)) {
         throw new RuntimeException('Nenhum campo para atualizar');
     }
@@ -114,4 +122,3 @@ try {
     $message = $e->getMessage();
     echo json_encode(['success' => false, 'message' => $message]);
 }
-

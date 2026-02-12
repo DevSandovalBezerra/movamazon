@@ -6,8 +6,8 @@ $activePage = 'termos-inscricao';
     <!-- Header -->
     <div class="mb-6 flex items-center justify-between">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Termos de Inscrição</h2>
-            <p class="text-gray-600">Gerencie os termos de aceite de inscrição por organizador</p>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Termos Legais da Plataforma</h2>
+            <p class="text-gray-600">Termos legais da plataforma (inscrição, treino, anamnese)</p>
         </div>
         <button id="btn-novo-termo" class="btn-primary flex items-center gap-2">
             <i class="fas fa-plus w-4 h-4"></i>
@@ -22,13 +22,16 @@ $activePage = 'termos-inscricao';
                 <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
                 <div class="admin-input-wrapper">
                     <i class="fas fa-search admin-input-icon"></i>
-                    <input type="text" id="campo-busca" placeholder="Título, conteúdo ou organizador..." class="admin-input admin-input--with-icon">
+                    <input type="text" id="campo-busca" placeholder="Título ou conteúdo..." class="admin-input admin-input--with-icon">
                 </div>
             </div>
-            <div class="min-w-48">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Organizador</label>
-                <select id="filtro-organizador" class="admin-input w-full">
-                    <option value="">Todos os organizadores</option>
+            <div class="min-w-32">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                <select id="filtro-tipo" class="admin-input w-full">
+                    <option value="">Todos</option>
+                    <option value="inscricao">Inscrição</option>
+                    <option value="anamnese">Anamnese</option>
+                    <option value="treino">Treino</option>
                 </select>
             </div>
             <div class="min-w-32">
@@ -57,7 +60,7 @@ $activePage = 'termos-inscricao';
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">ID</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Título</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Organizador</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Tipo</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Versão</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Data Criação</th>
@@ -92,18 +95,18 @@ $activePage = 'termos-inscricao';
         <form id="form-termo" class="p-6 space-y-4">
             <input type="hidden" id="termo-id" name="id">
 
-            <div>
-                <label class="block text-sm font-medium text-secondary-dark-gray mb-2">Organizador *</label>
-                <select id="termo-organizador-id" name="organizador_id" required class="input-primary w-full">
-                    <option value="">Selecione um organizador</option>
-                </select>
-                <p class="text-xs text-gray-500 mt-1">O termo será usado em todas as corridas deste organizador</p>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-secondary-dark-gray mb-2">Título *</label>
                     <input type="text" id="termo-titulo" name="titulo" required class="input-primary w-full" placeholder="Ex: Termos e Condições de Inscrição">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-secondary-dark-gray mb-2">Tipo</label>
+                    <select id="termo-tipo" name="tipo" class="input-primary w-full">
+                        <option value="inscricao">Inscrição</option>
+                        <option value="anamnese">Anamnese</option>
+                        <option value="treino">Treino</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-secondary-dark-gray mb-2">Versão</label>
@@ -114,13 +117,13 @@ $activePage = 'termos-inscricao';
             <div>
                 <label class="block text-sm font-medium text-secondary-dark-gray mb-2">Conteúdo *</label>
                 <textarea id="termo-conteudo" name="conteudo" required rows="15" class="input-primary w-full" placeholder="Digite o conteúdo dos termos e condições..."></textarea>
-                <p class="text-xs text-gray-500 mt-1">Este termo será exibido e aceito pelos participantes durante a inscrição</p>
+                <p class="text-xs text-gray-500 mt-1">Este termo será exibido e aceito pelos participantes durante a inscrição em qualquer evento</p>
             </div>
 
             <div class="flex items-center">
                 <input type="checkbox" id="termo-ativo" name="ativo" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" checked>
                 <label for="termo-ativo" class="ml-2 text-sm text-gray-700">Termo ativo</label>
-                <p class="text-xs text-gray-500 ml-4">Ao ativar, outros termos ativos do mesmo organizador serão desativados automaticamente</p>
+                <p class="text-xs text-gray-500 ml-4">Ao ativar, o termo ativo anterior do mesmo tipo será desativado automaticamente (um ativo por tipo)</p>
             </div>
         </form>
 
@@ -155,4 +158,3 @@ $activePage = 'termos-inscricao';
 </div>
 
 <script src="../../js/admin/termos-inscricao.js"></script>
-

@@ -27,9 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents('php://input'), true);
 $inscricao_id = isset($data['inscricao_id']) ? (int)$data['inscricao_id'] : null;
+$termos_id_treino = isset($data['termos_id_treino']) ? (int)$data['termos_id_treino'] : null;
 $usuario_id = $_SESSION['user_id'];
 
-error_log('[GERAR_TREINO] Dados recebidos - inscricao_id: ' . $inscricao_id . ', usuario_id: ' . $usuario_id);
+error_log('[GERAR_TREINO] Dados recebidos - inscricao_id: ' . $inscricao_id . ', usuario_id: ' . $usuario_id . ', termos_id: ' . ($termos_id_treino ?? 'null'));
 
 if (!$inscricao_id) {
     error_log('[GERAR_TREINO] Erro: ID da inscrição não fornecido');
@@ -132,6 +133,28 @@ try {
         http_response_code(404);
         echo json_encode(['success' => false, 'message' => 'Anamnese não encontrada. Preencha a anamnese antes de gerar o treino.']);
         exit();
+    }
+
+    // Se há termo de treino ativo configurado, exigir aceite (termos_id_treino)
+    if ($termos_id_treino) {
+        $stmtTermoTreino = $pdo->prepare("SELECT id FROM termos_eventos WHERE id = ? AND ativo = 1 AND COALESCE(tipo, 'inscricao') = 'treino' LIMIT 1");
+        $stmtTermoTreino->execute([$termos_id_treino]);
+        if (!$stmtTermoTreino->fetch()) {
+            error_log('[GERAR_TREINO] Erro: Termo de treino inválido ou inativo');
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Termo de responsabilidade inválido. Aceite o termo atual para continuar.']);
+            exit();
+        }
+    } else {
+        $stmtTermoAtivo = $pdo->prepare("SELECT id FROM termos_eventos WHERE ativo = 1 AND COALESCE(tipo, 'inscricao') = 'treino' LIMIT 1");
+        $stmtTermoAtivo->execute();
+        $termoAtivo = $stmtTermoAtivo->fetch(PDO::FETCH_ASSOC);
+        if ($termoAtivo) {
+            error_log('[GERAR_TREINO] Erro: Termo de treino existe mas não foi aceito');
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'É necessário aceitar o termo de responsabilidade pela prática de treinos antes de gerar.']);
+            exit();
+        }
     }
 
     error_log('[GERAR_TREINO] Anamnese encontrada - ID: ' . $anamnese['id']);
@@ -857,10 +880,15 @@ try {
         $bibliografia_json = json_encode($bibliografia_array, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $bibliografia_texto = $bibliografia; // Manter também como texto para compatibilidade
 
+        $aceite_termos_treino = $termos_id_treino ? 1 : 0;
+        $data_aceite_treino = $termos_id_treino ? date('Y-m-d H:i:s') : null;
+
         $sqlInsertPlano = "INSERT INTO planos_treino_gerados (
-            usuario_id, inscricao_id, anamnese_id, bibliografia_plano, foco_primario, duracao_treino_geral, equipamento_geral
+            usuario_id, inscricao_id, anamnese_id, bibliografia_plano, foco_primario, duracao_treino_geral, equipamento_geral,
+            aceite_termos_treino, data_aceite_termos_treino, termos_id_treino
         ) VALUES (
-            :usuario_id, :inscricao_id, :anamnese_id, :bibliografia_plano, :foco_primario, :duracao_treino_geral, :equipamento_geral
+            :usuario_id, :inscricao_id, :anamnese_id, :bibliografia_plano, :foco_primario, :duracao_treino_geral, :equipamento_geral,
+            :aceite_termos_treino, :data_aceite_termos_treino, :termos_id_treino
         )";
         
         $stmtInsertPlano = $pdo->prepare($sqlInsertPlano);
@@ -871,7 +899,10 @@ try {
             ':bibliografia_plano' => $bibliografia_texto,
             ':foco_primario' => $foco_primario,
             ':duracao_treino_geral' => $duracao_treino_geral,
-            ':equipamento_geral' => $equipamento_geral
+            ':equipamento_geral' => $equipamento_geral,
+            ':aceite_termos_treino' => $aceite_termos_treino,
+            ':data_aceite_termos_treino' => $data_aceite_treino,
+            ':termos_id_treino' => $termos_id_treino ?: null
         ]);
 
         $plano_treino_gerado_id = $pdo->lastInsertId();

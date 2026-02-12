@@ -18,8 +18,8 @@ if (!requererAdmin(false)) {
     exit;
 }
 
-$organizadorId = isset($_GET['organizador_id']) ? (int)$_GET['organizador_id'] : null;
 $status = isset($_GET['status']) ? trim($_GET['status']) : null;
+$tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : null;
 $search = isset($_GET['search']) ? trim($_GET['search']) : null;
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $perPage = isset($_GET['per_page']) ? max(1, min(100, (int)$_GET['per_page'])) : 20;
@@ -27,46 +27,36 @@ $perPage = isset($_GET['per_page']) ? max(1, min(100, (int)$_GET['per_page'])) :
 $where = [];
 $params = [];
 
-if ($organizadorId !== null && $organizadorId > 0) {
-    $where[] = 't.organizador_id = :organizador_id';
-    $params['organizador_id'] = $organizadorId;
-}
-
 if ($status !== null && $status !== '') {
     $where[] = 't.ativo = :status';
     $params['status'] = $status === 'ativo' || $status === '1' ? 1 : 0;
 }
 
+if ($tipo !== null && $tipo !== '') {
+    $where[] = 'COALESCE(t.tipo, \'inscricao\') = :tipo';
+    $params['tipo'] = $tipo;
+}
+
 if ($search !== null && $search !== '') {
-    $where[] = '(t.titulo LIKE :search OR t.conteudo LIKE :search OR o.empresa LIKE :search)';
+    $where[] = '(t.titulo LIKE :search OR t.conteudo LIKE :search)';
     $params['search'] = '%' . $search . '%';
 }
 
 $sql = "SELECT 
             t.id,
-            t.organizador_id,
             t.titulo,
             t.conteudo,
             t.versao,
             t.ativo,
-            t.data_criacao,
-            o.id as organizador_id_table,
-            o.empresa,
-            u.nome_completo as organizador_nome,
-            u.email as organizador_email,
-            (SELECT COUNT(*) FROM eventos e WHERE e.organizador_id = t.organizador_id AND e.deleted_at IS NULL) as total_eventos
-        FROM termos_eventos t
-        INNER JOIN organizadores o ON t.organizador_id = o.id
-        INNER JOIN usuarios u ON o.usuario_id = u.id";
+            COALESCE(t.tipo, 'inscricao') as tipo,
+            t.data_criacao
+        FROM termos_eventos t";
 
 if (!empty($where)) {
     $sql .= ' WHERE ' . implode(' AND ', $where);
 }
 
-$countSql = "SELECT COUNT(*) as total
-             FROM termos_eventos t
-             INNER JOIN organizadores o ON t.organizador_id = o.id";
-
+$countSql = "SELECT COUNT(*) as total FROM termos_eventos t";
 if (!empty($where)) {
     $countSql .= ' WHERE ' . implode(' AND ', $where);
 }
@@ -92,19 +82,12 @@ try {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $termos[] = [
             'id' => (int)$row['id'],
-            'organizador_id' => (int)$row['organizador_id'],
             'titulo' => $row['titulo'],
             'conteudo' => $row['conteudo'],
             'versao' => $row['versao'],
             'ativo' => (bool)$row['ativo'],
-            'data_criacao' => $row['data_criacao'],
-            'organizador' => [
-                'id' => (int)$row['organizador_id_table'],
-                'empresa' => $row['empresa'],
-                'nome' => $row['organizador_nome'],
-                'email' => $row['organizador_email'],
-                'total_eventos' => (int)$row['total_eventos']
-            ]
+            'tipo' => $row['tipo'] ?? 'inscricao',
+            'data_criacao' => $row['data_criacao']
         ];
     }
 
@@ -124,9 +107,8 @@ try {
     http_response_code(500);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'message' => 'Erro ao listar termos',
         'error' => $e->getMessage()
     ]);
 }
-

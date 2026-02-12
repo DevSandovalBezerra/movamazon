@@ -22,16 +22,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $payload = json_decode(file_get_contents('php://input'), true) ?? [];
 
-$organizadorId = isset($payload['organizador_id']) ? (int)$payload['organizador_id'] : 0;
 $titulo = isset($payload['titulo']) ? trim($payload['titulo']) : '';
 $conteudo = isset($payload['conteudo']) ? trim($payload['conteudo']) : '';
 $versao = isset($payload['versao']) ? trim($payload['versao']) : '1.0';
+$tipo = isset($payload['tipo']) ? trim($payload['tipo']) : 'inscricao';
 $ativo = isset($payload['ativo']) ? ($payload['ativo'] === true || $payload['ativo'] === '1' || $payload['ativo'] === 1) : true;
 
-if ($organizadorId <= 0) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Organizador é obrigatório']);
-    exit;
+$tiposValidos = ['inscricao', 'anamnese', 'treino'];
+if (!in_array($tipo, $tiposValidos)) {
+    $tipo = 'inscricao';
 }
 
 if (empty($titulo)) {
@@ -49,31 +48,24 @@ if (empty($conteudo)) {
 try {
     $pdo->beginTransaction();
 
-    // Verificar se o organizador existe
-    $stmtCheck = $pdo->prepare("SELECT id FROM organizadores WHERE id = :id LIMIT 1");
-    $stmtCheck->execute(['id' => $organizadorId]);
-    if (!$stmtCheck->fetch()) {
-        throw new RuntimeException('Organizador não encontrado');
-    }
-
-    // Se está ativando um novo termo, desativar o termo ativo anterior do organizador
+    // Se está ativando um novo termo, desativar os outros do mesmo tipo (um ativo por tipo)
     if ($ativo) {
-        $stmtDeactivate = $pdo->prepare("UPDATE termos_eventos SET ativo = 0 WHERE organizador_id = :organizador_id AND ativo = 1");
-        $stmtDeactivate->execute(['organizador_id' => $organizadorId]);
+        $stmtDeactivate = $pdo->prepare("UPDATE termos_eventos SET ativo = 0 WHERE tipo = :tipo AND ativo = 1");
+        $stmtDeactivate->execute(['tipo' => $tipo]);
     }
 
     // Inserir novo termo
     $stmt = $pdo->prepare("
         INSERT INTO termos_eventos 
-        (organizador_id, titulo, conteudo, versao, ativo, data_criacao) 
-        VALUES (:organizador_id, :titulo, :conteudo, :versao, :ativo, NOW())
+        (titulo, conteudo, versao, tipo, ativo, data_criacao) 
+        VALUES (:titulo, :conteudo, :versao, :tipo, :ativo, NOW())
     ");
 
     $stmt->execute([
-        'organizador_id' => $organizadorId,
         'titulo' => $titulo,
         'conteudo' => $conteudo,
         'versao' => $versao,
+        'tipo' => $tipo,
         'ativo' => $ativo ? 1 : 0
     ]);
 
@@ -86,9 +78,9 @@ try {
         'message' => 'Termo criado com sucesso',
         'data' => [
             'id' => (int)$termoId,
-            'organizador_id' => $organizadorId,
             'titulo' => $titulo,
             'versao' => $versao,
+            'tipo' => $tipo,
             'ativo' => $ativo
         ]
     ]);
@@ -98,7 +90,5 @@ try {
     }
     error_log('[ADMIN_TERMOS_CREATE] ' . $e->getMessage());
     http_response_code(500);
-    $message = $e->getMessage() === 'Organizador não encontrado' ? 'Organizador não encontrado' : 'Erro ao criar termo';
-    echo json_encode(['success' => false, 'message' => $message]);
+    echo json_encode(['success' => false, 'message' => 'Erro ao criar termo']);
 }
-

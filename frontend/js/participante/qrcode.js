@@ -64,7 +64,7 @@
                 const qrUrl = `../../../api/participante/generate_qr.php?data=${encodeURIComponent(dataQr)}`;
                 this.qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR Code de Inscrição" class="max-w-full h-auto">`;
             } else {
-                this.qrContainer.innerHTML = `<p class="text-red-600">Erro: Número de inscrição não disponível</p>`;
+                this.qrContainer.innerHTML = `<p class="text-red-600">Inscrição não confere. Entre em contato com o organizador.</p>`;
             }
 
             this.modal.classList.remove('hidden');

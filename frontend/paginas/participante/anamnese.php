@@ -19,6 +19,19 @@ if (!$inscricao_id) {
     <h1 class="text-3xl font-bold mb-2">Anamnese para Treino</h1>
     <p class="text-gray-600 mb-8">Preencha os dados abaixo para receber um treino personalizado</p>
 
+    <!-- Termos de responsabilidade (anamnese) -->
+    <div id="termos-anamnese-container" class="mb-6 hidden">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <h3 class="font-semibold text-gray-900 mb-2">Termo de Responsabilidade</h3>
+            <p class="text-sm text-gray-600 mb-3">Leia atentamente antes de preencher a anamnese:</p>
+            <div id="termos-anamnese-conteudo" class="max-h-48 overflow-y-auto text-sm text-gray-700 bg-white rounded p-4 border border-blue-100 mb-3 prose prose-sm max-w-none"></div>
+            <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" id="aceite-termos-anamnese" required class="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="text-sm text-gray-700">Li e concordo com o termo de responsabilidade pelas informações fornecidas na anamnese</span>
+            </label>
+        </div>
+    </div>
+
     <form id="form-anamnese" class="bg-white rounded-lg shadow-md p-6 space-y-6">
         <input type="hidden" id="inscricao_id" value="<?php echo htmlspecialchars($inscricao_id); ?>">
 
@@ -109,9 +122,9 @@ if (!$inscricao_id) {
 </div>
 
 <script type="module">
-import { salvarAnamnese, gerarTreino } from '../../js/participante/treinos.js';
+import { salvarAnamnese, gerarTreino, buscarTermosTreino } from '../../js/participante/treinos.js';
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const form = document.getElementById('form-anamnese');
     const pesoInput = document.getElementById('peso');
     const alturaInput = document.getElementById('altura');
@@ -119,6 +132,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnGerarTreino = document.getElementById('btn-gerar-treino');
     const mensagemSucesso = document.getElementById('mensagem-sucesso');
     const inscricaoId = document.getElementById('inscricao_id').value;
+    const termosContainer = document.getElementById('termos-anamnese-container');
+    const termosConteudo = document.getElementById('termos-anamnese-conteudo');
+    const aceiteTermosCheckbox = document.getElementById('aceite-termos-anamnese');
+
+    // Carregar termos de anamnese
+    let termosAnamnese = null;
+    try {
+        const apiBase = window.API_BASE || (window.location.pathname.indexOf('/frontend/') > 0 ? window.location.pathname.slice(0, window.location.pathname.indexOf('/frontend/')) : '');
+        const url = `${apiBase}/api/inscricao/get_termos.php?tipo=anamnese`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.success && data.termos && data.termos.conteudo) {
+            termosAnamnese = data.termos;
+            termosConteudo.innerHTML = data.termos.conteudo;
+            termosContainer.classList.remove('hidden');
+            aceiteTermosCheckbox.required = true;
+        } else {
+            aceiteTermosCheckbox.required = false;
+        }
+    } catch (e) {
+        console.warn('Termos anamnese não carregados:', e);
+        aceiteTermosCheckbox.required = false;
+    }
 
     function calcularIMC() {
         const peso = parseFloat(pesoInput.value);
@@ -152,6 +188,10 @@ document.addEventListener('DOMContentLoaded', function() {
             limitacoes_fisicas: document.getElementById('limitacoes_fisicas').value,
             objetivo_corrida: document.getElementById('objetivo_corrida').value
         };
+        if (termosAnamnese && aceiteTermosCheckbox) {
+            dados.aceite_termos_anamnese = aceiteTermosCheckbox.checked ? 1 : 0;
+            dados.termos_id_anamnese = termosAnamnese.id;
+        }
 
         try {
             const resultado = await salvarAnamnese(dados);
@@ -200,8 +240,48 @@ document.addEventListener('DOMContentLoaded', function() {
         btnGerarTreino.disabled = true;
         btnGerarTreino.textContent = 'Gerando treino...';
 
+        let termosIdTreino = null;
         try {
-            const resultado = await gerarTreino(inscricaoId);
+            const termosTreino = await buscarTermosTreino();
+            if (termosTreino && typeof Swal !== 'undefined') {
+                btnGerarTreino.disabled = false;
+                btnGerarTreino.textContent = 'Gerar Treino';
+                const confirmResult = await Swal.fire({
+                    icon: 'info',
+                    title: 'Termo de Responsabilidade',
+                    html: `
+                        <div class="text-left max-h-64 overflow-y-auto mb-4 p-4 bg-gray-50 rounded-lg text-sm prose prose-sm max-w-none">${termosTreino.conteudo}</div>
+                        <label class="flex items-start gap-3 cursor-pointer mt-4">
+                            <input type="checkbox" id="swal-aceite-termos-treino" class="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600">
+                            <span class="text-sm">Li e concordo com o termo de responsabilidade pela prática de treinos</span>
+                        </label>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceitar e Gerar Treino',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#10b981',
+                    preConfirm: () => {
+                        const cb = document.getElementById('swal-aceite-termos-treino');
+                        if (!cb || !cb.checked) {
+                            Swal.showValidationMessage('É necessário aceitar o termo para continuar.');
+                            return false;
+                        }
+                        return true;
+                    }
+                });
+                if (!confirmResult.isConfirmed) return;
+                termosIdTreino = termosTreino.id;
+                btnGerarTreino.disabled = true;
+                btnGerarTreino.textContent = 'Gerando treino...';
+            } else if (termosTreino) {
+                termosIdTreino = termosTreino.id;
+            }
+        } catch (e) {
+            console.warn('Erro ao buscar termos treino:', e);
+        }
+
+        try {
+            const resultado = await gerarTreino(inscricaoId, termosIdTreino ? { termos_id_treino: termosIdTreino } : {});
             if (resultado.success) {
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({

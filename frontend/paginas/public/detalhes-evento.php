@@ -194,6 +194,9 @@ if ($evento_id > 0) {
   $formas_pagamento = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+require_once dirname(__DIR__, 3) . '/api/helpers/get_regulamento_url.php';
+$regulamento_url = $evento_id > 0 ? getRegulamentoUrl($evento_id, $pdo) : null;
+
 // Fallback para dados básicos se evento não encontrado
 if (!$evento) {
   $evento = [
@@ -677,12 +680,18 @@ $redes = [
           <!-- Links Úteis -->
           <div class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
             <h3 class="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 text-center">Links Úteis</h3>
-            <div class="space-y-2 text-center">
-              <a href="#" class="block text-sm text-brand-green hover:text-green-700 py-1">2ª via de boleto</a>
-              <a href="#" class="block text-sm text-brand-green hover:text-green-700 py-1">Protocolo de inscrição</a>
-              <a href="#" class="block text-sm text-brand-green hover:text-green-700 py-1">Área do participante</a>
-              <a href="#" class="block text-sm text-brand-green hover:text-green-700 py-1">Dúvidas sobre inscrição</a>
-              <a href="#" class="block text-sm text-brand-green hover:text-green-700 py-1">Denunciar evento</a>
+            <div class="space-y-3 text-center">
+              <?php if (!empty($regulamento_url)): ?>
+                <a href="<?= htmlspecialchars($regulamento_url) ?>" target="_blank" rel="noopener"
+                   class="block w-full py-3 px-4 rounded-lg bg-brand-green text-white font-semibold hover:bg-green-700 transition-colors">
+                  <i class="fas fa-file-pdf mr-2"></i> Regulamento do evento
+                </a>
+              <?php else: ?>
+                <span class="block py-3 px-4 rounded-lg bg-gray-200 text-gray-500 font-medium">Regulamento não disponível</span>
+              <?php endif; ?>
+              <a href="#" class="block text-sm text-brand-green hover:text-green-700 py-1">
+                Dúvidas sobre inscrição
+              </a>
             </div>
           </div>
         </div>

@@ -34,8 +34,8 @@ if (!$termoId || $termoId <= 0) {
 try {
     $pdo->beginTransaction();
 
-    // Verificar se o termo existe e obter organizador_id
-    $stmtCheck = $pdo->prepare("SELECT id, organizador_id, ativo FROM termos_eventos WHERE id = :id LIMIT 1");
+    // Verificar se o termo existe
+    $stmtCheck = $pdo->prepare("SELECT id, ativo, COALESCE(tipo, 'inscricao') as tipo FROM termos_eventos WHERE id = :id LIMIT 1");
     $stmtCheck->execute(['id' => $termoId]);
     $termo = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
@@ -43,21 +43,18 @@ try {
         throw new RuntimeException('Termo não encontrado');
     }
 
-    $organizadorId = (int)$termo['organizador_id'];
     $statusAtual = (bool)$termo['ativo'];
+    $tipoTermo = $termo['tipo'] ?? 'inscricao';
 
     // Se não especificou novo status, alternar
     if ($novoStatus === null) {
         $novoStatus = !$statusAtual;
     }
 
-    // Se está ativando, desativar outros termos ativos do mesmo organizador
+    // Se está ativando, desativar os outros do mesmo tipo (um ativo por tipo)
     if ($novoStatus && !$statusAtual) {
-        $stmtDeactivate = $pdo->prepare("UPDATE termos_eventos SET ativo = 0 WHERE organizador_id = :organizador_id AND id != :termo_id AND ativo = 1");
-        $stmtDeactivate->execute([
-            'organizador_id' => $organizadorId,
-            'termo_id' => $termoId
-        ]);
+        $stmtDeactivate = $pdo->prepare("UPDATE termos_eventos SET ativo = 0 WHERE tipo = :tipo AND id != :termo_id AND ativo = 1");
+        $stmtDeactivate->execute(['tipo' => $tipoTermo, 'termo_id' => $termoId]);
     }
 
     // Atualizar status do termo
@@ -86,4 +83,3 @@ try {
     $message = $e->getMessage() === 'Termo não encontrado' ? 'Termo não encontrado' : 'Erro ao alterar status do termo';
     echo json_encode(['success' => false, 'message' => $message]);
 }
-
