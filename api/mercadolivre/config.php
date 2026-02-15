@@ -62,6 +62,10 @@ if (empty($project_path) && strpos($host, 'localhost') !== false) {
 }
 
 $base_url = $protocol . '://' . $host . $project_path;
+$site_base_url = rtrim(getEnvVar('URL_BASE', ''), '/');
+if ($site_base_url === '') {
+    $site_base_url = rtrim($base_url, '/');
+}
 
 // Sistema funciona apenas em produção - tokens de produção obrigatórios
 $is_production = true;
@@ -79,13 +83,12 @@ if (empty($access_token) || empty($public_key)) {
 $has_valid_tokens = !empty($access_token) && !empty($public_key);
 
 // URL de produção fixa como fallback para garantir domínio correto
-$production_base = 'https://www.movamazon.com.br';
-$notification_url = getEnvVar('ML_NOTIFICATION_URL') ?: ($production_base . '/api/mercadolivre/webhook.php');
-$auto_return_url = getEnvVar('ML_AUTO_RETURN') ?: ($production_base . '/frontend/paginas/participante/pagamento-sucesso.php');
+$notification_url = getEnvVar('ML_NOTIFICATION_URL') ?: ($site_base_url . '/api/mercadolivre/webhook.php');
+$auto_return_url = getEnvVar('ML_AUTO_RETURN') ?: ($site_base_url . '/frontend/paginas/participante/pagamento-sucesso.php');
 
 $item_title = getEnvVar('ML_ITEM_TITLE', 'Inscrição MovAmazonas');
 $item_description = getEnvVar('ML_ITEM_DESCRIPTION', 'Inscrição confirmada no MovAmazonas');
-$item_picture = getEnvVar('ML_ITEM_PICTURE_URL', 'https://www.movamazon.com.br/frontend/assets/img/logo.png');
+$item_picture = getEnvVar('ML_ITEM_PICTURE_URL', $site_base_url . '/frontend/assets/img/logo.png');
 
 // Fatura do cartão (statement_descriptor) - até 22 caracteres, sem acento (exigência MP)
 $statement_descriptor = getEnvVar('ML_STATEMENT_DESCRIPTOR', 'MOVAMAZON');
@@ -115,14 +118,14 @@ if (!function_exists('logMercadoPago')) {
 
 // Checkout Pro: back_urls por origem (rollback: usar back_urls antigo se necessário)
 $back_urls_inscricao = [
-    'success' => $production_base . '/inscricao/sucesso',
-    'pending' => $production_base . '/inscricao/sucesso?status=pending',
-    'failure' => $production_base . '/inscricao/sucesso?status=failure'
+    'success' => $site_base_url . '/inscricao/sucesso',
+    'pending' => $site_base_url . '/inscricao/sucesso?status=pending',
+    'failure' => $site_base_url . '/inscricao/sucesso?status=failure'
 ];
 $back_urls_participante = [
-    'success' => $production_base . '/frontend/paginas/participante/pagamento-sucesso.php',
-    'pending' => $production_base . '/frontend/paginas/participante/pagamento-pendente.php',
-    'failure' => $production_base . '/frontend/paginas/participante/pagamento-erro.php'
+    'success' => $site_base_url . '/frontend/paginas/participante/pagamento-sucesso.php',
+    'pending' => $site_base_url . '/frontend/paginas/participante/pagamento-pendente.php',
+    'failure' => $site_base_url . '/frontend/paginas/participante/pagamento-erro.php'
 ];
 
 return [
@@ -133,11 +136,11 @@ return [
     'is_production' => true,
     'environment' => 'production',
     'has_valid_tokens' => $has_valid_tokens,
-    'site_base_url' => $production_base,
+    'site_base_url' => $site_base_url,
     'back_urls' => [
         'success' => $auto_return_url,
-        'pending' => $production_base . '/frontend/paginas/participante/pagamento-pendente.php',
-        'failure' => $production_base . '/frontend/paginas/participante/pagamento-erro.php'
+        'pending' => $site_base_url . '/frontend/paginas/participante/pagamento-pendente.php',
+        'failure' => $site_base_url . '/frontend/paginas/participante/pagamento-erro.php'
     ],
     'back_urls_inscricao' => $back_urls_inscricao,
     'back_urls_participante' => $back_urls_participante,

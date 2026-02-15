@@ -1,6 +1,6 @@
-// ========== ROLLBACK: Para voltar ao Payment Brick/PIX/Boleto na página, defina USE_CHECKOUT_PRO_REDIRECT = false
-// e no botão Finalizar Compra chame inicializarPagamento() em vez do fluxo redirect; exiba paymentBrick_container na página.
-const USE_CHECKOUT_PRO_REDIRECT = true;
+// ========== MODO PADRÃO: Checkout Transparente ativo na página de inscrição.
+// ROLLBACK: defina USE_CHECKOUT_PRO_REDIRECT = true para voltar ao redirect.
+const USE_CHECKOUT_PRO_REDIRECT = false;
 
 // Variáveis globais para MercadoPago
 let mp = null;
@@ -722,14 +722,16 @@ function atualizarBotaoPagamento() {
 }
 
 
-// ✅ Checkout Pro (redirect): ao clicar em Finalizar Compra, criar preferência e redirecionar para init_point
+// ✅ Clique em Finalizar Compra:
+// - redirect ativo: cria preferência e redireciona
+// - transparente ativo: inicializa Brick/PIX/Boleto na página
 function attachClickListener(btnPagar) {
     if (!btnPagar) {
         console.error('❌ attachClickListener: botão não fornecido');
         return;
     }
 
-    console.log('🔗 Anexando listener ao botão (fluxo Checkout Pro redirect)...');
+    console.log('🔗 Anexando listener ao botão de pagamento...');
 
     btnPagar.addEventListener('click', async function (e) {
         e.preventDefault();
@@ -756,28 +758,40 @@ function attachClickListener(btnPagar) {
                 return;
             }
 
-            btnPagar.disabled = true;
-            btnPagar.classList.add('opacity-50', 'cursor-not-allowed');
-            const originalText = btnPagar.innerHTML;
-            btnPagar.innerHTML = '<span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span> Redirecionando ao Mercado Pago...';
+            if (typeof USE_CHECKOUT_PRO_REDIRECT !== 'undefined' && USE_CHECKOUT_PRO_REDIRECT) {
+                btnPagar.disabled = true;
+                btnPagar.classList.add('opacity-50', 'cursor-not-allowed');
+                btnPagar.innerHTML = '<span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span> Redirecionando ao Mercado Pago...';
 
-            let inscricaoId = window.dadosInscricao?.inscricaoId;
-            if (!inscricaoId) {
-                inscricaoId = await criarPreInscricao(total);
-                if (!window.dadosInscricao) window.dadosInscricao = {};
-                window.dadosInscricao.inscricaoId = inscricaoId;
+                let inscricaoId = window.dadosInscricao?.inscricaoId;
+                if (!inscricaoId) {
+                    inscricaoId = await criarPreInscricao(total);
+                    if (!window.dadosInscricao) window.dadosInscricao = {};
+                    window.dadosInscricao.inscricaoId = inscricaoId;
+                }
+
+                const result = await criarPreference(inscricaoId, total);
+                const initPoint = result.init_point || result.initPoint;
+
+                if (initPoint) {
+                    console.log('✅ Redirecionando para Checkout Pro:', initPoint);
+                    window.location.href = initPoint;
+                    return;
+                }
+
+                throw new Error('Resposta do servidor sem link de pagamento.');
             }
 
-            const result = await criarPreference(inscricaoId, total);
-            const initPoint = result.init_point || result.initPoint;
-
-            if (initPoint) {
-                console.log('✅ Redirecionando para Checkout Pro:', initPoint);
-                window.location.href = initPoint;
+            // Transparente na página: renderiza Brick e mantém PIX/Boleto habilitados
+            if (typeof inicializarPagamento === 'function') {
+                const janelaPagamento = document.getElementById('janela-pagamento-mercadopago');
+                if (janelaPagamento) {
+                    janelaPagamento.classList.remove('hidden');
+                }
+                await inicializarPagamento();
                 return;
             }
-
-            throw new Error('Resposta do servidor sem link de pagamento.');
+            throw new Error('Função de inicialização do checkout não disponível.');
         } catch (error) {
             console.error('❌ [FINALIZAR_COMPRA]', error.message);
             btnPagar.disabled = false;
@@ -791,7 +805,7 @@ function attachClickListener(btnPagar) {
         }
     });
 
-    console.log('✅ Listener Checkout Pro redirect anexado ao botão');
+    console.log('✅ Listener de pagamento anexado ao botão');
 }
 
 // ✅ Setup de event listeners (SIMPLIFICADO baseado no exemplo funcional)

@@ -423,11 +423,50 @@ if (!$isIncluded) {
                                 <i class="fas fa-credit-card mr-2"></i>
                                 Finalizar Compra
                             </button>
-                            <p class="text-xs text-gray-500 mt-2">Você será redirecionado ao Mercado Pago para pagar com cartão, PIX ou boleto.</p>
+                            <p id="payment-flow-hint" class="text-xs text-gray-500 mt-2">Você será redirecionado ao Mercado Pago para pagar com cartão, PIX ou boleto.</p>
                         </div>
                     </div>
 
-                    <!-- Checkout Pro: redirecionamento ao Mercado Pago (sem Brick na página) -->
+                    <!-- Container de pagamento na página (controlado por flag de runtime) -->
+                    <div id="janela-pagamento-mercadopago" class="hidden bg-white rounded-lg shadow-sm border p-6 mb-6">
+                        <div class="mb-4 text-center">
+                            <img src="../../assets/img/mercadopago-logo.png" alt="Mercado Pago" class="h-8 mx-auto mb-2">
+                            <p class="text-sm text-gray-600">Pagamento 100% seguro</p>
+                        </div>
+
+                        <div id="paymentBrick_container" class="w-full"></div>
+
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <div class="text-center mb-4">
+                                <h4 class="text-md font-semibold text-gray-700 mb-2">Pagamento Instantâneo</h4>
+                                <p class="text-sm text-gray-600 mb-4">Pague instantaneamente com PIX</p>
+                                <button id="btn-pix-pagamento" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 flex items-center gap-2 mx-auto">
+                                    <span>Pagar com PIX</span>
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">Pagamento instantâneo e seguro</p>
+                            </div>
+                            <div id="pix-container" class="hidden mt-4"></div>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <div class="text-center mb-4">
+                                <h4 class="text-md font-semibold text-gray-700 mb-2">Pagamento com Boleto</h4>
+                                <p class="text-sm text-gray-600 mb-4">Pague com boleto bancário (válido por 3 dias)</p>
+                                <button id="btn-boleto-pagamento" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 flex items-center gap-2 mx-auto">
+                                    <span>Pagar com Boleto</span>
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">Compensação em até 2 dias úteis após pagamento</p>
+                            </div>
+                            <div id="boleto-container" class="hidden mt-4"></div>
+                        </div>
+
+                        <div id="statusScreenBrick_container" class="w-full"></div>
+                        <div class="mt-4">
+                            <button id="btn-voltar-resumo" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors">
+                                Voltar ao resumo
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -479,6 +518,17 @@ if (!$isIncluded) {
         console.log('✅ Produtos extras:', window.dadosInscricao.produtosExtras);
         console.log('✅ Total produtos extras:', window.dadosInscricao.totalProdutosExtras);
         console.log('✅ Percentual repasse:', window.dadosInscricao.percentualRepasse, '%');
+
+        // UX: manter orientação e visibilidade alinhadas ao modo de checkout ativo.
+        const janelaPagamento = document.getElementById('janela-pagamento-mercadopago');
+        const paymentFlowHint = document.getElementById('payment-flow-hint');
+        if (typeof USE_CHECKOUT_PRO_REDIRECT !== 'undefined' && USE_CHECKOUT_PRO_REDIRECT) {
+            if (janelaPagamento) janelaPagamento.classList.add('hidden');
+            if (paymentFlowHint) paymentFlowHint.textContent = 'Você será redirecionado ao Mercado Pago para pagar com cartão, PIX ou boleto.';
+        } else {
+            if (janelaPagamento) janelaPagamento.classList.remove('hidden');
+            if (paymentFlowHint) paymentFlowHint.textContent = 'Escolha abaixo: cartão no formulário, PIX instantâneo ou boleto.';
+        }
 
         // ✅ Função temporária para garantir que o total seja calculado
         function calcularTotalTemporario() {

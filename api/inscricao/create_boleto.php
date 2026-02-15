@@ -456,7 +456,7 @@ try {
             data_expiracao_pagamento = ?
         WHERE id = ?
     ");
-    $stmt->execute([$status_pagamento, (string)$paymentId, $dateOfExpirationFormatted, $inscricaoId]);
+    $stmt->execute([$status_pagamento, $external_ref, $dateOfExpirationFormatted, $inscricaoId]);
     
     error_log("BOLETO INSCRICAO - Inscrição atualizada: ID=$inscricaoId, Status=$status_pagamento, PaymentID=$paymentId");
     
@@ -522,4 +522,3 @@ try {
         'use_pix' => $use_pix
     ]);
 }
-

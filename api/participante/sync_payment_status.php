@@ -11,6 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../security_middleware.php';
+require_once __DIR__ . '/../mercadolivre/payment_helper.php';
 
 header('Content-Type: application/json');
 
@@ -122,36 +123,33 @@ try {
 
     // PIX: quando não há registro em pagamentos_ml, external_reference pode ser o payment_id (create_pix grava assim)
     $payment_data_from_api = null; // Armazenar dados completos da API para criar registro em pagamentos_ml
-    if (!$pagamento && !empty($inscricao['external_reference']) && preg_match('/^\d+$/', (string)$inscricao['external_reference'])) {
-        $config = require __DIR__ . '/../mercadolivre/config.php';
-        $access_token = $config['accesstoken'] ?? null;
-        if ($access_token) {
-            $payment_id = $inscricao['external_reference'];
-            $ch = curl_init();
-            curl_setopt_array($ch, [
-                CURLOPT_URL => "https://api.mercadopago.com/v1/payments/{$payment_id}",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPHEADER => [
-                    'Authorization: Bearer ' . $access_token,
-                    'Content-Type: application/json'
-                ],
-            ]);
-            $response = curl_exec($ch);
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            if ($http_code === 200 && $response) {
-                $data = json_decode($response, true);
+    if (!$pagamento) {
+        $payment_lookup_key = null;
+        if (!empty($pm_payment_id)) {
+            $payment_lookup_key = (string)$pm_payment_id;
+        } elseif (!empty($inscricao['external_reference'])) {
+            $payment_lookup_key = (string)$inscricao['external_reference'];
+        }
+
+        if ($payment_lookup_key) {
+            try {
+                $paymentHelper = new PaymentHelper();
+                $data = $paymentHelper->consultarStatusPagamento($payment_lookup_key);
                 $payment_data_from_api = $data; // Guardar dados completos
-                $status_mp = $data['status'] ?? null;
-                $map = ['approved' => 'pago', 'pending' => 'pendente', 'in_process' => 'processando', 'rejected' => 'rejeitado', 'cancelled' => 'cancelado', 'refunded' => 'cancelado'];
-                $status_pagamento_ml = $map[$status_mp] ?? $inscricao['status_pagamento'];
+
+                $payment_id_real = (string)($data['id'] ?? $payment_lookup_key);
+                $status_mp = (string)($data['status'] ?? '');
+                $status_pagamento_ml = PaymentHelper::mapearStatusPagamentosML($status_mp);
+
                 $pagamento = [
                     'status' => $status_pagamento_ml,
-                    'payment_id' => $payment_id,
+                    'payment_id' => $payment_id_real,
                     'data_atualizacao' => date('Y-m-d H:i:s'),
                     'valor_pago' => $data['transaction_amount'] ?? $inscricao['valor_total'] ?? 0
                 ];
-                error_log("[SYNC_PAYMENT_STATUS] PIX: consultou MP payment_id=$payment_id, status=$status_pagamento_ml");
+                error_log("[SYNC_PAYMENT_STATUS] consultou MP lookup_key=$payment_lookup_key, payment_id=$payment_id_real, status=$status_pagamento_ml");
+            } catch (Exception $e) {
+                error_log("[SYNC_PAYMENT_STATUS] Falha ao consultar MP com lookup_key=$payment_lookup_key: " . $e->getMessage());
             }
         }
     }

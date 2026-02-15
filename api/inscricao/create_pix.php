@@ -262,7 +262,7 @@ try {
             external_reference = ?
         WHERE id = ?
     ");
-    $stmt->execute([$status_pagamento, (string)$paymentId, $inscricaoId]);
+    $stmt->execute([$status_pagamento, $external_ref, $inscricaoId]);
     
     error_log("PIX INSCRICAO - Inscrição atualizada: ID=$inscricaoId, Status=$status_pagamento, PaymentID=$paymentId");
     
@@ -284,7 +284,7 @@ try {
         'qr_code_base64' => $qrCodeBase64,
         'ticket_url' => $ticketUrl,
         'transaction_amount' => $valorTotal,
-        'external_reference' => $inscricaoId,
+        'external_reference' => $external_ref,
         'evento_nome' => $inscricao['evento_nome']
     ]);
 } catch (Exception $e) {

@@ -1,9 +1,9 @@
 (function() {
     'use strict';
 
-    // ROLLBACK: Para voltar ao Brick/PIX/Boleto na página, defina USE_CHECKOUT_PRO_REDIRECT = false
-    // e na página PHP use iniciarPagamentoComBrick; remova a classe hidden de #janela-pagamento-mercadopago.
-    window.USE_CHECKOUT_PRO_REDIRECT = true;
+    // Checkout Transparente ativo no formulário do participante.
+    // ROLLBACK: definir true para voltar ao redirect.
+    window.USE_CHECKOUT_PRO_REDIRECT = false;
 
     // Variáveis globais para MercadoPago
     let mp = null;

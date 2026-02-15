@@ -185,7 +185,7 @@ $pageTitle = 'Pagamento da Inscrição';
                             </svg>
                             Pagar com Mercado Pago
                         </button>
-                        <p class="text-xs text-gray-500 mt-2 text-center">Você será redirecionado ao Mercado Pago para pagar com cartão, PIX ou boleto.</p>
+                        <p id="payment-flow-hint" class="text-xs text-gray-500 mt-2 text-center">Você será redirecionado ao Mercado Pago para pagar com cartão, PIX ou boleto.</p>
 
                         <a href="index.php?page=minhas-inscricoes" class="block w-full text-center bg-gray-100 text-gray-700 font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors">
                             Cancelar
@@ -246,6 +246,22 @@ $pageTitle = 'Pagamento da Inscrição';
         function preencherDados(inscricao) {
             // ✅ Armazenar dados da inscrição globalmente para uso na função PIX
             window.inscricaoData = inscricao;
+
+            // UX: ajustar visual do fluxo conforme modo de pagamento ativo.
+            const janelaPagamento = document.getElementById('janela-pagamento-mercadopago');
+            const paymentFlowHint = document.getElementById('payment-flow-hint');
+            if (janelaPagamento) {
+                if (window.USE_CHECKOUT_PRO_REDIRECT) {
+                    janelaPagamento.classList.add('hidden');
+                } else {
+                    janelaPagamento.classList.remove('hidden');
+                }
+            }
+            if (paymentFlowHint) {
+                paymentFlowHint.textContent = window.USE_CHECKOUT_PRO_REDIRECT
+                    ? 'Você será redirecionado ao Mercado Pago para pagar com cartão, PIX ou boleto.'
+                    : 'Escolha abaixo: cartão no formulário, PIX instantâneo ou boleto.';
+            }
             
             // Evento
             document.getElementById('evento-nome').textContent = inscricao.evento.nome;

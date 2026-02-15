@@ -107,38 +107,23 @@ include '../../includes/navbar.php';
 </div>
 
 <script>
-    // Atualizar status da inscrição no banco
+    // Sync como fonte da verdade também no retorno de erro (alinha com sucesso/pendente)
     document.addEventListener('DOMContentLoaded', function() {
         <?php if ($inscricao_id): ?>
         const inscricaoId = <?php echo json_encode($inscricao_id); ?>;
-        const collectionStatus = <?php echo json_encode($collection_status); ?>;
-        const preferenceId = <?php echo json_encode($preference_id); ?>;
-        const externalReference = <?php echo json_encode($external_reference); ?>;
-
-        fetch('../../../api/participante/update_payment_status.php', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                inscricao_id: inscricaoId,
-                collection_status: collectionStatus,
-                preference_id: preferenceId,
-                external_reference: externalReference
-            })
+        fetch('../../../api/participante/sync_payment_status.php?inscricao_id=' + encodeURIComponent(inscricaoId), {
+            method: 'GET',
+            credentials: 'same-origin'
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('✅ Status da inscrição atualizado:', data.inscricao);
+                console.log('✅ Sync retorno pagamento (erro):', data.atualizado ? 'atualizado' : 'já completo', data);
             } else {
-                console.warn('⚠️ Aviso ao atualizar status:', data.message);
+                console.warn('⚠️ Sync (erro):', data.message);
             }
         })
-        .catch(error => {
-            console.error('❌ Erro ao atualizar status:', error);
-        });
+        .catch(error => console.error('❌ Erro ao sincronizar status (erro):', error));
         <?php endif; ?>
     });
 </script>
