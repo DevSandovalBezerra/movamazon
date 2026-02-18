@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ✅ CRÍTICO: Iniciar output buffering ANTES de incluir header
 if (!ob_get_level()) {
     ob_start();
@@ -104,7 +104,7 @@ $evento_id = isset($_GET['evento_id']) ? intval($_GET['evento_id']) : 0;
 <script>
 // Variáveis globais
 window.eventoId = <?= $evento_id ?>;
-window.API_BASE = '../../../api';
+if (window.getApiBase) { window.getApiBase(); }
 
 // Toggle de senha
 document.getElementById('toggleSenha').addEventListener('click', function() {

@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 let chartModalidades = null;
 let chartReceita = null;
 let chartTendencia = null;
@@ -27,7 +28,7 @@ const coresBordasModalidades = [
 ];
 
 export async function carregarGraficos() {
-    console.log('📊 Iniciando carregamento de gráficos...');
+    console.log('Ã°Å¸â€œÅ  Iniciando carregamento de grÃƒÂ¡ficos...');
     
     try {
         // Verificar se os elementos existem antes de carregar
@@ -38,12 +39,12 @@ export async function carregarGraficos() {
         const canvasFormasPagamento = document.getElementById('canvas-formas-pagamento');
         
         if (!canvasTendencia && !canvasReceita && !canvasStatus && !canvasModalidades && !canvasFormasPagamento) {
-            console.log('⏳ Elementos dos gráficos ainda não estão prontos, aguardando...');
+            console.log('Ã¢ÂÂ³ Elementos dos grÃƒÂ¡ficos ainda nÃƒÂ£o estÃƒÂ£o prontos, aguardando...');
             setTimeout(() => carregarGraficos(), 200);
             return;
         }
         
-        const response = await fetch('../../../api/organizador/get_dashboard_charts.php');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/get_dashboard_charts.php');
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -52,12 +53,12 @@ export async function carregarGraficos() {
         const data = await response.json();
         
         if (!data.success) {
-            throw new Error(data.message || 'Erro ao carregar dados dos gráficos');
+            throw new Error(data.message || 'Erro ao carregar dados dos grÃƒÂ¡ficos');
         }
         
-        console.log('✅ Dados dos gráficos carregados:', data);
+        console.log('Ã¢Å“â€¦ Dados dos grÃƒÂ¡ficos carregados:', data);
         
-        // Criar gráficos de forma assíncrona para não travar
+        // Criar grÃƒÂ¡ficos de forma assÃƒÂ­ncrona para nÃƒÂ£o travar
         requestAnimationFrame(() => {
             criarGraficoTendencia(data.receitaPorPeriodo || []);
             criarGraficoReceita(data.receitaPorPeriodo || []);
@@ -67,7 +68,7 @@ export async function carregarGraficos() {
         });
         
     } catch (error) {
-        console.error('❌ Erro ao carregar gráficos:', error);
+        console.error('Ã¢ÂÅ’ Erro ao carregar grÃƒÂ¡ficos:', error);
         mostrarErroGraficos(error.message);
     }
 }
@@ -77,7 +78,7 @@ function criarGraficoTendencia(dados) {
     const container = document.getElementById('grafico-tendencia');
     
     if (!canvas) {
-        console.error('❌ Canvas para gráfico de tendência não encontrado');
+        console.error('Ã¢ÂÅ’ Canvas para grÃƒÂ¡fico de tendÃƒÂªncia nÃƒÂ£o encontrado');
         return;
     }
     
@@ -89,7 +90,7 @@ function criarGraficoTendencia(dados) {
     
     if (!dados || dados.length === 0) {
         if (container) {
-            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado disponível</p>';
+            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado disponÃƒÂ­vel</p>';
         }
         return;
     }
@@ -157,14 +158,14 @@ function criarGraficoTendencia(dados) {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Quantidade de Inscrições'
+                        text: 'Quantidade de InscriÃƒÂ§ÃƒÂµes'
                     }
                 }
             }
         }
     });
     
-    console.log('✅ Gráfico de tendência criado');
+    console.log('Ã¢Å“â€¦ GrÃƒÂ¡fico de tendÃƒÂªncia criado');
 }
 
 function criarGraficoModalidades(dados) {
@@ -172,7 +173,7 @@ function criarGraficoModalidades(dados) {
     const container = document.getElementById('grafico-modalidades');
     
     if (!canvas) {
-        console.error('❌ Canvas para gráfico de modalidades não encontrado');
+        console.error('Ã¢ÂÅ’ Canvas para grÃƒÂ¡fico de modalidades nÃƒÂ£o encontrado');
         return;
     }
     
@@ -184,7 +185,7 @@ function criarGraficoModalidades(dados) {
     
     if (!dados || dados.length === 0) {
         if (container) {
-            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhuma inscrição por modalidade</p>';
+            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhuma inscriÃƒÂ§ÃƒÂ£o por modalidade</p>';
         }
         return;
     }
@@ -248,7 +249,7 @@ function criarGraficoModalidades(dados) {
         }
     });
     
-    console.log('✅ Gráfico de modalidades criado');
+    console.log('Ã¢Å“â€¦ GrÃƒÂ¡fico de modalidades criado');
 }
 
 function criarGraficoReceita(dados) {
@@ -256,7 +257,7 @@ function criarGraficoReceita(dados) {
     const container = document.getElementById('grafico-receita');
     
     if (!canvas) {
-        console.error('❌ Canvas para gráfico de receita não encontrado');
+        console.error('Ã¢ÂÅ’ Canvas para grÃƒÂ¡fico de receita nÃƒÂ£o encontrado');
         return;
     }
     
@@ -268,7 +269,7 @@ function criarGraficoReceita(dados) {
     
     if (!dados || dados.length === 0) {
         if (container) {
-            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado de receita disponível</p>';
+            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado de receita disponÃƒÂ­vel</p>';
         }
         return;
     }
@@ -355,7 +356,7 @@ function criarGraficoReceita(dados) {
         }
     });
     
-    console.log('✅ Gráfico de receita criado');
+    console.log('Ã¢Å“â€¦ GrÃƒÂ¡fico de receita criado');
 }
 
 function criarGraficoStatus(dados) {
@@ -363,7 +364,7 @@ function criarGraficoStatus(dados) {
     const container = document.getElementById('grafico-status');
     
     if (!canvas) {
-        console.error('❌ Canvas para gráfico de status não encontrado');
+        console.error('Ã¢ÂÅ’ Canvas para grÃƒÂ¡fico de status nÃƒÂ£o encontrado');
         return;
     }
     
@@ -375,12 +376,12 @@ function criarGraficoStatus(dados) {
     
     if (!dados || Object.keys(dados).length === 0) {
         if (container) {
-            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado disponível</p>';
+            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado disponÃƒÂ­vel</p>';
         }
         return;
     }
     
-    const labels = ['Confirmadas e Pagas', 'Confirmadas Pendentes', 'Pendentes de Confirmação', 'Canceladas'];
+    const labels = ['Confirmadas e Pagas', 'Confirmadas Pendentes', 'Pendentes de ConfirmaÃƒÂ§ÃƒÂ£o', 'Canceladas'];
     const valores = [
         parseInt(dados.confirmadas_pagas || 0),
         parseInt(dados.confirmadas_pendentes || 0),
@@ -405,7 +406,7 @@ function criarGraficoStatus(dados) {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Inscrições',
+                label: 'InscriÃƒÂ§ÃƒÂµes',
                 data: valores,
                 backgroundColor: cores,
                 borderWidth: 2
@@ -433,7 +434,7 @@ function criarGraficoStatus(dados) {
         }
     });
     
-    console.log('✅ Gráfico de status criado');
+    console.log('Ã¢Å“â€¦ GrÃƒÂ¡fico de status criado');
 }
 
 function criarGraficoFormasPagamento(dados) {
@@ -441,7 +442,7 @@ function criarGraficoFormasPagamento(dados) {
     const container = document.getElementById('grafico-formas-pagamento');
     
     if (!canvas) {
-        console.error('❌ Canvas para gráfico de formas de pagamento não encontrado');
+        console.error('Ã¢ÂÅ’ Canvas para grÃƒÂ¡fico de formas de pagamento nÃƒÂ£o encontrado');
         return;
     }
     
@@ -453,7 +454,7 @@ function criarGraficoFormasPagamento(dados) {
     
     if (!dados || dados.length === 0) {
         if (container) {
-            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado disponível</p>';
+            container.innerHTML = '<p class="text-xs sm:text-sm text-center text-gray-500">Nenhum dado disponÃƒÂ­vel</p>';
         }
         return;
     }
@@ -550,12 +551,12 @@ function criarGraficoFormasPagamento(dados) {
         }
     });
     
-    console.log('✅ Gráfico de formas de pagamento criado');
+    console.log('Ã¢Å“â€¦ GrÃƒÂ¡fico de formas de pagamento criado');
 }
 
 
 function mostrarErroGraficos(mensagem) {
-    console.error('❌ Erro nos gráficos:', mensagem);
+    console.error('Ã¢ÂÅ’ Erro nos grÃƒÂ¡ficos:', mensagem);
     
     const containers = [
         'grafico-modalidades',
@@ -570,7 +571,7 @@ function mostrarErroGraficos(mensagem) {
         if (container) {
             container.innerHTML = `
                 <div class="flex items-center justify-center h-full">
-                    <p class="text-gray-500 text-sm">Erro ao carregar gráfico: ${mensagem}</p>
+                    <p class="text-gray-500 text-sm">Erro ao carregar grÃƒÂ¡fico: ${mensagem}</p>
                 </div>
             `;
         }

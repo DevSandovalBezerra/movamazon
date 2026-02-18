@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 (function() {
     'use strict';
 
@@ -20,7 +21,7 @@
             this.modalNumeroInscricao = document.getElementById('modal-numero-inscricao');
 
             if (!this.modal) {
-                console.warn('Modal QR Code não encontrado no DOM');
+                console.warn('Modal QR Code nÃƒÆ’Ã‚Â£o encontrado no DOM');
                 return;
             }
 
@@ -45,7 +46,7 @@
 
         showQrCode: function(numeroInscricao, inscricaoId) {
             if (!this.modal) {
-                console.error('Modal não inicializado');
+                console.error('Modal nÃƒÆ’Ã‚Â£o inicializado');
                 return;
             }
 
@@ -56,15 +57,15 @@
             }
 
             if (!this.qrContainer) {
-                console.error('Container QR Code não encontrado');
+                console.error('Container QR Code nÃƒÆ’Ã‚Â£o encontrado');
                 return;
             }
 
             if (dataQr !== 'N/A') {
-                const qrUrl = `../../../api/participante/generate_qr.php?data=${encodeURIComponent(dataQr)}`;
-                this.qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR Code de Inscrição" class="max-w-full h-auto">`;
+                const qrUrl = `${window.API_BASE || '/api'}/participante/generate_qr.php?data=${encodeURIComponent(dataQr)}`;
+                this.qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR Code de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o" class="max-w-full h-auto">`;
             } else {
-                this.qrContainer.innerHTML = `<p class="text-red-600">Inscrição não confere. Entre em contato com o organizador.</p>`;
+                this.qrContainer.innerHTML = `<p class="text-red-600">InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o confere. Entre em contato com o organizador.</p>`;
             }
 
             this.modal.classList.remove('hidden');
@@ -105,7 +106,7 @@
         if (window.ParticipanteInscricoes && window.ParticipanteInscricoes.sincronizarStatus) {
             window.ParticipanteInscricoes.sincronizarStatus(inscricaoId, btnElement);
         } else {
-            console.error('Módulo de inscrições não carregado');
+            console.error('MÃƒÆ’Ã‚Â³dulo de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes nÃƒÆ’Ã‚Â£o carregado');
         }
     };
 

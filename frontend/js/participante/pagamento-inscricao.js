@@ -1,31 +1,32 @@
+if (window.getApiBase) { window.getApiBase(); }
 (function() {
     'use strict';
 
-    // Checkout Transparente ativo no formulário do participante.
+    // Checkout Transparente ativo no formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio do participante.
     // ROLLBACK: definir true para voltar ao redirect.
     window.USE_CHECKOUT_PRO_REDIRECT = false;
 
-    // Variáveis globais para MercadoPago
+    // VariÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡veis globais para MercadoPago
     let mp = null;
     let bricksBuilder = null;
     let inscricaoData = null;
 
-    // Base dinâmico para APIs
+    // Base dinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mico para APIs
     if (!window.API_BASE) {
         (function () {
             var path = window.location.pathname || '';
             var idx = path.indexOf('/frontend/');
-            window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+            window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
         })();
     }
 
-    // Função para construir URLs usando API_BASE
+    // FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para construir URLs usando API_BASE
     function getApiUrl(endpoint) {
-        const url = `${window.API_BASE}/api/${endpoint}`;
+        const url = `${window.API_BASE}/${endpoint}`;
         return url;
     }
 
-    // Função para inicializar MercadoPago usando public key dinâmica
+    // FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para inicializar MercadoPago usando public key dinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mica
     async function inicializarMercadoPago() {
         return new Promise(async (resolve, reject) => {
             if (mp && bricksBuilder) {
@@ -34,11 +35,11 @@
             }
 
             try {
-                // Buscar configuração do servidor
+                // Buscar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do servidor
                 const config = await getMercadoPagoConfig();
                 
                 if (!config.public_key) {
-                    throw new Error('Public key não encontrada na configuração');
+                    throw new Error('Public key nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrada na configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
                 }
 
                 if (typeof MercadoPago !== 'undefined') {
@@ -56,7 +57,7 @@
                     return;
                 }
 
-                console.log("⏳ Aguardando SDK do MercadoPago carregar...");
+                console.log("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³ Aguardando SDK do MercadoPago carregar...");
                 let attempts = 0;
                 const maxAttempts = 50;
                 
@@ -78,24 +79,24 @@
                             
                             resolve({ mp, bricksBuilder });
                         } catch (error) {
-                            console.error("❌ Erro ao inicializar MercadoPago:", error);
+                            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao inicializar MercadoPago:", error);
                             reject(error);
                         }
                     } else if (attempts >= maxAttempts) {
                         clearInterval(checkInterval);
-                        reject(new Error('SDK do MercadoPago não carregou após 5 segundos'));
+                        reject(new Error('SDK do MercadoPago nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o carregou apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s 5 segundos'));
                     }
                 }, 100);
             } catch (error) {
-                console.error("❌ Erro ao obter configuração do Mercado Pago:", error);
+                console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao obter configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do Mercado Pago:", error);
                 reject(error);
             }
         });
     }
 
-    // Criar preferência de pagamento
+    // Criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia de pagamento
     async function criarPreference(inscricaoId, valorTotal, eventoNome, modalidadeNome, produtosExtras) {
-        console.log('📝 Dados para criar preferência:', {
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â Dados para criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia:', {
             inscricaoId,
             valorTotal,
             eventoNome,
@@ -119,7 +120,7 @@
             })
         });
 
-        console.log('📡 Resposta HTTP:', {
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ Resposta HTTP:', {
             status: response.status,
             statusText: response.statusText,
             ok: response.ok
@@ -128,16 +129,16 @@
         let data;
         try {
             const text = await response.text();
-            console.log('📄 Resposta raw:', text);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ Resposta raw:', text);
             data = JSON.parse(text);
         } catch (parseError) {
-            console.error('❌ Erro ao fazer parse da resposta:', parseError);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao fazer parse da resposta:', parseError);
             throw new Error(`Erro ao processar resposta do servidor (Status: ${response.status})`);
         }
 
         if (!response.ok) {
             const errorMsg = data?.error || data?.message || `HTTP error! status: ${response.status}`;
-            console.error('❌ Erro na resposta:', {
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro na resposta:', {
                 status: response.status,
                 data: data
             });
@@ -145,8 +146,8 @@
         }
         
         if (!data.success) {
-            const errorMsg = data.error || data.message || 'Erro ao criar preferência';
-            console.error('❌ Erro ao criar preferência:', {
+            const errorMsg = data.error || data.message || 'Erro ao criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia';
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia:', {
                 success: data.success,
                 error: data.error,
                 message: data.message,
@@ -155,12 +156,12 @@
             throw new Error(errorMsg);
         }
 
-        console.log('✅ Preference criada com sucesso:', data.preference_id, 'init_point:', data.init_point ? 'ok' : 'n/a');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Preference criada com sucesso:', data.preference_id, 'init_point:', data.init_point ? 'ok' : 'n/a');
         
         return { preference_id: data.preference_id, init_point: data.init_point || '' };
     }
 
-    // Checkout Pro redirect: criar preferência e redirecionar para o MP (ROLLBACK: desative USE_CHECKOUT_PRO_REDIRECT para usar Brick)
+    // Checkout Pro redirect: criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia e redirecionar para o MP (ROLLBACK: desative USE_CHECKOUT_PRO_REDIRECT para usar Brick)
     async function iniciarPagamentoRedirect(inscricao) {
         const btnPagar = document.getElementById('btn-pagar');
         if (!btnPagar) return;
@@ -175,7 +176,7 @@
             `;
             const breakdown = inscricao.breakdown_valores || {};
             const valorTotal = Number(breakdown.valor_total) || Number(inscricao.valor_total) || 0;
-            if (valorTotal <= 0) throw new Error('Valor total inválido');
+            if (valorTotal <= 0) throw new Error('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
             const produtosExtras = (inscricao.produtos_extras || []).map(function(extra) {
                 return { nome: extra.nome || 'Produto extra', valor: Number(extra.valor) || 0, quantidade: Number(extra.quantidade) || 1 };
             });
@@ -216,7 +217,7 @@
             },
             callbacks: {
                 onReady: () => {
-                    console.log("✅ Payment Brick pronto");
+                    console.log("ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Payment Brick pronto");
                 },
                 onSubmit: (formData) => {
                     return new Promise((resolve, reject) => {
@@ -269,7 +270,7 @@
             },
             callbacks: {
                 onReady: () => {
-                    console.log("✅ Status Screen Brick pronto");
+                    console.log("ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Status Screen Brick pronto");
                     document.getElementById("paymentBrick_container").style.display = 'none';
                     mostrarMensagemSucesso(paymentId);
                 },
@@ -293,14 +294,14 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Pagamento processado!',
-                text: 'Você receberá um email de confirmação em breve.',
+                text: 'VocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª receberÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ um email de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o em breve.',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#0b4340'
             }).then(() => {
                 window.location.href = 'index.php?page=minhas-inscricoes';
             });
         } else {
-            alert('Pagamento processado com sucesso! Você receberá um email de confirmação.');
+            alert('Pagamento processado com sucesso! VocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª receberÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ um email de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.');
             window.location.href = 'index.php?page=minhas-inscricoes';
         }
     }
@@ -323,7 +324,7 @@
     // Inicializar pagamento com Brick (INATIVO quando USE_CHECKOUT_PRO_REDIRECT = true)
     async function iniciarPagamentoComBrick(inscricao) {
         if (window.USE_CHECKOUT_PRO_REDIRECT) {
-            console.log('⏭️ Checkout Pro redirect ativo; use o botão para redirecionar.');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â­ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Checkout Pro redirect ativo; use o botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para redirecionar.');
             return;
         }
         try {
@@ -331,7 +332,7 @@
             const btnPagarContainer = document.getElementById('btn-pagar-container');
             const janelaPagamento = document.getElementById('janela-pagamento-mercadopago');
 
-            // Desabilitar botão
+            // Desabilitar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             btnPagar.disabled = true;
             btnPagar.innerHTML = `
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -346,7 +347,7 @@
             const valorTotal = Number(breakdown.valor_total) || Number(inscricao.valor_total) || 0;
 
             if (valorTotal <= 0) {
-                throw new Error('Valor total inválido');
+                throw new Error('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
             }
 
             // Preparar produtos extras
@@ -362,15 +363,15 @@
             }
 
             // Inicializar MercadoPago
-            console.log('⏳ Inicializando MercadoPago...');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³ Inicializando MercadoPago...');
             const { mp: mpInstance, bricksBuilder: bricksBuilderInstance } = await inicializarMercadoPago();
             
             if (!bricksBuilder) {
                 bricksBuilder = bricksBuilderInstance;
             }
 
-            // Criar preferência
-            console.log('📝 Criando preferência...');
+            // Criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â Criando preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia...');
             const prefResult = await criarPreference(
                 inscricao.id,
                 valorTotal,
@@ -379,38 +380,38 @@
                 produtosExtras
             );
             const preferenceId = prefResult && (prefResult.preference_id || prefResult);
-            console.log('✅ Preference criada:', preferenceId);
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Preference criada:', preferenceId);
 
-            // Ocultar botão e mostrar container do brick
+            // Ocultar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e mostrar container do brick
             btnPagarContainer.classList.add('hidden');
             janelaPagamento.classList.remove('hidden');
             
-            // ✅ Garantir que o botão PIX tenha o event listener quando a janela for exibida
-            // Usar flag para evitar múltiplas chamadas
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Garantir que o botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX tenha o event listener quando a janela for exibida
+            // Usar flag para evitar mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºltiplas chamadas
             if (!window.pixButtonSetup && typeof setupPixButton === 'function') {
                 setTimeout(function() {
                     setupPixButton();
                 }, 500);
             }
 
-            // Aguardar um pouco para garantir que o DOM está atualizado
+            // Aguardar um pouco para garantir que o DOM estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ atualizado
             await new Promise(resolve => setTimeout(resolve, 100));
 
             // Renderizar Payment Brick
-            console.log('🎨 Renderizando Payment Brick...');
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¨ Renderizando Payment Brick...');
             const builderToUse = bricksBuilder || bricksBuilderInstance || window.bricksBuilder;
             if (!builderToUse) {
-                throw new Error('bricksBuilder não está disponível');
+                throw new Error('bricksBuilder nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel');
             }
 
             await renderPaymentBrick(builderToUse, preferenceId, valorTotal);
-            console.log('✅ Payment Brick renderizado com sucesso!');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Payment Brick renderizado com sucesso!');
 
         } catch (error) {
-            console.error('❌ Erro ao inicializar pagamento:', error);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao inicializar pagamento:', error);
             mostrarErro('Erro ao inicializar pagamento: ' + error.message);
             
-            // Restaurar botão
+            // Restaurar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             const btnPagar = document.getElementById('btn-pagar');
             if (btnPagar) {
                 btnPagar.disabled = false;
@@ -424,28 +425,28 @@
         }
     }
 
-    // Expor função globalmente
+    // Expor funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o globalmente
     window.iniciarPagamentoComBrick = iniciarPagamentoComBrick;
 
-    // Expor getApiUrl globalmente para uso na função PIX
+    // Expor getApiUrl globalmente para uso na funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX
     window.getApiUrl = getApiUrl;
 
-    // ✅ Gerar PIX para pagamento
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Gerar PIX para pagamento
     async function gerarPixPagamento() {
-        console.log('🚀 gerarPixPagamento() chamada');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ gerarPixPagamento() chamada');
         try {
             const btnPix = document.getElementById('btn-pix-pagamento');
             const pixContainer = document.getElementById('pix-container');
 
-            console.log('🔍 Elementos PIX:', { btnPix, pixContainer });
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Elementos PIX:', { btnPix, pixContainer });
 
             if (!btnPix || !pixContainer) {
-                throw new Error('Elementos PIX não encontrados');
+                throw new Error('Elementos PIX nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados');
             }
 
             // Estado de loading
             btnPix.disabled = true;
-            btnPix.innerHTML = '<span>⏳</span><span>Gerando PIX...</span>';
+            btnPix.innerHTML = '<span>ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³</span><span>Gerando PIX...</span>';
             btnPix.style.opacity = '0.7';
 
             // Mostrar container PIX
@@ -466,17 +467,17 @@
                 block: 'start'
             });
 
-            // Obter dados da inscrição
+            // Obter dados da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             // Tentar obter de window.inscricaoData primeiro, depois de inscricaoData local
             const dadosInscricao = window.inscricaoData || inscricaoData;
             
-            console.log('🔍 Dados da inscrição:', dadosInscricao);
-            console.log('🔍 window.inscricaoData:', window.inscricaoData);
-            console.log('🔍 inscricaoData (local):', inscricaoData);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Dados da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', dadosInscricao);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â window.inscricaoData:', window.inscricaoData);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â inscricaoData (local):', inscricaoData);
             
             if (!dadosInscricao || !dadosInscricao.id) {
-                console.error('❌ Dados da inscrição não encontrados');
-                throw new Error('Dados da inscrição não encontrados. Recarregue a página.');
+                console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Dados da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados');
+                throw new Error('Dados da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados. Recarregue a pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina.');
             }
 
             // Calcular valor total
@@ -484,11 +485,11 @@
             const valorTotal = Number(breakdown.valor_total) || Number(dadosInscricao.valor_total) || 0;
             
             if (valorTotal <= 0) {
-                throw new Error('Valor total inválido');
+                throw new Error('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
             }
 
-            console.log('💰 Total para PIX:', valorTotal);
-            console.log('📝 Inscrição ID:', dadosInscricao.id);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â° Total para PIX:', valorTotal);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ID:', dadosInscricao.id);
 
             // Criar PIX via API
             const response = await fetch(getApiUrl('inscricao/create_pix.php'), {
@@ -514,7 +515,7 @@
             }
 
             const result = await response.json();
-            console.log('📥 Resultado PIX:', result);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Resultado PIX:', result);
 
             if (!result.success) {
                 throw new Error(result.error || 'Falha ao gerar PIX');
@@ -525,13 +526,13 @@
                 <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 24px; margin: 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                     <div style="text-align: center; margin-bottom: 20px;">
                         <div style="background: #00a650; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: 600; margin-bottom: 12px;">
-                            💳 PIX Instantâneo
+                            ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â³ PIX InstantÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢neo
                         </div>
                         <h3 style="margin: 0; color: #2c3e50; font-size: 18px; font-weight: 600;">
                             R$ ${result.transaction_amount.toFixed(2).replace('.', ',')}
                         </h3>
                         <p style="margin: 8px 0 0 0; color: #6c757d; font-size: 14px;">
-                            Código: #${result.external_reference}
+                            CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo: #${result.external_reference}
                         </p>
                     </div>
                     
@@ -543,7 +544,7 @@
                     
                     <div style="background: white; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin: 16px 0;">
                         <label style="display: block; font-size: 14px; font-weight: 600; color: #495057; margin-bottom: 8px;">
-                            Código PIX (Copie e cole no seu app)
+                            CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo PIX (Copie e cole no seu app)
                         </label>
                         <div style="position: relative;">
                             <textarea readonly style="width: 100%; height: 80px; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px; resize: none; background: #f8f9fa;">${result.qr_code}</textarea>
@@ -553,28 +554,28 @@
                     
                     <div style="text-align: center; margin-top: 20px;">
                         <a href="${result.ticket_url}" target="_blank" style="background: #00a650; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.2s;">
-                            📱 Abrir no App
+                            ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â± Abrir no App
                         </a>
                     </div>
                     
                     <div style="margin-top: 16px; padding: 12px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
                         <p style="margin: 0; font-size: 13px; color: #1565c0;">
-                            <strong>💡 Dica:</strong> Escaneie o QR Code com seu app bancário ou copie o código PIX para pagar instantaneamente.
+                            <strong>ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¡ Dica:</strong> Escaneie o QR Code com seu app bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio ou copie o cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo PIX para pagar instantaneamente.
                         </p>
                     </div>
                 </div>
             `;
 
-            console.log('✅ PIX gerado com sucesso!');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ PIX gerado com sucesso!');
 
         } catch (error) {
-            console.error('❌ Erro ao gerar PIX:', error);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao gerar PIX:', error);
 
             const pixContainer = document.getElementById('pix-container');
             if (pixContainer) {
                 pixContainer.innerHTML = `
                     <div style="text-align:center;padding:20px;background:#fff5f5;border:1px solid #fed7d7;border-radius:8px;">
-                        <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">⚠️</div>
+                        <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â</div>
                         <p style="margin:0;color:#c53030;font-size:14px;">Falha ao gerar PIX: ${error.message}</p>
                     </div>
                 `;
@@ -585,7 +586,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro ao Gerar PIX',
-                    text: error.message || 'Não foi possível gerar o código PIX. Tente novamente ou escolha outra forma de pagamento.',
+                    text: error.message || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel gerar o cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo PIX. Tente novamente ou escolha outra forma de pagamento.',
                     confirmButtonText: 'Entendi',
                     confirmButtonColor: '#0b4340'
                 });
@@ -594,20 +595,20 @@
             }
 
         } finally {
-            // Restaurar botão
+            // Restaurar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             const btnPix = document.getElementById('btn-pix-pagamento');
             if (btnPix) {
                 btnPix.disabled = false;
-                btnPix.innerHTML = '<span>💳</span><span>Pagar com PIX</span>';
+                btnPix.innerHTML = '<span>ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â³</span><span>Pagar com PIX</span>';
                 btnPix.style.opacity = '1';
             }
         }
     }
 
-    // Expor função globalmente
+    // Expor funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o globalmente
     window.gerarPixPagamento = gerarPixPagamento;
 
-    // Flag para evitar múltiplas configurações
+    // Flag para evitar mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºltiplas configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     let pixButtonSetup = false;
     let pixButtonSetupAttempts = 0;
     const MAX_SETUP_ATTEMPTS = 3;
@@ -615,27 +616,27 @@
     // Expor flag globalmente
     window.pixButtonSetup = false;
 
-    // Função para adicionar event listener ao botão PIX
+    // FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para adicionar event listener ao botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX
     function setupPixButton() {
         // Evitar loops infinitos
         if (pixButtonSetup || window.pixButtonSetup) {
-            console.log('⚠️ Botão PIX já configurado, ignorando chamada duplicada');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ configurado, ignorando chamada duplicada');
             return;
         }
 
         if (pixButtonSetupAttempts >= MAX_SETUP_ATTEMPTS) {
-            console.warn('⚠️ Máximo de tentativas de setup do botão PIX atingido');
+            console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ximo de tentativas de setup do botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX atingido');
             return;
         }
 
         pixButtonSetupAttempts++;
         const btnPix = document.getElementById('btn-pix-pagamento');
-        console.log('🔍 Procurando botão PIX (tentativa ' + pixButtonSetupAttempts + '):', btnPix);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Procurando botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX (tentativa ' + pixButtonSetupAttempts + '):', btnPix);
         
         if (btnPix) {
-            // Verificar se já tem listener (evitar duplicação)
+            // Verificar se jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ tem listener (evitar duplicaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
             if (btnPix.hasAttribute('data-pix-listener-added')) {
-                console.log('✅ Botão PIX já tem listener, ignorando');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ tem listener, ignorando');
                 pixButtonSetup = true;
                 return;
             }
@@ -648,17 +649,17 @@
             btnPix.addEventListener('click', async function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('✅ Botão PIX clicado!');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX clicado!');
                 try {
                     await gerarPixPagamento();
                 } catch (error) {
-                    console.error('❌ Erro ao executar gerarPixPagamento:', error);
+                    console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao executar gerarPixPagamento:', error);
                 }
             });
-            console.log('✅ Event listener do botão PIX adicionado');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Event listener do botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX adicionado');
         } else {
-            console.warn('⚠️ Botão PIX não encontrado ainda (tentativa ' + pixButtonSetupAttempts + ')');
-            // Tentar novamente apenas se não excedeu o máximo
+            console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado ainda (tentativa ' + pixButtonSetupAttempts + ')');
+            // Tentar novamente apenas se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o excedeu o mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ximo
             if (pixButtonSetupAttempts < MAX_SETUP_ATTEMPTS) {
                 setTimeout(setupPixButton, 500);
             }
@@ -668,7 +669,7 @@
     // Expor setupPixButton globalmente
     window.setupPixButton = setupPixButton;
 
-    // ✅ Verificar se usuário tem CPF cadastrado
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar se usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio tem CPF cadastrado
     async function verificarCPFUsuario() {
         try {
             const response = await fetch(getApiUrl('participante/verificar_cpf.php'), {
@@ -688,19 +689,19 @@
         }
     }
 
-    // ✅ Modal para coletar CPF
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Modal para coletar CPF
     async function coletarCPFModal() {
         return new Promise((resolve, reject) => {
             if (typeof Swal === 'undefined') {
-                reject(new Error('SweetAlert2 não está disponível'));
+                reject(new Error('SweetAlert2 nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel'));
                 return;
             }
             
             Swal.fire({
-                title: 'CPF Obrigatório',
+                title: 'CPF ObrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio',
                 html: `
                     <p style="text-align: left; margin-bottom: 16px; color: #6c757d;">
-                        Para pagar com boleto bancário, é necessário informar seu CPF.
+                        Para pagar com boleto bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio, ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio informar seu CPF.
                     </p>
                     <input 
                         type="text" 
@@ -711,7 +712,7 @@
                         style="text-align: center; font-size: 16px; letter-spacing: 2px;"
                     >
                     <p style="text-align: left; margin-top: 8px; font-size: 12px; color: #6c757d;">
-                        Seus dados estão protegidos e serão salvos apenas para processamento do pagamento.
+                        Seus dados estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o protegidos e serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o salvos apenas para processamento do pagamento.
                     </p>
                 `,
                 icon: 'info',
@@ -731,10 +732,10 @@
                         return false;
                     }
                     
-                    // Validar formato básico
+                    // Validar formato bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡sico
                     const cpfLimpo = cpf.replace(/[^0-9]/g, '');
                     if (cpfLimpo.length !== 11) {
-                        Swal.showValidationMessage('CPF deve conter 11 dígitos');
+                        Swal.showValidationMessage('CPF deve conter 11 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos');
                         return false;
                     }
                     
@@ -765,7 +766,7 @@
                 didOpen: () => {
                     const cpfInput = document.getElementById('swal-cpf-input');
                     if (cpfInput) {
-                        // Máscara de CPF
+                        // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡scara de CPF
                         cpfInput.addEventListener('input', function(e) {
                             let value = e.target.value.replace(/\D/g, '');
                             if (value.length <= 11) {
@@ -783,13 +784,13 @@
                 if (result.isConfirmed) {
                     resolve();
                 } else {
-                    reject(new Error('CPF não informado'));
+                    reject(new Error('CPF nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado'));
                 }
             });
         });
     }
 
-    // ✅ Verificar endereço do usuário
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
     async function verificarEnderecoUsuario() {
         try {
             const response = await fetch(getApiUrl('participante/verificar_endereco.php'), {
@@ -798,30 +799,30 @@
             });
             
             if (!response.ok) {
-                throw new Error('Erro ao verificar endereço');
+                throw new Error('Erro ao verificar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o');
             }
             
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Erro ao verificar endereço:', error);
+            console.error('Erro ao verificar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o:', error);
             return { success: false, endereco_completo: false, campos_faltando: [] };
         }
     }
 
-    // ✅ Modal para coletar endereço
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Modal para coletar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o
     async function coletarEnderecoModal() {
         return new Promise((resolve, reject) => {
             if (typeof Swal === 'undefined') {
-                reject(new Error('SweetAlert2 não está disponível'));
+                reject(new Error('SweetAlert2 nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel'));
                 return;
             }
             
             Swal.fire({
-                title: 'Endereço Obrigatório',
+                title: 'EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o ObrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio',
                 html: `
                     <p style="text-align: left; margin-bottom: 16px; color: #6c757d;">
-                        Para pagar com boleto bancário, é necessário informar seu endereço completo.
+                        Para pagar com boleto bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio, ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio informar seu endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o completo.
                     </p>
                     <div style="text-align: left;">
                         <input 
@@ -844,7 +845,7 @@
                                 type="text" 
                                 id="swal-numero-input" 
                                 class="swal2-input" 
-                                placeholder="Número"
+                                placeholder="NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero"
                             >
                             <input 
                                 type="text" 
@@ -904,7 +905,7 @@
                         </div>
                     </div>
                     <p style="text-align: left; margin-top: 8px; font-size: 12px; color: #6c757d;">
-                        Seus dados estão protegidos e serão salvos apenas para processamento do pagamento.
+                        Seus dados estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o protegidos e serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o salvos apenas para processamento do pagamento.
                     </p>
                 `,
                 icon: 'info',
@@ -925,39 +926,39 @@
                     const cidade = document.getElementById('swal-cidade-input')?.value || '';
                     const uf = document.getElementById('swal-uf-input')?.value || '';
                     
-                    // Validar campos obrigatórios
+                    // Validar campos obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios
                     const cepLimpo = cep.replace(/\D/g, '');
                     if (!cepLimpo || cepLimpo.length !== 8) {
-                        Swal.showValidationMessage('CEP deve conter 8 dígitos');
+                        Swal.showValidationMessage('CEP deve conter 8 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos');
                         return false;
                     }
                     
                     if (!endereco || endereco.trim() === '') {
-                        Swal.showValidationMessage('Logradouro é obrigatório');
+                        Swal.showValidationMessage('Logradouro ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
                         return false;
                     }
                     
                     if (!numero || numero.trim() === '') {
-                        Swal.showValidationMessage('Número é obrigatório');
+                        Swal.showValidationMessage('NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
                         return false;
                     }
                     
                     if (!bairro || bairro.trim() === '') {
-                        Swal.showValidationMessage('Bairro é obrigatório');
+                        Swal.showValidationMessage('Bairro ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
                         return false;
                     }
                     
                     if (!cidade || cidade.trim() === '') {
-                        Swal.showValidationMessage('Cidade é obrigatória');
+                        Swal.showValidationMessage('Cidade ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ria');
                         return false;
                     }
                     
                     if (!uf || uf.length !== 2) {
-                        Swal.showValidationMessage('UF é obrigatória');
+                        Swal.showValidationMessage('UF ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ria');
                         return false;
                     }
                     
-                    // Salvar endereço
+                    // Salvar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o
                     try {
                         const response = await fetch(getApiUrl('participante/atualizar_endereco.php'), {
                             method: 'POST',
@@ -979,27 +980,27 @@
                         const data = await response.json();
                         
                         if (!data.success) {
-                            Swal.showValidationMessage(data.message || 'Erro ao salvar endereço');
+                            Swal.showValidationMessage(data.message || 'Erro ao salvar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o');
                             return false;
                         }
                         
                         return true;
                     } catch (error) {
-                        Swal.showValidationMessage('Erro ao salvar endereço. Tente novamente.');
+                        Swal.showValidationMessage('Erro ao salvar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o. Tente novamente.');
                         return false;
                     }
                 },
                 didOpen: () => {
                     const cepInput = document.getElementById('swal-cep-input');
                     if (cepInput) {
-                        // Máscara de CEP
+                        // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡scara de CEP
                         cepInput.addEventListener('input', function(e) {
                             let value = e.target.value.replace(/\D/g, '');
                             if (value.length <= 8) {
                                 value = value.replace(/(\d{5})(\d)/, '$1-$2');
                                 e.target.value = value;
                                 
-                                // Buscar endereço quando CEP tiver 8 dígitos
+                                // Buscar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o quando CEP tiver 8 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos
                                 if (value.replace(/\D/g, '').length === 8) {
                                     buscarEnderecoPorCEPModal(value.replace(/\D/g, ''));
                                 }
@@ -1013,13 +1014,13 @@
                 if (result.isConfirmed) {
                     resolve();
                 } else {
-                    reject(new Error('Endereço não informado'));
+                    reject(new Error('EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado'));
                 }
             });
         });
     }
 
-    // Função auxiliar para buscar endereço via ViaCEP no modal
+    // FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o auxiliar para buscar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o via ViaCEP no modal
     async function buscarEnderecoPorCEPModal(cep) {
         try {
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -1036,7 +1037,7 @@
                 if (cidadeInput) cidadeInput.value = data.localidade || '';
                 if (ufInput) ufInput.value = data.uf || '';
                 
-                // Focar no campo número após preencher
+                // Focar no campo nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s preencher
                 const numeroInput = document.getElementById('swal-numero-input');
                 if (numeroInput) numeroInput.focus();
             }
@@ -1045,80 +1046,80 @@
         }
     }
 
-    // ✅ Gerar Boleto para pagamento
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Gerar Boleto para pagamento
     async function gerarBoletoPagamento() {
-        console.log('🚀 gerarBoletoPagamento() chamada');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ gerarBoletoPagamento() chamada');
         try {
-            // ✅ Verificar CPF antes de gerar boleto
-            console.log('🔍 Verificando CPF do usuário...');
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar CPF antes de gerar boleto
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Verificando CPF do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio...');
             const cpfStatus = await verificarCPFUsuario();
             
             if (!cpfStatus.success || !cpfStatus.tem_cpf) {
-                console.log('⚠️ CPF não encontrado, solicitando...');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â CPF nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado, solicitando...');
                 // Exibir modal para coletar CPF
                 try {
                     await coletarCPFModal();
-                    // Após coletar, verificar novamente
+                    // ApÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s coletar, verificar novamente
                     const novoStatus = await verificarCPFUsuario();
                     if (!novoStatus.success || !novoStatus.tem_cpf) {
-                        throw new Error('CPF é obrigatório para pagamento com boleto');
+                        throw new Error('CPF ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio para pagamento com boleto');
                     }
-                    console.log('✅ CPF coletado e salvo com sucesso');
+                    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CPF coletado e salvo com sucesso');
                 } catch (error) {
-                    if (error.message === 'CPF não informado') {
-                        console.log('❌ Usuário cancelou a coleta de CPF');
-                        return; // Usuário cancelou, não fazer nada
+                    if (error.message === 'CPF nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado') {
+                        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou a coleta de CPF');
+                        return; // UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou, nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o fazer nada
                     }
                     throw error;
                 }
             } else {
-                console.log('✅ CPF já cadastrado, prosseguindo...');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CPF jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ cadastrado, prosseguindo...');
             }
             
-            // ✅ Verificar endereço antes de gerar boleto
-            console.log('🔍 Verificando endereço do usuário...');
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o antes de gerar boleto
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Verificando endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio...');
             const enderecoStatus = await verificarEnderecoUsuario();
             
             if (!enderecoStatus.success || !enderecoStatus.endereco_completo) {
-                console.log('⚠️ Endereço incompleto, solicitando...');
-                // Exibir modal para coletar endereço
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o incompleto, solicitando...');
+                // Exibir modal para coletar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o
                 try {
                     await coletarEnderecoModal();
-                    // Após coletar, verificar novamente
+                    // ApÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s coletar, verificar novamente
                     const novoStatus = await verificarEnderecoUsuario();
                     if (!novoStatus.success || !novoStatus.endereco_completo) {
-                        throw new Error('Endereço completo é obrigatório para pagamento com boleto');
+                        throw new Error('EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o completo ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio para pagamento com boleto');
                     }
-                    console.log('✅ Endereço coletado e salvo com sucesso');
+                    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o coletado e salvo com sucesso');
                 } catch (error) {
-                    if (error.message === 'Endereço não informado') {
-                        console.log('❌ Usuário cancelou a coleta de endereço');
-                        return; // Usuário cancelou, não fazer nada
+                    if (error.message === 'EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado') {
+                        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou a coleta de endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o');
+                        return; // UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou, nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o fazer nada
                     }
                     throw error;
                 }
             } else {
-                console.log('✅ Endereço já cadastrado, prosseguindo...');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ cadastrado, prosseguindo...');
             }
 
             const btnBoleto = document.getElementById('btn-boleto-pagamento');
             const boletoContainer = document.getElementById('boleto-container');
 
-            console.log('🔍 Elementos Boleto:', { btnBoleto, boletoContainer });
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Elementos Boleto:', { btnBoleto, boletoContainer });
 
             if (!btnBoleto || !boletoContainer) {
-                throw new Error('Elementos Boleto não encontrados');
+                throw new Error('Elementos Boleto nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados');
             }
 
             btnBoleto.disabled = true;
-            btnBoleto.innerHTML = '<span>⏳</span><span>Gerando Boleto...</span>';
+            btnBoleto.innerHTML = '<span>ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³</span><span>Gerando Boleto...</span>';
             btnBoleto.style.opacity = '0.7';
 
             boletoContainer.classList.remove('hidden');
             boletoContainer.innerHTML = `
                 <div style="text-align:center;padding:20px;background:#f8f9fa;border-radius:8px;border:1px solid #e9ecef;">
                     <div style="display:inline-block;width:20px;height:20px;border:2px solid #007bff;border-radius:50%;border-top-color:transparent;animation:spin 1s linear infinite;"></div>
-                    <p style="margin:12px 0 0 0;color:#6c757d;font-size:14px;">Gerando boleto bancário...</p>
+                    <p style="margin:12px 0 0 0;color:#6c757d;font-size:14px;">Gerando boleto bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio...</p>
                 </div>
                 <style>
                     @keyframes spin { to { transform: rotate(360deg); } }
@@ -1132,22 +1133,22 @@
 
             const dadosInscricao = window.inscricaoData || inscricaoData;
             
-            console.log('🔍 Dados da inscrição:', dadosInscricao);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Dados da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', dadosInscricao);
             
             if (!dadosInscricao || !dadosInscricao.id) {
-                console.error('❌ Dados da inscrição não encontrados');
-                throw new Error('Dados da inscrição não encontrados. Recarregue a página.');
+                console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Dados da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados');
+                throw new Error('Dados da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados. Recarregue a pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina.');
             }
 
             const breakdown = dadosInscricao.breakdown_valores || {};
             const valorTotal = Number(breakdown.valor_total) || Number(dadosInscricao.valor_total) || 0;
             
             if (valorTotal <= 0) {
-                throw new Error('Valor total inválido');
+                throw new Error('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
             }
 
-            console.log('💰 Total para Boleto:', valorTotal);
-            console.log('📝 Inscrição ID:', dadosInscricao.id);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â° Total para Boleto:', valorTotal);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ID:', dadosInscricao.id);
 
             const response = await fetch(getApiUrl('inscricao/create_boleto.php'), {
                 method: 'POST',
@@ -1172,18 +1173,18 @@
             }
 
             const result = await response.json();
-            console.log('📥 Resultado Boleto completo:', result);
-            console.log('📥 Barcode recebido:', result.barcode);
-            console.log('📥 Barcode tipo:', typeof result.barcode);
-            console.log('📥 Barcode vazio?', !result.barcode || result.barcode === '');
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Resultado Boleto completo:', result);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Barcode recebido:', result.barcode);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Barcode tipo:', typeof result.barcode);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Barcode vazio?', !result.barcode || result.barcode === '');
 
             if (!result.success) {
                 const usePix = result.use_pix === true || result.error_code === 'BOLETO_REJECTED_BY_BANK';
-                const msg = result.message || result.error || 'Não foi possível gerar o boleto.';
+                const msg = result.message || result.error || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel gerar o boleto.';
                 if (usePix && typeof Swal !== 'undefined') {
                     await Swal.fire({
                         icon: 'info',
-                        title: 'Boleto indisponível',
+                        title: 'Boleto indisponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel',
                         text: msg,
                         confirmButtonText: 'Entendi',
                         confirmButtonColor: '#0b4340'
@@ -1197,15 +1198,15 @@
                 throw new Error(msg);
             }
 
-            // Verificar se barcode está presente
+            // Verificar se barcode estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ presente
             if (!result.barcode || result.barcode === '') {
-                console.warn('⚠️ ATENÇÃO: Barcode não foi retornado pela API!');
-                console.warn('⚠️ Dados recebidos:', JSON.stringify(result, null, 2));
+                console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â ATENÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Barcode nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi retornado pela API!');
+                console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Dados recebidos:', JSON.stringify(result, null, 2));
             }
 
             const dataVencimento = result.date_of_expiration ? new Date(result.date_of_expiration).toLocaleDateString('pt-BR') : 'N/A';
             
-            // Verificar se boleto está próximo do vencimento (menos de 24 horas)
+            // Verificar se boleto estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo do vencimento (menos de 24 horas)
             let avisoVencimento = '';
             if (result.date_of_expiration) {
                 const dataVencimentoObj = new Date(result.date_of_expiration);
@@ -1216,19 +1217,19 @@
                     const horas = Math.round(horasRestantes);
                     avisoVencimento = `
                         <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 12px; margin: 16px 0; text-align: center;">
-                            <strong style="color: #856404; font-size: 14px;">⚠️ Atenção!</strong>
+                            <strong style="color: #856404; font-size: 14px;">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â AtenÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o!</strong>
                             <p style="margin: 8px 0 0 0; color: #856404; font-size: 13px;">
                                 Seu boleto vence em ${horas} ${horas === 1 ? 'hora' : 'horas'}.<br>
-                                Realize o pagamento o quanto antes para garantir sua inscrição.
+                                Realize o pagamento o quanto antes para garantir sua inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.
                             </p>
                         </div>
                     `;
                 } else if (horasRestantes <= 0) {
                     avisoVencimento = `
                         <div style="background: #f8d7da; border: 1px solid #dc3545; border-radius: 8px; padding: 12px; margin: 16px 0; text-align: center;">
-                            <strong style="color: #721c24; font-size: 14px;">❌ Boleto Expirado</strong>
+                            <strong style="color: #721c24; font-size: 14px;">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Boleto Expirado</strong>
                             <p style="margin: 8px 0 0 0; color: #721c24; font-size: 13px;">
-                                Este boleto já expirou. Entre em contato com o suporte para gerar um novo boleto.
+                                Este boleto jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ expirou. Entre em contato com o suporte para gerar um novo boleto.
                             </p>
                         </div>
                     `;
@@ -1239,7 +1240,7 @@
                 <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 24px; margin: 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                     <div style="text-align: center; margin-bottom: 20px;">
                         <div style="background: #007bff; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: 600; margin-bottom: 12px;">
-                            📄 Boleto Bancário
+                            ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ Boleto BancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
                         </div>
                         <h3 style="margin: 0; color: #2c3e50; font-size: 18px; font-weight: 600;">
                             R$ ${result.transaction_amount.toFixed(2).replace('.', ',')}
@@ -1253,47 +1254,47 @@
                     
                     <div style="background: white; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin: 16px 0;">
                         <label style="display: block; font-size: 14px; font-weight: 600; color: #495057; margin-bottom: 8px;">
-                            Código de Barras
+                            CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo de Barras
                         </label>
                         <div style="position: relative;">
-                            <input type="text" readonly value="${result.barcode || 'Código de barras não disponível. Use o link abaixo para visualizar o boleto.'}" style="width: 100%; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 14px; background: #f8f9fa; color: #212529;" id="boleto-barcode-input">
+                            <input type="text" readonly value="${result.barcode || 'CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo de barras nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel. Use o link abaixo para visualizar o boleto.'}" style="width: 100%; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 14px; background: #f8f9fa; color: #212529;" id="boleto-barcode-input">
                             ${result.barcode ? `<button onclick="const input = document.getElementById('boleto-barcode-input'); input.select(); document.execCommand('copy'); this.textContent='Copiado!'; setTimeout(() => this.textContent='Copiar', 2000);" style="position: absolute; top: 8px; right: 8px; background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Copiar</button>` : ''}
                         </div>
                         ${!result.barcode ? `<div style="margin-top: 8px; padding: 8px; background: #fff3cd; border-radius: 4px; font-size: 12px; color: #856404;">
-                            <strong>ℹ️ Nota:</strong> O código de barras será exibido no PDF do boleto. Clique em "Baixar Boleto PDF" para visualizar.
+                            <strong>ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¹ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Nota:</strong> O cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo de barras serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ exibido no PDF do boleto. Clique em "Baixar Boleto PDF" para visualizar.
                         </div>` : ''}
                     </div>
                     
                     <div style="text-align: center; margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
                         ${result.ticket_url ? `<a href="${result.ticket_url}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); window.open('${result.ticket_url}', '_blank', 'noopener,noreferrer'); return false;" style="background: #007bff; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.2s; cursor: pointer;">
-                            📥 Baixar Boleto PDF
+                            ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Baixar Boleto PDF
                         </a>` : ''}
                         ${result.external_resource_url ? `<a href="${result.external_resource_url}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); window.open('${result.external_resource_url}', '_blank', 'noopener,noreferrer'); return false;" style="background: #28a745; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.2s; cursor: pointer;">
-                            🔗 Ver Boleto Online
+                            ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ver Boleto Online
                         </a>` : ''}
                         ${!result.ticket_url && !result.external_resource_url ? `<div style="padding: 12px; background: #fff3cd; border-radius: 8px; color: #856404; font-size: 14px;">
-                            <strong>⚠️ Atenção:</strong> O boleto ainda não está disponível. Aguarde alguns instantes e tente novamente.
+                            <strong>ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â AtenÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</strong> O boleto ainda nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel. Aguarde alguns instantes e tente novamente.
                         </div>` : ''}
                     </div>
                     
                     <div style="margin-top: 16px; padding: 12px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
                         <p style="margin: 0; font-size: 13px; color: #856404;">
-                            <strong>⚠️ Importante:</strong> O boleto vence em ${dataVencimento}. Após o pagamento, a confirmação pode levar até 2 dias úteis.
+                            <strong>ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Importante:</strong> O boleto vence em ${dataVencimento}. ApÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s o pagamento, a confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode levar atÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© 2 dias ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºteis.
                         </p>
                     </div>
                 </div>
             `;
 
-            console.log('✅ Boleto gerado com sucesso!');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Boleto gerado com sucesso!');
 
         } catch (error) {
-            console.error('❌ Erro ao gerar Boleto:', error);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao gerar Boleto:', error);
 
             const boletoContainer = document.getElementById('boleto-container');
             if (boletoContainer) {
                 boletoContainer.innerHTML = `
                     <div style="text-align:center;padding:20px;background:#fff5f5;border:1px solid #fed7d7;border-radius:8px;">
-                        <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">⚠️</div>
+                        <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â</div>
                         <p style="margin:0;color:#c53030;font-size:14px;">Falha ao gerar boleto: ${error.message}</p>
                     </div>
                 `;
@@ -1303,7 +1304,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro ao Gerar Boleto',
-                    text: error.message || 'Não foi possível gerar o boleto. Tente novamente ou escolha outra forma de pagamento.',
+                    text: error.message || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel gerar o boleto. Tente novamente ou escolha outra forma de pagamento.',
                     confirmButtonText: 'Entendi',
                     confirmButtonColor: '#0b4340'
                 });
@@ -1315,19 +1316,19 @@
             const btnBoleto = document.getElementById('btn-boleto-pagamento');
             if (btnBoleto) {
                 btnBoleto.disabled = false;
-                btnBoleto.innerHTML = '<span>📄</span><span>Pagar com Boleto</span>';
+                btnBoleto.innerHTML = '<span>ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾</span><span>Pagar com Boleto</span>';
                 btnBoleto.style.opacity = '1';
             }
         }
     }
 
-    // Expor função globalmente
+    // Expor funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o globalmente
     window.gerarBoletoPagamento = gerarBoletoPagamento;
 
-    // Função para adicionar event listener ao botão Boleto
+    // FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para adicionar event listener ao botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Boleto
     function setupBoletoButton() {
         const btnBoleto = document.getElementById('btn-boleto-pagamento');
-        console.log('🔍 Procurando botão Boleto:', btnBoleto);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Procurando botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Boleto:', btnBoleto);
         
         if (btnBoleto && !btnBoleto.hasAttribute('data-boleto-listener-added')) {
             btnBoleto.setAttribute('data-boleto-listener-added', 'true');
@@ -1335,14 +1336,14 @@
             btnBoleto.addEventListener('click', async function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('✅ Botão Boleto clicado!');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Boleto clicado!');
                 try {
                     await gerarBoletoPagamento();
                 } catch (error) {
-                    console.error('❌ Erro ao executar gerarBoletoPagamento:', error);
+                    console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao executar gerarBoletoPagamento:', error);
                 }
             });
-            console.log('✅ Event listener do botão Boleto adicionado');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Event listener do botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Boleto adicionado');
         }
     }
     
@@ -1352,12 +1353,12 @@
     // Aguardar DOM estar pronto
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ Módulo de pagamento carregado');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³dulo de pagamento carregado');
             setTimeout(setupPixButton, 300);
             setTimeout(setupBoletoButton, 300);
         });
     } else {
-        console.log('✅ Módulo de pagamento carregado (DOM já pronto)');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³dulo de pagamento carregado (DOM jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ pronto)');
         setTimeout(setupPixButton, 300);
         setTimeout(setupBoletoButton, 300);
     }

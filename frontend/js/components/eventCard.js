@@ -1,14 +1,16 @@
+
 /**
  * Componente: Card de Evento
- * Funções para renderizar e estilizar cards de eventos
+ * FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes para renderizar e estilizar cards de eventos
  */
 
 import { formatarHora, formatarLocal, getImagemEvento, getNomeOrganizador } from '../utils/formatters.js';
+if (window.getApiBase) { window.getApiBase(); }
 
 /**
- * Gera cores dinâmicas baseadas no nome do evento
+ * Gera cores dinÃƒÆ’Ã‚Â¢micas baseadas no nome do evento
  * @param {string} nomeEvento - Nome do evento
- * @returns {Object} Objeto com cores primária e secundária
+ * @returns {Object} Objeto com cores primÃƒÆ’Ã‚Â¡ria e secundÃƒÆ’Ã‚Â¡ria
  */
 export function gerarCoresEvento(nomeEvento) {
     const cores = [
@@ -35,13 +37,13 @@ export function gerarCoresEvento(nomeEvento) {
 /**
  * Renderiza um card de evento moderno
  * @param {Object} evento - Dados do evento
- * @param {number} index - Índice do evento (para animação)
+ * @param {number} index - ÃƒÆ’Ã‚Ândice do evento (para animaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
  * @returns {HTMLElement} Elemento DOM do card
  */
 export function renderizarCard(evento, index) {
-    console.log(`🎨 Criando card moderno para evento: ${evento.nome}`);
+    console.log(`ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ Criando card moderno para evento: ${evento.nome}`);
 
-    // Gerar cores dinâmicas baseadas no nome do evento
+    // Gerar cores dinÃƒÆ’Ã‚Â¢micas baseadas no nome do evento
     const cores = gerarCoresEvento(evento.nome);
 
     // Monta o card do evento moderno
@@ -55,7 +57,7 @@ export function renderizarCard(evento, index) {
     const nomeOrganizador = getNomeOrganizador(evento);
 
     card.innerHTML = `
-        <!-- Seção Visual Superior (60-70% do card) -->
+        <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o Visual Superior (60-70% do card) -->
         <div class="relative h-48 overflow-hidden bg-gray-200">
             <!-- Imagem de fundo com lazy loading -->
             <img 
@@ -69,12 +71,12 @@ export function renderizarCard(evento, index) {
             >
         </div>
 
-        <!-- Seção de Informações Inferior (30-40% do card) -->
+        <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Inferior (30-40% do card) -->
         <div class="p-4 bg-white">
-            <!-- Título do evento -->
+            <!-- TÃƒÆ’Ã‚Â­tulo do evento -->
             <h3 class="font-bold text-lg text-gray-800 mb-3 truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${evento.nome}</h3>
             
-            <!-- Informações principais -->
+            <!-- InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes principais -->
             <div class="space-y-3 mb-4">
                 <!-- Data e Hora -->
                 <div class="flex items-center space-x-2 text-sm text-gray-700">
@@ -83,12 +85,12 @@ export function renderizarCard(evento, index) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                     </div>
-                    <span class="font-medium">${evento.data_formatada || 'Data não informada'}</span>
-                    <span class="text-gray-400">•</span>
+                    <span class="font-medium">${evento.data_formatada || 'Data nÃƒÆ’Ã‚Â£o informada'}</span>
+                    <span class="text-gray-400">ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢</span>
                     <span>${horaFormatada}</span>
                 </div>
                 
-                <!-- Localização -->
+                <!-- LocalizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
                 <div class="flex items-center space-x-2 text-sm text-gray-700">
                     <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +103,7 @@ export function renderizarCard(evento, index) {
                 
             </div>
 
-            <!-- Informações secundárias -->
+            <!-- InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes secundÃƒÆ’Ã‚Â¡rias -->
             <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
                 <div class="flex items-center space-x-1">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,15 +118,15 @@ export function renderizarCard(evento, index) {
 
             </div>
 
-            <!-- Botão de ação -->
+            <!-- BotÃƒÆ’Ã‚Â£o de aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
             <a href="detalhes-evento.php?id=${evento.id}" 
                class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-3 sm:py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 active:from-green-700 active:to-green-800 transition-all duration-200 text-sm sm:text-sm text-center block shadow-md hover:shadow-lg touch-manipulation min-h-[44px] flex items-center justify-center">
-                Inscrições Abertas
+                InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Abertas
             </a>
         </div>
     `;
 
-    console.log(`✅ Card moderno criado para: ${evento.nome}`);
+    console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Card moderno criado para: ${evento.nome}`);
     return card;
 }
 

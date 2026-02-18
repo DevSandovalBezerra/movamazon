@@ -1,5 +1,6 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
- * Módulo para carregar e exibir banners do carrossel
+ * MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³dulo para carregar e exibir banners do carrossel
  */
 
 /**
@@ -7,7 +8,7 @@
  */
 function normalizarCaminhoImagem(caminho) {
     if (!caminho) return '';
-    // Se já é URL completa, retornar como está
+    // Se jÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© URL completa, retornar como estÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡
     if (caminho.startsWith('http://') || caminho.startsWith('https://')) {
         return caminho;
     }
@@ -15,11 +16,11 @@ function normalizarCaminhoImagem(caminho) {
     const path = window.location.pathname || '';
     const idx = path.indexOf('/frontend/');
     const basePath = idx > 0 ? path.slice(0, idx) : '';
-    // Se começa com /, usar caminho base do projeto
+    // Se comeÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§a com /, usar caminho base do projeto
     if (caminho.startsWith('/')) {
         return basePath + caminho;
     }
-    // Se não começa com /, adicionar caminho base + /
+    // Se nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o comeÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§a com /, adicionar caminho base + /
     return basePath + '/' + caminho;
 }
 
@@ -29,42 +30,10 @@ function normalizarCaminhoImagem(caminho) {
 export async function carregarBanners() {
     console.log('[PUBLIC_BANNERS] carregarBanners() chamado');
     try {
-        // Garantir que API_BASE está definido (deve estar definido no index.php antes do import)
-        if (!window.API_BASE) {
-            const path = window.location.pathname || '';
-            const idx = path.indexOf('/frontend/');
-            window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
-            console.warn('[PUBLIC_BANNERS] API_BASE não estava definido, definido agora:', window.API_BASE);
-        }
-        
-        // Construir URL da API
-        const apiBase = window.API_BASE || '';
-        // Se API_BASE estiver vazio, usar caminho relativo baseado na localização atual
-        let apiUrl;
-        if (apiBase && apiBase.trim() !== '') {
-            // Remover barra final se existir e adicionar /api/...
-            const baseClean = apiBase.replace(/\/$/, '');
-            apiUrl = `${baseClean}/api/banners/public.php`;
-        } else {
-            // Tentar construir caminho relativo
-            const currentPath = window.location.pathname || '';
-            const pathParts = currentPath.split('/').filter(p => p);
-            const frontendIdx = pathParts.indexOf('frontend');
-            if (frontendIdx >= 0) {
-                // Estamos em /.../frontend/..., então a API está em /.../api/...
-                const baseParts = pathParts.slice(0, frontendIdx);
-                if (baseParts.length > 0) {
-                    apiUrl = '/' + baseParts.join('/') + '/api/banners/public.php';
-                } else {
-                    // Estamos em /frontend/... (raiz), então API está em /api/...
-                    apiUrl = '/api/banners/public.php';
-                }
-            } else {
-                // Fallback: assumir que a API está na raiz
-                apiUrl = '/api/banners/public.php';
-            }
-        }
-        
+        const apiUrl = window.buildApiUrl
+            ? window.buildApiUrl('banners/public.php')
+            : (window.API_BASE || '/api') + '/banners/public.php';
+
         console.log('[PUBLIC_BANNERS] API_BASE:', window.API_BASE);
         console.log('[PUBLIC_BANNERS] Pathname atual:', window.location.pathname);
         console.log('[PUBLIC_BANNERS] URL completa da API:', apiUrl);
@@ -78,29 +47,29 @@ export async function carregarBanners() {
         console.log('[PUBLIC_BANNERS] Resposta da API:', data);
         
         if (data.success && data.banners && data.banners.length > 0) {
-            console.log('[PUBLIC_BANNERS] ✓', data.banners.length, 'banner(s) encontrado(s)');
+            console.log('[PUBLIC_BANNERS] ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“', data.banners.length, 'banner(s) encontrado(s)');
             atualizarCarrossel(data.banners);
-            // Disparar evento SEMPRE após atualizar carrossel (mesmo se Swiper já existir)
+            // Disparar evento SEMPRE apÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³s atualizar carrossel (mesmo se Swiper jÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ existir)
             console.log('[PUBLIC_BANNERS] Disparando evento bannersCarregados');
             window.dispatchEvent(new CustomEvent('bannersCarregados', { 
                 detail: { banners: data.banners } 
             }));
-            // Reinicializar Swiper após atualizar (se já existir)
+            // Reinicializar Swiper apÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³s atualizar (se jÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ existir)
             if (window.heroSwiper) {
-                console.log('[PUBLIC_BANNERS] Swiper já existe, atualizando configurações');
-                // Atualizar configurações do Swiper se necessário
+                console.log('[PUBLIC_BANNERS] Swiper jÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ existe, atualizando configuraÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes');
+                // Atualizar configuraÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes do Swiper se necessÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡rio
                 if (window.heroSwiper.params.loop !== true && data.banners.length > 1) {
                     window.heroSwiper.params.loop = true;
                 }
                 setTimeout(() => {
                     window.heroSwiper.update();
                     window.heroSwiper.slideTo(0, 0);
-                    console.log('[PUBLIC_BANNERS] ✓ Swiper atualizado');
+                    console.log('[PUBLIC_BANNERS] ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ Swiper atualizado');
                 }, 100);
             }
         } else {
             console.log('[PUBLIC_BANNERS] Nenhum banner encontrado no banco de dados');
-            // Mostrar fallback apenas se não houver banners
+            // Mostrar fallback apenas se nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o houver banners
             const fallback = document.querySelector('.fallback-banner');
             if (fallback) {
                 // Normalizar caminho da imagem do fallback
@@ -112,11 +81,11 @@ export async function carregarBanners() {
                         const absolutePath = '/frontend/' + originalSrc.replace(/^\.\.\/\.\.\//, '');
                         const normalizedSrc = normalizarCaminhoImagem(absolutePath);
                         fallbackImg.src = normalizedSrc;
-                        console.log('[PUBLIC_BANNERS] Fallback normalizado:', originalSrc, '→', normalizedSrc);
+                        console.log('[PUBLIC_BANNERS] Fallback normalizado:', originalSrc, 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢', normalizedSrc);
                     }
                 }
                 fallback.style.display = 'block';
-                // Disparar evento mesmo sem banners para garantir inicialização do Swiper com fallback
+                // Disparar evento mesmo sem banners para garantir inicializaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o do Swiper com fallback
                 console.log('[PUBLIC_BANNERS] Disparando evento bannersCarregados (fallback)');
                 window.dispatchEvent(new CustomEvent('bannersCarregados', { 
                     detail: { banners: [] } 
@@ -127,7 +96,7 @@ export async function carregarBanners() {
             }
         }
     } catch (error) {
-        console.error('[PUBLIC_BANNERS] ✗ Erro ao carregar banners:', error);
+        console.error('[PUBLIC_BANNERS] ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Erro ao carregar banners:', error);
         // Em caso de erro, mostrar fallback
         const fallback = document.querySelector('.fallback-banner');
         if (fallback) {
@@ -140,11 +109,11 @@ export async function carregarBanners() {
                     const absolutePath = '/frontend/' + originalSrc.replace(/^\.\.\/\.\.\//, '');
                     const normalizedSrc = normalizarCaminhoImagem(absolutePath);
                     fallbackImg.src = normalizedSrc;
-                    console.log('[PUBLIC_BANNERS] Fallback normalizado (erro):', originalSrc, '→', normalizedSrc);
+                    console.log('[PUBLIC_BANNERS] Fallback normalizado (erro):', originalSrc, 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢', normalizedSrc);
                 }
             }
             fallback.style.display = 'block';
-            // Disparar evento mesmo com erro para garantir inicialização do Swiper com fallback
+            // Disparar evento mesmo com erro para garantir inicializaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o do Swiper com fallback
             console.log('[PUBLIC_BANNERS] Disparando evento bannersCarregados (erro)');
             window.dispatchEvent(new CustomEvent('bannersCarregados', { 
                 detail: { banners: [] } 
@@ -161,11 +130,11 @@ function atualizarCarrossel(banners) {
     console.log('[PUBLIC_BANNERS] atualizarCarrossel() chamado com', banners?.length || 0, 'banner(s)');
     const swiperWrapper = document.querySelector('.hero-carousel .swiper-wrapper');
     if (!swiperWrapper) {
-        console.error('[PUBLIC_BANNERS] ✗ Swiper wrapper não encontrado!');
+        console.error('[PUBLIC_BANNERS] ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Swiper wrapper nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o encontrado!');
         return;
     }
     
-    // Função para escapar HTML (definir antes de usar)
+    // FunÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o para escapar HTML (definir antes de usar)
     const escapeHtml = (str) => {
         if (!str) return '';
         const div = document.createElement('div');
@@ -176,7 +145,7 @@ function atualizarCarrossel(banners) {
     // Limpar TODOS os slides existentes (incluindo fallback)
     swiperWrapper.innerHTML = '';
     
-    // Se não houver banners, não fazer nada (deixar vazio ou usar fallback)
+    // Se nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o houver banners, nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o fazer nada (deixar vazio ou usar fallback)
     if (!banners || banners.length === 0) {
         console.log('[PUBLIC_BANNERS] Nenhum banner ativo encontrado');
         return;
@@ -189,14 +158,14 @@ function atualizarCarrossel(banners) {
         const slide = document.createElement('div');
         slide.className = 'swiper-slide';
         
-        // Normalizar caminho da imagem usando função helper (igual ao formulário)
+        // Normalizar caminho da imagem usando funÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o helper (igual ao formulÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡rio)
         let imgSrc = normalizarCaminhoImagem(banner.imagem);
         if (!imgSrc) {
-            // Fallback se não houver imagem - usar normalizarCaminhoImagem também
+            // Fallback se nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o houver imagem - usar normalizarCaminhoImagem tambÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©m
             imgSrc = normalizarCaminhoImagem('/frontend/assets/img/eventos/evento_4.jpg');
         }
         
-        // Fallback para onerror também precisa usar caminho normalizado
+        // Fallback para onerror tambÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©m precisa usar caminho normalizado
         const fallbackImgSrc = normalizarCaminhoImagem('/frontend/assets/img/eventos/evento_4.jpg');
         
         console.log('[PUBLIC_BANNERS] Banner:', banner.titulo, '| Imagem original:', banner.imagem, '| Imagem normalizada:', imgSrc);
@@ -216,7 +185,7 @@ function atualizarCarrossel(banners) {
                 <div class="relative z-10 h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
                     <div class="max-w-4xl mx-auto text-center text-white">
                         <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-                            ${escapeHtml(banner.titulo || 'Encontre sua próxima Corrida')}
+                            ${escapeHtml(banner.titulo || 'Encontre sua prÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³xima Corrida')}
                         </h1>
                         ${banner.descricao ? `<p class="text-lg sm:text-xl md:text-2xl mb-6 max-w-3xl mx-auto">${escapeHtml(banner.descricao)}</p>` : ''}
                         ${banner.link && banner.texto_botao ? `
@@ -234,6 +203,6 @@ function atualizarCarrossel(banners) {
         swiperWrapper.appendChild(slide);
     });
     
-    console.log('[PUBLIC_BANNERS] ✓ Carrossel atualizado com', banners.length, 'slide(s)');
+    console.log('[PUBLIC_BANNERS] ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ Carrossel atualizado com', banners.length, 'slide(s)');
 }
 

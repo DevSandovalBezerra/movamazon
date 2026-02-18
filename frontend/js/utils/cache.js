@@ -1,6 +1,7 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
- * Utilitário: Cache Local
- * Gerencia cache no localStorage com expiração
+ * UtilitÃƒÂ¡rio: Cache Local
+ * Gerencia cache no localStorage com expiraÃƒÂ§ÃƒÂ£o
  */
 
 const CACHE_PREFIX = 'movamazon_';
@@ -24,7 +25,7 @@ export function setCache(key, data) {
 }
 
 /**
- * Recupera dados do cache se ainda válidos
+ * Recupera dados do cache se ainda vÃƒÂ¡lidos
  * @param {string} key - Chave do cache
  * @returns {*|null} Dados do cache ou null se expirado/inexistente
  */
@@ -49,7 +50,7 @@ export function getCache(key) {
 }
 
 /**
- * Limpa um item específico do cache
+ * Limpa um item especÃƒÂ­fico do cache
  * @param {string} key - Chave do cache
  */
 export function clearCache(key) {

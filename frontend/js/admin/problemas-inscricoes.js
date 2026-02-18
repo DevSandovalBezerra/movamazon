@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 (() => {
     if (!document.getElementById('logs-container')) {
         return;
@@ -6,12 +7,12 @@
     if (!window.API_BASE) {
         const path = window.location.pathname || '';
         const idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     }
 
     const api = (endpoint, params = '') => {
         const sep = params ? `?${params}` : '';
-        return `${window.API_BASE}/api/${endpoint}${sep}`;
+        return `${window.API_BASE}/${endpoint}${sep}`;
     };
 
     const state = {
@@ -74,7 +75,7 @@
         btnLimpezaExecutar: document.getElementById('btn-limpeza-executar')
     };
 
-    // Usar função comum do AdminUtils se disponível
+    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
     const showMessage = (type, message) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, message);
@@ -159,7 +160,7 @@
                 </div>
                 
                 <div class="flex flex-wrap gap-2 text-xs text-gray-600 mb-2">
-                    ${log.inscricao_id ? `<span><i class="fas fa-clipboard-list"></i> Inscrição: #${log.inscricao_id}</span>` : ''}
+                    ${log.inscricao_id ? `<span><i class="fas fa-clipboard-list"></i> InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: #${log.inscricao_id}</span>` : ''}
                     ${log.payment_id ? `<span><i class="fas fa-credit-card"></i> Pagamento: ${log.payment_id}</span>` : ''}
                     ${log.evento_nome ? `<span><i class="fas fa-calendar"></i> ${log.evento_nome}</span>` : ''}
                     ${log.usuario_nome ? `<span><i class="fas fa-user"></i> ${log.usuario_nome}</span>` : ''}
@@ -171,7 +172,7 @@
                         <i class="fas fa-eye w-3 h-3"></i> Ver Detalhes
                     </button>
                     ${log.inscricao_id ? `<a href="/frontend/paginas/organizador/inscricoes/detalhes.php?id=${log.inscricao_id}" target="_blank" class="btn-secondary text-xs py-1 px-3">
-                        <i class="fas fa-external-link-alt w-3 h-3"></i> Ver Inscrição
+                        <i class="fas fa-external-link-alt w-3 h-3"></i> Ver InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
                     </a>` : ''}
                 </div>
             </div>
@@ -187,18 +188,18 @@
         const { page, totalPages, total } = state.pagination;
         const pages = [];
         
-        // Primeira página
+        // Primeira pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina
         if (page > 1) {
             pages.push(`<button onclick="window.problemasInscricoes?.irParaPagina(1)" class="px-3 py-1 border rounded hover:bg-gray-100">1</button>`);
             if (page > 2) pages.push('<span class="px-2">...</span>');
         }
         
-        // Páginas ao redor da atual
+        // PÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ginas ao redor da atual
         for (let i = Math.max(1, page - 1); i <= Math.min(totalPages, page + 1); i++) {
             pages.push(`<button onclick="window.problemasInscricoes?.irParaPagina(${i})" class="px-3 py-1 border rounded ${i === page ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}">${i}</button>`);
         }
         
-        // Última página
+        // ÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡ltima pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina
         if (page < totalPages) {
             if (page < totalPages - 1) pages.push('<span class="px-2">...</span>');
             pages.push(`<button onclick="window.problemasInscricoes?.irParaPagina(${totalPages})" class="px-3 py-1 border rounded hover:bg-gray-100">${totalPages}</button>`);
@@ -304,7 +305,7 @@
             const data = await response.json();
 
             if (!data.success || !data.log) {
-                throw new Error('Log não encontrado');
+                throw new Error('Log nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
             }
 
             const log = data.log;
@@ -325,11 +326,11 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <h3 class="font-semibold text-gray-700 mb-2">Informações Básicas</h3>
+                            <h3 class="font-semibold text-gray-700 mb-2">InformaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes BÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡sicas</h3>
                             <dl class="space-y-1 text-sm">
-                                ${log.inscricao_id ? `<dt class="font-medium">Inscrição ID:</dt><dd class="text-gray-600">${log.inscricao_id}</dd>` : ''}
+                                ${log.inscricao_id ? `<dt class="font-medium">InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ID:</dt><dd class="text-gray-600">${log.inscricao_id}</dd>` : ''}
                                 ${log.payment_id ? `<dt class="font-medium">Payment ID:</dt><dd class="text-gray-600">${log.payment_id}</dd>` : ''}
-                                ${log.usuario_id ? `<dt class="font-medium">Usuário ID:</dt><dd class="text-gray-600">${log.usuario_id}</dd>` : ''}
+                                ${log.usuario_id ? `<dt class="font-medium">UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio ID:</dt><dd class="text-gray-600">${log.usuario_id}</dd>` : ''}
                                 ${log.evento_id ? `<dt class="font-medium">Evento ID:</dt><dd class="text-gray-600">${log.evento_id}</dd>` : ''}
                                 ${log.modalidade_id ? `<dt class="font-medium">Modalidade ID:</dt><dd class="text-gray-600">${log.modalidade_id}</dd>` : ''}
                             </dl>
@@ -338,7 +339,7 @@
                             <h3 class="font-semibold text-gray-700 mb-2">Detalhes</h3>
                             <dl class="space-y-1 text-sm">
                                 ${log.evento_nome ? `<dt class="font-medium">Evento:</dt><dd class="text-gray-600">${log.evento_nome}</dd>` : ''}
-                                ${log.usuario_nome ? `<dt class="font-medium">Usuário:</dt><dd class="text-gray-600">${log.usuario_nome}</dd>` : ''}
+                                ${log.usuario_nome ? `<dt class="font-medium">UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio:</dt><dd class="text-gray-600">${log.usuario_nome}</dd>` : ''}
                                 ${log.usuario_email ? `<dt class="font-medium">Email:</dt><dd class="text-gray-600">${log.usuario_email}</dd>` : ''}
                                 ${log.modalidade_nome ? `<dt class="font-medium">Modalidade:</dt><dd class="text-gray-600">${log.modalidade_nome}</dd>` : ''}
                                 ${log.valor_total ? `<dt class="font-medium">Valor Total:</dt><dd class="text-gray-600">R$ ${parseFloat(log.valor_total).toFixed(2)}</dd>` : ''}
@@ -357,7 +358,7 @@
 
                     ${log.ip || log.user_agent ? `
                         <div>
-                            <h3 class="font-semibold text-gray-700 mb-2">Informações Técnicas</h3>
+                            <h3 class="font-semibold text-gray-700 mb-2">InformaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnicas</h3>
                             <dl class="space-y-1 text-sm">
                                 ${log.ip ? `<dt class="font-medium">IP:</dt><dd class="text-gray-600">${log.ip}</dd>` : ''}
                                 ${log.user_agent ? `<dt class="font-medium">User Agent:</dt><dd class="text-gray-600 text-xs">${log.user_agent}</dd>` : ''}
@@ -470,7 +471,7 @@
         const tipo = els.limpezaTipo?.value || '';
         const opcoes = els.limpezaOpcoes;
         
-        // Esconder todas as opções
+        // Esconder todas as opÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
         opcoes?.querySelectorAll('[id^="opcao-"]').forEach(el => {
             el.classList.add('hidden');
         });
@@ -522,7 +523,7 @@
             case 'periodo':
                 const dias = parseInt(document.getElementById('limpeza-periodo-dias')?.value);
                 if (!dias || dias < 1) {
-                    showMessage('warning', 'Informe o número de dias');
+                    showMessage('warning', 'Informe o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero de dias');
                     return;
                 }
                 payload.periodo_dias = dias;
@@ -533,14 +534,14 @@
             case 'acao':
                 payload.acao = document.getElementById('limpeza-acao')?.value;
                 if (!payload.acao) {
-                    showMessage('warning', 'Informe a ação');
+                    showMessage('warning', 'Informe a aÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
                     return;
                 }
                 break;
             case 'inscricao':
                 const inscId = parseInt(document.getElementById('limpeza-inscricao-id')?.value);
                 if (!inscId || inscId < 1) {
-                    showMessage('warning', 'Informe o ID da inscrição');
+                    showMessage('warning', 'Informe o ID da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
                     return;
                 }
                 payload.inscricao_id = inscId;
@@ -548,7 +549,7 @@
             case 'manter_ultimos':
                 const manter = parseInt(document.getElementById('limpeza-manter-ultimos')?.value);
                 if (!manter || manter < 1) {
-                    showMessage('warning', 'Informe o número de dias');
+                    showMessage('warning', 'Informe o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero de dias');
                     return;
                 }
                 payload.manter_ultimos_dias = manter;
@@ -557,7 +558,7 @@
                 payload.data_inicio = document.getElementById('limpeza-data-inicio')?.value;
                 payload.data_fim = document.getElementById('limpeza-data-fim')?.value;
                 if (!payload.data_inicio || !payload.data_fim) {
-                    showMessage('warning', 'Informe data início e fim');
+                    showMessage('warning', 'Informe data inÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio e fim');
                     return;
                 }
                 break;
@@ -586,18 +587,18 @@
 
             const { registros_afetados, detalhes } = data;
             
-            let html = `<p class="font-semibold text-yellow-800 mb-2">Serão deletados: <strong>${registros_afetados}</strong> registro(s)</p>`;
+            let html = `<p class="font-semibold text-yellow-800 mb-2">SerÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o deletados: <strong>${registros_afetados}</strong> registro(s)</p>`;
             
             if (detalhes.por_nivel) {
                 html += '<div class="mt-2 space-y-1">';
                 Object.entries(detalhes.por_nivel).forEach(([nivel, total]) => {
-                    html += `<p class="text-sm">• ${nivel}: ${total} registro(s)</p>`;
+                    html += `<p class="text-sm">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${nivel}: ${total} registro(s)</p>`;
                 });
                 html += '</div>';
             }
             
             if (detalhes.periodo) {
-                html += `<p class="text-sm mt-2">Período: ${detalhes.periodo.mais_antigo ? formatDate(detalhes.periodo.mais_antigo) : 'N/A'} - ${detalhes.periodo.mais_recente ? formatDate(detalhes.periodo.mais_recente) : 'N/A'}</p>`;
+                html += `<p class="text-sm mt-2">PerÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­odo: ${detalhes.periodo.mais_antigo ? formatDate(detalhes.periodo.mais_antigo) : 'N/A'} - ${detalhes.periodo.mais_recente ? formatDate(detalhes.periodo.mais_recente) : 'N/A'}</p>`;
             }
 
             els.limpezaPreviewContent.innerHTML = html;
@@ -626,11 +627,11 @@
             return;
         }
 
-        // Usar função comum de confirmação se disponível
+        // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
         if (window.AdminUtils) {
             const result = await window.AdminUtils.showConfirm(
-                'Confirmar Deleção',
-                'Esta ação não pode ser desfeita. Deseja continuar?',
+                'Confirmar DeleÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
+                'Esta aÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode ser desfeita. Deseja continuar?',
                 'Sim, deletar',
                 'Cancelar',
                 'warning'
@@ -638,8 +639,8 @@
             if (!result.isConfirmed) return;
         } else if (typeof Swal !== 'undefined') {
             const result = await Swal.fire({
-                title: 'Confirmar Deleção',
-                text: 'Esta ação não pode ser desfeita. Deseja continuar?',
+                title: 'Confirmar DeleÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
+                text: 'Esta aÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode ser desfeita. Deseja continuar?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc2626',
@@ -751,7 +752,7 @@
         els.btnLimpezaExecutar.addEventListener('click', executarLimpeza);
     }
 
-    // Carregar ações disponíveis
+    // Carregar aÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis
     const carregarAcoes = async () => {
         try {
             const response = await fetch(api('admin/logs_inscricoes/list.php?per_page=1'), {
@@ -770,17 +771,17 @@
                 }
             }
         } catch (error) {
-            console.error('Erro ao carregar ações:', error);
+            console.error('Erro ao carregar aÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', error);
         }
     };
 
-    // Inicialização
+    // InicializaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
     const init = () => {
         carregarAcoes();
         carregarLogs();
     };
 
-    // Exportar funções para uso global
+    // Exportar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes para uso global
     window.problemasInscricoes = {
         verDetalhes,
         irParaPagina,

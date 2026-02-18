@@ -1,9 +1,10 @@
-// Variáveis globais
+if (window.getApiBase) { window.getApiBase(); }
+// VariÃƒÆ’Ã‚Â¡veis globais
 let lotes = [];
 let modalidadesDisponiveis = [];
 let loteEditando = null;
 
-// Inicialização
+// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 document.addEventListener('DOMContentLoaded', function() {
     carregarLotes();
     configurarEventos();
@@ -19,24 +20,24 @@ function configurarEventos() {
             const container = document.getElementById('modalidades-container');
             
             if (!container) {
-                console.warn('Container modalidades-container não encontrado. Modal pode não estar aberto.');
+                console.warn('Container modalidades-container nÃƒÆ’Ã‚Â£o encontrado. Modal pode nÃƒÆ’Ã‚Â£o estar aberto.');
                 return;
             }
             
             if (eventoId) {
                 carregarModalidades(eventoId);
             } else {
-                container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponíveis</p>';
+                container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponÃƒÆ’Ã‚Â­veis</p>';
             }
         });
     }
 
-    // Event listener para mudança no filtro de evento
+    // Event listener para mudanÃƒÆ’Ã‚Â§a no filtro de evento
     document.getElementById('filtroEvento').addEventListener('change', function() {
         carregarLotes();
     });
 
-    // Auto-complete para preço por extenso
+    // Auto-complete para preÃƒÆ’Ã‚Â§o por extenso
 document.getElementById('preco').addEventListener('input', function() {
         const preco = parseFloat(this.value) || 0;
         const extenso = converterParaExtenso(preco);
@@ -56,7 +57,7 @@ async function carregarLotes() {
         if (tipoPublico && tipoPublico !== '') params.append('tipo_publico', tipoPublico);
         if (ativo !== '') params.append('ativo', ativo);
         
-        const response = await fetch(`../../../api/organizador/lotes-inscricao/list.php?${params}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/lotes-inscricao/list.php?${params}`);
         const data = await response.json();
         
         if (data.success) {
@@ -97,7 +98,7 @@ function renderizarLotes() {
                     </div>
                     <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900">${lote.modalidade_completa}</div>
-                        <div class="text-sm text-gray-500">${lote.tipo_publico_formatado} • ${lote.faixa_etaria}</div>
+                        <div class="text-sm text-gray-500">${lote.tipo_publico_formatado} ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ ${lote.faixa_etaria}</div>
                     </div>
                 </div>
             </td>
@@ -110,7 +111,7 @@ function renderizarLotes() {
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">${lote.data_inicio_formatada}</div>
-                <div class="text-sm text-gray-500">até ${lote.data_fim_formatada}</div>
+                <div class="text-sm text-gray-500">atÃƒÆ’Ã‚Â© ${lote.data_fim_formatada}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(lote.status)}">
@@ -137,7 +138,7 @@ function renderizarLotes() {
     `).join('');
 }
 
-// Funções de status
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de status
 function getStatusClass(status) {
     switch (status) {
         case 'ativo': return 'bg-green-100 text-green-800';
@@ -164,7 +165,7 @@ function aplicarFiltros() {
 // Carregar modalidades de um evento (estrutura otimizada)
 async function carregarModalidades(eventoId) {
     try {
-        const response = await fetch(`../../../api/organizador/lotes-inscricao/modalidades.php?evento_id=${eventoId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/lotes-inscricao/modalidades.php?evento_id=${eventoId}`);
         const data = await response.json();
         
         if (data.success) {
@@ -183,12 +184,12 @@ async function carregarModalidades(eventoId) {
 function renderizarModalidades(selecionadas = []) {
     const container = document.getElementById('modalidades-container');
     if (!container) {
-        console.warn('Container modalidades-container não encontrado. Modal pode não estar aberto.');
+        console.warn('Container modalidades-container nÃƒÆ’Ã‚Â£o encontrado. Modal pode nÃƒÆ’Ã‚Â£o estar aberto.');
         return;
     }
     
     if (modalidadesDisponiveis.length === 0) {
-        container.innerHTML = '<div class="text-gray-400 text-sm">Nenhuma modalidade disponível</div>';
+        container.innerHTML = '<div class="text-gray-400 text-sm">Nenhuma modalidade disponÃƒÆ’Ã‚Â­vel</div>';
         return;
     }
     
@@ -198,13 +199,13 @@ function renderizarModalidades(selecionadas = []) {
 // Abrir modal para criar novo lote
 function abrirModalCriar() {
     loteEditando = null;
-    document.getElementById('modal-title').textContent = 'Novo Lote de Inscrição';
+    document.getElementById('modal-title').textContent = 'Novo Lote de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o';
     document.getElementById('btn-salvar-text').textContent = 'Salvar Lote';
     document.getElementById('form-lote').reset();
     document.getElementById('lote-id').value = '';
     const container = document.getElementById('modalidades-container');
     if (container) {
-        container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponíveis</p>';
+        container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponÃƒÆ’Ã‚Â­veis</p>';
     }
     document.getElementById('modal-lote').classList.remove('hidden');
 }
@@ -212,13 +213,13 @@ function abrirModalCriar() {
 // Abrir modal para editar lote
 async function editarLote(loteId) {
     try {
-        const response = await fetch(`../../../api/organizador/lotes-inscricao/get.php?id=${loteId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/lotes-inscricao/get.php?id=${loteId}`);
         const data = await response.json();
         
         if (data.success) {
             loteEditando = data.lote;
             preencherFormulario(data.lote);
-            document.getElementById('modal-title').textContent = 'Editar Lote de Inscrição';
+            document.getElementById('modal-title').textContent = 'Editar Lote de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o';
             document.getElementById('btn-salvar-text').textContent = 'Atualizar Lote';
             document.getElementById('modal-lote').classList.remove('hidden');
         } else {
@@ -230,7 +231,7 @@ async function editarLote(loteId) {
     }
 }
 
-// Preencher formulário com dados do lote (estrutura otimizada)
+// Preencher formulÃƒÆ’Ã‚Â¡rio com dados do lote (estrutura otimizada)
 function preencherFormulario(lote) {
     document.getElementById('lote-id').value = lote.id;
     document.getElementById('evento-id').value = lote.evento_id;
@@ -267,10 +268,10 @@ function fecharModal() {
 // Salvar lote (criar ou atualizar)
 async function salvarLote(dados) {
     try {
-        // Validar seleção de modalidades
+        // Validar seleÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de modalidades
         const validacao = validarSelecaoModalidades('modalidades-container', 1);
         if (!validacao.valido) {
-            Swal.fire('Atenção', validacao.mensagem, 'warning');
+            Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', validacao.mensagem, 'warning');
             return;
         }
         
@@ -279,8 +280,8 @@ async function salvarLote(dados) {
         dados.modalidades = modalidades;
         
         const url = loteEditando ? 
-            `../../../api/organizador/lotes-inscricao/update.php` : 
-            `../../../api/organizador/lotes-inscricao/create.php`;
+            `${window.API_BASE || '/api'}/organizador/lotes-inscricao/update.php` : 
+            `${window.API_BASE || '/api'}/organizador/lotes-inscricao/create.php`;
         
         const response = await fetch(url, {
             method: 'POST',
@@ -308,17 +309,17 @@ async function salvarLote(dados) {
 // Duplicar lote
 async function duplicarLote(loteId) {
     try {
-        const response = await fetch(`../../../api/organizador/lotes-inscricao/get.php?id=${loteId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/lotes-inscricao/get.php?id=${loteId}`);
         const data = await response.json();
         
         if (data.success) {
             const lote = data.lote;
-            lote.numero_lote = lote.numero_lote + 1; // Incrementar número do lote
-            lote.preco_por_extenso = ''; // Limpar preço por extenso
+            lote.numero_lote = lote.numero_lote + 1; // Incrementar nÃƒÆ’Ã‚Âºmero do lote
+            lote.preco_por_extenso = ''; // Limpar preÃƒÆ’Ã‚Â§o por extenso
             
-            loteEditando = null; // Não é edição, é criação
+            loteEditando = null; // NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o, ÃƒÆ’Ã‚Â© criaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             preencherFormulario(lote);
-            document.getElementById('modal-title').textContent = 'Duplicar Lote de Inscrição';
+            document.getElementById('modal-title').textContent = 'Duplicar Lote de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o';
             document.getElementById('btn-salvar-text').textContent = 'Salvar Lote';
             document.getElementById('modal-lote').classList.remove('hidden');
         } else {
@@ -335,17 +336,17 @@ async function toggleLote(loteId, ativo) {
     const acao = ativo ? 'ativar' : 'desativar';
     
     const result = await Swal.fire({
-        title: 'Confirmar ação',
+        title: 'Confirmar aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
         text: `Deseja ${acao} este lote?`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Sim',
-        cancelButtonText: 'Não'
+        cancelButtonText: 'NÃƒÆ’Ã‚Â£o'
     });
     
     if (result.isConfirmed) {
         try {
-            const response = await fetch('../../../api/organizador/lotes-inscricao/activate.php', {
+            const response = await fetch((window.API_BASE || '/api') + '/organizador/lotes-inscricao/activate.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -371,11 +372,11 @@ async function toggleLote(loteId, ativo) {
     }
 }
 
-// Event listener para o formulário (estrutura otimizada)
+// Event listener para o formulÃƒÆ’Ã‚Â¡rio (estrutura otimizada)
 document.getElementById('form-lote').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // Coletar dados do formulário
+    // Coletar dados do formulÃƒÆ’Ã‚Â¡rio
     const dados = {
         evento_id: parseInt(document.getElementById('evento-id').value),
         numero_lote: parseInt(document.getElementById('numero-lote').value),
@@ -399,7 +400,7 @@ document.getElementById('form-lote').addEventListener('submit', async function(e
     await salvarLote(dados);
 });
 
-// Funções auxiliares
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes auxiliares
 function mostrarLoading() {
     document.getElementById('loading-lotes').classList.remove('hidden');
     document.getElementById('tabela-lotes').classList.add('hidden');
@@ -414,9 +415,9 @@ function mostrarErro(mensagem) {
     document.getElementById('error-message').textContent = mensagem;
 }
 
-// Converter número para extenso
+// Converter nÃƒÆ’Ã‚Âºmero para extenso
 function converterParaExtenso(numero) {
-    const UNIDADES = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+    const UNIDADES = ['', 'um', 'dois', 'trÃƒÆ’Ã‚Âªs', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
     const DEZ_A_DEZENOVE = ['dez', 'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
     const DEZENAS = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
     const CENTENAS = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
@@ -448,8 +449,8 @@ function converterParaExtenso(numero) {
         const milhares = Math.floor((n % 1_000_000) / 1000);
         const centenas = n % 1000;
 
-        if (bilhoes) partes.push(`${bloco(bilhoes)} ${bilhoes === 1 ? 'bilhão' : 'bilhões'}`);
-        if (milhoes) partes.push(`${bloco(milhoes)} ${milhoes === 1 ? 'milhão' : 'milhões'}`);
+        if (bilhoes) partes.push(`${bloco(bilhoes)} ${bilhoes === 1 ? 'bilhÃƒÆ’Ã‚Â£o' : 'bilhÃƒÆ’Ã‚Âµes'}`);
+        if (milhoes) partes.push(`${bloco(milhoes)} ${milhoes === 1 ? 'milhÃƒÆ’Ã‚Â£o' : 'milhÃƒÆ’Ã‚Âµes'}`);
         if (milhares) partes.push(`${bloco(milhares)} mil`);
         if (centenas) partes.push(bloco(centenas));
 

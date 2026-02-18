@@ -1,8 +1,9 @@
+if (window.getApiBase) { window.getApiBase(); }
 // Gerenciador de Categorias - MovAmazon
 let categoriasData = [];
 let categoriaEditando = null;
 
-// ===== FUNÇÕES DE CONTROLE DA JANELA CORTINA =====
+// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CONTROLE DA JANELA CORTINA =====
 
 function abrirPanelCategorias() {
     const panel = document.getElementById('categoriasPanel');
@@ -22,7 +23,7 @@ function abrirPanelCategorias() {
     // Configurar contadores de caracteres
     configurarContadores();
 
-    // Configurar validação de idade
+    // Configurar validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de idade
     configurarValidacaoIdade();
 }
 
@@ -34,16 +35,16 @@ function fecharPanelCategorias() {
     panel.classList.add('translate-x-full');
     panel.classList.remove('abrir');
 
-    // Ocultar overlay após animação
+    // Ocultar overlay apÃƒÆ’Ã‚Â³s animaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     setTimeout(() => {
         overlay.classList.add('hidden');
     }, 300);
 
-    // Limpar formulário
+    // Limpar formulÃƒÆ’Ã‚Â¡rio
     limparFormCategoria();
 }
 
-// ===== FUNÇÕES DE TOGGLE =====
+// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE TOGGLE =====
 
 function configurarToggles() {
     // Toggle de status
@@ -54,20 +55,20 @@ function configurarToggles() {
         statusLabel.textContent = this.checked ? 'Ativo' : 'Inativo';
     });
 
-    // Toggle de exibição geral
+    // Toggle de exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o geral
     const exibirGeralToggle = document.getElementById('exibirInscricaoGeral');
     exibirGeralToggle.addEventListener('change', function () {
-        // Lógica adicional se necessário
+        // LÃƒÆ’Ã‚Â³gica adicional se necessÃƒÆ’Ã‚Â¡rio
     });
 
-    // Toggle de exibição grupos
+    // Toggle de exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o grupos
     const exibirGruposToggle = document.getElementById('exibirInscricaoGrupos');
     exibirGruposToggle.addEventListener('change', function () {
-        // Lógica adicional se necessário
+        // LÃƒÆ’Ã‚Â³gica adicional se necessÃƒÆ’Ã‚Â¡rio
     });
 }
 
-// ===== FUNÇÕES DE CONTADORES =====
+// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CONTADORES =====
 
 function configurarContadores() {
     const nomeInput = document.getElementById('nomeCategoria');
@@ -88,13 +89,13 @@ function configurarContadores() {
     });
 }
 
-// ===== FUNÇÕES DE VALIDAÇÃO DE IDADE =====
+// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE VALIDAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE IDADE =====
 
 function configurarValidacaoIdade() {
     const idadeMin = document.getElementById('idadeMin');
     const idadeMax = document.getElementById('idadeMax');
 
-    // Validar idade mínima não pode ser maior que máxima
+    // Validar idade mÃƒÆ’Ã‚Â­nima nÃƒÆ’Ã‚Â£o pode ser maior que mÃƒÆ’Ã‚Â¡xima
     idadeMin.addEventListener('change', function () {
         const min = parseInt(this.value) || 0;
         const max = parseInt(idadeMax.value) || 100;
@@ -104,7 +105,7 @@ function configurarValidacaoIdade() {
         }
     });
 
-    // Validar idade máxima não pode ser menor que mínima
+    // Validar idade mÃƒÆ’Ã‚Â¡xima nÃƒÆ’Ã‚Â£o pode ser menor que mÃƒÆ’Ã‚Â­nima
     idadeMax.addEventListener('change', function () {
         const max = parseInt(this.value) || 100;
         const min = parseInt(idadeMin.value) || 0;
@@ -117,7 +118,7 @@ function configurarValidacaoIdade() {
 
 
 
-// ===== FUNÇÕES DE FORMULÁRIO =====
+// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE FORMULÃƒÆ’Ã‚ÂRIO =====
 
 function limparFormCategoria() {
     document.getElementById('formCategoria').reset();
@@ -128,7 +129,7 @@ function limparFormCategoria() {
     document.getElementById('contadorNome').textContent = '350';
     document.getElementById('contadorDescricao').textContent = '450';
 
-    // Resetar campos de idade para valores padrão
+    // Resetar campos de idade para valores padrÃƒÆ’Ã‚Â£o
     document.getElementById('idadeMin').value = '0';
     document.getElementById('idadeMax').value = '100';
 
@@ -138,7 +139,7 @@ function limparFormCategoria() {
 function editarCategoria(categoria) {
     categoriaEditando = categoria;
 
-    // Preencher formulário
+    // Preencher formulÃƒÆ’Ã‚Â¡rio
     document.getElementById('categoriaIdEdit').value = categoria.id;
     document.getElementById('nomeCategoria').value = categoria.nome;
     document.getElementById('statusCategoria').checked = categoria.ativo;
@@ -151,13 +152,13 @@ function editarCategoria(categoria) {
     document.getElementById('idadeMin').value = categoria.idade_min || 0;
     document.getElementById('idadeMax').value = categoria.idade_max || 100;
 
-    // Configurar tipo de público
+    // Configurar tipo de pÃƒÆ’Ã‚Âºblico
     document.getElementById('tipoPublico').value = categoria.tipo_publico || 'ambos';
 
     // Configurar desconto para idosos
     document.getElementById('descontoIdoso').checked = categoria.desconto_idoso || false;
 
-    // Atualizar título
+    // Atualizar tÃƒÆ’Ã‚Â­tulo
     document.getElementById('formCategoriaTitulo').textContent = 'Editar Categoria';
 
     // Atualizar contadores
@@ -165,7 +166,7 @@ function editarCategoria(categoria) {
     document.getElementById('contadorDescricao').textContent = 450 - (categoria.descricao?.length || 0);
 }
 
-// ===== FUNÇÕES DE CRUD =====
+// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CRUD =====
 
 async function salvarCategoria() {
     const form = document.getElementById('formCategoria');
@@ -188,12 +189,12 @@ async function salvarCategoria() {
     formData.append('idade_max', document.getElementById('idadeMax').value || 100);
     formData.append('desconto_idoso', document.getElementById('descontoIdoso').checked ? 1 : 0);
 
-    // Escopo por evento: obter do seletor de eventos da página
+    // Escopo por evento: obter do seletor de eventos da pÃƒÆ’Ã‚Â¡gina
     const eventoSelect = document.getElementById('filtroEvento');
     const eventoId = parseInt(eventoSelect?.value || '0', 10);
     if (!eventoId) {
         Swal.fire({
-            title: 'Atenção',
+            title: 'AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
             text: 'Selecione um evento antes de salvar a categoria.',
             icon: 'warning',
             confirmButtonColor: '#F59E0B'
@@ -202,15 +203,15 @@ async function salvarCategoria() {
     }
     formData.append('evento_id', eventoId);
 
-    // ID para edição
+    // ID para ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     if (categoriaEditando) {
         formData.append('id', categoriaEditando.id);
     }
 
     try {
         const url = categoriaEditando ?
-            '../../../api/categoria/update.php' :
-            '../../../api/categoria/create.php';
+            (window.API_BASE || '/api') + '/categoria/update.php' :
+            (window.API_BASE || '/api') + '/categoria/create.php';
 
         const response = await fetch(url, {
             method: 'POST',
@@ -221,7 +222,7 @@ async function salvarCategoria() {
 
         if (data.success) {
             Swal.fire({
-                title: 'Sucesso! 🎉',
+                title: 'Sucesso! ÃƒÂ°Ã…Â¸Ã…Â½Ã¢â‚¬Â°',
                 text: categoriaEditando ? 'Categoria atualizada com sucesso!' : 'Categoria criada com sucesso!',
                 icon: 'success',
                 confirmButtonColor: '#10B981'
@@ -238,7 +239,7 @@ async function salvarCategoria() {
                     }
                 }));
             } catch (e) {
-                console.warn('categorias.js - não foi possível disparar evento de atualização de categorias', e);
+                console.warn('categorias.js - nÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel disparar evento de atualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de categorias', e);
             }
         } else {
             throw new Error(data.message || 'Erro ao salvar categoria');
@@ -246,7 +247,7 @@ async function salvarCategoria() {
     } catch (error) {
         console.error('Erro:', error);
         Swal.fire({
-            title: 'Erro! ❌',
+            title: 'Erro! ÃƒÂ¢Ã‚ÂÃ…â€™',
             text: error.message || 'Ocorreu um erro ao salvar a categoria',
             icon: 'error',
             confirmButtonColor: '#EF4444'
@@ -256,8 +257,8 @@ async function salvarCategoria() {
 
 async function excluirCategoria(categoriaId) {
     const result = await Swal.fire({
-        title: 'Confirmar Exclusão',
-        text: 'Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita.',
+        title: 'Confirmar ExclusÃƒÆ’Ã‚Â£o',
+        text: 'Tem certeza que deseja excluir esta categoria? Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#EF4444',
@@ -268,7 +269,7 @@ async function excluirCategoria(categoriaId) {
 
     if (result.isConfirmed) {
         try {
-            const response = await fetch('../../../api/categoria/delete.php', {
+            const response = await fetch((window.API_BASE || '/api') + '/categoria/delete.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -282,8 +283,8 @@ async function excluirCategoria(categoriaId) {
 
             if (data.success) {
                 Swal.fire({
-                    title: 'Excluída! ✅',
-                    text: 'Categoria excluída com sucesso!',
+                    title: 'ExcluÃƒÆ’Ã‚Â­da! ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦',
+                    text: 'Categoria excluÃƒÆ’Ã‚Â­da com sucesso!',
                     icon: 'success',
                     confirmButtonColor: '#10B981'
                 });
@@ -298,7 +299,7 @@ async function excluirCategoria(categoriaId) {
                         }
                     }));
                 } catch (e) {
-                    console.warn('categorias.js - não foi possível disparar evento após exclusão', e);
+                    console.warn('categorias.js - nÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel disparar evento apÃƒÆ’Ã‚Â³s exclusÃƒÆ’Ã‚Â£o', e);
                 }
             } else {
                 throw new Error(data.message || 'Erro ao excluir categoria');
@@ -306,7 +307,7 @@ async function excluirCategoria(categoriaId) {
         } catch (error) {
             console.error('Erro:', error);
             Swal.fire({
-                title: 'Erro! ❌',
+                title: 'Erro! ÃƒÂ¢Ã‚ÂÃ…â€™',
                 text: error.message || 'Ocorreu um erro ao excluir a categoria',
                 icon: 'error',
                 confirmButtonColor: '#EF4444'
@@ -315,19 +316,19 @@ async function excluirCategoria(categoriaId) {
     }
 }
 
-// ===== FUNÇÕES DE CARREGAMENTO =====
+// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CARREGAMENTO =====
 
 async function carregarCategorias() {
     try {
         const eventoSelect = document.getElementById('filtroEvento');
         const eventoId = parseInt(eventoSelect?.value || '0', 10);
         if (!eventoId) {
-            // Sem evento selecionado, não chama API
+            // Sem evento selecionado, nÃƒÆ’Ã‚Â£o chama API
             categoriasData = [];
             renderizarCategorias();
             return;
         }
-        const response = await fetch(`../../../api/categoria/list.php?evento_id=${encodeURIComponent(eventoId)}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/categoria/list.php?evento_id=${encodeURIComponent(eventoId)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -339,8 +340,8 @@ async function carregarCategorias() {
     } catch (error) {
         console.error('Erro ao carregar categorias:', error);
         Swal.fire({
-            title: 'Erro! ❌',
-            text: 'Não foi possível carregar as categorias',
+            title: 'Erro! ÃƒÂ¢Ã‚ÂÃ…â€™',
+            text: 'NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel carregar as categorias',
             icon: 'error',
             confirmButtonColor: '#EF4444'
         });
@@ -378,7 +379,7 @@ function renderizarCategorias() {
                                          <div class=\"flex items-center gap-4 text-xs text-gray-500\">
                          <span class="flex items-center gap-1">
                              <i class="fas fa-users"></i>
-                             ${categoria.tipo_publico || '—'}
+                             ${categoria.tipo_publico || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â'}
                          </span>
                          <span class="flex items-center gap-1">
                              <i class="fas fa-birthday-cake"></i>
@@ -386,7 +387,7 @@ function renderizarCategorias() {
                          </span>
                          <span class="flex items-center gap-1">
                              <i class="fas fa-eye"></i>
-                             ${categoria.exibir_inscricao_geral ? 'Geral' : 'Não'}, ${categoria.exibir_inscricao_grupos ? 'Grupos' : 'Não'}
+                             ${categoria.exibir_inscricao_geral ? 'Geral' : 'NÃƒÆ’Ã‚Â£o'}, ${categoria.exibir_inscricao_grupos ? 'Grupos' : 'NÃƒÆ’Ã‚Â£o'}
                          </span>
                      </div>
                 </div>
@@ -406,7 +407,7 @@ function renderizarCategorias() {
     `).join('');
 }
 
-// ===== INICIALIZAÇÃO =====
+// ===== INICIALIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O =====
 
 document.addEventListener('DOMContentLoaded', function () {
     // Fechar panel ao clicar no overlay

@@ -1,5 +1,6 @@
+if (window.getApiBase) { window.getApiBase(); }
 // =====================================================
-// GESTÃO DE PRODUTOS - JAVASCRIPT
+// GESTÃƒÆ’O DE PRODUTOS - JAVASCRIPT
 // =====================================================
 
 let produtos = [];
@@ -12,7 +13,7 @@ let filtros = {
 };
 
 // =====================================================
-// INICIALIZAÇÃO
+// INICIALIZAÃƒâ€¡ÃƒÆ’O
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function configurarEventListeners() {
-    // Botão novo produto
+    // BotÃƒÂ£o novo produto
     const btnNovo = document.getElementById('btnNovoProduto');
     if (btnNovo) {
         btnNovo.addEventListener('click', abrirModalProduto);
@@ -37,7 +38,7 @@ function configurarEventListeners() {
     const filtroStatus = document.getElementById('filtroStatus');
     if (filtroStatus) filtroStatus.addEventListener('change', aplicarFiltros);
 
-    // Paginação
+    // PaginaÃƒÂ§ÃƒÂ£o
     const btnAnterior = document.getElementById('btn-anterior');
     if (btnAnterior) {
         btnAnterior.addEventListener('click', () => {
@@ -59,7 +60,7 @@ function configurarEventListeners() {
         });
     }
 
-    // Formulário
+    // FormulÃƒÂ¡rio
     const formProduto = document.getElementById('formProduto');
     if (formProduto) formProduto.addEventListener('submit', salvarProduto);
 
@@ -76,7 +77,7 @@ async function carregarProdutos() {
     mostrarLoading();
 
     try {
-        const response = await fetch('../../../api/organizador/produtos/list.php');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/produtos/list.php');
         const data = await response.json();
 
         if (data.success) {
@@ -86,7 +87,7 @@ async function carregarProdutos() {
             mostrarErro('Erro ao carregar produtos: ' + data.error);
         }
     } catch (error) {
-        console.error('Erro na requisição:', error);
+        console.error('Erro na requisiÃƒÂ§ÃƒÂ£o:', error);
         mostrarErro('Erro ao carregar produtos');
     } finally {
         ocultarLoading();
@@ -94,7 +95,7 @@ async function carregarProdutos() {
 }
 
 // =====================================================
-// RENDERIZAÇÃO
+// RENDERIZAÃƒâ€¡ÃƒÆ’O
 // =====================================================
 
 function renderizarProdutos(produtosParaRenderizar = produtos) {
@@ -110,7 +111,7 @@ function renderizarProdutos(produtosParaRenderizar = produtos) {
             <div class="col-span-full text-center py-12">
                 <i class="fas fa-box-open text-gray-400 text-4xl mb-4"></i>
                 <p class="text-gray-500 text-lg">Nenhum produto encontrado</p>
-                <p class="text-gray-400">Crie seu primeiro produto para começar</p>
+                <p class="text-gray-400">Crie seu primeiro produto para comeÃƒÂ§ar</p>
             </div>
         `;
         return;
@@ -131,7 +132,7 @@ function criarCardProduto(produto) {
     const statusClass = produto.ativo ? 'green' : 'red';
     const statusText = produto.ativo ? 'Ativo' : 'Inativo';
     const disponivelVenda = produto.disponivel_venda ?
-        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Disponível para venda</span>' :
+        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">DisponÃƒÂ­vel para venda</span>' :
         '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Apenas em kit</span>';
 
     const precoFormatado = produto.preco ? `R$ ${parseFloat(produto.preco).toFixed(2)}` : 'R$ 0,00';
@@ -179,7 +180,7 @@ function criarCardProduto(produto) {
 
 
 // =====================================================
-// FILTROS E PAGINAÇÃO
+// FILTROS E PAGINAÃƒâ€¡ÃƒÆ’O
 // =====================================================
 
 function aplicarFiltros() {
@@ -205,11 +206,11 @@ function atualizarPaginacao(totalProdutos = produtos.length) {
     const inicio = (paginaAtual - 1) * itensPorPagina + 1;
     const fim = Math.min(paginaAtual * itensPorPagina, totalProdutos);
 
-    // Atualizar botões
+    // Atualizar botÃƒÂµes
     document.getElementById('btn-anterior').disabled = paginaAtual === 1;
     document.getElementById('btn-proximo').disabled = paginaAtual === totalPaginas;
 
-    // Mostrar/ocultar paginação
+    // Mostrar/ocultar paginaÃƒÂ§ÃƒÂ£o
     const paginacao = document.getElementById('paginacao');
     if (totalPaginas > 1) {
         paginacao.style.display = 'flex';
@@ -306,7 +307,7 @@ async function salvarProduto(e) {
     }
 
     try {
-        const url = produtoId ? '../../../api/organizador/produtos/update.php' : '../../../api/organizador/produtos/create.php';
+        const url = produtoId ? (window.API_BASE || '/api') + '/organizador/produtos/update.php' : (window.API_BASE || '/api') + '/organizador/produtos/create.php';
 
         const response = await fetch(url, {
             method: 'POST',
@@ -338,7 +339,7 @@ async function editarProduto(id) {
 async function excluirProduto(id) {
     Swal.fire({
         title: 'Tem certeza?',
-        text: 'Esta ação não pode ser revertida!',
+        text: 'Esta aÃƒÂ§ÃƒÂ£o nÃƒÂ£o pode ser revertida!',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -348,7 +349,7 @@ async function excluirProduto(id) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                const response = await fetch('../../../api/organizador/produtos/delete.php', {
+                const response = await fetch((window.API_BASE || '/api') + '/organizador/produtos/delete.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -362,7 +363,7 @@ async function excluirProduto(id) {
 
                 if (data.success) {
                     carregarProdutos();
-                    Swal.fire('Excluído!', 'Produto excluído com sucesso.', 'success');
+                    Swal.fire('ExcluÃƒÂ­do!', 'Produto excluÃƒÂ­do com sucesso.', 'success');
                 } else {
                     Swal.fire('Erro!', 'Erro: ' + data.error, 'error');
                 }
@@ -375,7 +376,7 @@ async function excluirProduto(id) {
 }
 
 // =====================================================
-// UTILITÁRIOS
+// UTILITÃƒÂRIOS
 // =====================================================
 
 function mostrarLoading() {
@@ -411,6 +412,6 @@ function atualizarResumo() {
     const ativos = produtos.filter(p => p.ativo).length;
     const disponiveisVenda = produtos.filter(p => p.disponivel_venda).length;
 
-    // Aqui você pode adicionar mais métricas se necessário
-    console.log(`Total: ${total}, Ativos: ${ativos}, Disponíveis para venda: ${disponiveisVenda}`);
+    // Aqui vocÃƒÂª pode adicionar mais mÃƒÂ©tricas se necessÃƒÂ¡rio
+    console.log(`Total: ${total}, Ativos: ${ativos}, DisponÃƒÂ­veis para venda: ${disponiveisVenda}`);
 }

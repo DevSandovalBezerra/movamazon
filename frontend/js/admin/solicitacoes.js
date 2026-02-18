@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 (() => {
     const container = document.getElementById('solicitacoes-lista');
     if (!container) return;
@@ -5,10 +6,10 @@
     if (!window.API_BASE) {
         const path = window.location.pathname || '';
         const idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     }
 
-    const api = (endpoint) => `${window.API_BASE}/api/${endpoint}`;
+    const api = (endpoint) => `${window.API_BASE}/${endpoint}`;
 
     const els = {
         container,
@@ -33,7 +34,7 @@
         pendingAction: null
     };
 
-    // Usar função comum do AdminUtils se disponível
+    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
     const showMessage = (type, msg) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, msg);
@@ -78,7 +79,7 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                     <div>
                         <h4 class="text-lg font-semibold text-gray-900">${item.nome_evento}</h4>
-                        <p class="text-sm text-gray-500">Responsável: ${item.responsavel_nome} • ${item.responsavel_email}</p>
+                        <p class="text-sm text-gray-500">ResponsÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡vel: ${item.responsavel_nome} ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${item.responsavel_email}</p>
                         <p class="text-xs text-gray-400">Criado em: ${item.criado_em_formatado || ''}</p>
                     </div>
                     <div class="flex flex-wrap gap-2 items-center">
@@ -92,7 +93,7 @@
                             </button>
                         ` : ''}
                         ${item.status === 'recusado' ? `
-                            <button class="btn-table-danger" data-acao="deletar" data-id="${item.id}" title="Deletar solicitação">
+                            <button class="btn-table-danger" data-acao="deletar" data-id="${item.id}" title="Deletar solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o">
                                 <i class="fas fa-trash text-red-600"></i>
                             </button>
                         ` : ''}
@@ -117,7 +118,7 @@
             renderCards();
         } catch (error) {
             console.error(error);
-            showMessage('error', 'Falha ao carregar solicitações');
+            showMessage('error', 'Falha ao carregar solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         } finally {
             toggleLoading(false);
         }
@@ -161,7 +162,7 @@
             
             const html = `
                 <div class="space-y-3">
-                    <h4 class="text-lg font-semibold text-gray-900">Responsável</h4>
+                    <h4 class="text-lg font-semibold text-gray-900">ResponsÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡vel</h4>
                     ${formatLinha('Nome', s.responsavel_nome)}
                     ${formatLinha('Email', s.responsavel_email)}
                     ${formatLinha('Telefone', s.responsavel_telefone)}
@@ -173,24 +174,24 @@
                     <h4 class="text-lg font-semibold text-gray-900">Evento</h4>
                     ${formatLinha('Nome do evento', s.nome_evento)}
                     ${formatLinha('Cidade/UF', `${s.cidade_evento} / ${s.uf_evento}`)}
-                    ${formatLinha('Data prevista', s.data_prevista || 'Não informado')}
-                    ${formatLinha('Estimativa participantes', s.estimativa_participantes || 'Não informado')}
+                    ${formatLinha('Data prevista', s.data_prevista || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado')}
+                    ${formatLinha('Estimativa participantes', s.estimativa_participantes || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado')}
                     ${formatLinha('Modalidade', s.modalidade_esportiva)}
-                    ${formatLinha('Descrição', s.descricao_evento)}
+                    ${formatLinha('DescriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', s.descricao_evento)}
                     ${formatLinha('Necessidades', s.necessidades)}
                 </div>
                 <div class="space-y-3 pt-4">
                     <h4 class="text-lg font-semibold text-gray-900">Documentos</h4>
                     ${formatLinha('Regulamento', s.regulamento_status)}
                     ${formatLinha('Link regulamento', getRegulamentoLink(s.link_regulamento))}
-                    ${formatLinha('Autorização', s.possui_autorizacao)}
+                    ${formatLinha('AutorizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', s.possui_autorizacao)}
                     ${formatLinha('Protocolo', s.link_autorizacao)}
                     ${formatLinha('Documentos extras', s.documentos_link ? `<a class="text-brand-green underline" target="_blank" href="${s.documentos_link}">${s.documentos_link}</a>` : '-') }
                 </div>
                 <div class="space-y-3 pt-4">
                     <h4 class="text-lg font-semibold text-gray-900">Outros</h4>
-                    ${formatLinha('Indicação', s.indicacao)}
-                    ${formatLinha('Preferência contato', s.preferencia_contato)}
+                    ${formatLinha('IndicaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', s.indicacao)}
+                    ${formatLinha('PreferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia contato', s.preferencia_contato)}
                     ${formatLinha('Status', badgeStatus(s.status))}
                 </div>
             `;
@@ -220,7 +221,7 @@
                 mensagemAprovado.innerHTML = `
                     <div class="flex items-center justify-center gap-2 text-green-700">
                         <i class="fas fa-check-circle text-xl"></i>
-                        <span class="font-semibold">Esta solicitação já foi aprovada e o responsável foi criado.</span>
+                        <span class="font-semibold">Esta solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ foi aprovada e o responsÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡vel foi criado.</span>
                     </div>
                 `;
                 footer.insertBefore(mensagemAprovado, footer.firstChild);
@@ -229,7 +230,7 @@
             openModal('modal-solicitacao');
         } catch (error) {
             console.error(error);
-            showMessage('error', 'Não foi possível carregar a solicitação');
+            showMessage('error', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel carregar a solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
         }
     };
 
@@ -272,13 +273,13 @@
                     title: 'Organizador criado',
                     html: senha ? `
                         <div class="space-y-3">
-                            <p>Senha temporária gerada:</p>
+                            <p>Senha temporÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ria gerada:</p>
                             <div class="flex items-center gap-2 justify-center">
                                 <code class="px-3 py-2 bg-gray-100 rounded text-lg">${senha}</code>
                                 <button id="copy-temp-password" class="btn-table-primary">Copiar</button>
                             </div>
                         </div>
-                    ` : 'Responsável criado e notificado',
+                    ` : 'ResponsÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡vel criado e notificado',
                     showConfirmButton: true,
                     confirmButtonText: 'OK'
                 });
@@ -290,19 +291,19 @@
                                 await navigator.clipboard.writeText(senha);
                                 showMessage('success', 'Senha copiada');
                             } catch (_) {
-                                showMessage('error', 'Não foi possível copiar');
+                                showMessage('error', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel copiar');
                             }
                         });
                     }
                 }, 0);
             } else {
-                showMessage('success', 'Responsável criado. Senha: ' + (data.temp_password || ''));
+                showMessage('success', 'ResponsÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡vel criado. Senha: ' + (data.temp_password || ''));
             }
             closeModal('modal-solicitacao');
             await carregarSolicitacoes();
         } catch (error) {
             console.error(error);
-            showMessage('error', error.message || 'Falha ao aprovar solicitação');
+            showMessage('error', error.message || 'Falha ao aprovar solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
         } finally {
             els.btnAprovar.disabled = false;
         }
@@ -319,12 +320,12 @@
             });
             const data = await response.json();
             if (!response.ok || !data.success) throw new Error(data.message || 'Erro ao deletar');
-            showMessage('success', 'Solicitação deletada com sucesso');
+            showMessage('success', 'SolicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o deletada com sucesso');
             closeModal('modal-confirmacao-solicitacao');
             await carregarSolicitacoes();
         } catch (error) {
             console.error(error);
-            showMessage('error', error.message || 'Falha ao deletar solicitação');
+            showMessage('error', error.message || 'Falha ao deletar solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
         }
     };
 
@@ -332,16 +333,16 @@
         state.pendingAction = tipo;
         const map = {
             analise: {
-                titulo: 'Marcar como em análise',
-                texto: 'Deseja mover esta solicitação para o status "em análise"?'
+                titulo: 'Marcar como em anÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lise',
+                texto: 'Deseja mover esta solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para o status "em anÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lise"?'
             },
             recusar: {
-                titulo: 'Recusar solicitação',
-                texto: 'Tem certeza que deseja recusar esta solicitação?'
+                titulo: 'Recusar solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
+                texto: 'Tem certeza que deseja recusar esta solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o?'
             },
             deletar: {
-                titulo: 'Deletar solicitação',
-                texto: 'Tem certeza que deseja deletar permanentemente esta solicitação? Esta ação não pode ser desfeita.'
+                titulo: 'Deletar solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
+                texto: 'Tem certeza que deseja deletar permanentemente esta solicitaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o? Esta aÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode ser desfeita.'
             }
         };
         const config = map[tipo];

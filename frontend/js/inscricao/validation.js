@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 export class InscricaoValidator {
     constructor() {
         this.rules = {};
@@ -106,16 +107,16 @@ export class InscricaoValidator {
 
     getDefaultMessage(ruleName, params = []) {
         const messages = {
-            required: 'Este campo é obrigatório',
-            email: 'E-mail inválido',
-            cpf: 'CPF inválido',
-            telefone: 'Telefone inválido',
-            minLength: `Mínimo de ${params[0]} caracteres`,
-            maxLength: `Máximo de ${params[0]} caracteres`,
-            numeric: 'Deve ser um número',
-            date: 'Data inválida'
+            required: 'Este campo ÃƒÂ© obrigatÃƒÂ³rio',
+            email: 'E-mail invÃƒÂ¡lido',
+            cpf: 'CPF invÃƒÂ¡lido',
+            telefone: 'Telefone invÃƒÂ¡lido',
+            minLength: `MÃƒÂ­nimo de ${params[0]} caracteres`,
+            maxLength: `MÃƒÂ¡ximo de ${params[0]} caracteres`,
+            numeric: 'Deve ser um nÃƒÂºmero',
+            date: 'Data invÃƒÂ¡lida'
         };
-        return messages[ruleName] || 'Valor inválido';
+        return messages[ruleName] || 'Valor invÃƒÂ¡lido';
     }
 
     clearErrors(field = null) {

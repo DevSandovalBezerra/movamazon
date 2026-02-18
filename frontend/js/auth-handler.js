@@ -1,15 +1,16 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
- * Handler Centralizado de Autenticação
+ * Handler Centralizado de AutenticaÃƒÂ§ÃƒÂ£o
  * 
- * Este arquivo deve ser incluído em todas as páginas que fazem chamadas para APIs autenticadas.
- * Ele detecta automaticamente sessões expiradas e redireciona o usuário.
+ * Este arquivo deve ser incluÃƒÂ­do em todas as pÃƒÂ¡ginas que fazem chamadas para APIs autenticadas.
+ * Ele detecta automaticamente sessÃƒÂµes expiradas e redireciona o usuÃƒÂ¡rio.
  */
 
 /**
- * Verifica se a resposta da API indica sessão expirada
+ * Verifica se a resposta da API indica sessÃƒÂ£o expirada
  * @param {Response} response Resposta do fetch
  * @param {Object} data Dados parseados da resposta
- * @returns {boolean} true se sessão expirada foi detectada
+ * @returns {boolean} true se sessÃƒÂ£o expirada foi detectada
  */
 function verificarSessaoExpirada(response, data) {
     return response.status === 401 && data.code === 'SESSION_EXPIRED';
@@ -26,12 +27,12 @@ function verificarAcessoNegado(response, data) {
 }
 
 /**
- * Mostra mensagem de sessão expirada
+ * Mostra mensagem de sessÃƒÂ£o expirada
  * @param {string} mensagem Mensagem a ser exibida
  * @param {string} redirectUrl URL para redirecionamento
  */
 function mostrarMensagemSessaoExpirada(mensagem, redirectUrl = '/frontend/paginas/auth/login.php') {
-    // Criar modal de sessão expirada
+    // Criar modal de sessÃƒÂ£o expirada
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     modal.innerHTML = `
@@ -41,7 +42,7 @@ function mostrarMensagemSessaoExpirada(mensagem, redirectUrl = '/frontend/pagina
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                 </svg>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">Sessão Expirada</h3>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">SessÃƒÂ£o Expirada</h3>
             <p class="text-gray-600 mb-4">${mensagem}</p>
             <div class="flex items-center justify-center space-x-2 text-sm text-gray-500 mb-4">
                 <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
@@ -56,7 +57,7 @@ function mostrarMensagemSessaoExpirada(mensagem, redirectUrl = '/frontend/pagina
     
     document.body.appendChild(modal);
     
-    // Redirecionar automaticamente após 3 segundos
+    // Redirecionar automaticamente apÃƒÂ³s 3 segundos
     setTimeout(() => {
         window.location.href = redirectUrl;
     }, 3000);
@@ -90,9 +91,9 @@ function mostrarMensagemAcessoNegado(mensagem) {
 }
 
 /**
- * Wrapper para fetch que trata automaticamente sessões expiradas
+ * Wrapper para fetch que trata automaticamente sessÃƒÂµes expiradas
  * @param {string} url URL da API
- * @param {Object} options Opções do fetch
+ * @param {Object} options OpÃƒÂ§ÃƒÂµes do fetch
  * @returns {Promise<Object>} Resposta parseada da API
  */
 async function fetchComTratamentoAuth(url, options = {}) {
@@ -100,16 +101,16 @@ async function fetchComTratamentoAuth(url, options = {}) {
         const response = await fetch(url, options);
         const data = await response.json();
         
-        // Verificar sessão expirada
+        // Verificar sessÃƒÂ£o expirada
         if (verificarSessaoExpirada(response, data)) {
-            console.log('🔒 Sessão expirada detectada, redirecionando...');
+            console.log('Ã°Å¸â€â€™ SessÃƒÂ£o expirada detectada, redirecionando...');
             mostrarMensagemSessaoExpirada(data.message, data.redirect);
             return null;
         }
         
         // Verificar acesso negado
         if (verificarAcessoNegado(response, data)) {
-            console.log('🚫 Acesso negado detectado');
+            console.log('Ã°Å¸Å¡Â« Acesso negado detectado');
             mostrarMensagemAcessoNegado(data.message);
             return null;
         }
@@ -117,25 +118,25 @@ async function fetchComTratamentoAuth(url, options = {}) {
         return data;
         
     } catch (error) {
-        console.error('Erro na requisição:', error);
+        console.error('Erro na requisiÃƒÂ§ÃƒÂ£o:', error);
         throw error;
     }
 }
 
 /**
- * Verifica se o usuário está logado (verificação básica no frontend)
+ * Verifica se o usuÃƒÂ¡rio estÃƒÂ¡ logado (verificaÃƒÂ§ÃƒÂ£o bÃƒÂ¡sica no frontend)
  * @returns {boolean}
  */
 function verificarLoginFrontend() {
-    // Esta é uma verificação básica no frontend
-    // A verificação real sempre deve ser feita no backend
+    // Esta ÃƒÂ© uma verificaÃƒÂ§ÃƒÂ£o bÃƒÂ¡sica no frontend
+    // A verificaÃƒÂ§ÃƒÂ£o real sempre deve ser feita no backend
     return document.cookie.includes('PHPSESSID') || 
            localStorage.getItem('user_logged') === 'true' ||
            sessionStorage.getItem('user_logged') === 'true';
 }
 
 /**
- * Logout do usuário (limpa dados locais)
+ * Logout do usuÃƒÂ¡rio (limpa dados locais)
  */
 function logoutFrontend() {
     localStorage.removeItem('user_logged');
@@ -144,7 +145,7 @@ function logoutFrontend() {
     window.location.href = '/frontend/paginas/auth/login.php';
 }
 
-// Exportar funções para uso global
+// Exportar funÃƒÂ§ÃƒÂµes para uso global
 window.verificarSessaoExpirada = verificarSessaoExpirada;
 window.verificarAcessoNegado = verificarAcessoNegado;
 window.mostrarMensagemSessaoExpirada = mostrarMensagemSessaoExpirada;

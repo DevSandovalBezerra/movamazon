@@ -1,30 +1,31 @@
-// ========== MODO PADRÃO: Checkout Transparente ativo na página de inscrição.
+if (window.getApiBase) { window.getApiBase(); }
+// ========== MODO PADRÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Checkout Transparente ativo na pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina de inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.
 // ROLLBACK: defina USE_CHECKOUT_PRO_REDIRECT = true para voltar ao redirect.
 const USE_CHECKOUT_PRO_REDIRECT = false;
 
-// Variáveis globais para MercadoPago
+// VariÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡veis globais para MercadoPago
 let mp = null;
 let bricksBuilder = null;
 
-// Função para inicializar MercadoPago usando public key dinâmica
+// FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para inicializar MercadoPago usando public key dinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mica
 async function inicializarMercadoPago() {
     return new Promise(async (resolve, reject) => {
-        // Se já foi inicializado, retornar imediatamente
+        // Se jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ foi inicializado, retornar imediatamente
         if (mp && bricksBuilder) {
-            console.log("✅ MercadoPago já inicializado");
+            console.log("ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ MercadoPago jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ inicializado");
             resolve({ mp, bricksBuilder });
             return;
         }
 
         try {
-            // Buscar configuração do servidor
+            // Buscar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do servidor
             const config = await getMercadoPagoConfig();
             
             if (!config.public_key) {
-                throw new Error('Public key não encontrada na configuração');
+                throw new Error('Public key nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrada na configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
             }
 
-            // Verificar se o SDK já está disponível
+            // Verificar se o SDK jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
             if (typeof MercadoPago !== 'undefined') {
                 mp = new MercadoPago(config.public_key);
                 bricksBuilder = mp.bricks();
@@ -35,7 +36,7 @@ async function inicializarMercadoPago() {
                 console.log("MercadoPago instance:", mp);
                 console.log("BricksBuilder instance:", bricksBuilder);
                 
-                // Tornar acessível globalmente
+                // Tornar acessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel globalmente
                 window.mp = mp;
                 window.bricksBuilder = bricksBuilder;
                 
@@ -43,10 +44,10 @@ async function inicializarMercadoPago() {
                 return;
             }
 
-            // Se não está disponível, aguardar
-            console.log("⏳ Aguardando SDK do MercadoPago carregar...");
+            // Se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel, aguardar
+            console.log("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³ Aguardando SDK do MercadoPago carregar...");
             let attempts = 0;
-            const maxAttempts = 50; // 5 segundos máximo (50 * 100ms)
+            const maxAttempts = 50; // 5 segundos mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ximo (50 * 100ms)
             
             const checkInterval = setInterval(() => {
                 attempts++;
@@ -63,58 +64,58 @@ async function inicializarMercadoPago() {
                         console.log("MercadoPago instance:", mp);
                         console.log("BricksBuilder instance:", bricksBuilder);
                         
-                        // Tornar acessível globalmente
+                        // Tornar acessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel globalmente
                         window.mp = mp;
                         window.bricksBuilder = bricksBuilder;
                         
                         resolve({ mp, bricksBuilder });
                     } catch (error) {
-                        console.error("❌ ============================================");
-                        console.error("❌ ERRO AO INICIALIZAR MERCADOPAGO");
-                        console.error("❌ ============================================");
-                        console.error("❌ Mensagem:", error.message);
-                        console.error("❌ Stack:", error.stack);
-                        console.error("❌ Tipo:", error.name);
-                        console.error("❌ Config:", config);
-                        console.error("❌ ============================================");
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================");
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ERRO AO INICIALIZAR MERCADOPAGO");
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================");
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Mensagem:", error.message);
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Stack:", error.stack);
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Tipo:", error.name);
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Config:", config);
+                        console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================");
                         reject(error);
                     }
                 } else if (attempts >= maxAttempts) {
                     clearInterval(checkInterval);
-                    const error = new Error('SDK do MercadoPago não carregou após 5 segundos');
-                    console.error("❌", error.message);
+                    const error = new Error('SDK do MercadoPago nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o carregou apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s 5 segundos');
+                    console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢", error.message);
                     reject(error);
                 }
             }, 100);
         } catch (error) {
-            console.error("❌ ============================================");
-            console.error("❌ ERRO AO OBTER CONFIGURAÇÃO DO MERCADO PAGO");
-            console.error("❌ ============================================");
-            console.error("❌ Mensagem:", error.message);
-            console.error("❌ Stack:", error.stack);
-            console.error("❌ Tipo:", error.name);
-            console.error("❌ ============================================");
+            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================");
+            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ERRO AO OBTER CONFIGURAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O DO MERCADO PAGO");
+            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================");
+            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Mensagem:", error.message);
+            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Stack:", error.stack);
+            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Tipo:", error.name);
+            console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================");
             reject(error);
         }
     });
 }
 
-// ✅ Base dinâmico para APIs
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Base dinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mico para APIs
 if (!window.API_BASE) {
     (function () {
         var path = window.location.pathname || '';
         var idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     })();
 }
 
-// ✅ Função para construir URLs usando API_BASE
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para construir URLs usando API_BASE
 function getApiUrl(endpoint) {
-    const url = `${window.API_BASE}/api/${endpoint}`;
+    const url = `${window.API_BASE}/${endpoint}`;
     return url;
 }
 
-// ✅ Renderizar Payment Brick EXATAMENTE como no exemplo funcional
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Renderizar Payment Brick EXATAMENTE como no exemplo funcional
 const renderPaymentBrick = async (bricksBuilder) => {
     const amount = parseFloat(document.getElementById('valor_payment').value);
     const preferenceId = document.getElementById('preference_id').value;
@@ -128,14 +129,14 @@ const renderPaymentBrick = async (bricksBuilder) => {
     const settings = {
         initialization: usePreferenceId ? {
             /*
-             Usando preferenceId - MercadoPago usa configuração da preference
-             mas ainda precisa do amount para validação
+             Usando preferenceId - MercadoPago usa configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o da preference
+             mas ainda precisa do amount para validaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             */
             amount: amount,
             preferenceId: preferenceId,
         } : {
             /*
-             Usando amount - MercadoPago decide métodos baseado no valor
+             Usando amount - MercadoPago decide mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©todos baseado no valor
             */
             amount: amount,
         },
@@ -150,17 +151,17 @@ const renderPaymentBrick = async (bricksBuilder) => {
             onReady: () => {
                 /*
                  Callback chamado quando o Brick estiver pronto.
-                 Aqui você pode ocultar loadings do seu site, por exemplo.
+                 Aqui vocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª pode ocultar loadings do seu site, por exemplo.
                 */
                 console.log("=== PAYMENT BRICK READY ===");
                 console.log("[PAGAMENTO] Payment Brick inicializado com sucesso");
                 
-                // Verificar se os elementos de radio estão presentes
+                // Verificar se os elementos de radio estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o presentes
                 setTimeout(() => {
                     const radioButtons = document.querySelectorAll('#paymentBrick_container input[type="radio"]');
                     console.log(`[PAGAMENTO] Radio buttons encontrados: ${radioButtons.length}`);
                     if (radioButtons.length === 0) {
-                        console.warn('[PAGAMENTO] Nenhum radio button encontrado no Payment Brick - pode indicar problema de renderização');
+                        console.warn('[PAGAMENTO] Nenhum radio button encontrado no Payment Brick - pode indicar problema de renderizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
                     }
                 }, 1000);
             },
@@ -168,7 +169,7 @@ const renderPaymentBrick = async (bricksBuilder) => {
                 selectedPaymentMethod,
                 formData
             }) => {
-                // callback chamado ao clicar no botão de submissão dos dados
+                // callback chamado ao clicar no botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de submissÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o dos dados
                 console.log("=== PAYMENT SUBMISSION ===");
                 console.log("Selected Payment Method:", selectedPaymentMethod);
                 console.log("Form Data:", formData);
@@ -201,12 +202,12 @@ const renderPaymentBrick = async (bricksBuilder) => {
                                             onReady: () => {
                                                 /*
                                                  Callback chamado quando o StatusScreen estiver pronto.
-                                                 Aqui você pode ocultar o Payment Brick e mostrar mensagens de sucesso.
+                                                 Aqui vocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª pode ocultar o Payment Brick e mostrar mensagens de sucesso.
                                                 */
                                                 console.log("=== STATUS SCREEN BRICK READY ===");
                                                 document.getElementById("paymentBrick_container").style.display = 'none';
                                                 
-                                                // ✅ Mostrar mensagem de sucesso e aviso sobre email
+                                                // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Mostrar mensagem de sucesso e aviso sobre email
                                                 mostrarMensagemSucesso(response.id);
                                             },
                                             onError: (error) => {
@@ -222,13 +223,13 @@ const renderPaymentBrick = async (bricksBuilder) => {
                                         settings,
                                     );
                                 };
-                                // Usar bricksBuilder do parâmetro ou global como fallback
+                                // Usar bricksBuilder do parÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢metro ou global como fallback
                                 const builderForStatus = bricksBuilder || window.bricksBuilder;
                                 if (builderForStatus) {
                                     renderStatusScreenBrick(builderForStatus);
                                 } else {
-                                    console.error('❌ bricksBuilder não disponível para renderStatusScreenBrick');
-                                    mostrarErro('Erro ao exibir status do pagamento: SDK não inicializado');
+                                    console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ bricksBuilder nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel para renderStatusScreenBrick');
+                                    mostrarErro('Erro ao exibir status do pagamento: SDK nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o inicializado');
                                 }
                             } else {
                                 console.error('Payment failed:', response);
@@ -257,12 +258,12 @@ const renderPaymentBrick = async (bricksBuilder) => {
     );
 };
 
-// ✅ Inicializar quando DOM estiver pronto
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Inicializar quando DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function () {
     try {
-        console.log('✅ DOM carregado, inicializando apenas resumo...');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ DOM carregado, inicializando apenas resumo...');
 
-        // ✅ CORREÇÃO: Aguardar window.dadosInscricao estar disponível antes de calcular
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Aguardar window.dadosInscricao estar disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel antes de calcular
         function inicializarQuandoDadosDisponiveis() {
             if (!window.dadosInscricao) {
                 console.log('[PAGAMENTO] Aguardando window.dadosInscricao...');
@@ -270,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            console.log('[PAGAMENTO] window.dadosInscricao disponível, inicializando resumo...');
+            console.log('[PAGAMENTO] window.dadosInscricao disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel, inicializando resumo...');
             console.log('[PAGAMENTO] Dados:', {
                 totalModalidades: window.dadosInscricao.totalModalidades,
                 totalProdutosExtras: window.dadosInscricao.totalProdutosExtras,
@@ -278,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Inicializar APENAS o resumo e event listeners
-            // NÃO inicializar o pagamento automaticamente
+            // NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O inicializar o pagamento automaticamente
             if (typeof renderizarResumoCompra === 'function') {
                 renderizarResumoCompra();
             }
@@ -291,99 +292,99 @@ document.addEventListener('DOMContentLoaded', function () {
                 setupEventListeners();
             }
 
-            console.log('✅ Inicialização básica concluída - aguardando clique do usuário');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ InicializaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡sica concluÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­da - aguardando clique do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio');
         }
 
-        // Iniciar verificação
+        // Iniciar verificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
         inicializarQuandoDadosDisponiveis();
 
     } catch (error) {
-        console.error('❌ Erro ao inicializar:', error);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao inicializar:', error);
     }
 });
 
-// ✅ Função principal para inicializar o pagamento (INATIVA quando USE_CHECKOUT_PRO_REDIRECT = true; ver comentário ROLLBACK no topo)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o principal para inicializar o pagamento (INATIVA quando USE_CHECKOUT_PRO_REDIRECT = true; ver comentÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio ROLLBACK no topo)
 async function inicializarPagamento() {
     if (typeof USE_CHECKOUT_PRO_REDIRECT !== 'undefined' && USE_CHECKOUT_PRO_REDIRECT) {
-        console.log('⏭️ Checkout Pro redirect ativo; inicializarPagamento não executa Brick.');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â­ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Checkout Pro redirect ativo; inicializarPagamento nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o executa Brick.');
         return;
     }
-    console.log('🚀 ============================================');
-    console.log('🚀 inicializarPagamento() - INICIANDO...');
-    console.log('🚀 ============================================');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ============================================');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ inicializarPagamento() - INICIANDO...');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ ============================================');
     
     if (window.paymentBrickController) {
-        console.log('⚠️ Payment Brick já foi inicializado anteriormente');
-        console.log('🔍 window.paymentBrickController:', window.paymentBrickController);
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Payment Brick jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ foi inicializado anteriormente');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â window.paymentBrickController:', window.paymentBrickController);
         return;
     }
 
     try {
-        // ✅ Aguardar SDK do MercadoPago estar disponível
-        console.log('⏳ Aguardando inicialização do MercadoPago...');
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Aguardar SDK do MercadoPago estar disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³ Aguardando inicializaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do MercadoPago...');
         const { mp: mpInstance, bricksBuilder: bricksBuilderInstance } = await inicializarMercadoPago();
         
-        // Garantir que as variáveis globais estejam atualizadas
+        // Garantir que as variÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡veis globais estejam atualizadas
         if (!bricksBuilder) {
             bricksBuilder = bricksBuilderInstance;
         }
         
-        console.log('✅ MercadoPago inicializado, continuando...');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ MercadoPago inicializado, continuando...');
 
-        console.log('🔍 Calculando total...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Calculando total...');
         const total = calcularTotal();
-        console.log('🔍 Total calculado:', total);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Total calculado:', total);
 
         if (total <= 0) {
-            console.error('❌ Total inválido:', total);
-            throw new Error('Valor total inválido');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido:', total);
+            throw new Error('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
         }
 
-        console.log('✅ Valor total calculado:', total);
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Valor total calculado:', total);
 
-        // Criar pré-inscrição se necessário
-        console.log('🔍 Verificando inscrição ID...');
-        console.log('🔍 window.dadosInscricao:', window.dadosInscricao);
+        // Criar prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o se necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Verificando inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ID...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â window.dadosInscricao:', window.dadosInscricao);
         let inscricaoId = window.dadosInscricao?.inscricaoId;
-        console.log('🔍 Inscrição ID atual:', inscricaoId);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ID atual:', inscricaoId);
         
         if (!inscricaoId) {
-            console.log('📝 Criando pré-inscrição...');
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â Criando prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o...');
             inscricaoId = await criarPreInscricao(total);
-            console.log('✅ Pré-inscrição criada, ID:', inscricaoId);
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o criada, ID:', inscricaoId);
         } else {
-            console.log('✅ Usando inscrição ID existente:', inscricaoId);
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Usando inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ID existente:', inscricaoId);
         }
 
         // Criar preference
-        console.log('📝 Criando preference...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â Criando preference...');
         const preferenceResult = await criarPreference(inscricaoId, total);
         const preferenceId = preferenceResult.preference_id || preferenceResult;
-        console.log('✅ Preference criada, ID:', preferenceId);
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Preference criada, ID:', preferenceId);
 
-        // Configurar elementos HTML necessários
-        console.log('🔧 Configurando elementos HTML...');
+        // Configurar elementos HTML necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â§ Configurando elementos HTML...');
         configurarElementosHTML(total, preferenceId);
-        console.log('✅ Elementos HTML configurados');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Elementos HTML configurados');
 
-        // Aguardar um pouco para garantir que o DOM está totalmente atualizado
+        // Aguardar um pouco para garantir que o DOM estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ totalmente atualizado
         await new Promise(resolve => setTimeout(resolve, 100));
 
-        // Se o container do Brick não existe (página usa Checkout Pro redirect), redirecionar para init_point
+        // Se o container do Brick nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o existe (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina usa Checkout Pro redirect), redirecionar para init_point
         const brickContainer = document.getElementById('paymentBrick_container');
         const initPoint = preferenceResult.init_point || preferenceResult.initPoint;
         if (!brickContainer && initPoint) {
-            console.log('✅ Container Brick não encontrado (Checkout Pro). Redirecionando para init_point...');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Container Brick nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado (Checkout Pro). Redirecionando para init_point...');
             window.location.href = initPoint;
             return;
         }
         if (!brickContainer) {
-            throw new Error('Container de pagamento não encontrado. Use o botão Finalizar Compra para ser redirecionado ao Mercado Pago.');
+            throw new Error('Container de pagamento nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado. Use o botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Finalizar Compra para ser redirecionado ao Mercado Pago.');
         }
 
         if (brickContainer) {
             const isVisible = brickContainer.offsetWidth > 0 && brickContainer.offsetHeight > 0;
-            console.log('🔍 Verificação final do container:', {
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â VerificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o final do container:', {
                 width: brickContainer.offsetWidth,
                 height: brickContainer.offsetHeight,
                 isVisible: isVisible,
@@ -392,7 +393,7 @@ async function inicializarPagamento() {
             });
 
             if (!isVisible) {
-                console.warn('⚠️ Container não está visível, forçando visibilidade...');
+                console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Container nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ visÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel, forÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ando visibilidade...');
                 brickContainer.style.display = 'block';
                 brickContainer.style.visibility = 'visible';
                 brickContainer.style.minHeight = '400px';
@@ -406,43 +407,43 @@ async function inicializarPagamento() {
         // Renderizar o Brick usando o bricksBuilder garantido
         const builderToUse = bricksBuilder || bricksBuilderInstance || window.bricksBuilder;
         if (!builderToUse) {
-            throw new Error('bricksBuilder não está disponível');
+            throw new Error('bricksBuilder nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel');
         }
         
         await renderPaymentBrick(builderToUse);
 
-        console.log('✅ Payment Brick renderizado com sucesso!');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Payment Brick renderizado com sucesso!');
 
     } catch (error) {
-        console.error('❌ ============================================');
-        console.error('❌ ERRO AO INICIALIZAR PAGAMENTO');
-        console.error('❌ ============================================');
-        console.error('❌ Mensagem:', error.message);
-        console.error('❌ Stack:', error.stack);
-        console.error('❌ Tipo:', error.name);
-        console.error('❌ Dados de inscrição:', window.dadosInscricao);
-        console.error('❌ MercadoPago disponível:', typeof MercadoPago !== 'undefined');
-        console.error('❌ bricksBuilder disponível:', !!window.bricksBuilder);
-        console.error('❌ ============================================');
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================');
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ERRO AO INICIALIZAR PAGAMENTO');
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================');
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Mensagem:', error.message);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Stack:', error.stack);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Tipo:', error.name);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Dados de inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', window.dadosInscricao);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ MercadoPago disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel:', typeof MercadoPago !== 'undefined');
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ bricksBuilder disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel:', !!window.bricksBuilder);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ ============================================');
         
-        // Mostrar erro ao usuário de forma amigável
+        // Mostrar erro ao usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio de forma amigÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡vel
         if (window.mostrarErro) {
             window.mostrarErro('Erro ao inicializar pagamento: ' + error.message);
         } else {
             alert('Erro ao inicializar pagamento: ' + error.message);
         }
         
-        // Re-throw para que o caller possa tratar se necessário
+        // Re-throw para que o caller possa tratar se necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
         throw error;
     }
 }
 
-// ✅ Criar pré-inscrição
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Criar prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
 async function criarPreInscricao(total) {
-    // ✅ NOVO: Usar a nova API de salvamento independente
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ NOVO: Usar a nova API de salvamento independente
     const payload = montarPayloadPreInscricao(total);
 
-    console.log('📤 Payload enviado para save_inscricao:', payload);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¤ Payload enviado para save_inscricao:', payload);
 
     const response = await fetch(getApiUrl('inscricao/save_inscricao.php'), {
         method: 'POST',
@@ -452,19 +453,19 @@ async function criarPreInscricao(total) {
         body: JSON.stringify(payload)
     });
 
-    console.log('📥 Response status:', response.status);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Response status:', response.status);
 
     if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Erro na resposta:', errorText);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro na resposta:', errorText);
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const result = await response.json();
-    console.log('📥 Resultado da inscrição:', result);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Resultado da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', result);
 
     if (!result?.success) {
-        throw new Error(result?.message || 'Falha ao salvar inscrição');
+        throw new Error(result?.message || 'Falha ao salvar inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
     }
 
     const inscricaoId = result.inscricao_id;
@@ -472,15 +473,15 @@ async function criarPreInscricao(total) {
     window.dadosInscricao.inscricaoId = inscricaoId;
     window.dadosInscricao.externalReference = result.external_reference;
 
-    console.log('✅ Inscrição salva no banco: ID=' + inscricaoId + ', ExternalRef=' + result.external_reference);
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o salva no banco: ID=' + inscricaoId + ', ExternalRef=' + result.external_reference);
     return inscricaoId;
 }
 
-// ✅ Criar preference
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Criar preference
 async function criarPreference(inscricaoId, total) {
     const payload = montarPayloadCreatePreference(inscricaoId, total);
 
-    console.log('📤 Payload enviado para create_preference:', payload);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¤ Payload enviado para create_preference:', payload);
 
     const response = await fetch(getApiUrl('inscricao/create_preference.php'), {
         method: 'POST',
@@ -490,28 +491,28 @@ async function criarPreference(inscricaoId, total) {
         body: JSON.stringify(payload)
     });
 
-    console.log('📥 Response status create_preference:', response.status);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Response status create_preference:', response.status);
 
     if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Erro na resposta create_preference:', errorText);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro na resposta create_preference:', errorText);
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const result = await response.json();
-    console.log('📥 Resultado da preference:', result);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Resultado da preference:', result);
 
     if (!result?.success || !result?.preference_id) {
-        throw new Error(result?.error || 'Falha ao criar preferência');
+        throw new Error(result?.error || 'Falha ao criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia');
     }
 
-    console.log('✅ Preference criada:', result.preference_id, 'init_point:', result.init_point ? 'ok' : 'n/a');
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Preference criada:', result.preference_id, 'init_point:', result.init_point ? 'ok' : 'n/a');
     return { preference_id: result.preference_id, init_point: result.init_point || '' };
 }
 
-// ✅ Configurar elementos HTML necessários (como no exemplo funcional)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Configurar elementos HTML necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios (como no exemplo funcional)
 function configurarElementosHTML(total, preferenceId) {
-    // Criar ou atualizar elementos necessários
+    // Criar ou atualizar elementos necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios
     let valorElement = document.getElementById('valor_payment');
     if (!valorElement) {
         valorElement = document.createElement('input');
@@ -545,27 +546,27 @@ function configurarElementosHTML(total, preferenceId) {
         valorDisplay.textContent = total.toFixed(2).replace('.', ',');
     }
 
-    console.log('✅ Elementos HTML configurados:', {
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Elementos HTML configurados:', {
         valor: total,
         preferenceId: preferenceId,
         usePreferenceId: 'true'
     });
 }
 
-// ✅ Calcular subtotal (modalidades + extras - desconto, ANTES da taxa de repasse)
-// ✅ Arredondar para 2 casas decimais (evitar erros de ponto flutuante)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Calcular subtotal (modalidades + extras - desconto, ANTES da taxa de repasse)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Arredondar para 2 casas decimais (evitar erros de ponto flutuante)
 function arredondar(valor) {
     return Math.round((valor + Number.EPSILON) * 100) / 100;
 }
 
 function calcularSubtotal() {
-    // ✅ CORREÇÃO: Usar valores já calculados no PHP quando disponíveis
-    // Fórmula: modalidade + produtos_extras - desconto_cupom
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Usar valores jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ calculados no PHP quando disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis
+    // FÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rmula: modalidade + produtos_extras - desconto_cupom
     const totalModalidades = parseFloat(window.dadosInscricao?.totalModalidades || 0);
     const totalProdutosExtras = parseFloat(window.dadosInscricao?.totalProdutosExtras || 0);
     const valorDesconto = parseFloat(window.dadosInscricao?.valorDesconto || 0);
 
-    // Se os valores calculados estão disponíveis, usar diretamente
+    // Se os valores calculados estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis, usar diretamente
     if (totalModalidades > 0 || totalProdutosExtras > 0) {
         const subtotal = totalModalidades + totalProdutosExtras - valorDesconto;
         console.log('[PAGAMENTO] calcularSubtotal usando valores calculados:', {
@@ -577,7 +578,7 @@ function calcularSubtotal() {
         return arredondar(Math.max(0, subtotal));
     }
 
-    // Fallback: calcular manualmente se valores não estiverem disponíveis
+    // Fallback: calcular manualmente se valores nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estiverem disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis
     const modalidades = window.dadosInscricao?.modalidades || [];
     const produtosExtras = window.dadosInscricao?.produtosExtras || [];
 
@@ -596,9 +597,9 @@ function calcularSubtotal() {
     return arredondar(Math.max(0, subtotal));
 }
 
-// ✅ Calcular total (subtotal + taxa de repasse)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Calcular total (subtotal + taxa de repasse)
 function calcularTotal() {
-    let total = calcularSubtotal(); // já vem arredondado
+    let total = calcularSubtotal(); // jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ vem arredondado
 
     // Aplicar taxa de repasse (percentual sobre subtotal)
     const percentualRepasse = window.dadosInscricao?.percentualRepasse || 0;
@@ -613,10 +614,10 @@ function calcularTotal() {
 }
 
 
-// ✅ Montar payload para pré-inscrição
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Montar payload para prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
 function montarPayloadPreInscricao(total) {
     const modalidade = window.dadosInscricao?.modalidades?.[0] || {};
-    // ✅ CORREÇÃO: Produtos extras vêm de dadosInscricao.produtosExtras
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Produtos extras vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªm de dadosInscricao.produtosExtras
     const produtosExtras = window.dadosInscricao?.produtosExtras || [];
 
     // Calcular valores separados
@@ -626,7 +627,7 @@ function montarPayloadPreInscricao(total) {
 
     return {
         evento_id: window.dadosInscricao?.eventoId || 1,
-        modalidade_id: modalidade.id || 1, // ✅ CORREÇÃO: Enviar modalidade_id em vez de modalidades
+        modalidade_id: modalidade.id || 1, // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Enviar modalidade_id em vez de modalidades
         tamanho_camiseta: window.dadosInscricao?.ficha?.tamanho_camiseta || 'M',
         valor_modalidades: valorModalidades,
         valor_extras: valorExtras,
@@ -637,15 +638,15 @@ function montarPayloadPreInscricao(total) {
     };
 }
 
-// ✅ Montar payload para criar preference
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Montar payload para criar preference
 function montarPayloadCreatePreference(inscricaoId, total) {
     const modalidade = window.dadosInscricao?.modalidades?.[0] || {};
-    // ✅ CORREÇÃO: Produtos extras vêm de dadosInscricao.produtosExtras
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Produtos extras vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªm de dadosInscricao.produtosExtras
     const produtosExtras = window.dadosInscricao?.produtosExtras || [];
 
     return {
         inscricao_id: inscricaoId,
-        modalidade_nome: modalidade.nome || 'Inscrição',
+        modalidade_nome: modalidade.nome || 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
         lote_numero: modalidade.lote_numero || null,
         valor_total: total,
         evento_nome: window.dadosInscricao?.evento?.nome || 'Evento',
@@ -654,24 +655,24 @@ function montarPayloadCreatePreference(inscricaoId, total) {
         cupom: window.dadosInscricao?.cupomAplicado || null,
         valor_desconto: window.dadosInscricao?.valorDesconto || 0,
         seguro: 0,
-        origem: 'inscricao' // back_urls no backend (inscricao → /inscricao/sucesso)
+        origem: 'inscricao' // back_urls no backend (inscricao ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ /inscricao/sucesso)
     };
 }
 
-// ✅ Mostrar erro
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Mostrar erro
 function mostrarErro(mensagem) {
-    console.error('❌ Erro:', mensagem);
+    console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro:', mensagem);
     alert('Erro: ' + mensagem);
 }
 
-// ✅ Validar se dados estão prontos para pagamento
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Validar se dados estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o prontos para pagamento
 function validarDadosParaPagamento() {
     const modalidades = window.dadosInscricao?.modalidades || [];
-    // ✅ CORREÇÃO: Produtos extras vêm de dadosInscricao.produtosExtras
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Produtos extras vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªm de dadosInscricao.produtosExtras
     const produtosExtras = window.dadosInscricao?.produtosExtras || [];
     const total = calcularTotal();
 
-    console.log('🔍 Validando dados para pagamento:', {
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Validando dados para pagamento:', {
         modalidades: modalidades.length,
         produtosExtras: produtosExtras.length,
         produtosExtrasData: produtosExtras,
@@ -681,27 +682,27 @@ function validarDadosParaPagamento() {
 
     // Verificar se tem pelo menos uma modalidade selecionada
     if (modalidades.length === 0) {
-        console.log('❌ Nenhuma modalidade selecionada');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Nenhuma modalidade selecionada');
         return false;
     }
 
-    // Verificar se o total é maior que zero
+    // Verificar se o total ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© maior que zero
     if (total <= 0) {
-        console.log('❌ Total inválido:', total);
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido:', total);
         return false;
     }
 
-    // Verificar se dados básicos existem
+    // Verificar se dados bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡sicos existem
     if (!window.dadosInscricao) {
-        console.log('❌ Dados de inscrição não encontrados');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Dados de inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados');
         return false;
     }
 
-    console.log('✅ Dados válidos para pagamento');
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Dados vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lidos para pagamento');
     return true;
 }
 
-// ✅ Habilitar/desabilitar botão de pagamento
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Habilitar/desabilitar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de pagamento
 function atualizarBotaoPagamento() {
     const btnPagar = document.getElementById('btn-finalizar-compra');
     if (!btnPagar) return;
@@ -712,26 +713,26 @@ function atualizarBotaoPagamento() {
         btnPagar.disabled = false;
         btnPagar.classList.remove('opacity-50', 'cursor-not-allowed');
         btnPagar.classList.add('hover:bg-blue-700');
-        console.log('✅ Botão Finalizar Compra habilitado');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Finalizar Compra habilitado');
     } else {
         btnPagar.disabled = true;
         btnPagar.classList.add('opacity-50', 'cursor-not-allowed');
         btnPagar.classList.remove('hover:bg-blue-700');
-        console.log('❌ Botão Finalizar Compra desabilitado');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Finalizar Compra desabilitado');
     }
 }
 
 
-// ✅ Clique em Finalizar Compra:
-// - redirect ativo: cria preferência e redireciona
-// - transparente ativo: inicializa Brick/PIX/Boleto na página
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Clique em Finalizar Compra:
+// - redirect ativo: cria preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia e redireciona
+// - transparente ativo: inicializa Brick/PIX/Boleto na pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina
 function attachClickListener(btnPagar) {
     if (!btnPagar) {
-        console.error('❌ attachClickListener: botão não fornecido');
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ attachClickListener: botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o fornecido');
         return;
     }
 
-    console.log('🔗 Anexando listener ao botão de pagamento...');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Anexando listener ao botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de pagamento...');
 
     btnPagar.addEventListener('click', async function (e) {
         e.preventDefault();
@@ -751,9 +752,9 @@ function attachClickListener(btnPagar) {
             const total = calcularTotal();
             if (total <= 0) {
                 if (window.mostrarErro) {
-                    window.mostrarErro('Valor total inválido.');
+                    window.mostrarErro('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido.');
                 } else {
-                    alert('Valor total inválido.');
+                    alert('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido.');
                 }
                 return;
             }
@@ -774,7 +775,7 @@ function attachClickListener(btnPagar) {
                 const initPoint = result.init_point || result.initPoint;
 
                 if (initPoint) {
-                    console.log('✅ Redirecionando para Checkout Pro:', initPoint);
+                    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Redirecionando para Checkout Pro:', initPoint);
                     window.location.href = initPoint;
                     return;
                 }
@@ -782,7 +783,7 @@ function attachClickListener(btnPagar) {
                 throw new Error('Resposta do servidor sem link de pagamento.');
             }
 
-            // Transparente na página: renderiza Brick e mantém PIX/Boleto habilitados
+            // Transparente na pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina: renderiza Brick e mantÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©m PIX/Boleto habilitados
             if (typeof inicializarPagamento === 'function') {
                 const janelaPagamento = document.getElementById('janela-pagamento-mercadopago');
                 if (janelaPagamento) {
@@ -791,9 +792,9 @@ function attachClickListener(btnPagar) {
                 await inicializarPagamento();
                 return;
             }
-            throw new Error('Função de inicialização do checkout não disponível.');
+            throw new Error('FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de inicializaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do checkout nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel.');
         } catch (error) {
-            console.error('❌ [FINALIZAR_COMPRA]', error.message);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [FINALIZAR_COMPRA]', error.message);
             btnPagar.disabled = false;
             btnPagar.classList.remove('opacity-50', 'cursor-not-allowed');
             btnPagar.innerHTML = '<i class="fas fa-credit-card mr-2"></i> Finalizar Compra';
@@ -805,38 +806,38 @@ function attachClickListener(btnPagar) {
         }
     });
 
-    console.log('✅ Listener de pagamento anexado ao botão');
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Listener de pagamento anexado ao botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
 }
 
-// ✅ Setup de event listeners (SIMPLIFICADO baseado no exemplo funcional)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Setup de event listeners (SIMPLIFICADO baseado no exemplo funcional)
 function setupEventListeners() {
-    console.log('🔧 SETUP EVENT LISTENERS - Iniciando...');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â§ SETUP EVENT LISTENERS - Iniciando...');
     
     const btnPagar = document.getElementById('btn-finalizar-compra');
-    console.log('🔍 Botão encontrado:', btnPagar);
-    console.log('🔍 Botão já tem listener?', btnPagar?.hasAttribute('data-listener-added'));
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado:', btnPagar);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ tem listener?', btnPagar?.hasAttribute('data-listener-added'));
     
-    // Remover listener anterior se existir (para evitar duplicação)
+    // Remover listener anterior se existir (para evitar duplicaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
     if (btnPagar && btnPagar.hasAttribute('data-listener-added')) {
-        console.log('⚠️ Botão já tem listener, removendo e recriando...');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ tem listener, removendo e recriando...');
         const newBtn = btnPagar.cloneNode(true);
         btnPagar.parentNode.replaceChild(newBtn, btnPagar);
-        // Buscar novamente após clonar
+        // Buscar novamente apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s clonar
         const btnPagarNovo = document.getElementById('btn-finalizar-compra');
         if (btnPagarNovo) {
             btnPagarNovo.setAttribute('data-listener-added', 'true');
-            console.log('✅ Novo botão preparado para listener');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Novo botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o preparado para listener');
             attachClickListener(btnPagarNovo);
         }
     } else if (btnPagar) {
         btnPagar.setAttribute('data-listener-added', 'true');
-        console.log('✅ Atributo data-listener-added definido');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Atributo data-listener-added definido');
         attachClickListener(btnPagar);
     } else {
-        console.error('❌ Botão btn-finalizar-compra NÃO encontrado!');
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o btn-finalizar-compra NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O encontrado!');
     }
 
-    // Botão voltar ao resumo
+    // BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o voltar ao resumo
     const btnVoltar = document.getElementById('btn-voltar-resumo');
     if (btnVoltar && !btnVoltar.hasAttribute('data-listener-added')) {
         btnVoltar.setAttribute('data-listener-added', 'true');
@@ -849,7 +850,7 @@ function setupEventListeners() {
                 janelaPagamento.classList.add('hidden');
             }
 
-            // Ocultar container PIX se estiver visível
+            // Ocultar container PIX se estiver visÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
             const pixContainer = document.getElementById('pix-container');
             if (pixContainer) {
                 pixContainer.classList.add('hidden');
@@ -866,14 +867,14 @@ function setupEventListeners() {
         });
     }
 
-    // ROLLBACK: com USE_CHECKOUT_PRO_REDIRECT = false, reative os blocos abaixo para PIX/Boleto na página
+    // ROLLBACK: com USE_CHECKOUT_PRO_REDIRECT = false, reative os blocos abaixo para PIX/Boleto na pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina
     if (typeof USE_CHECKOUT_PRO_REDIRECT === 'undefined' || !USE_CHECKOUT_PRO_REDIRECT) {
         const btnPix = document.getElementById('btn-pix-pagamento');
         if (btnPix && !btnPix.hasAttribute('data-listener-added')) {
             btnPix.setAttribute('data-listener-added', 'true');
             btnPix.addEventListener('click', async function (e) {
                 e.preventDefault();
-                console.log('✅ Botão PIX clicado');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o PIX clicado');
                 await gerarPixPagamento();
             });
         }
@@ -882,16 +883,16 @@ function setupEventListeners() {
             btnBoleto.setAttribute('data-listener-added', 'true');
             btnBoleto.addEventListener('click', async function (e) {
                 e.preventDefault();
-                console.log('✅ Botão Boleto clicado');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Boleto clicado');
                 await gerarBoletoPagamento();
             });
         }
     }
     
-    console.log('✅ setupEventListeners concluído');
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ setupEventListeners concluÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­do');
 }
 
-// ✅ EXPORTAR TODAS AS FUNÇÕES PARA WINDOW (após todas as definições)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ EXPORTAR TODAS AS FUNÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ES PARA WINDOW (apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s todas as definiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes)
 window.setupEventListeners = setupEventListeners;
 window.atualizarBotaoPagamento = atualizarBotaoPagamento;
 window.inicializarPagamento = inicializarPagamento;
@@ -901,10 +902,10 @@ window.mostrarErro = mostrarErro;
 window.renderizarResumoCompra = renderizarResumoCompra;
 window.updateTotalAmount = updateTotalAmount;
 
-console.log('✅ ============================================');
-console.log('✅ TODAS AS FUNÇÕES EXPORTADAS PARA WINDOW');
-console.log('✅ ============================================');
-console.log('✅ Funções disponíveis:', {
+console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ ============================================');
+console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ TODAS AS FUNÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ES EXPORTADAS PARA WINDOW');
+console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ ============================================');
+console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis:', {
     setupEventListeners: typeof window.setupEventListeners,
     atualizarBotaoPagamento: typeof window.atualizarBotaoPagamento,
     inicializarPagamento: typeof window.inicializarPagamento,
@@ -915,7 +916,7 @@ console.log('✅ Funções disponíveis:', {
     updateTotalAmount: typeof window.updateTotalAmount
 });
 
-// ✅ Polling: sync como fallback do webhook; se pago, redireciona; ao timeout, CTA "Ir para minha área"
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Polling: sync como fallback do webhook; se pago, redireciona; ao timeout, CTA "Ir para minha ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rea"
 function iniciarPollingStatusPagamentoPix(inscricaoId) {
     const intervaloMs = 5000;
     const maxTentativas = 72; // 6 minutos
@@ -925,7 +926,7 @@ function iniciarPollingStatusPagamentoPix(inscricaoId) {
     const timer = setInterval(async () => {
         tentativas++;
         try {
-            // Sync consulta o MP e atualiza o banco (fallback quando webhook não dispara)
+            // Sync consulta o MP e atualiza o banco (fallback quando webhook nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o dispara)
             const res = await fetch(syncUrl, { method: 'GET', credentials: 'same-origin' });
             const data = await res.json();
             if (data.success && data.inscricao && (data.inscricao.status === 'confirmada' || data.inscricao.status_pagamento === 'pago')) {
@@ -943,7 +944,7 @@ function iniciarPollingStatusPagamentoPix(inscricaoId) {
     }, intervaloMs);
 }
 
-// Exibir mensagem e botão "Ir para minha área" após timeout do polling PIX
+// Exibir mensagem e botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o "Ir para minha ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rea" apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s timeout do polling PIX
 function mostrarCtaIrParaMinhaArea(inscricaoId) {
     const pixContainer = document.getElementById('pix-container');
     const urlMinhasInscricoes = '../../participante/index.php?page=minhas-inscricoes&inscricao_id=' + encodeURIComponent(inscricaoId);
@@ -952,13 +953,13 @@ function mostrarCtaIrParaMinhaArea(inscricaoId) {
     const ctaHtml = `
         <div class="pix-cta-timeout" style="margin-top:20px;padding:20px;background:#fff8e6;border:1px solid #f59e0b;border-radius:12px;text-align:center;">
             <p style="margin:0 0 16px 0;color:#92400e;font-size:15px;font-weight:600;">
-                Se você já efetuou o pagamento, acesse sua área para confirmar sua inscrição.
+                Se vocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ efetuou o pagamento, acesse sua ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rea para confirmar sua inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.
             </p>
             <a href="${urlMinhasInscricoes}" class="cta-ir-area" style="display:inline-block;background:#0b4340;color:white;padding:12px 24px;border-radius:8px;font-weight:600;text-decoration:none;">
-                Ir para minha área
+                Ir para minha ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rea
             </a>
             <p style="margin:12px 0 0 0;font-size:12px;color:#6b7280;">
-                Não concluiu o pagamento? <a href="${urlLogin}" style="color:#0b4340;">Fazer login</a>
+                NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o concluiu o pagamento? <a href="${urlLogin}" style="color:#0b4340;">Fazer login</a>
             </p>
         </div>
     `;
@@ -966,12 +967,12 @@ function mostrarCtaIrParaMinhaArea(inscricaoId) {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
             icon: 'info',
-            title: 'Aguardando confirmação',
-            text: 'Se você já efetuou o pagamento, acesse sua área para confirmar sua inscrição.',
-            confirmButtonText: 'Ir para minha área',
+            title: 'Aguardando confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
+            text: 'Se vocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ efetuou o pagamento, acesse sua ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rea para confirmar sua inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.',
+            confirmButtonText: 'Ir para minha ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rea',
             confirmButtonColor: '#0b4340',
             showCancelButton: true,
-            cancelButtonText: 'Ficar na página'
+            cancelButtonText: 'Ficar na pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina'
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = urlMinhasInscricoes;
@@ -986,19 +987,19 @@ function mostrarCtaIrParaMinhaArea(inscricaoId) {
     }
 }
 
-// ✅ Gerar PIX para pagamento
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Gerar PIX para pagamento
 async function gerarPixPagamento() {
     try {
         const btnPix = document.getElementById('btn-pix-pagamento');
         const pixContainer = document.getElementById('pix-container');
 
         if (!btnPix || !pixContainer) {
-            throw new Error('Elementos PIX não encontrados');
+            throw new Error('Elementos PIX nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados');
         }
 
         // Estado de loading
         btnPix.disabled = true;
-        btnPix.innerHTML = '<span>⏳</span><span>Gerando PIX...</span>';
+        btnPix.innerHTML = '<span>ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³</span><span>Gerando PIX...</span>';
         btnPix.style.opacity = '0.7';
 
         // Mostrar container PIX
@@ -1021,16 +1022,16 @@ async function gerarPixPagamento() {
 
         // Calcular total
         const total = calcularTotal();
-        console.log('💰 Total para PIX:', total);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â° Total para PIX:', total);
 
-        // Verificar se temos inscrição ID
+        // Verificar se temos inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ID
         const inscricaoId = window.dadosInscricao?.inscricaoId;
         if (!inscricaoId) {
-            throw new Error('ID da inscrição não encontrado');
+            throw new Error('ID da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
         }
 
-        // ✅ Tentar gerar PIX diretamente - backend recupera dados do banco
-        console.log('🔄 [GERAR_PIX] Tentando gerar PIX com dados do banco...');
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Tentar gerar PIX diretamente - backend recupera dados do banco
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ [GERAR_PIX] Tentando gerar PIX com dados do banco...');
         
         const response = await fetch(getApiUrl('inscricao/create_pix.php'), {
             method: 'POST',
@@ -1044,62 +1045,62 @@ async function gerarPixPagamento() {
         });
 
         const responseText = await response.text();
-        console.log('📥 [GERAR_PIX] Response status:', response.status);
-        console.log('📥 [GERAR_PIX] Response text (primeiros 500 chars):', responseText.substring(0, 500));
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ [GERAR_PIX] Response status:', response.status);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ [GERAR_PIX] Response text (primeiros 500 chars):', responseText.substring(0, 500));
         
         let errorData;
         
         try {
             errorData = JSON.parse(responseText);
-            console.log('✅ [GERAR_PIX] JSON parseado:', errorData);
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [GERAR_PIX] JSON parseado:', errorData);
         } catch (e) {
-            console.error('❌ [GERAR_PIX] Erro ao parsear JSON:', e);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] Erro ao parsear JSON:', e);
             errorData = { error: responseText || `HTTP ${response.status}: ${response.statusText}` };
         }
 
-        // Se erro, verificar se é por dados faltando
+        // Se erro, verificar se ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© por dados faltando
         if (!response.ok) {
             const errorMessage = errorData.error || errorData.message || `Erro HTTP ${response.status}`;
-            console.error('❌ [GERAR_PIX] ============================================');
-            console.error('❌ [GERAR_PIX] ERRO DETECTADO!');
-            console.error('❌ [GERAR_PIX] Status:', response.status);
-            console.error('❌ [GERAR_PIX] Mensagem:', errorMessage);
-            console.error('❌ [GERAR_PIX] Error data:', JSON.stringify(errorData, null, 2));
-            console.error('❌ [GERAR_PIX] Campos faltantes:', errorData.campos_faltantes);
-            console.error('❌ [GERAR_PIX] ============================================');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] ============================================');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] ERRO DETECTADO!');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] Status:', response.status);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] Mensagem:', errorMessage);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] Error data:', JSON.stringify(errorData, null, 2));
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] Campos faltantes:', errorData.campos_faltantes);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_PIX] ============================================');
             
-            // Restaurar botão
+            // Restaurar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             if (btnPix) {
                 btnPix.disabled = false;
-                btnPix.innerHTML = '<span>💳</span><span>Pagar com PIX</span>';
+                btnPix.innerHTML = '<span>ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â³</span><span>Pagar com PIX</span>';
                 btnPix.style.opacity = '1';
             }
             
-            // Verificar se é erro de CPF faltando
+            // Verificar se ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© erro de CPF faltando
             const errorLower = errorMessage.toLowerCase();
             const temCamposFaltantes = errorData.campos_faltantes && Array.isArray(errorData.campos_faltantes) && errorData.campos_faltantes.length > 0;
             
             if (errorLower.includes('cpf') || errorLower.includes('documento') || (temCamposFaltantes && errorData.campos_faltantes.includes('cpf'))) {
-                console.log('⚠️ [GERAR_PIX] CPF faltando, coletando...');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_PIX] CPF faltando, coletando...');
                 try {
                     await coletarCPFModal();
-                    // Tentar novamente após coletar CPF
+                    // Tentar novamente apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s coletar CPF
                     return await gerarPixPagamento();
                 } catch (error) {
-                    if (error.message === 'CPF não informado') {
-                        return; // Usuário cancelou
+                    if (error.message === 'CPF nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado') {
+                        return; // UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou
                     }
                     throw error;
                 }
             }
             
-            // Se não for erro de CPF, lançar erro normalmente
+            // Se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o for erro de CPF, lanÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ar erro normalmente
             throw new Error(errorMessage);
         }
 
-        // ✅ Usar errorData já parseado (não pode ler response.json() novamente)
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Usar errorData jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ parseado (nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode ler response.json() novamente)
         const result = errorData;
-        console.log('📥 [GERAR_PIX] Resultado PIX:', result);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ [GERAR_PIX] Resultado PIX:', result);
 
         if (!result.success) {
             throw new Error(result.error || 'Falha ao gerar PIX');
@@ -1110,13 +1111,13 @@ async function gerarPixPagamento() {
             <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 24px; margin: 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <div style="background: #00a650; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: 600; margin-bottom: 12px;">
-                        💳 PIX Instantâneo
+                        ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â³ PIX InstantÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢neo
                     </div>
                     <h3 style="margin: 0; color: #2c3e50; font-size: 18px; font-weight: 600;">
                         R$ ${result.transaction_amount.toFixed(2).replace('.', ',')}
                     </h3>
                     <p style="margin: 8px 0 0 0; color: #6c757d; font-size: 14px;">
-                        Código: #${result.external_reference}
+                        CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo: #${result.external_reference}
                     </p>
                 </div>
                 
@@ -1128,7 +1129,7 @@ async function gerarPixPagamento() {
                 
                 <div style="background: white; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin: 16px 0;">
                     <label style="display: block; font-size: 14px; font-weight: 600; color: #495057; margin-bottom: 8px;">
-                        Código PIX (Copie e cole no seu app)
+                        CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo PIX (Copie e cole no seu app)
                     </label>
                     <div style="position: relative;">
                         <textarea readonly style="width: 100%; height: 80px; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px; resize: none; background: #f8f9fa;">${result.qr_code}</textarea>
@@ -1138,34 +1139,34 @@ async function gerarPixPagamento() {
                 
                 <div style="text-align: center; margin-top: 20px;">
                     <a href="${result.ticket_url}" target="_blank" style="background: #00a650; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.2s;">
-                        📱 Abrir no App
+                        ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â± Abrir no App
                     </a>
                 </div>
                 
                 <div style="margin-top: 16px; padding: 12px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
                     <p style="margin: 0; font-size: 13px; color: #1565c0;">
-                        <strong>💡 Dica:</strong> Escaneie o QR Code com seu app bancário ou copie o código PIX para pagar instantaneamente.
+                        <strong>ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¡ Dica:</strong> Escaneie o QR Code com seu app bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio ou copie o cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo PIX para pagar instantaneamente.
                     </p>
                 </div>
             </div>
         `;
 
-        console.log('✅ PIX gerado com sucesso!');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ PIX gerado com sucesso!');
 
         // Polling: verificar status do pagamento a cada 5s e redirecionar ao sucesso quando aprovado
-        // ✅ CORREÇÃO: inscricaoId já foi declarado na linha 929, apenas reutilizar
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: inscricaoId jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ foi declarado na linha 929, apenas reutilizar
         if (inscricaoId) {
             iniciarPollingStatusPagamentoPix(inscricaoId);
         }
 
     } catch (error) {
-        console.error('❌ Erro ao gerar PIX:', error);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao gerar PIX:', error);
 
         const pixContainer = document.getElementById('pix-container');
         if (pixContainer) {
             pixContainer.innerHTML = `
                 <div style="text-align:center;padding:20px;background:#fff5f5;border:1px solid #fed7d7;border-radius:8px;">
-                    <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">⚠️</div>
+                    <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â</div>
                     <p style="margin:0;color:#c53030;font-size:14px;">Falha ao gerar PIX: ${error.message}</p>
                 </div>
             `;
@@ -1176,7 +1177,7 @@ async function gerarPixPagamento() {
             Swal.fire({
                 icon: 'error',
                 title: 'Erro ao Gerar PIX',
-                text: error.message || 'Não foi possível gerar o código PIX. Tente novamente ou escolha outra forma de pagamento.',
+                text: error.message || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel gerar o cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo PIX. Tente novamente ou escolha outra forma de pagamento.',
                 confirmButtonText: 'Entendi',
                 confirmButtonColor: '#0b4340'
             });
@@ -1185,31 +1186,31 @@ async function gerarPixPagamento() {
         }
 
     } finally {
-        // Restaurar botão
+        // Restaurar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
         const btnPix = document.getElementById('btn-pix-pagamento');
         if (btnPix) {
             btnPix.disabled = false;
-            btnPix.innerHTML = '<span>💳</span><span>Pagar com PIX</span>';
+            btnPix.innerHTML = '<span>ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â³</span><span>Pagar com PIX</span>';
             btnPix.style.opacity = '1';
         }
     }
 }
 
-// ✅ Renderizar resumo da compra
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Renderizar resumo da compra
 function renderizarResumoCompra() {
     const container = document.getElementById('resumo-compra');
     if (!container) {
-        console.warn('[PAGAMENTO] renderizarResumoCompra: elemento #resumo-compra não encontrado');
+        console.warn('[PAGAMENTO] renderizarResumoCompra: elemento #resumo-compra nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
         return;
     }
 
     if (!window.dadosInscricao) {
-        console.warn('[PAGAMENTO] renderizarResumoCompra: window.dadosInscricao não está disponível');
+        console.warn('[PAGAMENTO] renderizarResumoCompra: window.dadosInscricao nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel');
         return;
     }
 
     const modalidades = window.dadosInscricao?.modalidades || [];
-    // ✅ CORREÇÃO: Usar produtosExtras diretamente de window.dadosInscricao (não de ficha)
+    // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Usar produtosExtras diretamente de window.dadosInscricao (nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de ficha)
     const produtosExtras = window.dadosInscricao?.produtosExtras || [];
     
     console.log('[PAGAMENTO] renderizarResumoCompra:', {
@@ -1269,16 +1270,16 @@ function renderizarResumoCompra() {
     container.innerHTML = html;
 }
 
-// ✅ Atualizar valor total
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Atualizar valor total
 function updateTotalAmount() {
     const totalElement = document.getElementById('total-geral');
     if (!totalElement) {
-        console.warn('[PAGAMENTO] updateTotalAmount: elemento #total-geral não encontrado');
+        console.warn('[PAGAMENTO] updateTotalAmount: elemento #total-geral nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
         return;
     }
 
     if (!window.dadosInscricao) {
-        console.warn('[PAGAMENTO] updateTotalAmount: window.dadosInscricao não está disponível');
+        console.warn('[PAGAMENTO] updateTotalAmount: window.dadosInscricao nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel');
         return;
     }
 
@@ -1287,17 +1288,17 @@ function updateTotalAmount() {
     
     totalElement.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
 
-    // Atualizar estado do botão quando total mudar
+    // Atualizar estado do botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o quando total mudar
     if (typeof atualizarBotaoPagamento === 'function') {
         atualizarBotaoPagamento();
     }
 }
 
-// ✅ Inicializar array global de produtos extras selecionados
-// ✅ CORREÇÃO: Produtos extras estão em ficha.produtos_extras
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Inicializar array global de produtos extras selecionados
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ CORREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Produtos extras estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o em ficha.produtos_extras
 window.produtosExtrasSelecionados = window.dadosInscricao?.ficha?.produtos_extras || window.dadosInscricao?.produtosExtras || [];
 
-// ✅ Função para mostrar mensagem de sucesso após pagamento aprovado (com SweetAlert)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para mostrar mensagem de sucesso apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s pagamento aprovado (com SweetAlert)
 function mostrarMensagemSucesso(paymentId) {
     const inscricaoId = window.dadosInscricao?.inscricaoId;
     const userEmail = window.dadosInscricao?.ficha?.email || window.dadosInscricao?.usuario?.email || 'seu email';
@@ -1309,11 +1310,11 @@ function mostrarMensagemSucesso(paymentId) {
     
     Swal.fire({
         icon: 'success',
-        title: 'Inscrição Confirmada!',
+        title: 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Confirmada!',
         html: `
             <div style="text-align: left; padding: 1rem 0;">
                 <p style="font-size: 1.1rem; color: #1f2937; margin-bottom: 1.5rem;">
-                    Seu pagamento foi aprovado com sucesso. Sua participação no evento está garantida!
+                    Seu pagamento foi aprovado com sucesso. Sua participaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o no evento estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ garantida!
                 </p>
                 
                 <div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
@@ -1324,12 +1325,12 @@ function mostrarMensagemSucesso(paymentId) {
                         Verifique sua caixa de correio
                     </p>
                     <p style="color: #075985; margin-bottom: 0.75rem;">
-                        Enviamos um email de confirmação para <strong>${userEmail}</strong>
+                        Enviamos um email de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para <strong>${userEmail}</strong>
                     </p>
                     <ul style="color: #0c4a6e; font-size: 0.875rem; margin: 0; padding-left: 1.25rem;">
-                        <li style="margin-bottom: 0.5rem;">Verifique sua pasta de <strong>Spam</strong> ou <strong>Lixo Eletrônico</strong></li>
+                        <li style="margin-bottom: 0.5rem;">Verifique sua pasta de <strong>Spam</strong> ou <strong>Lixo EletrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nico</strong></li>
                         <li style="margin-bottom: 0.5rem;">O email pode levar alguns minutos para chegar</li>
-                        <li>Mantenha seu número de inscrição para o dia do evento</li>
+                        <li>Mantenha seu nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero de inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para o dia do evento</li>
                     </ul>
                 </div>
                 
@@ -1344,7 +1345,7 @@ function mostrarMensagemSucesso(paymentId) {
             </div>
         `,
         showCancelButton: false,
-        confirmButtonText: 'Voltar ao Início',
+        confirmButtonText: 'Voltar ao InÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio',
         confirmButtonColor: '#0b4340',
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -1362,10 +1363,10 @@ function mostrarMensagemSucesso(paymentId) {
         }
     });
     
-    console.log('✅ Mensagem de sucesso exibida com SweetAlert');
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Mensagem de sucesso exibida com SweetAlert');
 }
 
-// ✅ Verificar se usuário tem CPF cadastrado
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar se usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio tem CPF cadastrado
 async function verificarCPFUsuario() {
     try {
         const response = await fetch(getApiUrl('participante/verificar_cpf.php'), {
@@ -1385,19 +1386,19 @@ async function verificarCPFUsuario() {
     }
 }
 
-// ✅ Modal para coletar CPF
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Modal para coletar CPF
 async function coletarCPFModal() {
     return new Promise((resolve, reject) => {
         if (typeof Swal === 'undefined') {
-            reject(new Error('SweetAlert2 não está disponível'));
+            reject(new Error('SweetAlert2 nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel'));
             return;
         }
         
         Swal.fire({
-            title: 'CPF Obrigatório',
+            title: 'CPF ObrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio',
             html: `
                 <p style="text-align: left; margin-bottom: 16px; color: #6c757d;">
-                    Para pagar com boleto bancário, é necessário informar seu CPF.
+                    Para pagar com boleto bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio, ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio informar seu CPF.
                 </p>
                 <input 
                     type="text" 
@@ -1408,7 +1409,7 @@ async function coletarCPFModal() {
                     style="text-align: center; font-size: 16px; letter-spacing: 2px;"
                 >
                 <p style="text-align: left; margin-top: 8px; font-size: 12px; color: #6c757d;">
-                    Seus dados estão protegidos e serão salvos apenas para processamento do pagamento.
+                    Seus dados estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o protegidos e serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o salvos apenas para processamento do pagamento.
                 </p>
             `,
             icon: 'info',
@@ -1428,10 +1429,10 @@ async function coletarCPFModal() {
                     return false;
                 }
                 
-                // Validar formato básico
+                // Validar formato bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡sico
                 const cpfLimpo = cpf.replace(/[^0-9]/g, '');
                 if (cpfLimpo.length !== 11) {
-                    Swal.showValidationMessage('CPF deve conter 11 dígitos');
+                    Swal.showValidationMessage('CPF deve conter 11 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos');
                     return false;
                 }
                 
@@ -1462,7 +1463,7 @@ async function coletarCPFModal() {
             didOpen: () => {
                 const cpfInput = document.getElementById('swal-cpf-input');
                 if (cpfInput) {
-                    // Máscara de CPF
+                    // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡scara de CPF
                     cpfInput.addEventListener('input', function(e) {
                         let value = e.target.value.replace(/\D/g, '');
                         if (value.length <= 11) {
@@ -1480,51 +1481,51 @@ async function coletarCPFModal() {
             if (result.isConfirmed) {
                 resolve();
             } else {
-                reject(new Error('CPF não informado'));
+                reject(new Error('CPF nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado'));
             }
         });
     });
 }
 
-// ✅ Verificar endereço do usuário
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
 async function verificarEnderecoUsuario() {
     try {
-        console.log('🔍 [VERIFICAR_ENDERECO] Iniciando verificação...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â [VERIFICAR_ENDERECO] Iniciando verificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o...');
         const response = await fetch(getApiUrl('participante/verificar_endereco.php'), {
             method: 'GET',
             credentials: 'same-origin'
         });
         
-        console.log('🔍 [VERIFICAR_ENDERECO] Response status:', response.status, response.statusText);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â [VERIFICAR_ENDERECO] Response status:', response.status, response.statusText);
         
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('❌ [VERIFICAR_ENDERECO] Erro HTTP:', response.status, errorText);
-            throw new Error('Erro ao verificar endereço');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [VERIFICAR_ENDERECO] Erro HTTP:', response.status, errorText);
+            throw new Error('Erro ao verificar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o');
         }
         
         const data = await response.json();
-        console.log('📊 [VERIFICAR_ENDERECO] Resposta completa da API:', JSON.stringify(data, null, 2));
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€¦Ã‚Â  [VERIFICAR_ENDERECO] Resposta completa da API:', JSON.stringify(data, null, 2));
         return data;
     } catch (error) {
-        console.error('❌ [VERIFICAR_ENDERECO] Erro ao verificar endereço:', error);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [VERIFICAR_ENDERECO] Erro ao verificar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o:', error);
         return { success: false, endereco_completo: false, campos_faltando: [] };
     }
 }
 
-// ✅ Modal para coletar endereço
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Modal para coletar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o
 async function coletarEnderecoModal() {
     return new Promise((resolve, reject) => {
         if (typeof Swal === 'undefined') {
-            reject(new Error('SweetAlert2 não está disponível'));
+            reject(new Error('SweetAlert2 nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel'));
             return;
         }
         
         Swal.fire({
-            title: 'Endereço Obrigatório',
+            title: 'EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o ObrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio',
             html: `
                 <p style="text-align: left; margin-bottom: 16px; color: #6c757d;">
-                    Para pagar com boleto bancário, é necessário informar seu endereço completo.
+                    Para pagar com boleto bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio, ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio informar seu endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o completo.
                 </p>
                 <div style="text-align: left;">
                     <input 
@@ -1547,7 +1548,7 @@ async function coletarEnderecoModal() {
                             type="text" 
                             id="swal-numero-input" 
                             class="swal2-input" 
-                            placeholder="Número"
+                            placeholder="NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero"
                         >
                         <input 
                             type="text" 
@@ -1607,7 +1608,7 @@ async function coletarEnderecoModal() {
                     </div>
                 </div>
                 <p style="text-align: left; margin-top: 8px; font-size: 12px; color: #6c757d;">
-                    Seus dados estão protegidos e serão salvos apenas para processamento do pagamento.
+                    Seus dados estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o protegidos e serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o salvos apenas para processamento do pagamento.
                 </p>
             `,
             icon: 'info',
@@ -1628,39 +1629,39 @@ async function coletarEnderecoModal() {
                 const cidade = document.getElementById('swal-cidade-input')?.value || '';
                 const uf = document.getElementById('swal-uf-input')?.value || '';
                 
-                // Validar campos obrigatórios
+                // Validar campos obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios
                 const cepLimpo = cep.replace(/\D/g, '');
                 if (!cepLimpo || cepLimpo.length !== 8) {
-                    Swal.showValidationMessage('CEP deve conter 8 dígitos');
+                    Swal.showValidationMessage('CEP deve conter 8 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos');
                     return false;
                 }
                 
                 if (!endereco || endereco.trim() === '') {
-                    Swal.showValidationMessage('Logradouro é obrigatório');
+                    Swal.showValidationMessage('Logradouro ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
                     return false;
                 }
                 
                 if (!numero || numero.trim() === '') {
-                    Swal.showValidationMessage('Número é obrigatório');
+                    Swal.showValidationMessage('NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
                     return false;
                 }
                 
                 if (!bairro || bairro.trim() === '') {
-                    Swal.showValidationMessage('Bairro é obrigatório');
+                    Swal.showValidationMessage('Bairro ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
                     return false;
                 }
                 
                 if (!cidade || cidade.trim() === '') {
-                    Swal.showValidationMessage('Cidade é obrigatória');
+                    Swal.showValidationMessage('Cidade ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ria');
                     return false;
                 }
                 
                 if (!uf || uf.length !== 2) {
-                    Swal.showValidationMessage('UF é obrigatória');
+                    Swal.showValidationMessage('UF ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ria');
                     return false;
                 }
                 
-                // Salvar endereço
+                // Salvar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o
                 try {
                     const response = await fetch(getApiUrl('participante/atualizar_endereco.php'), {
                         method: 'POST',
@@ -1682,27 +1683,27 @@ async function coletarEnderecoModal() {
                     const data = await response.json();
                     
                     if (!data.success) {
-                        Swal.showValidationMessage(data.message || 'Erro ao salvar endereço');
+                        Swal.showValidationMessage(data.message || 'Erro ao salvar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o');
                         return false;
                     }
                     
                     return true;
                 } catch (error) {
-                    Swal.showValidationMessage('Erro ao salvar endereço. Tente novamente.');
+                    Swal.showValidationMessage('Erro ao salvar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o. Tente novamente.');
                     return false;
                 }
             },
             didOpen: () => {
                 const cepInput = document.getElementById('swal-cep-input');
                 if (cepInput) {
-                    // Máscara de CEP
+                    // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡scara de CEP
                     cepInput.addEventListener('input', function(e) {
                         let value = e.target.value.replace(/\D/g, '');
                         if (value.length <= 8) {
                             value = value.replace(/(\d{5})(\d)/, '$1-$2');
                             e.target.value = value;
                             
-                            // Buscar endereço quando CEP tiver 8 dígitos
+                            // Buscar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o quando CEP tiver 8 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos
                             if (value.replace(/\D/g, '').length === 8) {
                                 buscarEnderecoPorCEPModal(value.replace(/\D/g, ''));
                             }
@@ -1716,13 +1717,13 @@ async function coletarEnderecoModal() {
             if (result.isConfirmed) {
                 resolve();
             } else {
-                reject(new Error('Endereço não informado'));
+                reject(new Error('EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado'));
             }
         });
     });
 }
 
-// Função auxiliar para buscar endereço via ViaCEP no modal
+// FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o auxiliar para buscar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o via ViaCEP no modal
 async function buscarEnderecoPorCEPModal(cep) {
     try {
         const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -1739,7 +1740,7 @@ async function buscarEnderecoPorCEPModal(cep) {
             if (cidadeInput) cidadeInput.value = data.localidade || '';
             if (ufInput) ufInput.value = data.uf || '';
             
-            // Focar no campo número após preencher
+            // Focar no campo nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s preencher
             const numeroInput = document.getElementById('swal-numero-input');
             if (numeroInput) numeroInput.focus();
         }
@@ -1748,42 +1749,42 @@ async function buscarEnderecoPorCEPModal(cep) {
     }
 }
 
-// ✅ Gerar Boleto para pagamento
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Gerar Boleto para pagamento
 async function gerarBoletoPagamento() {
     try {
-        console.log('🚀 [GERAR_BOLETO] Iniciando geração de boleto...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ [GERAR_BOLETO] Iniciando geraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de boleto...');
         
-        // Obter dados necessários
+        // Obter dados necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios
         const inscricaoId = window.dadosInscricao?.inscricaoId;
         const total = calcularTotal();
         
         if (!inscricaoId) {
-            throw new Error('ID da inscrição não encontrado');
+            throw new Error('ID da inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
         }
         
         if (total <= 0) {
-            throw new Error('Valor total inválido');
+            throw new Error('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
         }
         
-        console.log('📋 [GERAR_BOLETO] Dados:', { inscricaoId, total });
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ [GERAR_BOLETO] Dados:', { inscricaoId, total });
         
         // Preparar UI
         const btnBoleto = document.getElementById('btn-boleto-pagamento');
         const boletoContainer = document.getElementById('boleto-container');
 
         if (!btnBoleto || !boletoContainer) {
-            throw new Error('Elementos Boleto não encontrados');
+            throw new Error('Elementos Boleto nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados');
         }
 
         btnBoleto.disabled = true;
-        btnBoleto.innerHTML = '<span>⏳</span><span>Gerando Boleto...</span>';
+        btnBoleto.innerHTML = '<span>ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³</span><span>Gerando Boleto...</span>';
         btnBoleto.style.opacity = '0.7';
 
         boletoContainer.classList.remove('hidden');
         boletoContainer.innerHTML = `
             <div style="text-align:center;padding:20px;background:#f8f9fa;border-radius:8px;border:1px solid #e9ecef;">
                 <div style="display:inline-block;width:20px;height:20px;border:2px solid #007bff;border-radius:50%;border-top-color:transparent;animation:spin 1s linear infinite;"></div>
-                <p style="margin:12px 0 0 0;color:#6c757d;font-size:14px;">Gerando boleto bancário...</p>
+                <p style="margin:12px 0 0 0;color:#6c757d;font-size:14px;">Gerando boleto bancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio...</p>
             </div>
             <style>
                 @keyframes spin { to { transform: rotate(360deg); } }
@@ -1795,8 +1796,8 @@ async function gerarBoletoPagamento() {
             block: 'start'
         });
 
-        // ✅ Tentar gerar boleto diretamente - backend recupera dados do banco
-        console.log('🔄 [GERAR_BOLETO] Tentando gerar boleto com dados do banco...');
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Tentar gerar boleto diretamente - backend recupera dados do banco
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ [GERAR_BOLETO] Tentando gerar boleto com dados do banco...');
         
         const response = await fetch(getApiUrl('inscricao/create_boleto.php'), {
             method: 'POST',
@@ -1810,105 +1811,105 @@ async function gerarBoletoPagamento() {
         });
 
         const responseText = await response.text();
-        console.log('📥 [GERAR_BOLETO] Response status:', response.status);
-        console.log('📥 [GERAR_BOLETO] Response text (primeiros 500 chars):', responseText.substring(0, 500));
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ [GERAR_BOLETO] Response status:', response.status);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ [GERAR_BOLETO] Response text (primeiros 500 chars):', responseText.substring(0, 500));
         
         let errorData;
         
         try {
             errorData = JSON.parse(responseText);
-            console.log('✅ [GERAR_BOLETO] JSON parseado:', errorData);
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [GERAR_BOLETO] JSON parseado:', errorData);
         } catch (e) {
-            console.error('❌ [GERAR_BOLETO] Erro ao parsear JSON:', e);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Erro ao parsear JSON:', e);
             errorData = { error: responseText || `HTTP ${response.status}: ${response.statusText}` };
         }
 
-        // Se erro, verificar se é por dados faltando
+        // Se erro, verificar se ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© por dados faltando
         if (!response.ok) {
             const errorMessage = errorData.error || errorData.message || `Erro HTTP ${response.status}`;
-            console.error('❌ [GERAR_BOLETO] ============================================');
-            console.error('❌ [GERAR_BOLETO] ERRO DETECTADO!');
-            console.error('❌ [GERAR_BOLETO] Status:', response.status);
-            console.error('❌ [GERAR_BOLETO] Mensagem:', errorMessage);
-            console.error('❌ [GERAR_BOLETO] Error data:', JSON.stringify(errorData, null, 2));
-            console.error('❌ [GERAR_BOLETO] Campos faltantes:', errorData.campos_faltantes);
-            console.error('❌ [GERAR_BOLETO] ============================================');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] ============================================');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] ERRO DETECTADO!');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Status:', response.status);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Mensagem:', errorMessage);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Error data:', JSON.stringify(errorData, null, 2));
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Campos faltantes:', errorData.campos_faltantes);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] ============================================');
             
-            // Restaurar botão
+            // Restaurar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             if (btnBoleto) {
                 btnBoleto.disabled = false;
                 btnBoleto.innerHTML = 'Pagar com Boleto';
                 btnBoleto.style.opacity = '1';
             }
             
-            // Verificar se é erro de CPF faltando
+            // Verificar se ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© erro de CPF faltando
             const errorLower = errorMessage.toLowerCase();
             if (errorLower.includes('cpf') || errorLower.includes('documento')) {
-                console.log('⚠️ [GERAR_BOLETO] CPF faltando, coletando...');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] CPF faltando, coletando...');
                 try {
                     await coletarCPFModal();
-                    // Tentar novamente após coletar CPF
+                    // Tentar novamente apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s coletar CPF
                     return await gerarBoletoPagamento();
                 } catch (error) {
-                    if (error.message === 'CPF não informado') {
-                        return; // Usuário cancelou
+                    if (error.message === 'CPF nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado') {
+                        return; // UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou
                     }
                     throw error;
                 }
             }
             
-            // Verificar se é erro de endereço faltando (mais abrangente)
-            // Verificar também se há campos_faltantes no response (do backend)
+            // Verificar se ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© erro de endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o faltando (mais abrangente)
+            // Verificar tambÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©m se hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ campos_faltantes no response (do backend)
             const temCamposFaltantes = errorData.campos_faltantes && Array.isArray(errorData.campos_faltantes) && errorData.campos_faltantes.length > 0;
-            console.log('🔍 [GERAR_BOLETO] Verificando tipo de erro...');
-            console.log('🔍 [GERAR_BOLETO] temCamposFaltantes:', temCamposFaltantes);
-            console.log('🔍 [GERAR_BOLETO] errorLower:', errorLower);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â [GERAR_BOLETO] Verificando tipo de erro...');
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â [GERAR_BOLETO] temCamposFaltantes:', temCamposFaltantes);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â [GERAR_BOLETO] errorLower:', errorLower);
             
-            const erroEndereco = errorLower.includes('endereço') || errorLower.includes('endereco') || 
+            const erroEndereco = errorLower.includes('endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o') || errorLower.includes('endereco') || 
                 errorLower.includes('cep') || errorLower.includes('bairro') ||
                 errorLower.includes('cidade') || errorLower.includes('uf') ||
-                errorLower.includes('numero') || errorLower.includes('número') ||
-                errorLower.includes('dados de endereço') || errorLower.includes('dados cadastrais') ||
+                errorLower.includes('numero') || errorLower.includes('nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero') ||
+                errorLower.includes('dados de endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o') || errorLower.includes('dados cadastrais') ||
                 errorLower.includes('verifique seus dados') || temCamposFaltantes;
             
-            console.log('🔍 [GERAR_BOLETO] erroEndereco detectado?', erroEndereco);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â [GERAR_BOLETO] erroEndereco detectado?', erroEndereco);
             
             if (erroEndereco) {
-                console.log('⚠️ [GERAR_BOLETO] ============================================');
-                console.log('⚠️ [GERAR_BOLETO] ENDEREÇO FALTANDO DETECTADO!');
-                console.log('⚠️ [GERAR_BOLETO] Mensagem:', errorMessage);
-                console.log('⚠️ [GERAR_BOLETO] Campos faltantes:', errorData.campos_faltantes);
-                console.log('⚠️ [GERAR_BOLETO] Abrindo modal para coletar endereço...');
-                console.log('⚠️ [GERAR_BOLETO] ============================================');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] ============================================');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] ENDEREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡O FALTANDO DETECTADO!');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] Mensagem:', errorMessage);
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] Campos faltantes:', errorData.campos_faltantes);
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] Abrindo modal para coletar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o...');
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] ============================================');
                 
                 try {
-                    console.log('🔄 [GERAR_BOLETO] Chamando coletarEnderecoModal()...');
+                    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ [GERAR_BOLETO] Chamando coletarEnderecoModal()...');
                     await coletarEnderecoModal();
-                    console.log('✅ [GERAR_BOLETO] Endereço coletado com sucesso!');
-                    console.log('🔄 [GERAR_BOLETO] Tentando gerar boleto novamente...');
-                    // Tentar novamente após coletar endereço
+                    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [GERAR_BOLETO] EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o coletado com sucesso!');
+                    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ [GERAR_BOLETO] Tentando gerar boleto novamente...');
+                    // Tentar novamente apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s coletar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o
                     return await gerarBoletoPagamento();
                 } catch (error) {
-                    console.error('❌ [GERAR_BOLETO] Erro ao coletar endereço:', error);
-                    console.error('❌ [GERAR_BOLETO] Stack:', error.stack);
-                    if (error.message === 'Endereço não informado') {
-                        console.log('⚠️ [GERAR_BOLETO] Usuário cancelou coleta de endereço');
-                        return; // Usuário cancelou
+                    console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Erro ao coletar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o:', error);
+                    console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Stack:', error.stack);
+                    if (error.message === 'EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o informado') {
+                        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou coleta de endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o');
+                        return; // UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio cancelou
                     }
-                    // Se houver outro erro, mostrar ao usuário
+                    // Se houver outro erro, mostrar ao usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erro ao coletar endereço',
-                        text: error.message || 'Não foi possível coletar o endereço. Tente novamente.'
+                        title: 'Erro ao coletar endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o',
+                        text: error.message || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel coletar o endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o. Tente novamente.'
                     });
                     throw error;
                 }
             }
             
-            // Outro tipo de erro - mostrar ao usuário
-            console.error('❌ [GERAR_BOLETO] Erro não reconhecido como CPF ou endereço');
-            console.error('❌ [GERAR_BOLETO] Mensagem completa:', errorMessage);
-            console.error('❌ [GERAR_BOLETO] Error data completo:', JSON.stringify(errorData, null, 2));
+            // Outro tipo de erro - mostrar ao usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Erro nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o reconhecido como CPF ou endereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Mensagem completa:', errorMessage);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [GERAR_BOLETO] Error data completo:', JSON.stringify(errorData, null, 2));
             
             Swal.fire({
                 icon: 'error',
@@ -1920,17 +1921,17 @@ async function gerarBoletoPagamento() {
             throw new Error(errorMessage);
         }
 
-        // ✅ Processar resultado (pode ser success: false com use_pix quando boleto rejeitado)
-        const result = errorData; // Já foi parseado acima
-        console.log('📥 [GERAR_BOLETO] Resultado completo:', result);
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Processar resultado (pode ser success: false com use_pix quando boleto rejeitado)
+        const result = errorData; // JÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ foi parseado acima
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ [GERAR_BOLETO] Resultado completo:', result);
         
         if (!result.success) {
             const usePix = result.use_pix === true || result.error_code === 'BOLETO_REJECTED_BY_BANK';
-            const msg = result.message || result.error || 'Não foi possível gerar o boleto.';
+            const msg = result.message || result.error || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel gerar o boleto.';
             if (usePix && typeof Swal !== 'undefined') {
                 await Swal.fire({
                     icon: 'info',
-                    title: 'Boleto indisponível',
+                    title: 'Boleto indisponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel',
                     text: msg,
                     confirmButtonText: 'Entendi',
                     confirmButtonColor: '#0b4340'
@@ -1944,19 +1945,19 @@ async function gerarBoletoPagamento() {
             throw new Error(msg);
         }
         
-        console.log('✅ [GERAR_BOLETO] Boleto gerado com sucesso!');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [GERAR_BOLETO] Boleto gerado com sucesso!');
 
-        // Verificar se barcode está presente
+        // Verificar se barcode estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ presente
         if (!result.barcode || result.barcode === '') {
-            console.warn('⚠️ [GERAR_BOLETO] ATENÇÃO: Barcode não foi retornado pela API!');
-            console.warn('⚠️ [GERAR_BOLETO] Dados recebidos:', JSON.stringify(result, null, 2));
+            console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] ATENÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Barcode nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi retornado pela API!');
+            console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [GERAR_BOLETO] Dados recebidos:', JSON.stringify(result, null, 2));
         } else {
-            console.log('✅ [GERAR_BOLETO] Barcode recebido:', result.barcode);
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [GERAR_BOLETO] Barcode recebido:', result.barcode);
         }
 
         const dataVencimento = result.date_of_expiration ? new Date(result.date_of_expiration).toLocaleDateString('pt-BR') : 'N/A';
         
-        // Verificar se boleto está próximo do vencimento (menos de 24 horas)
+        // Verificar se boleto estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo do vencimento (menos de 24 horas)
         let avisoVencimento = '';
         if (result.date_of_expiration) {
             const dataVencimentoObj = new Date(result.date_of_expiration);
@@ -1967,19 +1968,19 @@ async function gerarBoletoPagamento() {
                 const horas = Math.round(horasRestantes);
                 avisoVencimento = `
                     <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 12px; margin: 16px 0; text-align: center;">
-                        <strong style="color: #856404; font-size: 14px;">⚠️ Atenção!</strong>
+                        <strong style="color: #856404; font-size: 14px;">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â AtenÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o!</strong>
                         <p style="margin: 8px 0 0 0; color: #856404; font-size: 13px;">
                             Seu boleto vence em ${horas} ${horas === 1 ? 'hora' : 'horas'}.<br>
-                            Realize o pagamento o quanto antes para garantir sua inscrição.
+                            Realize o pagamento o quanto antes para garantir sua inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.
                         </p>
                     </div>
                 `;
             } else if (horasRestantes <= 0) {
                 avisoVencimento = `
                     <div style="background: #f8d7da; border: 1px solid #dc3545; border-radius: 8px; padding: 12px; margin: 16px 0; text-align: center;">
-                        <strong style="color: #721c24; font-size: 14px;">❌ Boleto Expirado</strong>
+                        <strong style="color: #721c24; font-size: 14px;">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Boleto Expirado</strong>
                         <p style="margin: 8px 0 0 0; color: #721c24; font-size: 13px;">
-                            Este boleto já expirou. Entre em contato com o suporte para gerar um novo boleto.
+                            Este boleto jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ expirou. Entre em contato com o suporte para gerar um novo boleto.
                         </p>
                     </div>
                 `;
@@ -1990,7 +1991,7 @@ async function gerarBoletoPagamento() {
             <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 24px; margin: 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <div style="background: #007bff; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: 600; margin-bottom: 12px;">
-                        📄 Boleto Bancário
+                        ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ Boleto BancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
                     </div>
                     <h3 style="margin: 0; color: #2c3e50; font-size: 18px; font-weight: 600;">
                         R$ ${result.transaction_amount.toFixed(2).replace('.', ',')}
@@ -2004,47 +2005,47 @@ async function gerarBoletoPagamento() {
                 
                     <div style="background: white; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin: 16px 0;">
                         <label style="display: block; font-size: 14px; font-weight: 600; color: #495057; margin-bottom: 8px;">
-                            Código de Barras
+                            CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo de Barras
                         </label>
                         <div style="position: relative;">
-                            <input type="text" readonly value="${result.barcode || 'Código de barras não disponível. Use o link abaixo para visualizar o boleto.'}" style="width: 100%; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 14px; background: #f8f9fa; color: #212529;" id="boleto-barcode-input">
+                            <input type="text" readonly value="${result.barcode || 'CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo de barras nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel. Use o link abaixo para visualizar o boleto.'}" style="width: 100%; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 14px; background: #f8f9fa; color: #212529;" id="boleto-barcode-input">
                             ${result.barcode ? `<button onclick="const input = document.getElementById('boleto-barcode-input'); input.select(); document.execCommand('copy'); this.textContent='Copiado!'; setTimeout(() => this.textContent='Copiar', 2000);" style="position: absolute; top: 8px; right: 8px; background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Copiar</button>` : ''}
                         </div>
                         ${!result.barcode ? `<div style="margin-top: 8px; padding: 8px; background: #fff3cd; border-radius: 4px; font-size: 12px; color: #856404;">
-                            <strong>ℹ️ Nota:</strong> O código de barras será exibido no PDF do boleto. Clique em "Baixar Boleto PDF" para visualizar.
+                            <strong>ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¹ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Nota:</strong> O cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³digo de barras serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ exibido no PDF do boleto. Clique em "Baixar Boleto PDF" para visualizar.
                         </div>` : ''}
                     </div>
                 
                 <div style="text-align: center; margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
                     ${result.ticket_url ? `<a href="${result.ticket_url}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); window.open('${result.ticket_url}', '_blank', 'noopener,noreferrer'); return false;" style="background: #007bff; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.2s; cursor: pointer;">
-                        📥 Baixar Boleto PDF
+                        ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Baixar Boleto PDF
                     </a>` : ''}
                     ${result.external_resource_url ? `<a href="${result.external_resource_url}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); window.open('${result.external_resource_url}', '_blank', 'noopener,noreferrer'); return false;" style="background: #28a745; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.2s; cursor: pointer;">
-                        🔗 Ver Boleto Online
+                        ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ver Boleto Online
                     </a>` : ''}
                     ${!result.ticket_url && !result.external_resource_url ? `<div style="padding: 12px; background: #fff3cd; border-radius: 8px; color: #856404; font-size: 14px;">
-                        <strong>⚠️ Atenção:</strong> O boleto ainda não está disponível. Aguarde alguns instantes e tente novamente.
+                        <strong>ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â AtenÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</strong> O boleto ainda nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel. Aguarde alguns instantes e tente novamente.
                     </div>` : ''}
                 </div>
                 
                 <div style="margin-top: 16px; padding: 12px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
                     <p style="margin: 0; font-size: 13px; color: #856404;">
-                        <strong>⚠️ Importante:</strong> O boleto vence em ${dataVencimento}. Após o pagamento, a confirmação pode levar até 2 dias úteis.
+                        <strong>ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Importante:</strong> O boleto vence em ${dataVencimento}. ApÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s o pagamento, a confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode levar atÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© 2 dias ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºteis.
                     </p>
                 </div>
             </div>
         `;
 
-        console.log('✅ Boleto gerado com sucesso!');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Boleto gerado com sucesso!');
 
     } catch (error) {
-        console.error('❌ Erro ao gerar Boleto:', error);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao gerar Boleto:', error);
 
         const boletoContainer = document.getElementById('boleto-container');
         if (boletoContainer) {
             boletoContainer.innerHTML = `
                 <div style="text-align:center;padding:20px;background:#fff5f5;border:1px solid #fed7d7;border-radius:8px;">
-                    <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">⚠️</div>
+                    <div style="color:#e53e3e;font-size:24px;margin-bottom:8px;">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â</div>
                     <p style="margin:0;color:#c53030;font-size:14px;">Falha ao gerar boleto: ${error.message}</p>
                 </div>
             `;
@@ -2054,7 +2055,7 @@ async function gerarBoletoPagamento() {
             Swal.fire({
                 icon: 'error',
                 title: 'Erro ao Gerar Boleto',
-                text: error.message || 'Não foi possível gerar o boleto. Tente novamente ou escolha outra forma de pagamento.',
+                text: error.message || 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel gerar o boleto. Tente novamente ou escolha outra forma de pagamento.',
                 confirmButtonText: 'Entendi',
                 confirmButtonColor: '#0b4340'
             });
@@ -2066,13 +2067,13 @@ async function gerarBoletoPagamento() {
         const btnBoleto = document.getElementById('btn-boleto-pagamento');
         if (btnBoleto) {
             btnBoleto.disabled = false;
-            btnBoleto.innerHTML = '<span>📄</span><span>Pagar com Boleto</span>';
+            btnBoleto.innerHTML = '<span>ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾</span><span>Pagar com Boleto</span>';
             btnBoleto.style.opacity = '1';
         }
     }
 }
 
-// ✅ Re-exportar funções no final (garantir que estão todas disponíveis)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Re-exportar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes no final (garantir que estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o todas disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis)
 window.setupEventListeners = setupEventListeners;
 window.atualizarBotaoPagamento = atualizarBotaoPagamento;
 window.inicializarPagamento = inicializarPagamento;

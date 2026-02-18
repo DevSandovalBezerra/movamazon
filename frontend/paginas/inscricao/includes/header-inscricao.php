@@ -1,8 +1,8 @@
 <?php
-// ✅ CRÍTICO: Verificar se sessão já foi iniciada antes de tentar iniciar novamente
-// Não usar @session_start() pois pode mascarar problemas reais
+// âœ… CRÃTICO: Verificar se sessÃ£o jÃ¡ foi iniciada antes de tentar iniciar novamente
+// NÃ£o usar @session_start() pois pode mascarar problemas reais
 if (session_status() === PHP_SESSION_NONE) {
-    // Se output buffering não estiver ativo, iniciar
+    // Se output buffering nÃ£o estiver ativo, iniciar
     if (!ob_get_level()) {
         ob_start();
     }
@@ -15,12 +15,14 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title : 'Inscrição - MovAmazon'; ?></title>
+    <title><?php echo isset($page_title) ? $page_title : 'InscriÃ§Ã£o - MovAmazon'; ?></title>
     
     <!-- Tailwind CSS Local -->
     <link href="../../assets/css/tailwind.min.css" rel="stylesheet">
+    <!-- Base URL helper -->
+    <script src="../../js/core/url-base.js"></script>
     
-    <!-- Font Awesome para ícones -->
+    <!-- Font Awesome para Ã­cones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- SweetAlert2 para modais elegantes -->
@@ -109,7 +111,7 @@ if (session_status() === PHP_SESSION_NONE) {
         border: 1px solid #f3f4f6;
     }
 
-    /* Layout da Inscrição - Estilo Modal */
+    /* Layout da InscriÃ§Ã£o - Estilo Modal */
     .inscricao-container {
         min-height: 100vh;
         background: #f8f9fa;
@@ -206,7 +208,7 @@ if (session_status() === PHP_SESSION_NONE) {
         line-height: 1.4;
     }
 
-    /* Seção do Kit */
+    /* SeÃ§Ã£o do Kit */
     .kit-section {
         display: flex;
         gap: 16px;
@@ -274,7 +276,7 @@ if (session_status() === PHP_SESSION_NONE) {
         display: inline-block;
     }
 
-    /* Footer com Preço */
+    /* Footer com PreÃ§o */
     .modalidade-footer {
         display: flex;
         justify-content: space-between;
@@ -386,7 +388,7 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 
 <body class="bg-gray-50 min-h-screen">
-    <!-- Header padrão do sistema -->
+    <!-- Header padrÃ£o do sistema -->
     <nav class="bg-brand-green text-white shadow-sm border-b border-gray-100 sticky top-0 z-50 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             <!-- Logo e Nome -->
@@ -401,22 +403,22 @@ if (session_status() === PHP_SESSION_NONE) {
                 </a>
             </div>
 
-            <!-- Links de Navegação (centro) -->
+            <!-- Links de NavegaÃ§Ã£o (centro) -->
             <div class="hidden md:flex items-center space-x-8">
                 <a href="../public/index.php#sobre" class="text-gray-100 hover:text-brand-yellow font-medium transition-colors duration-200">Sobre</a>
                 <a href="../public/index.php#contato" class="text-gray-100 hover:text-brand-yellow font-medium transition-colors duration-200">Contato</a>
             </div>
 
-            <!-- Botões de Ação (direita) -->
+            <!-- BotÃµes de AÃ§Ã£o (direita) -->
             <div class="flex items-center space-x-3">
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <!-- Usuário logado - Menu Dropdown -->
+                    <!-- UsuÃ¡rio logado - Menu Dropdown -->
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center space-x-2 text-gray-300 hover:text-brand-yellow transition-colors duration-200">
                             <div class="w-8 h-8 bg-brand-yellow rounded-full flex items-center justify-center">
                                 <span class="text-brand-green font-medium text-sm font-bold"><?php echo strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 1)); ?></span>
                             </div>
-                            <span class="hidden sm:block text-sm"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuário'); ?></span>
+                            <span class="hidden sm:block text-sm"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'UsuÃ¡rio'); ?></span>
                             <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -426,7 +428,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                             <?php
                             $dashboardUrl = '../participante/dashboard.php';
-                            $dashboardText = 'Minha Área';
+                            $dashboardText = 'Minha Ãrea';
                             $dashboardIcon = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>';
                             if (isset($_SESSION['papel']) && $_SESSION['papel'] === 'organizador') {
                                 $dashboardUrl = '../organizador/index.php?page=dashboard';
@@ -449,7 +451,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                                 </svg>
-                                Página Inicial
+                                PÃ¡gina Inicial
                             </a>
                             <div class="border-t border-gray-200 my-1"></div>
                             <a href="../auth/logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
@@ -461,7 +463,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         </div>
                     </div>
                 <?php else: ?>
-                    <!-- Usuário não logado -->
+                    <!-- UsuÃ¡rio nÃ£o logado -->
                     <a href="../auth/login.php" class="text-gray-300 hover:text-brand-yellow font-medium transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-brand-green">
                         Entrar
                     </a>
@@ -485,7 +487,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <a href="../public/index.php#sobre" class="block px-3 py-2 text-gray-100 hover:text-brand-yellow rounded-lg">Sobre</a>
                 <a href="../public/index.php#contato" class="block px-3 py-2 text-gray-100 hover:text-brand-yellow rounded-lg">Contato</a>
                 <a href="../public/index.php" class="block px-3 py-2 text-gray-100 hover:text-brand-yellow rounded-lg">
-                    <i class="fas fa-home mr-2"></i>Página Inicial
+                    <i class="fas fa-home mr-2"></i>PÃ¡gina Inicial
                 </a>
             </div>
         </div>

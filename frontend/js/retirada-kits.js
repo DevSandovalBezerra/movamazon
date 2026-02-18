@@ -1,12 +1,13 @@
-// Variáveis globais
+if (window.getApiBase) { window.getApiBase(); }
+// VariÃƒÆ’Ã‚Â¡veis globais
 let eventos = [];
 let eventoSelecionado = null;
 let locais = [];
 let localEditando = null;
 
-// Inicialização
+// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 Iniciando sistema de retirada de kits');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ Iniciando sistema de retirada de kits');
     configurarEventListeners();
     carregarEventos();
 });
@@ -17,10 +18,10 @@ function configurarEventListeners() {
     document.getElementById('filtroEvento').addEventListener('change', aplicarFiltros);
     document.getElementById('filtroStatus').addEventListener('change', aplicarFiltros);
     
-    // Botão novo local
+    // BotÃƒÆ’Ã‚Â£o novo local
     document.getElementById('btnNovoLocal').addEventListener('click', () => abrirModalLocal());
     
-    // Formulário do modal
+    // FormulÃƒÆ’Ã‚Â¡rio do modal
     document.getElementById('formLocal').addEventListener('submit', salvarLocal);
 }
 
@@ -46,42 +47,42 @@ function mostrarEstadoVazio() {
 // Carregar eventos
 async function carregarEventos() {
     try {
-        console.log('📥 Carregando eventos...');
-        const response = await fetch('../../../api/organizador/eventos/list.php');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Carregando eventos...');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
-        console.log('📊 Resposta da API eventos:', data);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Resposta da API eventos:', data);
         
         if (data.success) {
             eventos = data.data.eventos;
-            console.log('📋 Eventos carregados:', eventos);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Eventos carregados:', eventos);
             preencherSelectEventos();
-            console.log(`✅ ${eventos.length} eventos carregados`);
+            console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ${eventos.length} eventos carregados`);
         } else {
             throw new Error(data.message || data.error || 'Erro ao carregar eventos');
         }
     } catch (error) {
-        console.error('💥 Erro ao carregar eventos:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
         Swal.fire('Erro', 'Erro ao carregar eventos: ' + error.message, 'error');
     }
 }
 
 function preencherSelectEventos() {
-    console.log('🎯 Preenchendo select de eventos...');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ Preenchendo select de eventos...');
     const select = document.getElementById('filtroEvento');
     if (!select) {
-        console.error('❌ Elemento filtroEvento não encontrado');
+        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Elemento filtroEvento nÃƒÆ’Ã‚Â£o encontrado');
         return;
     }
     
     select.innerHTML = '<option value="">Selecione um evento</option>';
     
     if (!eventos || eventos.length === 0) {
-        console.log('📭 Nenhum evento disponível');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â­ Nenhum evento disponÃƒÆ’Ã‚Â­vel');
         return;
     }
     
@@ -90,10 +91,10 @@ function preencherSelectEventos() {
         option.value = evento.id;
         option.textContent = evento.nome;
         select.appendChild(option);
-        console.log(`✅ Adicionado evento: ${evento.nome} (ID: ${evento.id})`);
+        console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Adicionado evento: ${evento.nome} (ID: ${evento.id})`);
     });
     
-    console.log(`✅ Select preenchido com ${eventos.length} eventos`);
+    console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Select preenchido com ${eventos.length} eventos`);
 }
 
 // Aplicar filtros
@@ -112,13 +113,13 @@ function aplicarFiltros() {
 // Carregar locais do evento
 async function carregarLocais(eventoId) {
     try {
-        console.log('📥 Carregando locais para evento:', eventoId);
-        const response = await fetch(`../../../api/organizador/retirada-kits/get.php?evento_id=${eventoId}`);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Carregando locais para evento:', eventoId);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/retirada-kits/get.php?evento_id=${eventoId}`);
         const data = await response.json();
         
         if (data.success) {
             locais = data.data || [];
-            console.log(`✅ ${locais.length} locais carregados`);
+            console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ${locais.length} locais carregados`);
             
             // Aplicar filtro de status se houver
             const statusFiltro = document.getElementById('filtroStatus').value;
@@ -136,7 +137,7 @@ async function carregarLocais(eventoId) {
             throw new Error(data.error || 'Erro ao carregar locais');
         }
     } catch (error) {
-        console.error('💥 Erro ao carregar locais:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar locais:', error);
         Swal.fire('Erro', 'Erro ao carregar locais: ' + error.message, 'error');
         locais = [];
         mostrarEstadoVazio();
@@ -176,7 +177,7 @@ function criarCardLocal(local, index) {
         <div class="flex justify-between items-start mb-4">
             <div class="flex-1">
                 <h4 class="text-lg font-semibold text-gray-900 mb-1">Local ${index + 1}: ${local.local || 'Sem nome'}</h4>
-                <p class="text-sm text-gray-600">${dataInicioFormatada} até ${dataFimFormatada}</p>
+                <p class="text-sm text-gray-600">${dataInicioFormatada} atÃƒÆ’Ã‚Â© ${dataFimFormatada}</p>
             </div>
             <span class="px-3 py-1 text-xs font-semibold rounded-full bg-${statusClass}-100 text-${statusClass}-800">
                 ${statusText}
@@ -186,14 +187,14 @@ function criarCardLocal(local, index) {
         <div class="space-y-2 text-sm mb-4">
             ${local.documentos_necessarios ? `
                 <div>
-                    <span class="font-medium text-gray-700">Documentos Necessários:</span>
+                    <span class="font-medium text-gray-700">Documentos NecessÃƒÆ’Ã‚Â¡rios:</span>
                     <p class="text-gray-600 mt-1">${local.documentos_necessarios}</p>
                 </div>
             ` : ''}
             
             ${local.instrucoes ? `
                 <div>
-                    <span class="font-medium text-gray-700">Instruções:</span>
+                    <span class="font-medium text-gray-700">InstruÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:</span>
                     <p class="text-gray-600 mt-1">${local.instrucoes}</p>
                 </div>
             ` : ''}
@@ -232,7 +233,7 @@ function formatarData(dataString) {
 // Abrir modal para criar novo local
 function abrirModalLocal() {
     if (!eventoSelecionado) {
-        Swal.fire('Atenção', 'Selecione um evento primeiro.', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro.', 'warning');
         return;
     }
     
@@ -249,7 +250,7 @@ async function editarLocal(localId) {
     try {
         const local = locais.find(l => l.id == localId);
         if (!local) {
-            Swal.fire('Erro', 'Local não encontrado', 'error');
+            Swal.fire('Erro', 'Local nÃƒÆ’Ã‚Â£o encontrado', 'error');
             return;
         }
         
@@ -266,7 +267,7 @@ async function editarLocal(localId) {
     }
 }
 
-// Preencher formulário do modal
+// Preencher formulÃƒÆ’Ã‚Â¡rio do modal
 function preencherFormularioModal(local) {
     document.getElementById('modalLocalRetirada').value = local.local || '';
     
@@ -296,7 +297,7 @@ function formatarParaDateTimeLocal(data) {
     return `${ano}-${mes}-${dia}T${hora}:${minuto}`;
 }
 
-// Limpar formulário do modal
+// Limpar formulÃƒÆ’Ã‚Â¡rio do modal
 function limparFormularioModal() {
     document.getElementById('modalLocalRetirada').value = '';
     document.getElementById('modalDataInicio').value = '';
@@ -318,7 +319,7 @@ async function salvarLocal(e) {
     e.preventDefault();
     
     if (!eventoSelecionado) {
-        Swal.fire('Atenção', 'Selecione um evento primeiro.', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro.', 'warning');
         return;
     }
     
@@ -331,19 +332,19 @@ async function salvarLocal(e) {
     const ativo = document.getElementById('modalAtivoRetirada').checked;
     
     if (!local || !dataInicio || !dataFim) {
-        Swal.fire('Atenção', 'Preencha pelo menos o local e as datas de início e fim.', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Preencha pelo menos o local e as datas de inÃƒÆ’Ã‚Â­cio e fim.', 'warning');
         return;
     }
     
     if (new Date(dataInicio) >= new Date(dataFim)) {
-        Swal.fire('Atenção', 'A data de fim deve ser posterior à data de início.', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'A data de fim deve ser posterior ÃƒÆ’Ã‚Â  data de inÃƒÆ’Ã‚Â­cio.', 'warning');
         return;
     }
     
     try {
         const url = localId ? 
-            '../../../api/organizador/retirada-kits/update.php' : 
-            '../../../api/organizador/retirada-kits/create.php';
+            (window.API_BASE || '/api') + '/organizador/retirada-kits/update.php' : 
+            (window.API_BASE || '/api') + '/organizador/retirada-kits/create.php';
         
         const payload = {
             evento_id: eventoSelecionado,
@@ -359,7 +360,7 @@ async function salvarLocal(e) {
             payload.id = localId;
         }
         
-        console.log('💾 Salvando local...', payload);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ Salvando local...', payload);
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -378,7 +379,7 @@ async function salvarLocal(e) {
             Swal.fire('Erro', data.error || data.message || 'Erro ao salvar local.', 'error');
         }
     } catch (error) {
-        console.error('💥 Erro ao salvar local:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao salvar local:', error);
         Swal.fire('Erro', 'Erro ao salvar local.', 'error');
     }
 }
@@ -386,7 +387,7 @@ async function salvarLocal(e) {
 // Excluir local
 async function excluirLocal(localId) {
     const result = await Swal.fire({
-        title: 'Confirmar exclusão',
+        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
         text: 'Tem certeza que deseja excluir este local de retirada?',
         icon: 'warning',
         showCancelButton: true,
@@ -398,7 +399,7 @@ async function excluirLocal(localId) {
     
     if (result.isConfirmed) {
         try {
-            const response = await fetch('../../../api/organizador/retirada-kits/delete.php', {
+            const response = await fetch((window.API_BASE || '/api') + '/organizador/retirada-kits/delete.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -409,7 +410,7 @@ async function excluirLocal(localId) {
             const data = await response.json();
             
             if (data.success) {
-                Swal.fire('Sucesso', 'Local excluído com sucesso!', 'success');
+                Swal.fire('Sucesso', 'Local excluÃƒÆ’Ã‚Â­do com sucesso!', 'success');
                 await carregarLocais(eventoSelecionado);
             } else {
                 Swal.fire('Erro', data.error || 'Erro ao excluir local.', 'error');
@@ -424,7 +425,7 @@ async function excluirLocal(localId) {
 // Toggle status do local
 async function toggleStatusLocal(localId, novoStatus) {
     try {
-        const response = await fetch('../../../api/organizador/retirada-kits/toggle-status.php', {
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/retirada-kits/toggle-status.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

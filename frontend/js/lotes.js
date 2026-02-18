@@ -1,17 +1,18 @@
+if (window.getApiBase) { window.getApiBase(); }
 let eventoId = 0;
 let modalidadeId = 0;
 let lotesData = [];
 let modalidadesData = [];
 let editandoLote = false;
 
-// Variáveis de paginação
+// VariÃƒÆ’Ã‚Â¡veis de paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 let paginaAtual = 1;
 let itensPorPagina = 9;
 let lotesFiltrados = [];
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    // Event listener para mudança de evento
+    // Event listener para mudanÃƒÆ’Ã‚Â§a de evento
     document.getElementById('filtroEvento').addEventListener('change', function() {
         eventoId = this.value;
         if (eventoId) {
@@ -23,12 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Event listener para mudança de modalidade
+    // Event listener para mudanÃƒÆ’Ã‚Â§a de modalidade
     document.getElementById('filtroModalidade').addEventListener('change', function() {
         modalidadeId = this.value;
     });
 
-    // Event listener para mudança de itens por página
+    // Event listener para mudanÃƒÆ’Ã‚Â§a de itens por pÃƒÆ’Ã‚Â¡gina
     document.getElementById('itens-por-pagina').addEventListener('change', function() {
         itensPorPagina = parseInt(this.value);
         paginaAtual = 1;
@@ -36,10 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Função para carregar modalidades
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar modalidades
 async function carregarModalidades(eventoId) {
     try {
-        const response = await fetch(`../../../api/organizador/modalidades/list.php?evento_id=${eventoId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`);
         const data = await response.json();
 
         if (data.success) {
@@ -55,7 +56,7 @@ async function carregarModalidades(eventoId) {
     }
 }
 
-// Função para preencher select de modalidades
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para preencher select de modalidades
 function preencherSelectModalidades() {
     const select = document.getElementById('filtroModalidade');
     select.innerHTML = '<option value="">Todas as modalidades</option>';
@@ -68,30 +69,30 @@ function preencherSelectModalidades() {
     });
 }
 
-// Função para aplicar filtros
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para aplicar filtros
 function aplicarFiltros() {
     if (!eventoId) {
-        Swal.fire('Atenção', 'Selecione um evento primeiro', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro', 'warning');
         return;
     }
 
     carregarLotes();
 }
 
-// Função para carregar lotes
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar lotes
 async function carregarLotes() {
     try {
         mostrarLoading();
         
-        const url = `../../../api/organizador/lotes/list.php?evento_id=${eventoId}${modalidadeId ? `&modalidade_id=${modalidadeId}` : ''}`;
-        console.log('🔍 Buscando lotes:', url);
+        const url = `${window.API_BASE || '/api'}/organizador/lotes/list.php?evento_id=${eventoId}${modalidadeId ? `&modalidade_id=${modalidadeId}` : ''}`;
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Buscando lotes:', url);
         const response = await fetch(url);
         const data = await response.json();
 
         if (data.success) {
             lotesData = data.lotes;
             
-            console.log('📊 Debug API Response:', {
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Debug API Response:', {
                 total_lotes: data.total_lotes,
                 lotes_encontrados: data.lotes_encontrados,
                 lotes_recebidos: data.lotes.length,
@@ -112,14 +113,14 @@ async function carregarLotes() {
     }
 }
 
-// Função para renderizar lotes
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para renderizar lotes
 function renderizarLotes(lotes) {
     lotesFiltrados = lotes;
     paginaAtual = 1;
     atualizarPaginacao();
 }
 
-// Função para atualizar paginação
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para atualizar paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function atualizarPaginacao() {
     const totalLotes = lotesFiltrados.length;
     const totalPaginas = Math.ceil(totalLotes / itensPorPagina);
@@ -127,7 +128,7 @@ function atualizarPaginacao() {
     const fim = inicio + itensPorPagina;
     const lotesPagina = lotesFiltrados.slice(inicio, fim);
 
-    console.log('🔍 Debug Paginação:', {
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Debug PaginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', {
         totalLotes: totalLotes,
         totalPaginas: totalPaginas,
         paginaAtual: paginaAtual,
@@ -137,13 +138,13 @@ function atualizarPaginacao() {
         lotesPagina: lotesPagina.length
     });
 
-    // Atualizar informações
+    // Atualizar informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
     const textoPagina = totalLotes > 0 ? 
         `Mostrando ${inicio + 1}-${Math.min(fim, totalLotes)} de ${totalLotes} lotes` :
         'Nenhum lote encontrado';
     document.getElementById('info-paginacao').textContent = textoPagina;
 
-    // Renderizar lotes da página atual
+    // Renderizar lotes da pÃƒÆ’Ã‚Â¡gina atual
     const container = document.getElementById('lotes-grid');
     container.innerHTML = '';
     
@@ -157,22 +158,22 @@ function atualizarPaginacao() {
         container.appendChild(card);
     });
 
-    // Atualizar controles de paginação
+    // Atualizar controles de paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     atualizarControlesPaginacao(totalPaginas);
     mostrarLotes();
 }
 
-// Função para atualizar controles de paginação
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para atualizar controles de paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function atualizarControlesPaginacao(totalPaginas) {
     const btnAnterior = document.getElementById('btn-anterior');
     const btnProximo = document.getElementById('btn-proximo');
     const numerosPagina = document.getElementById('numeros-pagina');
 
-    // Habilitar/desabilitar botões
+    // Habilitar/desabilitar botÃƒÆ’Ã‚Âµes
     btnAnterior.disabled = paginaAtual <= 1;
     btnProximo.disabled = paginaAtual >= totalPaginas;
 
-    // Gerar números de página
+    // Gerar nÃƒÆ’Ã‚Âºmeros de pÃƒÆ’Ã‚Â¡gina
     numerosPagina.innerHTML = '';
     
     const inicio = Math.max(1, paginaAtual - 2);
@@ -187,7 +188,7 @@ function atualizarControlesPaginacao(totalPaginas) {
     }
 }
 
-// Funções de navegação
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de navegaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function paginaAnterior() {
     if (paginaAtual > 1) {
         paginaAtual--;
@@ -208,17 +209,17 @@ function irParaPagina(pagina) {
     atualizarPaginacao();
 }
 
-// Função para criar card de lote
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para criar card de lote
 function criarCardLote(lote) {
     const card = document.createElement('div');
     card.className = 'bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow';
     
-    // Gerar HTML dos preços
+    // Gerar HTML dos preÃƒÆ’Ã‚Â§os
     let precosHtml = '';
     if (lote.precos && lote.precos.length > 0) {
         precosHtml = `
             <div class="mt-4 pt-4 border-t border-gray-100">
-                <h4 class="text-sm font-medium text-gray-700 mb-2">Preços:</h4>
+                <h4 class="text-sm font-medium text-gray-700 mb-2">PreÃƒÆ’Ã‚Â§os:</h4>
                 <div class="space-y-2">
                     ${lote.precos.map(preco => `
                         <div class="flex justify-between text-xs bg-gray-50 p-2 rounded">
@@ -262,7 +263,7 @@ function criarCardLote(lote) {
             
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div class="bg-blue-50 p-3 rounded-lg">
-                    <div class="text-xs text-blue-600 font-medium">Faixa Etária</div>
+                    <div class="text-xs text-blue-600 font-medium">Faixa EtÃƒÆ’Ã‚Â¡ria</div>
                     <div class="text-sm font-semibold">${lote.idade_min} - ${lote.idade_max} anos</div>
                 </div>
                 <div class="bg-green-50 p-3 rounded-lg">
@@ -273,17 +274,17 @@ function criarCardLote(lote) {
             
             <div class="space-y-2">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Preço:</span>
+                    <span class="text-sm text-gray-600">PreÃƒÆ’Ã‚Â§o:</span>
                     <span class="font-semibold text-lg text-green-600">R$ ${lote.preco_minimo} - R$ ${lote.preco_maximo}</span>
                 </div>
                 
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-gray-600">Desconto idoso:</span>
-                    <span class="font-medium ${lote.desconto_idoso ? 'text-green-600' : 'text-gray-500'}">${lote.desconto_idoso ? 'Sim' : 'Não'}</span>
+                    <span class="font-medium ${lote.desconto_idoso ? 'text-green-600' : 'text-gray-500'}">${lote.desconto_idoso ? 'Sim' : 'NÃƒÆ’Ã‚Â£o'}</span>
                 </div>
                 
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Total de preços:</span>
+                    <span class="text-sm text-gray-600">Total de preÃƒÆ’Ã‚Â§os:</span>
                     <span class="font-medium text-blue-600">${lote.total_precos}</span>
                 </div>
             </div>
@@ -295,7 +296,7 @@ function criarCardLote(lote) {
     return card;
 }
 
-// Funções de estado
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de estado
 function mostrarLoading() {
     document.getElementById('loading-lotes').classList.remove('hidden');
     document.getElementById('lotes-container').classList.add('hidden');
@@ -337,10 +338,10 @@ function mostrarSelecionarFiltros() {
     document.getElementById('selecionar-filtros').classList.remove('hidden');
 }
 
-// Funções do modal
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do modal
 function abrirModalCriarLote() {
     if (!eventoId) {
-        Swal.fire('Atenção', 'Selecione um evento primeiro', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro', 'warning');
         return;
     }
 
@@ -379,14 +380,14 @@ function adicionarPreco() {
     const precoHtml = `
         <div class="border border-gray-200 rounded-lg p-4" data-preco-id="${precoId}">
             <div class="flex items-center justify-between mb-3">
-                <h4 class="font-medium text-gray-900">Preço ${container.children.length + 1}</h4>
+                <h4 class="font-medium text-gray-900">PreÃƒÆ’Ã‚Â§o ${container.children.length + 1}</h4>
                 <button type="button" onclick="removerPreco(${precoId})" class="text-red-600 hover:text-red-800">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Data Início</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Data InÃƒÆ’Ã‚Â­cio</label>
                     <input type="date" name="precos[${precoId}][data_inicio]" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
                 </div>
                 <div>
@@ -394,7 +395,7 @@ function adicionarPreco() {
                     <input type="date" name="precos[${precoId}][data_fim]" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">PreÃƒÆ’Ã‚Â§o (R$)</label>
                     <input type="number" name="precos[${precoId}][preco]" step="0.01" min="0" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
                 </div>
             </div>
@@ -421,10 +422,10 @@ function removerPreco(precoId) {
     }
 }
 
-// Função para editar lote
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para editar lote
 async function editarLote(loteId) {
     try {
-        const response = await fetch(`../../../api/organizador/lotes/get.php?lote_id=${loteId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/lotes/get.php?lote_id=${loteId}`);
         const data = await response.json();
 
         if (data.success) {
@@ -442,7 +443,7 @@ async function editarLote(loteId) {
     }
 }
 
-// Função para preencher formulário
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para preencher formulÃƒÆ’Ã‚Â¡rio
 function preencherFormularioLote(lote) {
     document.getElementById('lote_id').value = lote.id;
     document.getElementById('modalidade_id').value = lote.modalidade_id;
@@ -452,7 +453,7 @@ function preencherFormularioLote(lote) {
     document.getElementById('limite_vagas').value = lote.limite_vagas || '';
     document.getElementById('desconto_idoso').checked = lote.desconto_idoso;
 
-    // Preencher preços
+    // Preencher preÃƒÆ’Ã‚Â§os
     limparPrecos();
     lote.precos.forEach(preco => {
         adicionarPreco();
@@ -467,10 +468,10 @@ function preencherFormularioLote(lote) {
     });
 }
 
-// Função para excluir lote
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para excluir lote
 async function excluirLote(loteId) {
     const result = await Swal.fire({
-        title: 'Confirmar exclusão',
+        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
         text: 'Tem certeza que deseja excluir este lote?',
         icon: 'warning',
         showCancelButton: true,
@@ -485,7 +486,7 @@ async function excluirLote(loteId) {
             const formData = new FormData();
             formData.append('lote_id', loteId);
 
-            const response = await fetch('../../../api/organizador/lotes/delete.php', {
+            const response = await fetch((window.API_BASE || '/api') + '/organizador/lotes/delete.php', {
                 method: 'POST',
                 body: formData
             });
@@ -493,7 +494,7 @@ async function excluirLote(loteId) {
             const data = await response.json();
 
             if (data.success) {
-                Swal.fire('Sucesso', 'Lote excluído com sucesso', 'success');
+                Swal.fire('Sucesso', 'Lote excluÃƒÆ’Ã‚Â­do com sucesso', 'success');
                 carregarLotes();
             } else {
                 throw new Error(data.message);
@@ -505,14 +506,14 @@ async function excluirLote(loteId) {
     }
 }
 
-// Event listener para o formulário
+// Event listener para o formulÃƒÆ’Ã‚Â¡rio
 document.getElementById('formLote').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     try {
         const formData = new FormData(this);
         
-        // Processar preços
+        // Processar preÃƒÆ’Ã‚Â§os
         const precos = [];
         const precosElements = document.querySelectorAll('#precos-container > div');
         precosElements.forEach(element => {
@@ -535,7 +536,7 @@ document.getElementById('formLote').addEventListener('submit', async function(e)
 
         formData.append('precos', JSON.stringify(precos));
 
-        const url = editandoLote ? '../../../api/organizador/lotes/update.php' : '../../../api/organizador/lotes/create.php';
+        const url = editandoLote ? (window.API_BASE || '/api') + '/organizador/lotes/update.php' : (window.API_BASE || '/api') + '/organizador/lotes/create.php';
         
         const response = await fetch(url, {
             method: 'POST',

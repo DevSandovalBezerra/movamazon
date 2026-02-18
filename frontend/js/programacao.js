@@ -1,8 +1,9 @@
+if (window.getApiBase) { window.getApiBase(); }
 // programacao.js
 /**
- * PÁGINA DE PROGRAMAÇÃO (CHECKLIST) - GERENCIAMENTO DE CONFIGURAÇÕES DO EVENTO
+ * PÃƒÆ’Ã‚ÂGINA DE PROGRAMAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O (CHECKLIST) - GERENCIAMENTO DE CONFIGURAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DO EVENTO
  * 
- * Esta página mantém a flexibilidade de recuperar e atualizar dados de múltiplas tabelas:
+ * Esta pÃƒÆ’Ã‚Â¡gina mantÃƒÆ’Ã‚Â©m a flexibilidade de recuperar e atualizar dados de mÃƒÆ’Ã‚Âºltiplas tabelas:
  * 
  * 1. TABELA 'eventos' (PRINCIPAL):
  *    - Recupera: carregarEventoSelecionado() -> API eventos/get.php
@@ -22,28 +23,28 @@
  *    - Exclui: excluirItemProgramacao() -> API programacao/delete.php
  *    - Campos: tipo, titulo, descricao, ordem, ativo
  * 
- * 4. FUNÇÃO DE VERIFICAÇÃO DE CONFIGURAÇÕES:
- *    - A API check_implementation_status.php verifica se o evento tem programação
- *    - Verifica se há itens ativos na tabela programacao_evento
- *    - Esta verificação é usada pelo checklist na página principal do organizador
+ * 4. FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE VERIFICAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE CONFIGURAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES:
+ *    - A API check_implementation_status.php verifica se o evento tem programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+ *    - Verifica se hÃƒÆ’Ã‚Â¡ itens ativos na tabela programacao_evento
+ *    - Esta verificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© usada pelo checklist na pÃƒÆ’Ã‚Â¡gina principal do organizador
  * 
  * IMPORTANTE: Todas as funcionalidades antigas foram preservadas.
- * A página continua sendo uma página de configuração/checklist do evento.
+ * A pÃƒÆ’Ã‚Â¡gina continua sendo uma pÃƒÆ’Ã‚Â¡gina de configuraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o/checklist do evento.
  */
 
-// Variáveis globais
+// VariÃƒÆ’Ã‚Â¡veis globais
 let modoEdicao = false;
 let eventoAtual = null;
 
-// Inicialização
+// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 window.addEventListener('DOMContentLoaded', function () {
     carregarEventos();
     configurarEventListeners();
 });
 
 // Corrigir caminho base para APIs
-const API_BASE = '../../../api/organizador/eventos/'; // API para tabela 'eventos'
-const API_PROGRAMACAO = '../../../api/organizador/programacao/'; // API para tabela 'programacao_evento'
+const API_BASE = (window.API_BASE || '/api') + '/organizador/eventos/'; // API para tabela 'eventos'
+const API_PROGRAMACAO = (window.API_BASE || '/api') + '/organizador/programacao/'; // API para tabela 'programacao_evento'
 
 // Configurar event listeners
 function configurarEventListeners() {
@@ -62,7 +63,7 @@ function configurarEventListeners() {
         filtroStatus.addEventListener('change', aplicarFiltros);
     }
     
-    // Regulamento: botão substituir
+    // Regulamento: botÃƒÆ’Ã‚Â£o substituir
     const btnSubstituirRegulamento = document.getElementById('btn-substituir-regulamento');
     if (btnSubstituirRegulamento) {
         btnSubstituirRegulamento.addEventListener('click', substituirRegulamento);
@@ -79,7 +80,7 @@ function configurarEventListeners() {
 
             // Validar tamanho
             if (file.size > maxSize) {
-                Swal.fire('Erro', 'Arquivo muito grande. Tamanho máximo: 10MB.', 'error');
+                Swal.fire('Erro', 'Arquivo muito grande. Tamanho mÃƒÆ’Ã‚Â¡ximo: 10MB.', 'error');
                 this.value = '';
                 return;
             }
@@ -87,12 +88,12 @@ function configurarEventListeners() {
             // Validar tipo
             const ext = file.name.split('.').pop().toLowerCase();
             if (!['pdf', 'doc', 'docx'].includes(ext)) {
-                Swal.fire('Erro', 'Formato não permitido. Use PDF, DOC ou DOCX.', 'error');
+                Swal.fire('Erro', 'Formato nÃƒÆ’Ã‚Â£o permitido. Use PDF, DOC ou DOCX.', 'error');
                 this.value = '';
                 return;
             }
 
-            // Upload imediato (modo edição): troca o arquivo na hora
+            // Upload imediato (modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o): troca o arquivo na hora
             if (modoEdicao) {
                 await salvarRegulamento();
             }
@@ -117,13 +118,13 @@ function configurarEventListeners() {
             const file = inputEl.files[0];
             const maxSize = 5 * 1024 * 1024; // 5MB
             if (file.size > maxSize) {
-                Swal.fire('Erro', 'Imagem muito grande. Tamanho máximo: 5MB.', 'error');
+                Swal.fire('Erro', 'Imagem muito grande. Tamanho mÃƒÆ’Ã‚Â¡ximo: 5MB.', 'error');
                 inputEl.value = '';
                 return;
             }
             const ext = file.name.split('.').pop().toLowerCase();
             if (!['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
-                Swal.fire('Erro', 'Formato não permitido. Use JPG, PNG ou WEBP.', 'error');
+                Swal.fire('Erro', 'Formato nÃƒÆ’Ã‚Â£o permitido. Use JPG, PNG ou WEBP.', 'error');
                 inputEl.value = '';
                 return;
             }
@@ -159,7 +160,7 @@ function configurarEventListeners() {
             }
             const confirmacao = await Swal.fire({
                 title: 'Excluir logotipo?',
-                text: 'A imagem do evento será removida.',
+                text: 'A imagem do evento serÃƒÆ’Ã‚Â¡ removida.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sim, excluir',
@@ -206,7 +207,7 @@ async function carregarEventos() {
                 });
             }
 
-            // Adicionar event listener para mudança de evento
+            // Adicionar event listener para mudanÃƒÆ’Ã‚Â§a de evento
             select.addEventListener('change', function () {
                 const eventoId = this.value;
                 if (eventoId) {
@@ -222,71 +223,71 @@ async function carregarEventos() {
 }
 
 /**
- * Carregar evento selecionado e preencher formulário
+ * Carregar evento selecionado e preencher formulÃƒÆ’Ã‚Â¡rio
  * 
- * Esta função é CORE da página e deve SEMPRE:
+ * Esta funÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© CORE da pÃƒÆ’Ã‚Â¡gina e deve SEMPRE:
  * 1. Recuperar dados da tabela 'eventos' via API eventos/get.php
- * 2. Preencher o formulário com dados do evento
- * 3. Carregar dados relacionados (modalidades, programação)
+ * 2. Preencher o formulÃƒÆ’Ã‚Â¡rio com dados do evento
+ * 3. Carregar dados relacionados (modalidades, programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
  * 
  * MANTIDA E PRESERVADA - Funcionalidade original
  */
 async function carregarEventoSelecionado(eventoId) {
     if (eventoId) {
         try {
-            console.log('🔍 DEBUG - Carregando evento ID:', eventoId);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Carregando evento ID:', eventoId);
             
             // 1. RECUPERAR DADOS DA TABELA 'eventos' (FUNCIONALIDADE ORIGINAL)
             const response = await fetch(API_BASE + `get.php?id=${eventoId}`);
-            console.log('🔍 DEBUG - Response status:', response.status);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response status:', response.status);
             const data = await response.json();
-            console.log('🔍 DEBUG - Dados recebidos:', data);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados recebidos:', data);
 
             if (data.success && data.data && data.data.id) {
                 eventoAtual = data.data;
-                console.log('🔍 DEBUG - Evento atual definido:', eventoAtual);
+                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Evento atual definido:', eventoAtual);
 
-                // 2. CARREGAR DADOS RELACIONADOS (MÚLTIPLAS TABELAS)
+                // 2. CARREGAR DADOS RELACIONADOS (MÃƒÆ’Ã…Â¡LTIPLAS TABELAS)
                 // - Modalidades (tabela 'modalidades')
                 await carregarModalidades(eventoId);
 
-                // - Programação (tabela 'programacao_evento') - NOVA FUNCIONALIDADE
+                // - ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (tabela 'programacao_evento') - NOVA FUNCIONALIDADE
                 await carregarProgramacao(eventoId);
 
-                // 3. PREENCHER FORMULÁRIO COM DADOS DO EVENTO (FUNCIONALIDADE ORIGINAL)
+                // 3. PREENCHER FORMULÃƒÆ’Ã‚ÂRIO COM DADOS DO EVENTO (FUNCIONALIDADE ORIGINAL)
                 preencherFormulario(eventoAtual);
                 document.getElementById('filtro-evento').value = eventoId;
             } else {
-                console.error('🔍 DEBUG - Evento não encontrado na resposta:', data);
-                Swal.fire('Erro', 'Evento não encontrado.', 'error');
+                console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Evento nÃƒÆ’Ã‚Â£o encontrado na resposta:', data);
+                Swal.fire('Erro', 'Evento nÃƒÆ’Ã‚Â£o encontrado.', 'error');
             }
         } catch (error) {
-            console.error('🔍 DEBUG - Erro ao carregar evento:', error);
+            console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro ao carregar evento:', error);
         }
     }
 }
 
-// Carregar modalidades do evento (versão dinâmica)
+// Carregar modalidades do evento (versÃƒÆ’Ã‚Â£o dinÃƒÆ’Ã‚Â¢mica)
 async function carregarModalidades(eventoId) {
     try {
-        console.log('🔍 DEBUG - Iniciando carregamento de modalidades para evento ID:', eventoId);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Iniciando carregamento de modalidades para evento ID:', eventoId);
 
         // Mostrar loading
         mostrarLoadingModalidades();
 
         // Buscar modalidades
-        console.log('🔍 DEBUG - Buscando modalidades...');
-        const modalidadesResponse = await fetch(`../../../api/organizador/modalidades/list.php?evento_id=${eventoId}`);
-        console.log('🔍 DEBUG - Response modalidades status:', modalidadesResponse.status);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Buscando modalidades...');
+        const modalidadesResponse = await fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response modalidades status:', modalidadesResponse.status);
         const modalidadesData = await modalidadesResponse.json();
-        console.log('🔍 DEBUG - Dados modalidades:', modalidadesData);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados modalidades:', modalidadesData);
 
         // Buscar lotes com valores
-        console.log('🔍 DEBUG - Buscando lotes...');
-        const lotesResponse = await fetch(`../../../api/organizador/lotes-inscricao/list.php?evento_id=${eventoId}`);
-        console.log('🔍 DEBUG - Response lotes status:', lotesResponse.status);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Buscando lotes...');
+        const lotesResponse = await fetch(`${window.API_BASE || '/api'}/organizador/lotes-inscricao/list.php?evento_id=${eventoId}`);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response lotes status:', lotesResponse.status);
         const lotesData = await lotesResponse.json();
-        console.log('🔍 DEBUG - Dados lotes:', lotesData);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados lotes:', lotesData);
 
         if (modalidadesData.success && lotesData.success) {
             // A API retorna modalidades diretamente no array
@@ -296,16 +297,16 @@ async function carregarModalidades(eventoId) {
             eventoAtual.modalidades = modalidades;
             eventoAtual.lotes = lotes;
 
-            console.log('🔍 DEBUG - Renderizando modalidades dinâmicas...');
-            console.log('🔍 DEBUG - Modalidades recebidas:', modalidades);
-            console.log('🔍 DEBUG - Lotes recebidos:', lotes);
-            console.log('🔍 DEBUG - Total modalidades:', modalidades.length);
-            console.log('🔍 DEBUG - Total lotes:', lotes.length);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Renderizando modalidades dinÃƒÆ’Ã‚Â¢micas...');
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Modalidades recebidas:', modalidades);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Lotes recebidos:', lotes);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Total modalidades:', modalidades.length);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Total lotes:', lotes.length);
             
-            // Renderizar interface dinâmica
+            // Renderizar interface dinÃƒÆ’Ã‚Â¢mica
             renderizarModalidadesDinamicas(modalidades, lotes);
         } else {
-            console.error('🔍 DEBUG - Erro nas APIs:', {
+            console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro nas APIs:', {
                 modalidades: modalidadesData,
                 lotes: lotesData
             });
@@ -319,7 +320,7 @@ async function carregarModalidades(eventoId) {
             mostrarErroModalidades(mensagemErro);
         }
     } catch (error) {
-        console.error('🔍 DEBUG - Erro ao carregar modalidades:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro ao carregar modalidades:', error);
         eventoAtual.modalidades = [];
         eventoAtual.lotes = [];
         mostrarErroModalidades('Erro ao carregar modalidades');
@@ -334,11 +335,11 @@ function aplicarFiltros() {
     }
 }
 
-// Preencher formulário com dados do evento
+// Preencher formulÃƒÆ’Ã‚Â¡rio com dados do evento
 function preencherFormulario(evento) {
-    console.log('🔍 DEBUG - Preenchendo formulário com dados:', evento);
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Preenchendo formulÃƒÆ’Ã‚Â¡rio com dados:', evento);
 
-    // Informações Gerais
+    // InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Gerais
     document.getElementById('nomeEvento').value = evento.nome || '';
     document.getElementById('categoriaEvento').value = evento.categoria || '';
     document.getElementById('dataInicio').value = evento.data_inicio || '';
@@ -357,8 +358,8 @@ function preencherFormulario(evento) {
     const inputRegulamentoArquivo = document.getElementById('regulamentoArquivo');
     const regulamentoPlaceholder = document.getElementById('regulamento-placeholder');
     
-    console.log('🔍 DEBUG - Regulamento arquivo:', evento.regulamento_arquivo);
-    console.log('🔍 DEBUG - Elementos encontrados:', {
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Regulamento arquivo:', evento.regulamento_arquivo);
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Elementos encontrados:', {
         regulamentoArquivoExistente: !!regulamentoArquivoExistente,
         linkRegulamento: !!linkRegulamento,
         nomeArquivoRegulamento: !!nomeArquivoRegulamento,
@@ -370,12 +371,12 @@ function preencherFormulario(evento) {
             // Existe arquivo: mostrar link
             const nomeArquivo = evento.regulamento_arquivo.split('/').pop() || evento.regulamento_arquivo.split('\\').pop() || evento.regulamento_arquivo;
             nomeArquivoRegulamento.textContent = nomeArquivo;
-            linkRegulamento.href = `../../../api/uploads/regulamentos/download.php?file=${encodeURIComponent(nomeArquivo)}`;
+            linkRegulamento.href = `${window.API_BASE || '/api'}/uploads/regulamentos/download.php?file=${encodeURIComponent(nomeArquivo)}`;
             regulamentoArquivoExistente.classList.remove('hidden');
             if (regulamentoPlaceholder) regulamentoPlaceholder.classList.add('hidden');
             if (regulamentoUploadContainer) regulamentoUploadContainer.classList.add('hidden');
             if (confirmacaoSubstituir) confirmacaoSubstituir.classList.add('hidden');
-            // Mostrar botão substituir apenas em modo edição
+            // Mostrar botÃƒÆ’Ã‚Â£o substituir apenas em modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             if (btnSubstituirRegulamento) {
                 if (modoEdicao) {
                     btnSubstituirRegulamento.classList.remove('hidden');
@@ -383,22 +384,22 @@ function preencherFormulario(evento) {
                     btnSubstituirRegulamento.classList.add('hidden');
                 }
             }
-            console.log('✅ Regulamento: Link exibido para arquivo:', nomeArquivo);
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Regulamento: Link exibido para arquivo:', nomeArquivo);
         } else {
-            // Não existe arquivo: esconder link e mostrar input (se em modo edição)
+            // NÃƒÆ’Ã‚Â£o existe arquivo: esconder link e mostrar input (se em modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
             regulamentoArquivoExistente.classList.add('hidden');
             if (btnSubstituirRegulamento) btnSubstituirRegulamento.classList.add('hidden');
             if (regulamentoPlaceholder) regulamentoPlaceholder.classList.remove('hidden');
             if (modoEdicao) {
                 if (regulamentoUploadContainer) regulamentoUploadContainer.classList.remove('hidden');
-                console.log('✅ Regulamento: Input de upload exibido (modo edição)');
+                console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Regulamento: Input de upload exibido (modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)');
             } else {
                 if (regulamentoUploadContainer) regulamentoUploadContainer.classList.add('hidden');
             }
             if (confirmacaoSubstituir) confirmacaoSubstituir.classList.add('hidden');
         }
     } else {
-        console.error('❌ Regulamento: Elementos HTML não encontrados!');
+        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Regulamento: Elementos HTML nÃƒÆ’Ã‚Â£o encontrados!');
     }
     
     // Limpar input de arquivo
@@ -416,7 +417,7 @@ function preencherFormulario(evento) {
     document.getElementById('estadoEvento').value = evento.estado || '';
     document.getElementById('paisEvento').value = evento.pais || 'Brasil';
 
-    // Período de Inscrições
+    // PerÃƒÆ’Ã‚Â­odo de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
     document.getElementById('limiteVagas').value = evento.limite_vagas || '';
     document.getElementById('dataFimInscricoes').value = evento.data_fim_inscricoes || '';
     document.getElementById('horaFimInscricoes').value = evento.hora_fim_inscricoes || '';
@@ -430,15 +431,15 @@ function preencherFormulario(evento) {
     // Organizador
     document.getElementById('organizadorResponsavel').value = evento.organizador_nome || '';
 
-    // Carregar imagem do evento usando padrão evento_{ID}
+    // Carregar imagem do evento usando padrÃƒÆ’Ã‚Â£o evento_{ID}
     carregarImagemEvento(evento.imagem, evento.id);
 
-    console.log('🔍 DEBUG - Formulário preenchido com sucesso');
-    console.log('🔍 DEBUG - Campos preenchidos:');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - FormulÃƒÆ’Ã‚Â¡rio preenchido com sucesso');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Campos preenchidos:');
     console.log('  - Nome:', document.getElementById('nomeEvento').value);
     console.log('  - Categoria:', document.getElementById('categoriaEvento').value);
-    console.log('  - Data Início:', document.getElementById('dataInicio').value);
-    console.log('  - Hora Início:', document.getElementById('horaInicio').value);
+    console.log('  - Data InÃƒÆ’Ã‚Â­cio:', document.getElementById('dataInicio').value);
+    console.log('  - Hora InÃƒÆ’Ã‚Â­cio:', document.getElementById('horaInicio').value);
     console.log('  - Local:', document.getElementById('localEvento').value);
     console.log('  - Cidade:', document.getElementById('cidadeEvento').value);
     console.log('  - Estado:', document.getElementById('estadoEvento').value);
@@ -447,7 +448,7 @@ function preencherFormulario(evento) {
     console.log('  - Imagem:', evento.imagem);
     console.log('  - Organizador:', document.getElementById('organizadorResponsavel').value);
 
-    // Campos adicionais que existem na tabela mas não no formulário
+    // Campos adicionais que existem na tabela mas nÃƒÆ’Ã‚Â£o no formulÃƒÆ’Ã‚Â¡rio
     console.log('Dados adicionais do evento:', {
         genero: evento.genero,
         descricao: evento.descricao,
@@ -461,9 +462,9 @@ function preencherFormulario(evento) {
     });
 }
 
-// Limpar formulário quando nenhum evento estiver selecionado
+// Limpar formulÃƒÆ’Ã‚Â¡rio quando nenhum evento estiver selecionado
 function limparFormulario() {
-    // Informações Gerais
+    // InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Gerais
     document.getElementById('nomeEvento').value = '';
     document.getElementById('categoriaEvento').value = '';
     document.getElementById('dataInicio').value = '';
@@ -491,7 +492,7 @@ function limparFormulario() {
     document.getElementById('estadoEvento').value = '';
     document.getElementById('paisEvento').value = 'Brasil';
 
-    // Período de Inscrições
+    // PerÃƒÆ’Ã‚Â­odo de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
     document.getElementById('limiteVagas').value = '';
     document.getElementById('dataFimInscricoes').value = '';
     document.getElementById('horaFimInscricoes').value = '';
@@ -511,7 +512,7 @@ function limparFormulario() {
     if (container) container.innerHTML = '';
     if (empty) empty.classList.remove('hidden');
 
-    // Limpar programação
+    // Limpar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     mostrarProgramacaoEmpty();
 
     // Limpar imagem
@@ -522,7 +523,7 @@ function limparFormulario() {
 }
 
 // =====================================================
-// FUNÇÕES PARA INTERFACE DINÂMICA DE MODALIDADES
+// FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES PARA INTERFACE DINÃƒÆ’Ã¢â‚¬Å¡MICA DE MODALIDADES
 // =====================================================
 
 // Mostrar loading das modalidades
@@ -677,7 +678,7 @@ window.alternarModo = function () {
     const btnSalvarForm = document.getElementById('btnSalvarForm');
 
     if (modoEdicao) {
-        // Modo edição
+        // Modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         if (textoModo) textoModo.textContent = 'Visualizar';
         if (btnAlternarModo) btnAlternarModo.innerHTML = '<i class="fas fa-eye mr-2"></i><span id="textoModo">Visualizar</span>';
         if (btnAlternarModo) {
@@ -688,16 +689,16 @@ window.alternarModo = function () {
         if (btnCancelar) btnCancelar.classList.remove('hidden');
         if (btnSalvarForm) btnSalvarForm.classList.remove('hidden');
         
-        // Mostrar botão adicionar programação
+        // Mostrar botÃƒÆ’Ã‚Â£o adicionar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         const btnAdicionarProgramacao = document.getElementById('btnAdicionarProgramacao');
         if (btnAdicionarProgramacao) btnAdicionarProgramacao.classList.remove('hidden');
         
         habilitarCampos(true);
         
-        // Atualizar visibilidade do regulamento em modo edição
+        // Atualizar visibilidade do regulamento em modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         atualizarVisibilidadeRegulamento();
     } else {
-        // Modo visualização
+        // Modo visualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         if (textoModo) textoModo.textContent = 'Editar';
         if (btnAlternarModo) btnAlternarModo.innerHTML = '<i class="fas fa-edit mr-2"></i><span id="textoModo">Editar</span>';
         if (btnAlternarModo) {
@@ -708,13 +709,13 @@ window.alternarModo = function () {
         if (btnCancelar) btnCancelar.classList.add('hidden');
         if (btnSalvarForm) btnSalvarForm.classList.add('hidden');
         
-        // Esconder botão adicionar programação
+        // Esconder botÃƒÆ’Ã‚Â£o adicionar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         const btnAdicionarProgramacao = document.getElementById('btnAdicionarProgramacao');
         if (btnAdicionarProgramacao) btnAdicionarProgramacao.classList.add('hidden');
         
         habilitarCampos(false);
         
-        // Atualizar visibilidade do regulamento em modo visualização
+        // Atualizar visibilidade do regulamento em modo visualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         atualizarVisibilidadeRegulamento();
         
         // Restaurar dados originais
@@ -724,7 +725,7 @@ window.alternarModo = function () {
     }
 }
 
-// Função auxiliar para atualizar visibilidade do regulamento
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o auxiliar para atualizar visibilidade do regulamento
 function atualizarVisibilidadeRegulamento() {
     const regulamentoArquivoExistente = document.getElementById('regulamento-arquivo-existente');
     const regulamentoUploadContainer = document.getElementById('regulamento-upload-container');
@@ -748,7 +749,7 @@ function atualizarVisibilidadeRegulamento() {
             }
         }
     } else {
-        // Não existe arquivo
+        // NÃƒÆ’Ã‚Â£o existe arquivo
         if (regulamentoArquivoExistente) {
             regulamentoArquivoExistente.classList.add('hidden');
         }
@@ -765,7 +766,7 @@ function atualizarVisibilidadeRegulamento() {
     }
 }
 
-// Habilitar/desabilitar campos do formulário
+// Habilitar/desabilitar campos do formulÃƒÆ’Ã‚Â¡rio
 function habilitarCampos(habilitar) {
     const campos = [
         'nomeEvento', 'categoriaEvento', 'dataInicio', 'horaInicio',
@@ -786,32 +787,32 @@ function habilitarCampos(habilitar) {
     if (vagasIlimitado) vagasIlimitado.disabled = !habilitar;
     if (vagasLimitado) vagasLimitado.disabled = !habilitar;
     
-    // Regulamento: mostrar/esconder input e botão substituir
+    // Regulamento: mostrar/esconder input e botÃƒÆ’Ã‚Â£o substituir
     const regulamentoUploadContainer = document.getElementById('regulamento-upload-container');
     const btnSubstituirRegulamento = document.getElementById('btn-substituir-regulamento');
     const regulamentoArquivoExistente = document.getElementById('regulamento-arquivo-existente');
     
     if (habilitar) {
-        // Modo edição: mostrar botão substituir se existe arquivo
+        // Modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: mostrar botÃƒÆ’Ã‚Â£o substituir se existe arquivo
         if (regulamentoArquivoExistente && !regulamentoArquivoExistente.classList.contains('hidden')) {
             if (btnSubstituirRegulamento) btnSubstituirRegulamento.classList.remove('hidden');
         } else {
-            // Não existe arquivo: mostrar input
+            // NÃƒÆ’Ã‚Â£o existe arquivo: mostrar input
             if (regulamentoUploadContainer) regulamentoUploadContainer.classList.remove('hidden');
         }
     } else {
-        // Modo visualização: esconder input e botão substituir
+        // Modo visualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: esconder input e botÃƒÆ’Ã‚Â£o substituir
         if (regulamentoUploadContainer) regulamentoUploadContainer.classList.add('hidden');
         if (btnSubstituirRegulamento) btnSubstituirRegulamento.classList.add('hidden');
         
-        // Se não existe arquivo, esconder também o container de link
+        // Se nÃƒÆ’Ã‚Â£o existe arquivo, esconder tambÃƒÆ’Ã‚Â©m o container de link
         if (regulamentoArquivoExistente && !eventoAtual?.regulamento_arquivo) {
             regulamentoArquivoExistente.classList.add('hidden');
         }
     }
 }
 
-// Cancelar edição
+// Cancelar ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 window.cancelarEdicao = function () {
     modoEdicao = false;
     alternarModo();
@@ -820,14 +821,14 @@ window.cancelarEdicao = function () {
 /**
  * Salvar evento - ATUALIZA TABELA 'eventos'
  * 
- * Esta função é CORE da página e deve SEMPRE:
- * 1. Coletar dados do formulário
+ * Esta funÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© CORE da pÃƒÆ’Ã‚Â¡gina e deve SEMPRE:
+ * 1. Coletar dados do formulÃƒÆ’Ã‚Â¡rio
  * 2. Atualizar a tabela 'eventos' via API eventos/update.php
  * 3. Salvar regulamento se houver arquivo
  * 
  * MANTIDA E PRESERVADA - Funcionalidade original
- * A programação (tabela 'programacao_evento') é gerenciada separadamente
- * através das funções adicionarItemProgramacao, editarItemProgramacao, etc.
+ * A programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (tabela 'programacao_evento') ÃƒÆ’Ã‚Â© gerenciada separadamente
+ * atravÃƒÆ’Ã‚Â©s das funÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes adicionarItemProgramacao, editarItemProgramacao, etc.
  */
 window.salvarEvento = async function () {
     if (!eventoAtual) {
@@ -835,7 +836,7 @@ window.salvarEvento = async function () {
         return;
     }
     try {
-        // Coletar dados do formulário (tabela 'eventos')
+        // Coletar dados do formulÃƒÆ’Ã‚Â¡rio (tabela 'eventos')
         const dados = coletarDadosFormulario();
         
         // ATUALIZAR TABELA 'eventos' (FUNCIONALIDADE ORIGINAL)
@@ -864,7 +865,7 @@ window.salvarEvento = async function () {
     }
 }
 
-// Coletar dados do formulário
+// Coletar dados do formulÃƒÆ’Ã‚Â¡rio
 function coletarDadosFormulario() {
     const getVal = (id) => {
         const el = document.getElementById(id);
@@ -904,7 +905,7 @@ async function atualizarValoresModalidades(eventoId) {
             const distancia = modalidade.distancia;
             let novoValor = 0;
 
-            // Determinar novo valor baseado na distância
+            // Determinar novo valor baseado na distÃƒÆ’Ã‚Â¢ncia
             if (distancia.includes('5km') || distancia.includes('5KM')) {
                 novoValor = parseFloat(document.getElementById('valor5km').value) || 0;
             } else if (distancia.includes('10km') || distancia.includes('10KM')) {
@@ -917,7 +918,7 @@ async function atualizarValoresModalidades(eventoId) {
 
             // Atualizar modalidade se valor mudou
             if (novoValor > 0 && novoValor !== (modalidade.valor || modalidade.preco || 0)) {
-                await fetch(`../../../api/organizador/modalidades/update.php`, {
+                await fetch(`${window.API_BASE || '/api'}/organizador/modalidades/update.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -935,15 +936,15 @@ async function atualizarValoresModalidades(eventoId) {
 }
 
 // =====================================================
-// FUNÇÕES PARA CRUD DE LOTES
+// FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES PARA CRUD DE LOTES
 // =====================================================
 
 // Adicionar novo lote
 async function adicionarLote(modalidadeId) {
     if (!modoEdicao) {
         Swal.fire({
-            title: 'Modo Visualização',
-            text: 'Ative o modo de edição para adicionar lotes',
+            title: 'Modo VisualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
+            text: 'Ative o modo de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para adicionar lotes',
             icon: 'info'
         });
         return;
@@ -955,19 +956,19 @@ async function adicionarLote(modalidadeId) {
         title: 'Novo Lote',
         html: `
             <div class="text-left">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Número do Lote</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">NÃƒÆ’Ã‚Âºmero do Lote</label>
                 <input id="numero-lote" type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3" placeholder="Ex: 1">
                 
-                <label class="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">PreÃƒÆ’Ã‚Â§o (R$)</label>
                 <input id="preco-lote" type="number" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3" placeholder="0,00">
                 
-                <label class="block text-sm font-medium text-gray-700 mb-1">Data Início</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Data InÃƒÆ’Ã‚Â­cio</label>
                 <input id="data-inicio" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3">
                 
                 <label class="block text-sm font-medium text-gray-700 mb-1">Data Fim</label>
                 <input id="data-fim" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3">
                 
-                <label class="block text-sm font-medium text-gray-700 mb-1">Vagas Disponíveis</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Vagas DisponÃƒÆ’Ã‚Â­veis</label>
                 <input id="vagas" type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Opcional">
             </div>
         `,
@@ -983,7 +984,7 @@ async function adicionarLote(modalidadeId) {
             const vagas = document.getElementById('vagas').value;
 
             if (!numeroLote || !preco || !dataInicio || !dataFim) {
-                Swal.showValidationMessage('Preencha todos os campos obrigatórios');
+                Swal.showValidationMessage('Preencha todos os campos obrigatÃƒÆ’Ã‚Â³rios');
                 return false;
             }
 
@@ -1006,7 +1007,7 @@ async function adicionarLote(modalidadeId) {
 // Criar lote via API
 async function criarLote(dados) {
     try {
-        const response = await fetch('../../../api/organizador/lotes-inscricao/create.php', {
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/lotes-inscricao/create.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1048,8 +1049,8 @@ async function criarLote(dados) {
 async function editarLote(loteId) {
     if (!modoEdicao) {
         Swal.fire({
-            title: 'Modo Visualização',
-            text: 'Ative o modo de edição para editar lotes',
+            title: 'Modo VisualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
+            text: 'Ative o modo de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para editar lotes',
             icon: 'info'
         });
         return;
@@ -1060,7 +1061,7 @@ async function editarLote(loteId) {
     if (!lote) {
         Swal.fire({
             title: 'Erro!',
-            text: 'Lote não encontrado',
+            text: 'Lote nÃƒÆ’Ã‚Â£o encontrado',
             icon: 'error'
         });
         return;
@@ -1072,19 +1073,19 @@ async function editarLote(loteId) {
         title: 'Editar Lote',
         html: `
             <div class="text-left">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Número do Lote</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">NÃƒÆ’Ã‚Âºmero do Lote</label>
                 <input id="numero-lote" type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3" value="${lote.numero_lote}">
                 
-                <label class="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">PreÃƒÆ’Ã‚Â§o (R$)</label>
                 <input id="preco-lote" type="number" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3" value="${lote.preco}">
                 
-                <label class="block text-sm font-medium text-gray-700 mb-1">Data Início</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Data InÃƒÆ’Ã‚Â­cio</label>
                 <input id="data-inicio" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3" value="${lote.data_inicio}">
                 
                 <label class="block text-sm font-medium text-gray-700 mb-1">Data Fim</label>
                 <input id="data-fim" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3" value="${lote.data_fim}">
                 
-                <label class="block text-sm font-medium text-gray-700 mb-1">Vagas Disponíveis</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Vagas DisponÃƒÆ’Ã‚Â­veis</label>
                 <input id="vagas" type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2" value="${lote.vagas_disponiveis || ''}">
             </div>
         `,
@@ -1100,7 +1101,7 @@ async function editarLote(loteId) {
             const vagas = document.getElementById('vagas').value;
 
             if (!numeroLote || !preco || !dataInicio || !dataFim) {
-                Swal.showValidationMessage('Preencha todos os campos obrigatórios');
+                Swal.showValidationMessage('Preencha todos os campos obrigatÃƒÆ’Ã‚Â³rios');
                 return false;
             }
 
@@ -1123,7 +1124,7 @@ async function editarLote(loteId) {
 // Atualizar lote via API
 async function atualizarLote(dados) {
     try {
-        const response = await fetch('../../../api/organizador/lotes-inscricao/update.php', {
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/lotes-inscricao/update.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1165,15 +1166,15 @@ async function atualizarLote(dados) {
 async function excluirLote(loteId) {
     if (!modoEdicao) {
         Swal.fire({
-            title: 'Modo Visualização',
-            text: 'Ative o modo de edição para excluir lotes',
+            title: 'Modo VisualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
+            text: 'Ative o modo de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para excluir lotes',
             icon: 'info'
         });
         return;
     }
 
     const result = await Swal.fire({
-        title: 'Confirmar exclusão',
+        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
         text: 'Tem certeza que deseja excluir este lote?',
         icon: 'warning',
         showCancelButton: true,
@@ -1185,7 +1186,7 @@ async function excluirLote(loteId) {
 
     if (result.isConfirmed) {
         try {
-            const response = await fetch(`../../../api/organizador/lotes-inscricao/delete.php?id=${loteId}`, {
+            const response = await fetch(`${window.API_BASE || '/api'}/organizador/lotes-inscricao/delete.php?id=${loteId}`, {
                 method: 'DELETE'
             });
 
@@ -1194,7 +1195,7 @@ async function excluirLote(loteId) {
             if (data.success) {
                 Swal.fire({
                     title: 'Sucesso!',
-                    text: 'Lote excluído com sucesso!',
+                    text: 'Lote excluÃƒÆ’Ã‚Â­do com sucesso!',
                     icon: 'success'
                 });
 
@@ -1224,17 +1225,17 @@ async function excluirLote(loteId) {
 function editarModalidade(modalidadeId) {
     Swal.fire({
         title: 'Em desenvolvimento',
-        text: 'A edição de modalidades será implementada em breve',
+        text: 'A ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de modalidades serÃƒÆ’Ã‚Â¡ implementada em breve',
         icon: 'info'
     });
 }
 
 /**
- * Carrega a imagem do evento no formulário. Prioriza o valor do banco (nomeImagem); fallback evento_{ID}.png
- * Usa window.getEventImageUrl (eventImageUrl.js) para URL única em todas as páginas.
+ * Carrega a imagem do evento no formulÃƒÆ’Ã‚Â¡rio. Prioriza o valor do banco (nomeImagem); fallback evento_{ID}.png
+ * Usa window.getEventImageUrl (eventImageUrl.js) para URL ÃƒÆ’Ã‚Âºnica em todas as pÃƒÆ’Ã‚Â¡ginas.
  * @param {string} nomeImagem - Nome do arquivo (ex: evento_2.png)
  * @param {number} eventoId - ID do evento
- * @param {boolean} [forceReload=false] - Se true, adiciona query de cache-bust para forçar recarregar (ex: após upload)
+ * @param {boolean} [forceReload=false] - Se true, adiciona query de cache-bust para forÃƒÆ’Ã‚Â§ar recarregar (ex: apÃƒÆ’Ã‚Â³s upload)
  */
 function carregarImagemEvento(nomeImagem, eventoId, forceReload) {
     const imagemPlaceholder = document.getElementById('imagem-placeholder');
@@ -1321,11 +1322,11 @@ async function salvarRegulamento() {
     }
     
     try {
-        // Se já existe arquivo e o usuário selecionou outro, confirmar substituição
+        // Se jÃƒÆ’Ã‚Â¡ existe arquivo e o usuÃƒÆ’Ã‚Â¡rio selecionou outro, confirmar substituiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         if (eventoAtual?.regulamento_arquivo && eventoAtual.regulamento_arquivo.trim() !== '') {
             const res = await Swal.fire({
                 title: 'Substituir regulamento?',
-                text: 'Já existe um arquivo. Ao salvar, ele será substituído.',
+                text: 'JÃƒÆ’Ã‚Â¡ existe um arquivo. Ao salvar, ele serÃƒÆ’Ã‚Â¡ substituÃƒÆ’Ã‚Â­do.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sim, substituir',
@@ -1343,7 +1344,7 @@ async function salvarRegulamento() {
         formData.append('evento_id', eventoAtual.id);
         formData.append('regulamento_arquivo', inputRegulamentoArquivo.files[0]);
         
-        const response = await fetch('../../../api/organizador/eventos/upload-regulamento.php', {
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/upload-regulamento.php', {
             method: 'POST',
             body: formData
         });
@@ -1351,7 +1352,7 @@ async function salvarRegulamento() {
         const data = await response.json();
         
         if (data.success) {
-            console.log('✅ Regulamento salvo com sucesso:', data.data);
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Regulamento salvo com sucesso:', data.data);
             
             // Atualizar interface: mostrar link e esconder input
             const regulamentoArquivoExistente = document.getElementById('regulamento-arquivo-existente');
@@ -1364,7 +1365,7 @@ async function salvarRegulamento() {
             if (regulamentoArquivoExistente && linkRegulamento && nomeArquivoRegulamento) {
                 nomeArquivoRegulamento.textContent = data.data.nome_original || data.data.arquivo;
                 const nomeArquivo = (data.data.arquivo || '').split('/').pop() || (data.data.arquivo || '');
-                linkRegulamento.href = `../../../api/uploads/regulamentos/download.php?file=${encodeURIComponent(nomeArquivo)}`;
+                linkRegulamento.href = `${window.API_BASE || '/api'}/uploads/regulamentos/download.php?file=${encodeURIComponent(nomeArquivo)}`;
                 regulamentoArquivoExistente.classList.remove('hidden');
             }
 
@@ -1391,22 +1392,22 @@ async function salvarRegulamento() {
                 eventoAtual.regulamento_arquivo = data.data.arquivo;
             }
         } else {
-            console.error('❌ Erro ao salvar regulamento:', data.error);
+            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao salvar regulamento:', data.error);
             Swal.fire('Erro', data.error || 'Erro ao salvar regulamento', 'error');
         }
     } catch (error) {
-        console.error('💥 Erro ao salvar regulamento:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao salvar regulamento:', error);
         Swal.fire('Erro', 'Erro ao salvar regulamento', 'error');
     }
 }
 
 // =====================================================
-// FUNÇÕES PARA GERENCIAR PROGRAMAÇÃO
+// FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES PARA GERENCIAR PROGRAMAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
-// Carregar programação do evento
+// Carregar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento
 async function carregarProgramacao(eventoId) {
-    // Proteção contra múltiplas chamadas simultâneas
+    // ProteÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o contra mÃƒÆ’Ã‚Âºltiplas chamadas simultÃƒÆ’Ã‚Â¢neas
     if (window.carregandoProgramacao) {
         return;
     }
@@ -1427,11 +1428,11 @@ async function carregarProgramacao(eventoId) {
             const programacao = data.data || [];
             renderizarProgramacao(programacao);
         } else {
-            mostrarErroProgramacao(data.error || 'Erro ao carregar programação');
+            mostrarErroProgramacao(data.error || 'Erro ao carregar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o');
         }
     } catch (error) {
-        console.error('Erro ao carregar programação:', error);
-        mostrarErroProgramacao('Erro ao carregar programação');
+        console.error('Erro ao carregar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', error);
+        mostrarErroProgramacao('Erro ao carregar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o');
     } finally {
         window.carregandoProgramacao = false;
     }
@@ -1442,7 +1443,7 @@ function mostrarLoadingProgramacao() {
     const container = document.getElementById('programacao-container');
     const empty = document.getElementById('programacao-empty');
     if (container) {
-        container.innerHTML = '<div id="programacao-loading" class="text-center py-8"><div class="inline-flex items-center"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-2"></div><span class="text-gray-600">Carregando programação...</span></div></div>';
+        container.innerHTML = '<div id="programacao-loading" class="text-center py-8"><div class="inline-flex items-center"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-2"></div><span class="text-gray-600">Carregando programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...</span></div></div>';
     }
     if (empty) empty.classList.add('hidden');
 }
@@ -1463,7 +1464,7 @@ function mostrarErroProgramacao(mensagem) {
     }
 }
 
-// Renderizar lista de programação
+// Renderizar lista de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function renderizarProgramacao(programacao) {
     const container = document.getElementById('programacao-container');
     const empty = document.getElementById('programacao-empty');
@@ -1471,7 +1472,7 @@ function renderizarProgramacao(programacao) {
     if (!container) return;
 
     if (!programacao || programacao.length === 0) {
-        container.innerHTML = '<div class="text-center py-8 text-gray-500"><i class="fas fa-info-circle text-2xl mb-2"></i><p>Nenhum item de programação cadastrado</p></div>';
+        container.innerHTML = '<div class="text-center py-8 text-gray-500"><i class="fas fa-info-circle text-2xl mb-2"></i><p>Nenhum item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o cadastrado</p></div>';
         if (empty) empty.classList.add('hidden');
         return;
     }
@@ -1485,14 +1486,14 @@ function renderizarProgramacao(programacao) {
     });
 }
 
-// Criar card de item de programação
+// Criar card de item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function criarCardProgramacao(item) {
     const card = document.createElement('div');
     card.className = 'bg-white rounded-lg shadow border border-gray-200 p-4';
     
     const tipoLabels = {
         'percurso': 'Percurso',
-        'horario_largada': 'Horário de Largada',
+        'horario_largada': 'HorÃƒÆ’Ã‚Â¡rio de Largada',
         'atividade_adicional': 'Atividade Adicional'
     };
     
@@ -1512,7 +1513,7 @@ function criarCardProgramacao(item) {
                     <span class="text-sm text-gray-500">Ordem: ${item.ordem || 0}</span>
                     ${item.ativo == 1 ? '<span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">Ativo</span>' : '<span class="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">Inativo</span>'}
                 </div>
-                <h4 class="font-semibold text-lg text-gray-900 mb-1">${item.titulo || 'Sem título'}</h4>
+                <h4 class="font-semibold text-lg text-gray-900 mb-1">${item.titulo || 'Sem tÃƒÆ’Ã‚Â­tulo'}</h4>
                 ${item.descricao ? `<p class="text-sm text-gray-600">${item.descricao}</p>` : ''}
             </div>
             <div class="flex space-x-2 ml-4">
@@ -1533,11 +1534,11 @@ function criarCardProgramacao(item) {
     return card;
 }
 
-// Adicionar item de programação
+// Adicionar item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 window.adicionarItemProgramacao = async function() {
-    // Proteção contra múltiplos cliques
+    // ProteÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o contra mÃƒÆ’Ã‚Âºltiplos cliques
     if (window.adicionandoProgramacao) {
-        console.log('⚠️ Adicionar programação já em andamento, ignorando clique');
+        console.log('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Adicionar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o jÃƒÆ’Ã‚Â¡ em andamento, ignorando clique');
         return;
     }
     
@@ -1547,11 +1548,11 @@ window.adicionarItemProgramacao = async function() {
     }
 
     if (!modoEdicao) {
-        Swal.fire('Aviso', 'Ative o modo de edição para adicionar itens de programação', 'info');
+        Swal.fire('Aviso', 'Ative o modo de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para adicionar itens de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'info');
         return;
     }
 
-    // Desabilitar botão durante processamento
+    // Desabilitar botÃƒÆ’Ã‚Â£o durante processamento
     const btn = document.getElementById('btnAdicionarProgramacao');
     if (btn) {
         btn.disabled = true;
@@ -1562,11 +1563,11 @@ window.adicionarItemProgramacao = async function() {
     window.adicionandoProgramacao = true;
 
     try {
-        // Criar HTML dinâmico com fieldsets
+        // Criar HTML dinÃƒÆ’Ã‚Â¢mico com fieldsets
         const htmlModal = criarHTMLModalProgramacao();
         
         const { value: formValues } = await Swal.fire({
-            title: 'Novo Item de Programação',
+            title: 'Novo Item de ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
             html: htmlModal,
             width: '600px',
             focusConfirm: false,
@@ -1574,7 +1575,7 @@ window.adicionarItemProgramacao = async function() {
             confirmButtonText: 'Criar',
             cancelButtonText: 'Cancelar',
             didOpen: () => {
-                // Adicionar listener para mudança de tipo
+                // Adicionar listener para mudanÃƒÆ’Ã‚Â§a de tipo
                 const selectTipo = document.getElementById('tipo-programacao');
                 if (selectTipo) {
                     selectTipo.addEventListener('change', atualizarCamposPorTipo);
@@ -1591,10 +1592,10 @@ window.adicionarItemProgramacao = async function() {
             await criarItemProgramacao(formValues);
         }
     } catch (error) {
-        console.error('Erro ao adicionar item de programação:', error);
-        Swal.fire('Erro', 'Erro ao processar solicitação', 'error');
+        console.error('Erro ao adicionar item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', error);
+        Swal.fire('Erro', 'Erro ao processar solicitaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'error');
     } finally {
-        // Liberar flag e reabilitar botão
+        // Liberar flag e reabilitar botÃƒÆ’Ã‚Â£o
         window.adicionandoProgramacao = false;
         const btn = document.getElementById('btnAdicionarProgramacao');
         if (btn) {
@@ -1608,40 +1609,40 @@ window.adicionarItemProgramacao = async function() {
 function criarHTMLModalProgramacao() {
     return `
         <div class="text-left">
-            <!-- Campo Tipo (sempre visível) -->
+            <!-- Campo Tipo (sempre visÃƒÆ’Ã‚Â­vel) -->
             <fieldset class="mb-4 border border-gray-200 rounded-lg p-3">
-                <legend class="text-sm font-semibold text-gray-700 px-2">Tipo de Programação *</legend>
+                <legend class="text-sm font-semibold text-gray-700 px-2">Tipo de ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o *</legend>
                 <select id="tipo-programacao" class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-2">
                     <option value="">Selecione o tipo</option>
-                    <option value="horario_largada">Horário de Largada</option>
+                    <option value="horario_largada">HorÃƒÆ’Ã‚Â¡rio de Largada</option>
                     <option value="percurso">Percurso</option>
                     <option value="atividade_adicional">Atividade Adicional</option>
                 </select>
             </fieldset>
 
-            <!-- Campos Gerais (sempre visíveis) -->
+            <!-- Campos Gerais (sempre visÃƒÆ’Ã‚Â­veis) -->
             <fieldset class="mb-4 border border-gray-200 rounded-lg p-3">
-                <legend class="text-sm font-semibold text-gray-700 px-2">Informações Gerais</legend>
+                <legend class="text-sm font-semibold text-gray-700 px-2">InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Gerais</legend>
                 <div class="mt-2 space-y-3">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">TÃƒÆ’Ã‚Â­tulo *</label>
                         <input id="titulo-programacao" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: Largada 5km">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ordem</label>
                         <input id="ordem-programacao" type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2" value="0" min="0">
-                        <p class="text-xs text-gray-500 mt-1">Ordem de exibição (0 = primeiro)</p>
+                        <p class="text-xs text-gray-500 mt-1">Ordem de exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (0 = primeiro)</p>
                     </div>
                 </div>
             </fieldset>
 
-            <!-- Fieldset: Horário de Largada -->
+            <!-- Fieldset: HorÃƒÆ’Ã‚Â¡rio de Largada -->
             <fieldset id="fieldset-horario-largada" class="mb-4 border border-gray-200 rounded-lg p-3 hidden">
-                <legend class="text-sm font-semibold text-gray-700 px-2">Horário de Largada</legend>
+                <legend class="text-sm font-semibold text-gray-700 px-2">HorÃƒÆ’Ã‚Â¡rio de Largada</legend>
                 <div class="mt-2 space-y-3">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Hora de Início *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Hora de InÃƒÆ’Ã‚Â­cio *</label>
                             <input id="hora-inicio-largada" type="time" class="w-full border border-gray-300 rounded-lg px-3 py-2">
                         </div>
                         <div>
@@ -1650,12 +1651,12 @@ function criarHTMLModalProgramacao() {
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Modalidade/Pelotão</label>
-                        <input id="modalidade-largada" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: Pelotão PCD 5km, Elite, Geral">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Modalidade/PelotÃƒÆ’Ã‚Â£o</label>
+                        <input id="modalidade-largada" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: PelotÃƒÆ’Ã‚Â£o PCD 5km, Elite, Geral">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
-                        <textarea id="obs-largada" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Informações adicionais sobre o horário"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ObservaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes</label>
+                        <textarea id="obs-largada" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes adicionais sobre o horÃƒÆ’Ã‚Â¡rio"></textarea>
                     </div>
                 </div>
             </fieldset>
@@ -1665,8 +1666,8 @@ function criarHTMLModalProgramacao() {
                 <legend class="text-sm font-semibold text-gray-700 px-2">Ponto do Percurso</legend>
                 <div class="mt-2 space-y-3">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Local/Endereço *</label>
-                        <input id="local-percurso" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: Av Darcy Vargas, Av Maceió">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Local/EndereÃƒÆ’Ã‚Â§o *</label>
+                        <input id="local-percurso" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: Av Darcy Vargas, Av MaceiÃƒÆ’Ã‚Â³">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
@@ -1679,8 +1680,8 @@ function criarHTMLModalProgramacao() {
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Descrição do Ponto</label>
-                        <textarea id="desc-percurso" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Descrição do ponto do percurso"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do Ponto</label>
+                        <textarea id="desc-percurso" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do ponto do percurso"></textarea>
                     </div>
                 </div>
             </fieldset>
@@ -1691,20 +1692,20 @@ function criarHTMLModalProgramacao() {
                 <div class="mt-2 space-y-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Local da Atividade</label>
-                        <input id="local-atividade" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: Tenda de Educação Ambiental">
+                        <input id="local-atividade" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: Tenda de EducaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o Ambiental">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Horário de Início</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">HorÃƒÆ’Ã‚Â¡rio de InÃƒÆ’Ã‚Â­cio</label>
                             <input id="hora-inicio-atividade" type="time" class="w-full border border-gray-300 rounded-lg px-3 py-2">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Horário de Fim</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">HorÃƒÆ’Ã‚Â¡rio de Fim</label>
                             <input id="hora-fim-atividade" type="time" class="w-full border border-gray-300 rounded-lg px-3 py-2">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Descrição Detalhada *</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o Detalhada *</label>
                         <textarea id="desc-atividade" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Descreva detalhadamente a atividade adicional"></textarea>
                     </div>
                 </div>
@@ -1713,11 +1714,11 @@ function criarHTMLModalProgramacao() {
     `;
 }
 
-// Atualizar campos visíveis baseado no tipo selecionado
+// Atualizar campos visÃƒÆ’Ã‚Â­veis baseado no tipo selecionado
 function atualizarCamposPorTipo() {
     const tipo = document.getElementById('tipo-programacao')?.value || '';
     
-    // Esconder todos os fieldsets específicos
+    // Esconder todos os fieldsets especÃƒÆ’Ã‚Â­ficos
     document.getElementById('fieldset-horario-largada')?.classList.add('hidden');
     document.getElementById('fieldset-percurso')?.classList.add('hidden');
     document.getElementById('fieldset-atividade')?.classList.add('hidden');
@@ -1732,20 +1733,20 @@ function atualizarCamposPorTipo() {
     }
 }
 
-// Validar e coletar dados do formulário
+// Validar e coletar dados do formulÃƒÆ’Ã‚Â¡rio
 function validarEColetarDadosProgramacao() {
     const tipo = document.getElementById('tipo-programacao')?.value || '';
     const titulo = document.getElementById('titulo-programacao')?.value || '';
     const ordem = parseInt(document.getElementById('ordem-programacao')?.value) || 0;
     
-    // Validações básicas
+    // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes bÃƒÆ’Ã‚Â¡sicas
     if (!tipo) {
-        Swal.showValidationMessage('Selecione o tipo de programação');
+        Swal.showValidationMessage('Selecione o tipo de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o');
         return false;
     }
     
     if (!titulo.trim()) {
-        Swal.showValidationMessage('Preencha o título');
+        Swal.showValidationMessage('Preencha o tÃƒÆ’Ã‚Â­tulo');
         return false;
     }
     
@@ -1757,7 +1758,7 @@ function validarEColetarDadosProgramacao() {
         ordem: ordem
     };
     
-    // Coletar dados específicos por tipo
+    // Coletar dados especÃƒÆ’Ã‚Â­ficos por tipo
     if (tipo === 'horario_largada') {
         const horaInicio = document.getElementById('hora-inicio-largada')?.value || '';
         const horaFim = document.getElementById('hora-fim-largada')?.value || '';
@@ -1765,15 +1766,15 @@ function validarEColetarDadosProgramacao() {
         const obs = document.getElementById('obs-largada')?.value || '';
         
         if (!horaInicio) {
-            Swal.showValidationMessage('Preencha a hora de início');
+            Swal.showValidationMessage('Preencha a hora de inÃƒÆ’Ã‚Â­cio');
             return false;
         }
         
-        // Salvar horários em campos específicos
+        // Salvar horÃƒÆ’Ã‚Â¡rios em campos especÃƒÆ’Ã‚Â­ficos
         dados.hora_inicio = horaInicio;
         dados.hora_fim = horaFim || null;
         
-        // Montar descrição com os dados (para compatibilidade e exibição)
+        // Montar descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o com os dados (para compatibilidade e exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
         let descricao = '';
         if (modalidade) descricao += `${modalidade}`;
         if (horaInicio) descricao += `: ${horaInicio}`;
@@ -1789,16 +1790,16 @@ function validarEColetarDadosProgramacao() {
         const desc = document.getElementById('desc-percurso')?.value || '';
         
         if (!local.trim()) {
-            Swal.showValidationMessage('Preencha o local/endereço do percurso');
+            Swal.showValidationMessage('Preencha o local/endereÃƒÆ’Ã‚Â§o do percurso');
             return false;
         }
         
-        // Salvar local e coordenadas em campos específicos
+        // Salvar local e coordenadas em campos especÃƒÆ’Ã‚Â­ficos
         dados.local = local;
         dados.latitude = latitude ? parseFloat(latitude) : null;
         dados.longitude = longitude ? parseFloat(longitude) : null;
         
-        // Montar descrição (para compatibilidade)
+        // Montar descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (para compatibilidade)
         let descricao = local;
         if (latitude && longitude) {
             descricao += `\nCoordenadas: ${latitude}, ${longitude}`;
@@ -1816,22 +1817,22 @@ function validarEColetarDadosProgramacao() {
         const desc = document.getElementById('desc-atividade')?.value || '';
         
         if (!desc.trim()) {
-            Swal.showValidationMessage('Preencha a descrição detalhada da atividade');
+            Swal.showValidationMessage('Preencha a descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o detalhada da atividade');
             return false;
         }
         
-        // Salvar horários e local em campos específicos
+        // Salvar horÃƒÆ’Ã‚Â¡rios e local em campos especÃƒÆ’Ã‚Â­ficos
         dados.hora_inicio = horaInicio || null;
         dados.hora_fim = horaFim || null;
         dados.local = local || null;
         
-        // Montar descrição (para compatibilidade)
+        // Montar descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (para compatibilidade)
         let descricao = desc;
         if (local) descricao = `Local: ${local}\n${descricao}`;
         if (horaInicio && horaFim) {
-            descricao = `${descricao}\nHorário: ${horaInicio} - ${horaFim}`;
+            descricao = `${descricao}\nHorÃƒÆ’Ã‚Â¡rio: ${horaInicio} - ${horaFim}`;
         } else if (horaInicio) {
-            descricao = `${descricao}\nHorário: ${horaInicio}`;
+            descricao = `${descricao}\nHorÃƒÆ’Ã‚Â¡rio: ${horaInicio}`;
         }
         
         dados.descricao = descricao.trim();
@@ -1860,21 +1861,21 @@ async function criarItemProgramacao(dados) {
             // Aguardar um pouco antes de recarregar para evitar conflitos
             setTimeout(async () => {
                 await carregarProgramacao(eventoAtual.id);
-                Swal.fire('Sucesso!', 'Item de programação criado com sucesso!', 'success');
+                Swal.fire('Sucesso!', 'Item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o criado com sucesso!', 'success');
             }, 300);
         } else {
             Swal.fire('Erro!', data.error || 'Erro ao criar item', 'error');
         }
     } catch (error) {
         console.error('Erro ao criar item:', error);
-        Swal.fire('Erro!', 'Erro ao criar item de programação', 'error');
+        Swal.fire('Erro!', 'Erro ao criar item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'error');
     }
 }
 
-// Editar item de programação
+// Editar item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 window.editarItemProgramacao = async function(itemId) {
     if (!modoEdicao) {
-        Swal.fire('Aviso', 'Ative o modo de edição para editar itens', 'info');
+        Swal.fire('Aviso', 'Ative o modo de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para editar itens', 'info');
         return;
     }
 
@@ -1890,11 +1891,11 @@ window.editarItemProgramacao = async function(itemId) {
 
         const item = data.data.find(i => i.id == itemId);
         if (!item) {
-            Swal.fire('Erro', 'Item não encontrado', 'error');
+            Swal.fire('Erro', 'Item nÃƒÆ’Ã‚Â£o encontrado', 'error');
             return;
         }
 
-        // Criar HTML do modal de edição
+        // Criar HTML do modal de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         const htmlModal = criarHTMLModalProgramacao() + `
             <fieldset class="mb-4 border border-gray-200 rounded-lg p-3">
                 <legend class="text-sm font-semibold text-gray-700 px-2">Status</legend>
@@ -1908,7 +1909,7 @@ window.editarItemProgramacao = async function(itemId) {
         `;
         
         const { value: formValues } = await Swal.fire({
-            title: 'Editar Item de Programação',
+            title: 'Editar Item de ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
             html: htmlModal,
             width: '600px',
             focusConfirm: false,
@@ -1918,7 +1919,7 @@ window.editarItemProgramacao = async function(itemId) {
             didOpen: () => {
                 // Preencher campos com dados do item
                 preencherCamposEdicao(item);
-                // Adicionar listener para mudança de tipo
+                // Adicionar listener para mudanÃƒÆ’Ã‚Â§a de tipo
                 const selectTipo = document.getElementById('tipo-programacao');
                 if (selectTipo) {
                     selectTipo.addEventListener('change', atualizarCamposPorTipo);
@@ -1946,7 +1947,7 @@ window.editarItemProgramacao = async function(itemId) {
     }
 }
 
-// Preencher campos do formulário de edição com dados do item
+// Preencher campos do formulÃƒÆ’Ã‚Â¡rio de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o com dados do item
 function preencherCamposEdicao(item) {
     // Campos gerais
     const tipoSelect = document.getElementById('tipo-programacao');
@@ -1957,23 +1958,23 @@ function preencherCamposEdicao(item) {
     if (tituloInput) tituloInput.value = item.titulo || '';
     if (ordemInput) ordemInput.value = item.ordem || 0;
     
-    // Parsear descrição baseado no tipo
+    // Parsear descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o baseado no tipo
     const descricao = item.descricao || '';
     
     if (item.tipo === 'horario_largada') {
-        // Usar campos específicos se disponíveis (prioridade)
+        // Usar campos especÃƒÆ’Ã‚Â­ficos se disponÃƒÆ’Ã‚Â­veis (prioridade)
         const horaInicioInput = document.getElementById('hora-inicio-largada');
         const horaFimInput = document.getElementById('hora-fim-largada');
         
         if (horaInicioInput && item.hora_inicio) {
-            // Converter TIME para formato HH:MM se necessário
+            // Converter TIME para formato HH:MM se necessÃƒÆ’Ã‚Â¡rio
             horaInicioInput.value = item.hora_inicio.substring(0, 5);
         }
         if (horaFimInput && item.hora_fim) {
             horaFimInput.value = item.hora_fim.substring(0, 5);
         }
         
-        // Fallback: tentar extrair da descrição se campos não estiverem disponíveis
+        // Fallback: tentar extrair da descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o se campos nÃƒÆ’Ã‚Â£o estiverem disponÃƒÆ’Ã‚Â­veis
         if (!item.hora_inicio && descricao) {
             const match = descricao.match(/^([^:]+)?:?\s*(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?/);
             if (match) {
@@ -1983,7 +1984,7 @@ function preencherCamposEdicao(item) {
                 if (horaFimInput && match[3]) horaFimInput.value = match[3];
             }
         } else {
-            // Extrair modalidade da descrição
+            // Extrair modalidade da descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             const modalidadeInput = document.getElementById('modalidade-largada');
             if (modalidadeInput && descricao) {
                 const match = descricao.match(/^([^:]+)/);
@@ -1996,7 +1997,7 @@ function preencherCamposEdicao(item) {
         if (obsInput && obs) obsInput.value = obs;
         
     } else if (item.tipo === 'percurso') {
-        // Usar campos específicos se disponíveis (prioridade)
+        // Usar campos especÃƒÆ’Ã‚Â­ficos se disponÃƒÆ’Ã‚Â­veis (prioridade)
         const localInput = document.getElementById('local-percurso');
         const latInput = document.getElementById('latitude-percurso');
         const lngInput = document.getElementById('longitude-percurso');
@@ -2004,7 +2005,7 @@ function preencherCamposEdicao(item) {
         if (localInput && item.local) {
             localInput.value = item.local;
         } else if (localInput && descricao) {
-            // Fallback: primeira linha é o local
+            // Fallback: primeira linha ÃƒÆ’Ã‚Â© o local
             const linhas = descricao.split('\n');
             if (linhas[0]) localInput.value = linhas[0].trim();
         }
@@ -2016,7 +2017,7 @@ function preencherCamposEdicao(item) {
             lngInput.value = item.longitude;
         }
         
-        // Fallback: procurar coordenadas na descrição
+        // Fallback: procurar coordenadas na descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         if ((!item.latitude || !item.longitude) && descricao) {
             const coordMatch = descricao.match(/Coordenadas:\s*([^,\n]+),\s*([^\n]+)/);
             if (coordMatch) {
@@ -2025,7 +2026,7 @@ function preencherCamposEdicao(item) {
             }
         }
         
-        // Descrição do ponto
+        // DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do ponto
         const descInput = document.getElementById('desc-percurso');
         if (descInput && descricao) {
             const linhas = descricao.split('\n');
@@ -2034,7 +2035,7 @@ function preencherCamposEdicao(item) {
         }
         
     } else if (item.tipo === 'atividade_adicional') {
-        // Usar campos específicos se disponíveis (prioridade)
+        // Usar campos especÃƒÆ’Ã‚Â­ficos se disponÃƒÆ’Ã‚Â­veis (prioridade)
         const localInput = document.getElementById('local-atividade');
         const horaInicioInput = document.getElementById('hora-inicio-atividade');
         const horaFimInput = document.getElementById('hora-fim-atividade');
@@ -2043,7 +2044,7 @@ function preencherCamposEdicao(item) {
         if (localInput && item.local) {
             localInput.value = item.local;
         } else if (localInput && descricao) {
-            // Fallback: parsear da descrição
+            // Fallback: parsear da descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             const localMatch = descricao.match(/Local:\s*([^\n]+)/);
             if (localMatch) localInput.value = localMatch[1].trim();
         }
@@ -2051,8 +2052,8 @@ function preencherCamposEdicao(item) {
         if (horaInicioInput && item.hora_inicio) {
             horaInicioInput.value = item.hora_inicio.substring(0, 5);
         } else if (horaInicioInput && descricao) {
-            // Fallback: parsear da descrição
-            const horaMatch = descricao.match(/Horário:\s*(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?/);
+            // Fallback: parsear da descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+            const horaMatch = descricao.match(/HorÃƒÆ’Ã‚Â¡rio:\s*(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?/);
             if (horaMatch) {
                 horaInicioInput.value = horaMatch[1];
                 if (horaFimInput && horaMatch[2]) horaFimInput.value = horaMatch[2];
@@ -2063,11 +2064,11 @@ function preencherCamposEdicao(item) {
             horaFimInput.value = item.hora_fim.substring(0, 5);
         }
         
-        // Descrição detalhada
+        // DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o detalhada
         if (descInput) {
             if (descricao) {
-                // Remover Local: e Horário: da descrição para obter apenas a descrição detalhada
-                let desc = descricao.replace(/Local:[^\n]+\n?/, '').replace(/Horário:[^\n]+\n?/, '').trim();
+                // Remover Local: e HorÃƒÆ’Ã‚Â¡rio: da descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para obter apenas a descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o detalhada
+                let desc = descricao.replace(/Local:[^\n]+\n?/, '').replace(/HorÃƒÆ’Ã‚Â¡rio:[^\n]+\n?/, '').trim();
                 if (desc) descInput.value = desc;
             }
         }
@@ -2095,19 +2096,19 @@ async function atualizarItemProgramacao(dados) {
         }
     } catch (error) {
         console.error('Erro ao atualizar item:', error);
-        Swal.fire('Erro!', 'Erro ao atualizar item de programação', 'error');
+        Swal.fire('Erro!', 'Erro ao atualizar item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'error');
     }
 }
 
-// Excluir item de programação
+// Excluir item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 window.excluirItemProgramacao = async function(itemId) {
     if (!modoEdicao) {
-        Swal.fire('Aviso', 'Ative o modo de edição para excluir itens', 'info');
+        Swal.fire('Aviso', 'Ative o modo de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para excluir itens', 'info');
         return;
     }
 
     const result = await Swal.fire({
-        title: 'Confirmar exclusão',
+        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
         text: 'Tem certeza que deseja excluir este item?',
         icon: 'warning',
         showCancelButton: true,
@@ -2126,14 +2127,14 @@ window.excluirItemProgramacao = async function(itemId) {
             const data = await response.json();
 
             if (data.success) {
-                Swal.fire('Sucesso!', 'Item excluído com sucesso!', 'success');
+                Swal.fire('Sucesso!', 'Item excluÃƒÆ’Ã‚Â­do com sucesso!', 'success');
                 await carregarProgramacao(eventoAtual.id);
             } else {
                 Swal.fire('Erro!', data.error || 'Erro ao excluir item', 'error');
             }
         } catch (error) {
             console.error('Erro ao excluir item:', error);
-            Swal.fire('Erro!', 'Erro ao excluir item de programação', 'error');
+            Swal.fire('Erro!', 'Erro ao excluir item de programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'error');
         }
     }
 }

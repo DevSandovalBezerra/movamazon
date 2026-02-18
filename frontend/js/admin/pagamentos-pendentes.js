@@ -1,8 +1,9 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
- * JavaScript para página de Pagamentos Pendentes (Admin)
+ * JavaScript para pÃƒÂ¡gina de Pagamentos Pendentes (Admin)
  */
 
-const API_BASE = '../../../api/admin';
+const API_BASE = (window.API_BASE || '/api') + '/admin';
 
 let currentOffset = 0;
 let currentLimit = 50;
@@ -59,7 +60,7 @@ function carregarPagamentos() {
                 return;
             }
             
-            // Atualizar estatísticas
+            // Atualizar estatÃƒÂ­sticas
             if (data.stats) {
                 document.getElementById('stat-total-pendentes').textContent = data.stats.total_pendentes || 0;
                 document.getElementById('stat-pendentes-24h').textContent = data.stats.pendentes_24h || 0;
@@ -79,7 +80,7 @@ function carregarPagamentos() {
                 container.appendChild(card);
             });
             
-            // Paginação
+            // PaginaÃƒÂ§ÃƒÂ£o
             atualizarPaginacao(data.pagination);
         })
         .catch(error => {
@@ -106,7 +107,7 @@ function criarCardPagamento(pagamento) {
             <div class="flex-1">
                 <div class="flex items-center justify-between mb-2">
                     <div>
-                        <span class="font-semibold text-gray-900">Inscrição #${pagamento.inscricao_id}</span>
+                        <span class="font-semibold text-gray-900">InscriÃƒÂ§ÃƒÂ£o #${pagamento.inscricao_id}</span>
                         <span class="ml-2 text-sm text-gray-500">${pagamento.evento_nome}</span>
                     </div>
                     <span class="px-2 py-1 rounded text-xs font-medium ${badgeClass}">
@@ -124,7 +125,7 @@ function criarCardPagamento(pagamento) {
                         <div class="text-green-600 font-semibold">R$ ${parseFloat(pagamento.valor_total).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
                     </div>
                     <div>
-                        <span class="font-medium">Data Inscrição:</span>
+                        <span class="font-medium">Data InscriÃƒÂ§ÃƒÂ£o:</span>
                         <div>${formatarData(pagamento.data_inscricao)}</div>
                     </div>
                     <div>
@@ -192,7 +193,7 @@ function sincronizarPagamento(inscricaoId, paymentId) {
                 Swal.fire({
                     icon: 'info',
                     title: 'Status Verificado',
-                    text: 'O status já está atualizado.',
+                    text: 'O status jÃƒÂ¡ estÃƒÂ¡ atualizado.',
                     confirmButtonText: 'OK'
                 });
             }
@@ -204,7 +205,7 @@ function sincronizarPagamento(inscricaoId, paymentId) {
         Swal.fire({
             icon: 'error',
             title: 'Erro ao Sincronizar',
-            text: error.message || 'Não foi possível sincronizar o pagamento.',
+            text: error.message || 'NÃƒÂ£o foi possÃƒÂ­vel sincronizar o pagamento.',
             confirmButtonText: 'OK'
         });
     })
@@ -248,7 +249,7 @@ function sincronizarSelecionados() {
                 
                 Swal.fire({
                     icon: sucessos > 0 ? 'success' : 'error',
-                    title: 'Sincronização Concluída',
+                    title: 'SincronizaÃƒÂ§ÃƒÂ£o ConcluÃƒÂ­da',
                     html: `
                         <p>${sucessos} pagamento(s) sincronizado(s) com sucesso.</p>
                         ${falhas > 0 ? `<p class="text-red-600">${falhas} falha(s).</p>` : ''}
@@ -298,10 +299,10 @@ function aplicarFiltros() {
 
 function carregarEventos() {
     // Carregar lista de eventos para filtro
-    fetch('../../../api/admin/get_dashboard_data.php')
+    fetch((window.API_BASE || '/api') + '/admin/get_dashboard_data.php')
         .then(res => res.json())
         .then(data => {
-            // Implementar se necessário
+            // Implementar se necessÃƒÂ¡rio
         })
         .catch(() => {});
 }
@@ -329,7 +330,7 @@ function atualizarPaginacao(pagination) {
             <button class="btn-secondary ${!pagination.has_more ? 'opacity-50 cursor-not-allowed' : ''}" 
                     ${!pagination.has_more ? 'disabled' : ''} 
                     onclick="currentOffset = ${pagination.offset + pagination.limit}; carregarPagamentos();">
-                Próximo <i class="fas fa-chevron-right w-4 h-4"></i>
+                PrÃƒÂ³ximo <i class="fas fa-chevron-right w-4 h-4"></i>
             </button>
         </div>
     `;

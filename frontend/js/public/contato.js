@@ -1,26 +1,19 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
- * Script para gerenciar o formulário de contato público
+ * Script para gerenciar o formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio de contato pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico
  */
 
 (function() {
     'use strict';
 
-    // Definir API_BASE se não estiver definido
+    // Definir API_BASE se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estiver definido
     if (!window.API_BASE) {
         const path = window.location.pathname || '';
         const idx = path.indexOf('/frontend/');
         if (idx > 0) {
-            window.API_BASE = path.slice(0, idx);
-        } else if (idx === 0) {
-            window.API_BASE = '';
+            window.API_BASE = path.slice(0, idx) + '/api';
         } else {
-            const pathParts = path.split('/').filter(p => p);
-            const frontendIdx = pathParts.indexOf('frontend');
-            if (frontendIdx > 0) {
-                window.API_BASE = '/' + pathParts.slice(0, frontendIdx).join('/');
-            } else {
-                window.API_BASE = '';
-            }
+            window.API_BASE = '/api';
         }
     }
 
@@ -30,12 +23,12 @@
     const btnLoading = document.getElementById('btn-loading');
 
     if (!form || !btnEnviar) {
-        console.error('[CONTATO] Formulário ou botão não encontrado');
+        console.error('[CONTATO] FormulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio ou botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
         return;
     }
 
     /**
-     * Limpar erros de validação
+     * Limpar erros de validaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
      */
     function limparErros() {
         const errorSpans = document.querySelectorAll('[id^="erro-"]');
@@ -70,7 +63,7 @@
     }
 
     /**
-     * Validar formulário
+     * Validar formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
      */
     function validarFormulario() {
         limparErros();
@@ -83,20 +76,20 @@
         const mensagem = form.querySelector('[name="mensagem"]').value.trim();
 
         if (!nome) {
-            mostrarErro('nome', 'Nome é obrigatório');
+            mostrarErro('nome', 'Nome ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
             valido = false;
         }
 
         if (!email) {
-            mostrarErro('email', 'E-mail é obrigatório');
+            mostrarErro('email', 'E-mail ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
             valido = false;
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            mostrarErro('email', 'E-mail inválido');
+            mostrarErro('email', 'E-mail invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
             valido = false;
         }
 
         if (!telefone) {
-            mostrarErro('telefone', 'Telefone é obrigatório');
+            mostrarErro('telefone', 'Telefone ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
             valido = false;
         }
 
@@ -106,7 +99,7 @@
         }
 
         if (!mensagem) {
-            mostrarErro('mensagem', 'Mensagem é obrigatória');
+            mostrarErro('mensagem', 'Mensagem ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ria');
             valido = false;
         } else if (mensagem.length < 10) {
             mostrarErro('mensagem', 'Mensagem deve ter pelo menos 10 caracteres');
@@ -117,7 +110,7 @@
     }
 
     /**
-     * Enviar formulário
+     * Enviar formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
      */
     async function enviarFormulario(e) {
         e.preventDefault();
@@ -126,7 +119,7 @@
             return;
         }
 
-        // Desabilitar botão e mostrar loading
+        // Desabilitar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e mostrar loading
         btnEnviar.disabled = true;
         btnText.textContent = 'Enviando...';
         btnLoading.classList.remove('hidden');
@@ -140,8 +133,7 @@
         };
 
         try {
-            const apiBase = window.API_BASE || '';
-            const apiUrl = apiBase ? `${apiBase}/api/public/contato.php` : '/api/public/contato.php';
+            const apiUrl = window.buildApiUrl ? window.buildApiUrl('public/contato.php') : (window.API_BASE || '/api') + '/public/contato.php';
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -154,7 +146,7 @@
             const data = await response.json();
 
             if (!response.ok || !data.success) {
-                // Mostrar erros de validação se houver
+                // Mostrar erros de validaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o se houver
                 if (data.errors) {
                     Object.keys(data.errors).forEach(campo => {
                         mostrarErro(campo, data.errors[campo]);
@@ -185,19 +177,19 @@
             console.error('[CONTATO] Erro ao enviar:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erro de Conexão',
-                text: 'Não foi possível enviar sua mensagem. Verifique sua conexão e tente novamente.',
+                title: 'Erro de ConexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
+                text: 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel enviar sua mensagem. Verifique sua conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e tente novamente.',
                 confirmButtonColor: '#0b4340'
             });
         } finally {
-            // Reabilitar botão e ocultar loading
+            // Reabilitar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e ocultar loading
             btnEnviar.disabled = false;
             btnText.textContent = 'Enviar Mensagem';
             btnLoading.classList.add('hidden');
         }
     }
 
-    // Adicionar máscara de telefone
+    // Adicionar mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡scara de telefone
     const telefoneInput = form.querySelector('[name="telefone"]');
     if (telefoneInput) {
         telefoneInput.addEventListener('input', function(e) {

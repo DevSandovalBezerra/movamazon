@@ -232,32 +232,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
+  <script>
   // Definir API_BASE ANTES de importar qualquer módulo
-  (function() {
-    if (!window.API_BASE) {
-      const path = window.location.pathname || '';
-      const idx = path.indexOf('/frontend/');
-      if (idx > 0) {
-        // Caso normal: /movamazon/frontend/... -> base = /movamazon
-        window.API_BASE = path.slice(0, idx);
-      } else if (idx === 0) {
-        // Caso: /frontend/... -> base = '' (raiz)
-        window.API_BASE = '';
-      } else {
-        // Fallback: tentar detectar pelo caminho atual
-        const pathParts = path.split('/').filter(p => p);
-        const frontendIdx = pathParts.indexOf('frontend');
-        if (frontendIdx > 0) {
-          window.API_BASE = '/' + pathParts.slice(0, frontendIdx).join('/');
-        } else {
-          window.API_BASE = '';
-        }
-      }
-      console.log('[INDEX] API_BASE definido:', window.API_BASE, '| Pathname:', path);
-    }
-  })();
-</script>
+  if (window.getApiBase) {
+    window.getApiBase();
+  }
+  </script>
 <script type="module">
   import { carregarBanners } from '../../js/public/banners.js';
   
@@ -350,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
       let apiUrl;
       if (apiBase && apiBase.trim() !== '') {
         const baseClean = apiBase.replace(/\/$/, '');
-        apiUrl = `${baseClean}/api/banners/public.php`;
+        apiUrl = `${baseClean}/banners/public.php`;
       } else {
         const path = window.location.pathname || '';
         const pathParts = path.split('/').filter(p => p);

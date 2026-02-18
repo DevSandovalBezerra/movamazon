@@ -1,6 +1,7 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
- * Utilitários: Formatadores
- * Funções para formatar dados exibidos na interface
+ * UtilitÃƒÂ¡rios: Formatadores
+ * FunÃƒÂ§ÃƒÂµes para formatar dados exibidos na interface
  */
 
 /**
@@ -11,7 +12,7 @@
 export function formatarHora(hora) {
     if (!hora) return null;
 
-    // Se já estiver no formato correto (07:00), retorna como está
+    // Se jÃƒÂ¡ estiver no formato correto (07:00), retorna como estÃƒÂ¡
     if (typeof hora === 'string' && hora.match(/^\d{1,2}:\d{2}$/)) {
         return hora;
     }
@@ -25,13 +26,13 @@ export function formatarHora(hora) {
 }
 
 /**
- * Formata localização (cidade/estado)
+ * Formata localizaÃƒÂ§ÃƒÂ£o (cidade/estado)
  * @param {string} cidade - Nome da cidade
  * @param {string} estado - Sigla do estado
- * @returns {string} Localização formatada
+ * @returns {string} LocalizaÃƒÂ§ÃƒÂ£o formatada
  */
 export function formatarLocal(cidade, estado) {
-    if (!cidade && !estado) return 'Local não informado';
+    if (!cidade && !estado) return 'Local nÃƒÂ£o informado';
 
     if (cidade && estado) {
         return `${cidade}/${estado}`;
@@ -43,9 +44,9 @@ export function formatarLocal(cidade, estado) {
 }
 
 /**
- * Trunca texto se exceder o tamanho máximo
+ * Trunca texto se exceder o tamanho mÃƒÂ¡ximo
  * @param {string} texto - Texto a ser truncado
- * @param {number} maxCaracteres - Número máximo de caracteres
+ * @param {number} maxCaracteres - NÃƒÂºmero mÃƒÂ¡ximo de caracteres
  * @returns {string} Texto truncado com "..."
  */
 export function truncarTexto(texto, maxCaracteres = 20) {
@@ -57,8 +58,8 @@ export function truncarTexto(texto, maxCaracteres = 20) {
 }
 
 /**
- * Obtém a base para URLs de assets (até a pasta frontend) a partir do pathname atual.
- * Usado para montar a URL da imagem do evento de forma consistente em todas as páginas.
+ * ObtÃƒÂ©m a base para URLs de assets (atÃƒÂ© a pasta frontend) a partir do pathname atual.
+ * Usado para montar a URL da imagem do evento de forma consistente em todas as pÃƒÂ¡ginas.
  * @returns {string} Base (ex: /movamazon/frontend ou ../../ para fallback relativo)
  */
 export function getEventImageBase() {
@@ -72,7 +73,7 @@ export function getEventImageBase() {
 
 /**
  * Monta a URL da imagem do evento (nome do arquivo vindo do banco).
- * Base derivada do pathname para funcionar em qualquer página (organizador, public, etc.).
+ * Base derivada do pathname para funcionar em qualquer pÃƒÂ¡gina (organizador, public, etc.).
  * @param {string} imagem - Nome do arquivo (ex: evento_2.png)
  * @returns {string} URL completa ou relativa para o src da img
  */
@@ -92,7 +93,7 @@ export function getEventImageUrl(imagem) {
 }
 
 /**
- * Obtém o caminho correto da imagem do evento (usa getEventImageUrl).
+ * ObtÃƒÂ©m o caminho correto da imagem do evento (usa getEventImageUrl).
  * @param {string} imagem - Nome ou URL da imagem
  * @returns {string} Caminho completo da imagem
  */
@@ -106,18 +107,18 @@ export function getImagemEvento(imagem) {
  * @returns {string} Nome do organizador
  */
 export function getNomeOrganizador(evento) {
-    // Se for o evento específico da UEA, retornar o nome da empresa
+    // Se for o evento especÃƒÂ­fico da UEA, retornar o nome da empresa
     if (evento.nome && evento.nome.includes('SAUIM DE COLEIRA')) {
-        return 'UEA - APOIO TÉCNICO MENTE DE CORREDOR';
+        return 'UEA - APOIO TÃƒâ€°CNICO MENTE DE CORREDOR';
     }
 
-    // Caso contrário, usar o campo disponível
+    // Caso contrÃƒÂ¡rio, usar o campo disponÃƒÂ­vel
     if (evento.organizador) {
         return evento.organizador;
     } else if (evento.organizadora) {
         return evento.organizadora;
     } else {
-        return 'Organizador não informado';
+        return 'Organizador nÃƒÂ£o informado';
     }
 }
 

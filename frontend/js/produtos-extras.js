@@ -1,5 +1,6 @@
+if (window.getApiBase) { window.getApiBase(); }
 // =====================================================
-// GESTÃO DE PRODUTOS EXTRAS - JAVASCRIPT
+// GESTÃƒÆ’Ã†â€™O DE PRODUTOS EXTRAS - JAVASCRIPT
 // =====================================================
 
 let produtosExtras = [];
@@ -13,14 +14,14 @@ let filtros = {
 };
 
 // =====================================================
-// INICIALIZAÇÃO
+// INICIALIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
     carregarProdutos();
     configurarEventListeners();
 
-    // Verificar se há evento pré-selecionado
+    // Verificar se hÃƒÆ’Ã‚Â¡ evento prÃƒÆ’Ã‚Â©-selecionado
     const eventoSelecionado = document.getElementById('filtroEvento').value;
     if (eventoSelecionado) {
         filtros.evento = eventoSelecionado;
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function configurarEventListeners() {
-    // Botão novo produto extra
+    // BotÃƒÆ’Ã‚Â£o novo produto extra
     document.getElementById('btnNovoProdutoExtra').addEventListener('click', abrirModalProdutoExtra);
 
     // Filtros
@@ -39,7 +40,7 @@ function configurarEventListeners() {
     document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
     document.getElementById('filtroStatus').addEventListener('change', aplicarFiltros);
 
-    // Paginação
+    // PaginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     document.getElementById('btn-anterior').addEventListener('click', () => {
         if (paginaAtual > 1) {
             paginaAtual--;
@@ -55,7 +56,7 @@ function configurarEventListeners() {
         }
     });
 
-    // Formulário
+    // FormulÃƒÆ’Ã‚Â¡rio
     document.getElementById('formProdutoExtra').addEventListener('submit', salvarProdutoExtra);
 }
 
@@ -64,7 +65,7 @@ function configurarEventListeners() {
 // =====================================================
 
 async function carregarProdutosExtras() {
-    // Verificar se há evento selecionado
+    // Verificar se hÃƒÆ’Ã‚Â¡ evento selecionado
     const eventoId = filtros.evento || document.getElementById('filtroEvento').value;
 
     if (!eventoId) {
@@ -75,7 +76,7 @@ async function carregarProdutosExtras() {
     mostrarLoading();
 
     try {
-        const response = await fetch(`../../../api/organizador/produtos-extras/list.php?evento_id=${eventoId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/produtos-extras/list.php?evento_id=${eventoId}`);
         const data = await response.json();
 
         if (data.success) {
@@ -86,7 +87,7 @@ async function carregarProdutosExtras() {
             mostrarErro('Erro ao carregar produtos extras: ' + data.error);
         }
     } catch (error) {
-        console.error('Erro na requisição:', error);
+        console.error('Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', error);
         mostrarErro('Erro ao carregar produtos extras');
     } finally {
         ocultarLoading();
@@ -110,7 +111,7 @@ function aplicarFiltrosLocais() {
 
 async function carregarProdutos() {
     try {
-        const response = await fetch('../../../api/organizador/produtos-extras/get_produtos.php');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/produtos-extras/get_produtos.php');
         const data = await response.json();
 
         if (data.success) {
@@ -128,7 +129,7 @@ function preencherSelectProdutos() {
     const select = document.getElementById('produto_id');
     if (!select) return;
 
-    // Limpar select mantendo apenas a primeira opção
+    // Limpar select mantendo apenas a primeira opÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     select.innerHTML = '<option value="">Selecione um produto</option>';
 
     produtos.forEach(produto => {
@@ -145,7 +146,7 @@ function preencherSelectProdutos() {
 }
 
 // =====================================================
-// RENDERIZAÇÃO
+// RENDERIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 function mostrarMensagemInicial() {
@@ -154,11 +155,11 @@ function mostrarMensagemInicial() {
         <div class="col-span-full text-center py-12">
             <i class="fas fa-calendar-alt text-gray-400 text-4xl mb-4"></i>
             <p class="text-gray-500 text-lg">Selecione um evento para visualizar os produtos extras</p>
-            <p class="text-gray-400">Use o filtro acima para escolher um evento específico</p>
+            <p class="text-gray-400">Use o filtro acima para escolher um evento especÃƒÆ’Ã‚Â­fico</p>
         </div>
     `;
 
-    // Garantir que o container esteja visível
+    // Garantir que o container esteja visÃƒÆ’Ã‚Â­vel
     container.style.display = 'grid';
 
     // Zerar resumo inicial
@@ -205,7 +206,7 @@ function criarCardProdutoExtra(produtoExtra) {
             <div class="flex items-start justify-between mb-4">
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">${produtoExtra.nome}</h3>
-                    <p class="text-gray-600 text-sm mb-2">${produtoExtra.descricao || 'Sem descrição'}</p>
+                    <p class="text-gray-600 text-sm mb-2">${produtoExtra.descricao || 'Sem descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o'}</p>
                     <div class="flex items-center space-x-4 text-sm text-gray-500">
                         <span class="flex items-center">
                             <i class="fas fa-tag mr-1"></i>
@@ -242,7 +243,7 @@ function criarCardProdutoExtra(produtoExtra) {
 }
 
 // =====================================================
-// FILTROS E PAGINAÇÃO
+// FILTROS E PAGINAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 function aplicarFiltros() {
@@ -250,13 +251,13 @@ function aplicarFiltros() {
     filtros.categoria = document.getElementById('filtroCategoria').value;
     filtros.status = document.getElementById('filtroStatus').value;
 
-    // Se não há evento selecionado, mostrar mensagem inicial
+    // Se nÃƒÆ’Ã‚Â£o hÃƒÆ’Ã‚Â¡ evento selecionado, mostrar mensagem inicial
     if (!filtros.evento) {
         mostrarMensagemInicial();
         return;
     }
 
-    // Se há evento selecionado, carregar produtos extras
+    // Se hÃƒÆ’Ã‚Â¡ evento selecionado, carregar produtos extras
     carregarProdutosExtras();
 }
 
@@ -302,7 +303,7 @@ function atualizarResumo(produtosParaResumo = produtosExtras) {
     const valorTotal = produtosParaResumo.reduce((sum, p) => sum + parseFloat(p.valor), 0);
     const categoriasUnicas = new Set(produtosParaResumo.map(p => p.categoria)).size;
 
-    // Verificar se os elementos existem antes de tentar acessá-los
+    // Verificar se os elementos existem antes de tentar acessÃƒÆ’Ã‚Â¡-los
     const totalProdutosEl = document.getElementById('total-produtos');
     const produtosAtivosEl = document.getElementById('produtos-ativos');
     const valorTotalEl = document.getElementById('valor-total');
@@ -315,7 +316,7 @@ function atualizarResumo(produtosParaResumo = produtosExtras) {
 }
 
 // =====================================================
-// MODAL E FORMULÁRIO
+// MODAL E FORMULÃƒÆ’Ã‚ÂRIO
 // =====================================================
 
 function abrirModalProdutoExtra(produtoExtra = null) {
@@ -344,9 +345,9 @@ function fecharModalProdutoExtra() {
 }
 
 function preencherFormularioProdutoExtra(produtoExtra) {
-    // Validação robusta para evitar undefined
+    // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o robusta para evitar undefined
     if (!produtoExtra || typeof produtoExtra !== 'object') {
-        console.error('❌ ERRO - produtoExtra é inválido:', produtoExtra);
+        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ ERRO - produtoExtra ÃƒÆ’Ã‚Â© invÃƒÆ’Ã‚Â¡lido:', produtoExtra);
         return;
     }
 
@@ -357,7 +358,7 @@ function preencherFormularioProdutoExtra(produtoExtra) {
     document.getElementById('produto_extra_valor').value = produtoExtra.valor || '';
     document.getElementById('produto_extra_disponivel_venda').checked = Boolean(produtoExtra.disponivel_venda);
 
-    // Carregar produtos do produto extra usando API específica
+    // Carregar produtos do produto extra usando API especÃƒÆ’Ã‚Â­fica
     if (produtoExtra.id) {
         carregarProdutosProdutoExtra(produtoExtra.id);
     } else {
@@ -371,13 +372,13 @@ function limparProdutosSelecionados() {
 }
 
 async function carregarProdutosProdutoExtra(produtoExtraId) {
-    // Aguardar produtos serem carregados se necessário
+    // Aguardar produtos serem carregados se necessÃƒÆ’Ã‚Â¡rio
     if (produtos.length === 0) {
         await carregarProdutos();
     }
 
     try {
-        const url = `../../../api/organizador/produtos-extras/get-produtos.php?id=${produtoExtraId}&t=${Date.now()}`;
+        const url = `${window.API_BASE || '/api'}/organizador/produtos-extras/get-produtos.php?id=${produtoExtraId}&t=${Date.now()}`;
         const response = await fetch(url);
         const data = await response.json();
 
@@ -397,15 +398,15 @@ async function carregarProdutosProdutoExtra(produtoExtraId) {
 function adicionarProdutoSelecionadoComDados(produto) {
     const container = document.getElementById('produtos-selecionados');
     if (!container) {
-        console.error('Container não encontrado!');
+        console.error('Container nÃƒÆ’Ã‚Â£o encontrado!');
         return;
     }
 
-    // Verificar se o produto existe na lista de produtos disponíveis
+    // Verificar se o produto existe na lista de produtos disponÃƒÆ’Ã‚Â­veis
     const produtoEncontrado = produtos.find(p => p.id == produto.produto_id);
 
     if (!produtoEncontrado) {
-        console.error('Produto não encontrado na lista global:', produto.produto_id);
+        console.error('Produto nÃƒÆ’Ã‚Â£o encontrado na lista global:', produto.produto_id);
         return;
     }
 
@@ -454,11 +455,11 @@ function adicionarProduto() {
 
     const produto = produtos.find(p => p.id == produtoId);
     if (!produto) {
-        showError('Produto não encontrado');
+        showError('Produto nÃƒÆ’Ã‚Â£o encontrado');
         return;
     }
 
-    // Verificar se já foi adicionado
+    // Verificar se jÃƒÆ’Ã‚Â¡ foi adicionado
     const container = document.getElementById('produtos-selecionados');
     const jaExiste = Array.from(container.children).some(item => {
         const span = item.querySelector('span');
@@ -469,7 +470,7 @@ function adicionarProduto() {
     });
 
     if (jaExiste) {
-        showWarning('Este produto já foi adicionado');
+        showWarning('Este produto jÃƒÆ’Ã‚Â¡ foi adicionado');
         return;
     }
 
@@ -490,13 +491,13 @@ function removerProdutoSelecionado(button) {
     button.parentElement.remove();
 }
 
-// 🎯 FUNÇÃO REMOVIDA - SEM VALIDAÇÃO DE CONTADOR
+// ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O REMOVIDA - SEM VALIDAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE CONTADOR
 
 function coletarProdutosSelecionados() {
     const container = document.getElementById('produtos-selecionados');
     const produtosSelecionados = [];
 
-    // Ultra simples: pegar todos os spans que têm texto com "- R$"
+    // Ultra simples: pegar todos os spans que tÃƒÆ’Ã‚Âªm texto com "- R$"
     Array.from(container.children).forEach(item => {
         const span = item.querySelector('span');
         if (span && span.textContent.includes('- R$')) {
@@ -522,22 +523,22 @@ async function salvarProdutoExtra(event) {
     const formData = new FormData(event.target);
     const produtoId = formData.get('id');
 
-    // Validação dos campos obrigatórios (produtos são opcionais na edição)
+    // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o dos campos obrigatÃƒÆ’Ã‚Â³rios (produtos sÃƒÆ’Ã‚Â£o opcionais na ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
     const eventoId = formData.get('evento_id');
     const nome = formData.get('nome');
     const valor = formData.get('valor');
 
     if (!eventoId || !nome || !valor || parseFloat(valor) <= 0) {
-        showWarning('Evento, nome e valor são obrigatórios e o valor deve ser maior que zero.');
+        showWarning('Evento, nome e valor sÃƒÆ’Ã‚Â£o obrigatÃƒÆ’Ã‚Â³rios e o valor deve ser maior que zero.');
         return;
     }
 
-    // Coletar produtos selecionados (pode estar vazio para edições simples)
+    // Coletar produtos selecionados (pode estar vazio para ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes simples)
     const produtosSelecionados = coletarProdutosSelecionados();
     formData.append('produtos', JSON.stringify(produtosSelecionados));
 
     try {
-        const url = produtoId ? '../../../api/organizador/produtos-extras/update.php' : '../../../api/organizador/produtos-extras/create.php';
+        const url = produtoId ? (window.API_BASE || '/api') + '/organizador/produtos-extras/update.php' : (window.API_BASE || '/api') + '/organizador/produtos-extras/create.php';
         const response = await fetch(url, {
             method: 'POST',
             body: formData
@@ -560,7 +561,7 @@ async function salvarProdutoExtra(event) {
 
 async function editarProdutoExtra(id) {
     try {
-        const response = await fetch(`../../../api/organizador/produtos-extras/get.php?id=${id}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/produtos-extras/get.php?id=${id}`);
         const data = await response.json();
 
         if (data.success) {
@@ -575,10 +576,10 @@ async function editarProdutoExtra(id) {
 }
 
 async function excluirProdutoExtra(id) {
-    console.log('🔍 DEBUG - Iniciando exclusão do produto extra ID:', id);
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Iniciando exclusÃƒÆ’Ã‚Â£o do produto extra ID:', id);
 
     const result = await Swal.fire({
-        title: 'Confirmar exclusão',
+        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
         text: 'Tem certeza que deseja excluir este produto extra?',
         icon: 'warning',
         showCancelButton: true,
@@ -589,40 +590,40 @@ async function excluirProdutoExtra(id) {
     });
 
     if (!result.isConfirmed) {
-        console.log('🔍 DEBUG - Exclusão cancelada pelo usuário');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - ExclusÃƒÆ’Ã‚Â£o cancelada pelo usuÃƒÆ’Ã‚Â¡rio');
         return;
     }
 
-    console.log('🔍 DEBUG - Usuário confirmou exclusão, enviando requisição...');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - UsuÃƒÆ’Ã‚Â¡rio confirmou exclusÃƒÆ’Ã‚Â£o, enviando requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...');
 
     try {
-        const url = `../../../api/organizador/produtos-extras/delete.php?id=${id}`;
-        console.log('🔍 DEBUG - URL da exclusão:', url);
+        const url = `${window.API_BASE || '/api'}/organizador/produtos-extras/delete.php?id=${id}`;
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - URL da exclusÃƒÆ’Ã‚Â£o:', url);
 
         const response = await fetch(url, {
             method: 'DELETE'
         });
 
-        console.log('🔍 DEBUG - Response status:', response.status);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response status:', response.status);
         const data = await response.json();
-        console.log('🔍 DEBUG - Dados recebidos:', data);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados recebidos:', data);
 
         if (data.success) {
-            console.log('🔍 DEBUG - Exclusão bem-sucedida, recarregando lista...');
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - ExclusÃƒÆ’Ã‚Â£o bem-sucedida, recarregando lista...');
             carregarProdutosExtras();
-            showSuccess('Produto extra excluído com sucesso!');
+            showSuccess('Produto extra excluÃƒÆ’Ã‚Â­do com sucesso!');
         } else {
-            console.error('🔍 DEBUG - Erro na exclusão:', data.error);
+            console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro na exclusÃƒÆ’Ã‚Â£o:', data.error);
             showError(data.error);
         }
     } catch (error) {
-        console.error('🔍 DEBUG - Erro na requisição:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', error);
         showError('Erro ao excluir produto extra');
     }
 }
 
 // =====================================================
-// UTILITÁRIOS E SWEETALERT
+// UTILITÃƒÆ’Ã‚ÂRIOS E SWEETALERT
 // =====================================================
 
 function showSuccess(message) {
@@ -646,7 +647,7 @@ function showError(message) {
 function showWarning(message) {
     Swal.fire({
         icon: 'warning',
-        title: 'Atenção!',
+        title: 'AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o!',
         text: message
     });
 }
@@ -654,7 +655,7 @@ function showWarning(message) {
 function showInfo(message) {
     Swal.fire({
         icon: 'info',
-        title: 'Informação',
+        title: 'InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
         text: message
     });
 }

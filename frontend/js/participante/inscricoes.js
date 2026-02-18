@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 (function() {
     'use strict';
 
@@ -20,21 +21,21 @@
             this.nenhumaInscricaoEl = document.getElementById('nenhuma-inscricao');
 
             if (!this.container || !this.loadingEl) {
-                console.error('Elementos DOM não encontrados');
+                console.error('Elementos DOM nÃƒÆ’Ã‚Â£o encontrados');
                 return;
             }
 
-            // Sync da inscrição quando veio de retorno de pagamento (ex.: login após sucesso/pendente)
+            // Sync da inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o quando veio de retorno de pagamento (ex.: login apÃƒÆ’Ã‚Â³s sucesso/pendente)
             const params = new URLSearchParams(window.location.search);
             const inscricaoIdUrl = params.get('inscricao_id');
             const retornoPagamento = params.get('retorno_pagamento');
             const syncPromise = inscricaoIdUrl
-                ? fetch('../../../api/participante/sync_payment_status.php?inscricao_id=' + encodeURIComponent(inscricaoIdUrl), { method: 'GET', credentials: 'same-origin' }).then(r => r.json())
+                ? fetch((window.API_BASE || '/api') + '/participante/sync_payment_status.php?inscricao_id=' + encodeURIComponent(inscricaoIdUrl), { method: 'GET', credentials: 'same-origin' }).then(r => r.json())
                 : Promise.resolve(null);
 
             syncPromise.then(syncResult => {
                 if (syncResult && syncResult.success && retornoPagamento && typeof Swal !== 'undefined') {
-                    Swal.fire({ icon: 'success', title: 'Inscrição confirmada', text: 'Verifique abaixo.', timer: 3000, showConfirmButton: false });
+                    Swal.fire({ icon: 'success', title: 'InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o confirmada', text: 'Verifique abaixo.', timer: 3000, showConfirmButton: false });
                 }
             }).catch(() => {});
 
@@ -44,7 +45,7 @@
         },
 
         _fetchInscricoes: function() {
-            fetch('../../../api/participante/get_inscricoes.php', {
+            fetch((window.API_BASE || '/api') + '/participante/get_inscricoes.php', {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: {
@@ -62,7 +63,7 @@
                 if (data.success && data.inscricoes && data.inscricoes.length > 0) {
                     this.container.classList.remove('hidden');
                     this.renderInscricoes(data.inscricoes);
-                    // Sincronizar com Mercado Pago inscrições pendentes/processando (ex.: PIX já pago e webhook atrasou)
+                    // Sincronizar com Mercado Pago inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes pendentes/processando (ex.: PIX jÃƒÆ’Ã‚Â¡ pago e webhook atrasou)
                     this.sincronizarPendentesComMP(data.inscricoes);
                 } else {
                     if (this.nenhumaInscricaoEl) {
@@ -71,7 +72,7 @@
                 }
             })
             .catch(err => {
-                console.error('Erro ao carregar inscrições:', err);
+                console.error('Erro ao carregar inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:', err);
                 this.showError();
             });
         },
@@ -94,14 +95,14 @@
             const acaoHtml = this.getAcaoHtml(inscricao);
             const dataFormatada = inscricao.evento_data 
                 ? new Date(inscricao.evento_data + 'T00:00:00').toLocaleDateString('pt-BR')
-                : 'Data não informada';
+                : 'Data nÃƒÆ’Ã‚Â£o informada';
 
             card.innerHTML = `
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <div class="flex-grow">
                         <h2 class="text-xl font-bold">${this.escapeHtml(inscricao.evento_nome || 'Evento sem nome')}</h2>
-                        <p class="text-gray-600">${this.escapeHtml(inscricao.modalidade_nome || 'Modalidade não informada')} - ${this.escapeHtml(inscricao.kit_nome || 'Kit Padrão')}</p>
-                        <p class="text-sm text-gray-500">${dataFormatada} - ${this.escapeHtml(inscricao.evento_local || 'Local não informado')}</p>
+                        <p class="text-gray-600">${this.escapeHtml(inscricao.modalidade_nome || 'Modalidade nÃƒÆ’Ã‚Â£o informada')} - ${this.escapeHtml(inscricao.kit_nome || 'Kit PadrÃƒÆ’Ã‚Â£o')}</p>
+                        <p class="text-sm text-gray-500">${dataFormatada} - ${this.escapeHtml(inscricao.evento_local || 'Local nÃƒÆ’Ã‚Â£o informado')}</p>
                         ${statusHtml}
                     </div>
                     <div class="w-full md:w-auto mt-3 md:mt-0 md:ml-6 flex-shrink-0">
@@ -151,7 +152,7 @@
                     `;
                 }
             } else if (status === 'cancelada') {
-                return '<span class="text-gray-500 text-sm">Inscrição cancelada</span>';
+                return '<span class="text-gray-500 text-sm">InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o cancelada</span>';
             }
             return '';
         },
@@ -165,7 +166,7 @@
             if (pendentes.length === 0) return;
             const idKey = (i) => i.inscricao_id || i.id;
             Promise.all(pendentes.map(i =>
-                fetch('../../../api/participante/sync_payment_status.php?inscricao_id=' + idKey(i), { credentials: 'same-origin' }).then(r => r.json())
+                fetch((window.API_BASE || '/api') + '/participante/sync_payment_status.php?inscricao_id=' + idKey(i), { credentials: 'same-origin' }).then(r => r.json())
             )).then(results => {
                 const algumAtualizado = results.some(r => r.success && r.atualizado);
                 if (algumAtualizado) this.loadInscricoes();
@@ -175,7 +176,7 @@
         sincronizarStatus: function(inscricaoId, btnElement) {
             const btn = btnElement || event?.target || window.event?.target;
             if (!btn) {
-                console.error('Botão não encontrado');
+                console.error('BotÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o encontrado');
                 return;
             }
 
@@ -183,7 +184,7 @@
             btn.disabled = true;
             btn.textContent = 'Sincronizando...';
 
-            fetch(`../../../api/participante/sync_payment_status.php?inscricao_id=${inscricaoId}`, {
+            fetch(`${window.API_BASE || '/api'}/participante/sync_payment_status.php?inscricao_id=${inscricaoId}`, {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: {
@@ -199,10 +200,10 @@
             .then(data => {
                 if (data.success) {
                     if (data.atualizado) {
-                        alert('Status sincronizado com sucesso! A página será recarregada.');
+                        alert('Status sincronizado com sucesso! A pÃƒÆ’Ã‚Â¡gina serÃƒÆ’Ã‚Â¡ recarregada.');
                         location.reload();
                     } else {
-                        alert('Status já está atualizado.');
+                        alert('Status jÃƒÆ’Ã‚Â¡ estÃƒÆ’Ã‚Â¡ atualizado.');
                         btn.disabled = false;
                         btn.textContent = originalText;
                     }
@@ -226,7 +227,7 @@
             } else if (typeof window.showQrCode === 'function') {
                 window.showQrCode(numeroInscricao, inscricaoId);
             } else {
-                console.error('Módulo QR Code não carregado');
+                console.error('MÃƒÆ’Ã‚Â³dulo QR Code nÃƒÆ’Ã‚Â£o carregado');
             }
         },
 
@@ -243,7 +244,7 @@
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Ops! Algo deu errado</h3>
                         <p class="text-gray-600 mb-6 leading-relaxed">
-                            Não foi possível carregar suas inscrições no momento. Tente novamente em alguns instantes.
+                            NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel carregar suas inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes no momento. Tente novamente em alguns instantes.
                         </p>
                         <div class="space-y-3">
                             <button onclick="location.reload()" class="inline-block w-full bg-brand-green text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-md hover:shadow-lg">

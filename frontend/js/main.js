@@ -1,14 +1,16 @@
+
 /**
- * Main: Inicialização da Aplicação
- * Ponto de entrada principal que orquestra todos os módulos
+ * Main: InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o da AplicaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+ * Ponto de entrada principal que orquestra todos os mÃƒÆ’Ã‚Â³dulos
  */
 
 import { debounce } from './utils/debounce.js';
 import { carregarEstados, carregarCidades } from './api/estadosCidades.js';
 import { carregarEventos } from './api/eventos.js';
+if (window.getApiBase) { window.getApiBase(); }
 
 /**
- * Obtém valores dos filtros do formulário
+ * ObtÃƒÆ’Ã‚Â©m valores dos filtros do formulÃƒÆ’Ã‚Â¡rio
  * @returns {Object} Objeto com valores dos filtros
  */
 function obterFiltros() {
@@ -28,11 +30,11 @@ const aplicarFiltrosComDebounce = debounce(() => {
 }, 300);
 
 /**
- * Inicializa a aplicação quando o DOM estiver pronto
+ * Inicializa a aplicaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o quando o DOM estiver pronto
  */
 function inicializar() {
-    console.log('🚀 DOM carregado, iniciando...');
-    console.log('🔍 Verificando elementos na página...');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ DOM carregado, iniciando...');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Verificando elementos na pÃƒÆ’Ã‚Â¡gina...');
 
     // Verificar todos os elementos importantes
     const selectEstado = document.getElementById('filtro-estado');
@@ -41,7 +43,7 @@ function inicializar() {
     const filtroMesAnoInicio = document.getElementById('filtro-mes-ano-inicio');
     const filtroMesAnoFim = document.getElementById('filtro-mes-ano-fim');
 
-    console.log('🔍 Elementos encontrados:', {
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Elementos encontrados:', {
         selectEstado: !!selectEstado,
         selectCidade: !!selectCidade,
         btnAplicarFiltros: !!btnAplicarFiltros,
@@ -50,18 +52,18 @@ function inicializar() {
     });
 
     if (selectEstado) {
-        console.log('📋 Select estado encontrado:', selectEstado);
-        console.log('📋 Select estado opções iniciais:', selectEstado.options.length);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Select estado encontrado:', selectEstado);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Select estado opÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes iniciais:', selectEstado.options.length);
     } else {
-        console.error('❌ Select estado NÃO encontrado!');
-        console.log('🔍 Todos os selects na página:', document.querySelectorAll('select'));
+        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Select estado NÃƒÆ’Ã†â€™O encontrado!');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Todos os selects na pÃƒÆ’Ã‚Â¡gina:', document.querySelectorAll('select'));
     }
 
     // Carregar estados primeiro
-    console.log('🌍 Iniciando carregamento de estados...');
+    console.log('ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â Iniciando carregamento de estados...');
     carregarEstados().then(() => {
-        // Carregar eventos iniciais após estados carregarem
-        console.log('⏰ Estados carregados, carregando eventos...');
+        // Carregar eventos iniciais apÃƒÆ’Ã‚Â³s estados carregarem
+        console.log('ÃƒÂ¢Ã‚ÂÃ‚Â° Estados carregados, carregando eventos...');
         setTimeout(() => {
             carregarEventos();
         }, 500);
@@ -71,7 +73,7 @@ function inicializar() {
     if (selectEstado) {
         selectEstado.addEventListener('change', function () {
             const uf = this.value;
-            console.log('🔄 Estado alterado para:', uf);
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬Å¾ Estado alterado para:', uf);
             carregarCidades(uf);
             // Aplicar filtros automaticamente quando estado mudar
             aplicarFiltrosComDebounce();
@@ -93,7 +95,7 @@ function inicializar() {
     if (btnAplicarFiltros) {
         btnAplicarFiltros.addEventListener('click', function (e) {
             e.preventDefault();
-            console.log('🔍 Aplicando filtros...');
+            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Aplicando filtros...');
             const { cidade, mesAnoDe, mesAnoAte } = obterFiltros();
             carregarEventos(cidade, mesAnoDe, mesAnoAte);
         });

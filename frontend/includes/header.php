@@ -9,22 +9,24 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title : 'MovAmazon - Encontre sua próxima corrida'; ?></title>
+    <title><?php echo isset($page_title) ? $page_title : 'MovAmazon - Encontre sua prÃ³xima corrida'; ?></title>
 
     <!-- Tailwind CSS Compilado -->
     <link rel="stylesheet" href="../../assets/css/tailwind.min.css">
     
-    <!-- CSS Customizado (importado após Tailwind) -->
+    <!-- CSS Customizado (importado apÃ³s Tailwind) -->
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/custom.css">
+    <!-- Base URL helper -->
+    <script src="../../js/core/url-base.js"></script>
 
     <!-- Alpine.js para interatividade -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- SweetAlert2 para confirmações -->
+    <!-- SweetAlert2 para confirmaÃ§Ãµes -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Font Awesome para ícones -->
+    <!-- Font Awesome para Ã­cones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts - Inter -->
@@ -47,7 +49,7 @@ if (session_status() === PHP_SESSION_NONE) {
             --brand-azul: #1E90FF;
         }
 
-        /* Garantir que o texto do menu seja visível */
+        /* Garantir que o texto do menu seja visÃ­vel */
         .bg-brand-green {
             background-color: var(--brand-green) !important;
         }
@@ -60,7 +62,7 @@ if (session_status() === PHP_SESSION_NONE) {
             color: var(--brand-yellow) !important;
         }
 
-        /* Estilos customizados para componentes específicos */
+        /* Estilos customizados para componentes especÃ­ficos */
         .btn-primary {
             background-color: var(--brand-green);
             color: white;
@@ -95,7 +97,7 @@ if (session_status() === PHP_SESSION_NONE) {
             box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        /* Animações customizadas */
+        /* AnimaÃ§Ãµes customizadas */
         @keyframes fadeInUp {
             from {
                 opacity: 0;

@@ -1,29 +1,30 @@
-// Variável global para armazenar dados de estados e cidades
+if (window.getApiBase) { window.getApiBase(); }
+// VariÃƒÂ¡vel global para armazenar dados de estados e cidades
 let dadosEstadosCidades = null;
 
-// Função para carregar estados e preencher o dropdown
+// FunÃƒÂ§ÃƒÂ£o para carregar estados e preencher o dropdown
 function carregarEstados() {
-    console.log('🌍 Carregando estados...');
-    console.log('🔍 Tentando encontrar elemento #filtro-estado...');
+    console.log('Ã°Å¸Å’Â Carregando estados...');
+    console.log('Ã°Å¸â€Â Tentando encontrar elemento #filtro-estado...');
 
     const select = document.getElementById('filtro-estado');
-    console.log('📋 Elemento select encontrado:', select);
+    console.log('Ã°Å¸â€œâ€¹ Elemento select encontrado:', select);
 
     if (!select) {
-        console.error('❌ Elemento select de estado não encontrado');
-        console.log('🔍 Elementos disponíveis na página:');
+        console.error('Ã¢ÂÅ’ Elemento select de estado nÃƒÂ£o encontrado');
+        console.log('Ã°Å¸â€Â Elementos disponÃƒÂ­veis na pÃƒÂ¡gina:');
         console.log(document.querySelectorAll('select'));
         return;
     }
 
-    console.log('📋 Select encontrado, iniciando fetch...');
+    console.log('Ã°Å¸â€œâ€¹ Select encontrado, iniciando fetch...');
     const url = '../../assets/estados_cidades/estados-cidades.json';
-    console.log('🌐 URL do fetch:', url);
-    console.log('🌐 URL completa seria:', window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '') + '/' + url);
+    console.log('Ã°Å¸Å’Â URL do fetch:', url);
+    console.log('Ã°Å¸Å’Â URL completa seria:', window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '') + '/' + url);
 
     fetch(url)
         .then(response => {
-            console.log('📡 Resposta recebida:', {
+            console.log('Ã°Å¸â€œÂ¡ Resposta recebida:', {
                 status: response.status,
                 statusText: response.statusText,
                 ok: response.ok,
@@ -37,81 +38,81 @@ function carregarEstados() {
             return response.json();
         })
         .then(data => {
-            console.log('🏛️ Dados JSON recebidos:', data);
-            console.log('🔍 Verificando estrutura dos dados...');
-            console.log('📊 data.estados existe?', !!data.estados);
-            console.log('📊 data.estados é array?', Array.isArray(data.estados));
-            console.log('📊 Quantidade de estados:', data.estados ? data.estados.length : 'N/A');
+            console.log('Ã°Å¸Ââ€ºÃ¯Â¸Â Dados JSON recebidos:', data);
+            console.log('Ã°Å¸â€Â Verificando estrutura dos dados...');
+            console.log('Ã°Å¸â€œÅ  data.estados existe?', !!data.estados);
+            console.log('Ã°Å¸â€œÅ  data.estados ÃƒÂ© array?', Array.isArray(data.estados));
+            console.log('Ã°Å¸â€œÅ  Quantidade de estados:', data.estados ? data.estados.length : 'N/A');
 
             if (!data.estados || !Array.isArray(data.estados)) {
-                console.warn('⚠️ Formato inválido do arquivo estados-cidades.json');
-                console.log('📋 Estrutura esperada: { estados: [{ sigla: "AC", nome: "Acre", cidades: [...] }] }');
-                console.log('📋 Estrutura recebida:', Object.keys(data));
+                console.warn('Ã¢Å¡Â Ã¯Â¸Â Formato invÃƒÂ¡lido do arquivo estados-cidades.json');
+                console.log('Ã°Å¸â€œâ€¹ Estrutura esperada: { estados: [{ sigla: "AC", nome: "Acre", cidades: [...] }] }');
+                console.log('Ã°Å¸â€œâ€¹ Estrutura recebida:', Object.keys(data));
                 return;
             }
 
             // Armazena dados globalmente para uso posterior
             dadosEstadosCidades = data;
-            console.log('💾 Dados armazenados globalmente');
+            console.log('Ã°Å¸â€™Â¾ Dados armazenados globalmente');
 
-            // Limpa todas as opções exceto a primeira ("Todos os estados")
+            // Limpa todas as opÃƒÂ§ÃƒÂµes exceto a primeira ("Todos os estados")
             const optionsCountBefore = select.options.length;
             select.options.length = 1;
-            console.log(`🧹 Limpeza: ${optionsCountBefore} → ${select.options.length} opções`);
+            console.log(`Ã°Å¸Â§Â¹ Limpeza: ${optionsCountBefore} Ã¢â€ â€™ ${select.options.length} opÃƒÂ§ÃƒÂµes`);
 
-            console.log('📝 Adicionando estados ao dropdown...');
+            console.log('Ã°Å¸â€œÂ Adicionando estados ao dropdown...');
             data.estados.forEach((estado, index) => {
-                console.log(`📝 Estado ${index + 1}:`, estado);
+                console.log(`Ã°Å¸â€œÂ Estado ${index + 1}:`, estado);
                 const opt = document.createElement('option');
                 opt.value = estado.sigla;
                 opt.textContent = estado.nome;
                 select.appendChild(opt);
-                console.log(`✅ Opção adicionada: ${estado.sigla} - ${estado.nome}`);
+                console.log(`Ã¢Å“â€¦ OpÃƒÂ§ÃƒÂ£o adicionada: ${estado.sigla} - ${estado.nome}`);
             });
 
-            console.log(`✅ ${data.estados.length} estados carregados no dropdown`);
-            console.log(`📊 Total de opções no select: ${select.options.length}`);
+            console.log(`Ã¢Å“â€¦ ${data.estados.length} estados carregados no dropdown`);
+            console.log(`Ã°Å¸â€œÅ  Total de opÃƒÂ§ÃƒÂµes no select: ${select.options.length}`);
 
             // Verificar se realmente foram adicionados
             const options = Array.from(select.options).map(opt => ({
                 value: opt.value,
                 text: opt.textContent
             }));
-            console.log('📋 Opções finais no select:', options);
+            console.log('Ã°Å¸â€œâ€¹ OpÃƒÂ§ÃƒÂµes finais no select:', options);
         })
         .catch(error => {
-            console.error('💥 Erro ao carregar estados:', error);
-            console.error('💥 Stack trace:', error.stack);
+            console.error('Ã°Å¸â€™Â¥ Erro ao carregar estados:', error);
+            console.error('Ã°Å¸â€™Â¥ Stack trace:', error.stack);
         });
 }
 
-// Função para carregar cidades de um estado específico
+// FunÃƒÂ§ÃƒÂ£o para carregar cidades de um estado especÃƒÂ­fico
 function carregarCidades(uf = '') {
-    console.log('🏙️ Carregando cidades para UF:', uf);
+    console.log('Ã°Å¸Ââ„¢Ã¯Â¸Â Carregando cidades para UF:', uf);
 
     const select = document.getElementById('filtro-cidade');
     if (!select) {
-        console.error('❌ Elemento select de cidade não encontrado');
+        console.error('Ã¢ÂÅ’ Elemento select de cidade nÃƒÂ£o encontrado');
         return;
     }
 
-    // Limpa todas as opções exceto a primeira
+    // Limpa todas as opÃƒÂ§ÃƒÂµes exceto a primeira
     select.options.length = 1;
 
     if (!uf) {
-        console.log('⚠️ UF não informada, mantendo lista vazia');
+        console.log('Ã¢Å¡Â Ã¯Â¸Â UF nÃƒÂ£o informada, mantendo lista vazia');
         return;
     }
 
     if (!dadosEstadosCidades) {
-        console.warn('⚠️ Dados de estados/cidades não carregados ainda');
+        console.warn('Ã¢Å¡Â Ã¯Â¸Â Dados de estados/cidades nÃƒÂ£o carregados ainda');
         return;
     }
 
     // Busca o estado pela sigla
     const estado = dadosEstadosCidades.estados.find(e => e.sigla === uf);
     if (!estado || !estado.cidades) {
-        console.warn(`⚠️ Estado ${uf} não encontrado ou sem cidades`);
+        console.warn(`Ã¢Å¡Â Ã¯Â¸Â Estado ${uf} nÃƒÂ£o encontrado ou sem cidades`);
         return;
     }
 
@@ -123,15 +124,15 @@ function carregarCidades(uf = '') {
         select.appendChild(opt);
     });
 
-    console.log(`✅ ${estado.cidades.length} cidades carregadas para ${uf}`);
+    console.log(`Ã¢Å“â€¦ ${estado.cidades.length} cidades carregadas para ${uf}`);
 }
 
-// Função para atualizar o estado do contador de eventos
+// FunÃƒÂ§ÃƒÂ£o para atualizar o estado do contador de eventos
 function atualizarContadorEventos(estado, dados = null) {
     const contador = document.getElementById('eventos-count');
     if (!contador) return;
 
-    // Adicionar classe de fade-out para transição suave
+    // Adicionar classe de fade-out para transiÃƒÂ§ÃƒÂ£o suave
     contador.classList.add('fade-out');
 
     setTimeout(() => {
@@ -151,7 +152,7 @@ function atualizarContadorEventos(estado, dados = null) {
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span>${total} eventos disponíveis</span>
+                        <span>${total} eventos disponÃƒÂ­veis</span>
                     </div>
                 `;
                 break;
@@ -177,24 +178,24 @@ function atualizarContadorEventos(estado, dados = null) {
                 break;
         }
 
-        // Remover fade-out e adicionar fade-in para transição suave
+        // Remover fade-out e adicionar fade-in para transiÃƒÂ§ÃƒÂ£o suave
         contador.classList.remove('fade-out');
         contador.classList.add('fade-in');
 
-        // Remover fade-in após a animação
+        // Remover fade-in apÃƒÂ³s a animaÃƒÂ§ÃƒÂ£o
         setTimeout(() => {
             contador.classList.remove('fade-in');
         }, 300);
     }, 150);
 }
 
-// Função para carregar eventos com filtros de cidade e período
+// FunÃƒÂ§ÃƒÂ£o para carregar eventos com filtros de cidade e perÃƒÂ­odo
 function carregarEventos() {
     const cidade = document.getElementById('filtro-cidade') ? document.getElementById('filtro-cidade').value : '';
     const mesAnoDe = document.getElementById('filtro-mes-ano-inicio') ? document.getElementById('filtro-mes-ano-inicio').value : '';
     const mesAnoAte = document.getElementById('filtro-mes-ano-fim') ? document.getElementById('filtro-mes-ano-fim').value : '';
 
-    console.log('🔍 Filtros aplicados:', {
+    console.log('Ã°Å¸â€Â Filtros aplicados:', {
         cidade,
         mesAnoDe,
         mesAnoAte
@@ -203,37 +204,37 @@ function carregarEventos() {
     // Mostrar spinner de carregamento
     atualizarContadorEventos('carregando');
 
-    let url = '../../../api/evento/list_public.php';
+    let url = (window.API_BASE || '/api') + '/evento/list_public.php';
     const params = [];
     if (cidade) params.push('cidade=' + encodeURIComponent(cidade));
     if (mesAnoDe) params.push('mes_ano_de=' + encodeURIComponent(mesAnoDe));
     if (mesAnoAte) params.push('mes_ano_ate=' + encodeURIComponent(mesAnoAte));
     if (params.length) url += '?' + params.join('&');
 
-    console.log('🌐 URL da requisição:', url);
+    console.log('Ã°Å¸Å’Â URL da requisiÃƒÂ§ÃƒÂ£o:', url);
 
     fetch(url)
         .then(response => {
-            console.log('📡 Resposta da API de eventos:', response.status);
+            console.log('Ã°Å¸â€œÂ¡ Resposta da API de eventos:', response.status);
             return response.json();
         })
         .then(data => {
-            console.log('📊 Dados de eventos recebidos:', data);
+            console.log('Ã°Å¸â€œÅ  Dados de eventos recebidos:', data);
             const container = document.getElementById('eventos-dinamicos');
             if (!container) {
-                console.error('❌ Container de eventos não encontrado');
+                console.error('Ã¢ÂÅ’ Container de eventos nÃƒÂ£o encontrado');
                 atualizarContadorEventos('erro');
                 return;
             }
             container.innerHTML = '';
 
             if (!data.success || !data.eventos || data.eventos.length === 0) {
-                console.log('⚠️ Nenhum evento encontrado');
+                console.log('Ã¢Å¡Â Ã¯Â¸Â Nenhum evento encontrado');
                 atualizarContadorEventos('vazio');
                 return;
             }
 
-            console.log(`✅ ${data.eventos.length} eventos encontrados`);
+            console.log(`Ã¢Å“â€¦ ${data.eventos.length} eventos encontrados`);
             atualizarContadorEventos('sucesso', data.eventos);
 
             data.eventos.forEach((evento, index) => {
@@ -242,44 +243,44 @@ function carregarEventos() {
             });
         })
         .catch(error => {
-            console.error('💥 Erro ao carregar eventos:', error);
+            console.error('Ã°Å¸â€™Â¥ Erro ao carregar eventos:', error);
             atualizarContadorEventos('erro');
         });
 }
 
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('🚀 DOM carregado, iniciando...');
-    console.log('🔍 Verificando elementos na página...');
+    console.log('Ã°Å¸Å¡â‚¬ DOM carregado, iniciando...');
+    console.log('Ã°Å¸â€Â Verificando elementos na pÃƒÂ¡gina...');
 
     // Verificar todos os elementos importantes
     const selectEstado = document.getElementById('filtro-estado');
     const selectCidade = document.getElementById('filtro-cidade');
     const btnAplicarFiltros = document.getElementById('btn-aplicar-filtros');
 
-    console.log('🔍 Elementos encontrados:', {
+    console.log('Ã°Å¸â€Â Elementos encontrados:', {
         selectEstado: !!selectEstado,
         selectCidade: !!selectCidade,
         btnAplicarFiltros: !!btnAplicarFiltros
     });
 
     if (selectEstado) {
-        console.log('📋 Select estado encontrado:', selectEstado);
-        console.log('📋 Select estado HTML:', selectEstado.outerHTML);
-        console.log('📋 Select estado opções iniciais:', selectEstado.options.length);
+        console.log('Ã°Å¸â€œâ€¹ Select estado encontrado:', selectEstado);
+        console.log('Ã°Å¸â€œâ€¹ Select estado HTML:', selectEstado.outerHTML);
+        console.log('Ã°Å¸â€œâ€¹ Select estado opÃƒÂ§ÃƒÂµes iniciais:', selectEstado.options.length);
     } else {
-        console.error('❌ Select estado NÃO encontrado!');
-        console.log('🔍 Todos os selects na página:', document.querySelectorAll('select'));
-        console.log('🔍 Todos os elementos com ID:', document.querySelectorAll('[id]'));
+        console.error('Ã¢ÂÅ’ Select estado NÃƒÆ’O encontrado!');
+        console.log('Ã°Å¸â€Â Todos os selects na pÃƒÂ¡gina:', document.querySelectorAll('select'));
+        console.log('Ã°Å¸â€Â Todos os elementos com ID:', document.querySelectorAll('[id]'));
     }
 
     // Carregar estados primeiro
-    console.log('🌍 Iniciando carregamento de estados...');
+    console.log('Ã°Å¸Å’Â Iniciando carregamento de estados...');
     carregarEstados();
 
-    // Carregar eventos iniciais após um pequeno delay para garantir que os estados carregaram
+    // Carregar eventos iniciais apÃƒÂ³s um pequeno delay para garantir que os estados carregaram
     setTimeout(() => {
-        console.log('⏰ Timeout executado, carregando eventos...');
+        console.log('Ã¢ÂÂ° Timeout executado, carregando eventos...');
         carregarEventos();
     }, 1000); // Aumentei para 1 segundo para dar mais tempo
 
@@ -287,27 +288,27 @@ document.addEventListener('DOMContentLoaded', function () {
     if (selectEstado) {
         selectEstado.addEventListener('change', function () {
             const uf = this.value;
-            console.log('🔄 Estado alterado para:', uf);
+            console.log('Ã°Å¸â€â€ž Estado alterado para:', uf);
             carregarCidades(uf);
         });
     }
 
     if (btnAplicarFiltros) {
         btnAplicarFiltros.addEventListener('click', function () {
-            console.log('🔍 Aplicando filtros...');
+            console.log('Ã°Å¸â€Â Aplicando filtros...');
             carregarEventos();
         });
     }
 });
 
-// Função para renderizar um card de evento moderno
+// FunÃƒÂ§ÃƒÂ£o para renderizar um card de evento moderno
 function renderizarCard(evento, index) {
-    console.log(`🎨 Criando card moderno para evento: ${evento.nome}`);
+    console.log(`Ã°Å¸Å½Â¨ Criando card moderno para evento: ${evento.nome}`);
 
-    // Gerar cores dinâmicas baseadas no nome do evento
+    // Gerar cores dinÃƒÂ¢micas baseadas no nome do evento
     const cores = gerarCoresEvento(evento.nome);
 
-    // Distâncias removidas conforme solicitado
+    // DistÃƒÂ¢ncias removidas conforme solicitado
 
     // Monta o card do evento moderno
     const card = document.createElement('div');
@@ -315,18 +316,18 @@ function renderizarCard(evento, index) {
     card.style.animationDelay = `${0.1 + (index * 0.1)}s`;
 
     card.innerHTML = `
-        <!-- Seção Visual Superior (60-70% do card) -->
+        <!-- SeÃƒÂ§ÃƒÂ£o Visual Superior (60-70% do card) -->
         <div class="relative h-48 overflow-hidden bg-gray-200">
             <!-- Imagem de fundo -->
             <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('${getImagemEvento(evento.imagem)}')"></div>
         </div>
 
-        <!-- Seção de Informações Inferior (30-40% do card) -->
+        <!-- SeÃƒÂ§ÃƒÂ£o de InformaÃƒÂ§ÃƒÂµes Inferior (30-40% do card) -->
         <div class="p-4 bg-white">
-            <!-- Título do evento -->
+            <!-- TÃƒÂ­tulo do evento -->
             <h3 class="font-bold text-lg text-gray-800 mb-3 truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${evento.nome}</h3>
             
-            <!-- Informações principais -->
+            <!-- InformaÃƒÂ§ÃƒÂµes principais -->
             <div class="space-y-3 mb-4">
                 <!-- Data e Hora -->
                 <div class="flex items-center space-x-2 text-sm text-gray-700">
@@ -335,12 +336,12 @@ function renderizarCard(evento, index) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                     </div>
-                    <span class="font-medium">${evento.data_formatada || 'Data não informada'}</span>
-                    <span class="text-gray-400">•</span>
+                    <span class="font-medium">${evento.data_formatada || 'Data nÃƒÂ£o informada'}</span>
+                    <span class="text-gray-400">Ã¢â‚¬Â¢</span>
                     <span>${formatarHora(evento.hora_inicio) || '--:--'}</span>
                 </div>
                 
-                <!-- Localização -->
+                <!-- LocalizaÃƒÂ§ÃƒÂ£o -->
                 <div class="flex items-center space-x-2 text-sm text-gray-700">
                     <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -353,7 +354,7 @@ function renderizarCard(evento, index) {
                 
             </div>
 
-            <!-- Informações secundárias -->
+            <!-- InformaÃƒÂ§ÃƒÂµes secundÃƒÂ¡rias -->
             <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
                 <div class="flex items-center space-x-1">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -368,19 +369,19 @@ function renderizarCard(evento, index) {
 
             </div>
 
-            <!-- Botão de ação -->
+            <!-- BotÃƒÂ£o de aÃƒÂ§ÃƒÂ£o -->
             <a href="detalhes-evento.php?id=${evento.id}" 
                class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm text-center block shadow-md hover:shadow-lg">
-                Inscrições Abertas
+                InscriÃƒÂ§ÃƒÂµes Abertas
             </a>
         </div>
     `;
 
-    console.log(`✅ Card moderno criado para: ${evento.nome}`);
+    console.log(`Ã¢Å“â€¦ Card moderno criado para: ${evento.nome}`);
     return card;
 }
 
-// Função para gerar cores dinâmicas baseadas no nome do evento
+// FunÃƒÂ§ÃƒÂ£o para gerar cores dinÃƒÂ¢micas baseadas no nome do evento
 function gerarCoresEvento(nomeEvento) {
     const cores = [{
             primaria: '#3B82F6',
@@ -426,9 +427,9 @@ function gerarCoresEvento(nomeEvento) {
     return cores[index];
 }
 
-// Função para formatar localização
+// FunÃƒÂ§ÃƒÂ£o para formatar localizaÃƒÂ§ÃƒÂ£o
 function formatarLocal(cidade, estado) {
-    if (!cidade && !estado) return 'Local não informado';
+    if (!cidade && !estado) return 'Local nÃƒÂ£o informado';
 
     if (cidade && estado) {
         return `${cidade}/${estado}`;
@@ -439,7 +440,7 @@ function formatarLocal(cidade, estado) {
     }
 }
 
-// Função para corrigir caminho da imagem do evento (usa window.getEventImageUrl quando disponível)
+// FunÃƒÂ§ÃƒÂ£o para corrigir caminho da imagem do evento (usa window.getEventImageUrl quando disponÃƒÂ­vel)
 function getImagemEvento(imagem) {
     if (typeof window.getEventImageUrl === 'function') return window.getEventImageUrl(imagem);
     if (!imagem) return 'https://placehold.co/640x360?text=Evento';
@@ -447,11 +448,11 @@ function getImagemEvento(imagem) {
     return `../../assets/img/eventos/${imagem}`;
 }
 
-// Função para formatar hora (converte 07:00:00 para 07:00)
+// FunÃƒÂ§ÃƒÂ£o para formatar hora (converte 07:00:00 para 07:00)
 function formatarHora(hora) {
     if (!hora) return null;
 
-    // Se já estiver no formato correto (07:00), retorna como está
+    // Se jÃƒÂ¡ estiver no formato correto (07:00), retorna como estÃƒÂ¡
     if (typeof hora === 'string' && hora.match(/^\d{1,2}:\d{2}$/)) {
         return hora;
     }
@@ -464,20 +465,20 @@ function formatarHora(hora) {
     return hora;
 }
 
-// Função para determinar o nome correto da empresa organizadora
+// FunÃƒÂ§ÃƒÂ£o para determinar o nome correto da empresa organizadora
 function getNomeOrganizador(evento) {
-    // Se for o evento específico da UEA, retornar o nome da empresa
+    // Se for o evento especÃƒÂ­fico da UEA, retornar o nome da empresa
     if (evento.nome && evento.nome.includes('SAUIM DE COLEIRA')) {
-        return 'UEA - APOIO TÉCNICO MENTE DE CORREDOR';
+        return 'UEA - APOIO TÃƒâ€°CNICO MENTE DE CORREDOR';
     }
 
-    // Caso contrário, usar o campo disponível
+    // Caso contrÃƒÂ¡rio, usar o campo disponÃƒÂ­vel
     if (evento.organizador) {
         return evento.organizador;
     } else if (evento.organizadora) {
         return evento.organizadora;
     } else {
-        return 'Organizador não informado';
+        return 'Organizador nÃƒÂ£o informado';
     }
 }
 
@@ -523,17 +524,17 @@ style.textContent = `
         backdrop-filter: blur(4px);
     }
     
-    /* Transições suaves */
+    /* TransiÃƒÂ§ÃƒÂµes suaves */
     .transition-all {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    /* Efeito de elevação no hover */
+    /* Efeito de elevaÃƒÂ§ÃƒÂ£o no hover */
     .hover\\:-translate-y-1:hover {
         transform: translateY(-4px);
     }
     
-    /* Animações de entrada escalonadas */
+    /* AnimaÃƒÂ§ÃƒÂµes de entrada escalonadas */
     .animate-fade-in:nth-child(1) { animation-delay: 0.1s; }
     .animate-fade-in:nth-child(2) { animation-delay: 0.2s; }
     .animate-fade-in:nth-child(3) { animation-delay: 0.3s; }
@@ -553,7 +554,7 @@ style.textContent = `
         background-color: rgba(255, 255, 255, 0.2);
     }
     
-    /* Melhorar aparência dos botões */
+    /* Melhorar aparÃƒÂªncia dos botÃƒÂµes */
     .shadow-md {
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
@@ -570,7 +571,7 @@ style.textContent = `
         max-width: 100%;
     }
     
-    /* Garantir que o nome do organizador não quebre linha */
+    /* Garantir que o nome do organizador nÃƒÂ£o quebre linha */
     .organizador-nome {
         white-space: nowrap;
         overflow: hidden;

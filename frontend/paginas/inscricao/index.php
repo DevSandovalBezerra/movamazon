@@ -157,15 +157,11 @@ include 'includes/header-inscricao.php';
 </div>
 
 <script>
-    // Definir API_BASE para módulos JavaScript
-    if (!window.API_BASE) {
-        (function () {
-            var path = window.location.pathname || '';
-            var idx = path.indexOf('/frontend/');
-            window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
-        })();
+    // Garantir API_BASE antes de qualquer chamada
+    if (window.getApiBase) {
+        window.getApiBase();
     }
-    
+
     // Funções globais de navegação
     function prosseguirEtapa() {
         const etapaAtual = <?php echo $etapa_url; ?>;
@@ -192,7 +188,7 @@ include 'includes/header-inscricao.php';
                         produtos_extras: produtos,
                         seguro: 0
                     };
-                    fetch((window.API_BASE || '') + '/api/inscricao/precreate.php', {
+                    fetch((window.API_BASE || '') + '/inscricao/precreate.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'

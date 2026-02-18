@@ -1,9 +1,10 @@
-// Variáveis globais
+if (window.getApiBase) { window.getApiBase(); }
+// VariÃƒÆ’Ã‚Â¡veis globais
 let eventos = [];
 let cupons = [];
 let eventoSelecionado = null;
 
-// Inicialização
+// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 document.addEventListener('DOMContentLoaded', function() {
     carregarEventos();
     configurarEventListeners();
@@ -30,7 +31,7 @@ function configurarEventListeners() {
     document.getElementById('filtro-inicio').addEventListener('change', carregarCupons);
     document.getElementById('filtro-fim').addEventListener('change', carregarCupons);
     
-    // Botão novo cupom
+    // BotÃƒÆ’Ã‚Â£o novo cupom
     document.getElementById('btn-novo-cupom').addEventListener('click', () => {
         mostrarModalAviso();
     });
@@ -38,10 +39,10 @@ function configurarEventListeners() {
 
 // Configurar event listeners do modal
 function configurarModalEventListeners() {
-    // Gerador de código individual
+    // Gerador de cÃƒÆ’Ã‚Â³digo individual
     document.getElementById('btn-gerar-codigo').addEventListener('click', gerarCodigoIndividual);
     
-    // Botão voltar
+    // BotÃƒÆ’Ã‚Â£o voltar
     document.getElementById('btn-voltar').addEventListener('click', fecharModalCupom);
     
     // Modal de aviso
@@ -54,7 +55,7 @@ function configurarModalEventListeners() {
     document.getElementById('btn-cancelar-status').addEventListener('click', fecharModalStatus);
     document.getElementById('btn-salvar-status').addEventListener('click', salvarStatusCupom);
     
-    // Campo de valor dinâmico
+    // Campo de valor dinÃƒÆ’Ã‚Â¢mico
     document.getElementById('cupom-tipo-valor').addEventListener('change', configurarCampoValor);
     document.getElementById('cupom-valor').addEventListener('input', formatarValor);
 }
@@ -76,7 +77,7 @@ function mostrarEstadoFiltrado() {
 async function carregarEventos() {
     try {
         console.log('[Cupons] Buscando eventos do organizador...');
-        const response = await fetch('../../../api/organizador/eventos/list.php');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
         const data = await response.json();
         console.log('[Cupons] Resposta eventos:', data);
         
@@ -96,7 +97,7 @@ function preencherSelectEventos() {
     const select = document.getElementById('filtro-evento');
     const selectModal = document.getElementById('cupom-evento');
     
-    // Limpar opções antigas
+    // Limpar opÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes antigas
     select.innerHTML = '<option value="">Todos os eventos</option>';
     selectModal.innerHTML = '<option value="">Selecione</option>';
     
@@ -121,7 +122,7 @@ async function carregarCupons() {
         const inicio = document.getElementById('filtro-inicio').value;
         const fim = document.getElementById('filtro-fim').value;
         
-        let url = '../../../api/organizador/cupons-remessa/list.php?';
+        let url = (window.API_BASE || '/api') + '/organizador/cupons-remessa/list.php?';
         if (evento) url += 'evento_id=' + encodeURIComponent(evento) + '&';
         if (status) url += 'status=' + encodeURIComponent(status) + '&';
         if (inicio) url += 'data_inicio=' + encodeURIComponent(inicio) + '&';
@@ -189,7 +190,7 @@ function formatarData(data) {
   return d.toLocaleDateString('pt-BR');
 }
 
-// Gerador de códigos criptografados
+// Gerador de cÃƒÆ’Ã‚Â³digos criptografados
 function gerarCodigoCriptografado() {
     const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const comprimento = 8;
@@ -203,7 +204,7 @@ function gerarCodigoCriptografado() {
     return codigo;
 }
 
-// Gerar código individual
+// Gerar cÃƒÆ’Ã‚Â³digo individual
 async function gerarCodigoIndividual() {
     const input = document.getElementById('cupom-codigo');
     const btn = document.getElementById('btn-gerar-codigo');
@@ -219,10 +220,10 @@ async function gerarCodigoIndividual() {
         const codigo = gerarCodigoCriptografado();
         input.value = codigo;
         
-        Swal.fire('Sucesso', 'Código gerado com sucesso!', 'success');
+        Swal.fire('Sucesso', 'CÃƒÆ’Ã‚Â³digo gerado com sucesso!', 'success');
     } catch (error) {
-        console.error('[Cupons] Erro ao gerar código:', error);
-        Swal.fire('Erro', 'Erro ao gerar código.', 'error');
+        console.error('[Cupons] Erro ao gerar cÃƒÆ’Ã‚Â³digo:', error);
+        Swal.fire('Erro', 'Erro ao gerar cÃƒÆ’Ã‚Â³digo.', 'error');
     } finally {
         btn.disabled = false;
         loading.classList.add('hidden');
@@ -243,7 +244,7 @@ function confirmarAviso() {
     abrirModalCupom();
 }
 
-// Modal lógica
+// Modal lÃƒÆ’Ã‚Â³gica
 const modal = document.getElementById('modal-cupom');
 const btnFechar = document.getElementById('btn-fechar-modal');
 const form = document.getElementById('form-cupom');
@@ -257,7 +258,7 @@ function abrirModalCupom(dados = null) {
     document.getElementById('cupom-id').value = '';
     modalTitulo.textContent = dados ? 'Editar Cupom' : 'CUPONS DE DESCONTO';
     
-    // Limpar código
+    // Limpar cÃƒÆ’Ã‚Â³digo
     document.getElementById('cupom-codigo').value = '';
     
     if (dados) {
@@ -273,7 +274,7 @@ function abrirModalCupom(dados = null) {
         document.getElementById('cupom-status').value = dados.status || 'ativo';
         document.getElementById('cupom-habilitar-produtos').checked = dados.habilita_desconto_itens || false;
         
-        // Configurar campo de valor após definir o tipo
+        // Configurar campo de valor apÃƒÆ’Ã‚Â³s definir o tipo
         setTimeout(() => {
             configurarCampoValor();
             if (dados.valor_desconto) {
@@ -314,7 +315,7 @@ form.onsubmit = function (e) {
     const habilitarProdutos = document.getElementById('cupom-habilitar-produtos').checked ? 1 : 0;
     
     if (!titulo || !codigo || !valorInput || !tipoValor || !evento || !inicio || !fim || !maxUso || !status) {
-        Swal.fire('Atenção', 'Preencha todos os campos obrigatórios.', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Preencha todos os campos obrigatÃƒÆ’Ã‚Â³rios.', 'warning');
         return;
     }
     
@@ -324,19 +325,19 @@ form.onsubmit = function (e) {
         if (tipoValor === 'percentual') {
             valor = parseFloat(valorInput);
             if (valor < 0 || valor > 100) {
-                Swal.fire('Atenção', 'Percentual deve estar entre 0 e 100.', 'warning');
+                Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Percentual deve estar entre 0 e 100.', 'warning');
                 return;
             }
         } else {
             // Converter formato brasileiro para decimal
             valor = parseFloat(valorInput.replace(',', '.'));
             if (valor < 0) {
-                Swal.fire('Atenção', 'Valor deve ser maior que zero.', 'warning');
+                Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Valor deve ser maior que zero.', 'warning');
                 return;
             }
         }
     } catch (error) {
-        Swal.fire('Atenção', 'Valor inválido.', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Valor invÃƒÆ’Ã‚Â¡lido.', 'warning');
         return;
     }
     
@@ -358,11 +359,11 @@ form.onsubmit = function (e) {
         payload.id = id;
     }
     
-    let url = '../../../api/organizador/cupons-remessa/create.php';
+    let url = (window.API_BASE || '/api') + '/organizador/cupons-remessa/create.php';
     let method = 'POST';
     
     if (id) {
-        url = '../../../api/organizador/cupons-remessa/update.php';
+        url = (window.API_BASE || '/api') + '/organizador/cupons-remessa/update.php';
         method = 'PUT';
     }
     
@@ -390,7 +391,7 @@ form.onsubmit = function (e) {
     });
 };
 
-// Funções para edição de status
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes para ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de status
 function editarStatusCupom(id, statusAtual) {
     document.getElementById('cupom-id-status').value = id;
     document.getElementById('status-cupom').value = statusAtual;
@@ -406,11 +407,11 @@ function salvarStatusCupom() {
     const novoStatus = document.getElementById('status-cupom').value;
     
     if (!id || !novoStatus) {
-        Swal.fire('Atenção', 'Dados inválidos.', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Dados invÃƒÆ’Ã‚Â¡lidos.', 'warning');
         return;
     }
     
-    fetch('../../../api/organizador/cupons-remessa/update.php', {
+    fetch((window.API_BASE || '/api') + '/organizador/cupons-remessa/update.php', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -434,11 +435,11 @@ function salvarStatusCupom() {
     });
 }
 
-// Função para exclusão com validação
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para exclusÃƒÆ’Ã‚Â£o com validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function excluirCupom(id) {
     Swal.fire({
-        title: 'Confirmar Exclusão',
-        text: 'Tem certeza que deseja excluir este cupom? Esta ação não pode ser desfeita.',
+        title: 'Confirmar ExclusÃƒÆ’Ã‚Â£o',
+        text: 'Tem certeza que deseja excluir este cupom? Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, excluir',
@@ -446,42 +447,42 @@ function excluirCupom(id) {
         confirmButtonColor: '#dc2626'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Primeiro verificar se há utilizações
+            // Primeiro verificar se hÃƒÆ’Ã‚Â¡ utilizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
             verificarUtilizacoesCupom(id);
         }
     });
 }
 
 function verificarUtilizacoesCupom(id) {
-    // Aqui você pode implementar uma API para verificar utilizações
-    // Por enquanto, vamos simular que não há utilizações
-    // Em produção, você faria uma chamada para verificar na tabela inscricoes_cupons
+    // Aqui vocÃƒÆ’Ã‚Âª pode implementar uma API para verificar utilizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
+    // Por enquanto, vamos simular que nÃƒÆ’Ã‚Â£o hÃƒÆ’Ã‚Â¡ utilizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
+    // Em produÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o, vocÃƒÆ’Ã‚Âª faria uma chamada para verificar na tabela inscricoes_cupons
     
-    fetch(`../../../api/organizador/cupons-remessa/check-usage.php?id=${id}`)
+    fetch(`${window.API_BASE || '/api'}/organizador/cupons-remessa/check-usage.php?id=${id}`)
         .then(r => r.json())
         .then(data => {
             if (data.success) {
                 if (data.utilizacoes > 0) {
-                    Swal.fire('Não é possível excluir', 
-                        `Este cupom já foi utilizado ${data.utilizacoes} vez(es). Cupons com utilizações não podem ser excluídos.`, 
+                    Swal.fire('NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© possÃƒÆ’Ã‚Â­vel excluir', 
+                        `Este cupom jÃƒÆ’Ã‚Â¡ foi utilizado ${data.utilizacoes} vez(es). Cupons com utilizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes nÃƒÆ’Ã‚Â£o podem ser excluÃƒÆ’Ã‚Â­dos.`, 
                         'error');
                 } else {
-                    // Confirmar exclusão final
+                    // Confirmar exclusÃƒÆ’Ã‚Â£o final
                     confirmarExclusaoCupom(id);
                 }
             } else {
-                Swal.fire('Erro', 'Erro ao verificar utilizações do cupom.', 'error');
+                Swal.fire('Erro', 'Erro ao verificar utilizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do cupom.', 'error');
             }
         })
         .catch(err => {
-            console.error('[Cupons] Erro ao verificar utilizações:', err);
-            // Se a API não existir, vamos permitir a exclusão (para desenvolvimento)
+            console.error('[Cupons] Erro ao verificar utilizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:', err);
+            // Se a API nÃƒÆ’Ã‚Â£o existir, vamos permitir a exclusÃƒÆ’Ã‚Â£o (para desenvolvimento)
             confirmarExclusaoCupom(id);
         });
 }
 
 function confirmarExclusaoCupom(id) {
-    fetch('../../../api/organizador/cupons-remessa/delete.php', {
+    fetch((window.API_BASE || '/api') + '/organizador/cupons-remessa/delete.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
@@ -489,7 +490,7 @@ function confirmarExclusaoCupom(id) {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            Swal.fire('Sucesso', 'Cupom excluído com sucesso!', 'success');
+            Swal.fire('Sucesso', 'Cupom excluÃƒÆ’Ã‚Â­do com sucesso!', 'success');
             carregarCupons();
         } else {
             Swal.fire('Erro', data.message || 'Erro ao excluir cupom.', 'error');
@@ -547,7 +548,7 @@ function formatarValor(e) {
     
     switch(tipoValor) {
         case 'percentual':
-            // Apenas números, máximo 100
+            // Apenas nÃƒÆ’Ã‚Âºmeros, mÃƒÆ’Ã‚Â¡ximo 100
             valor = valor.replace(/[^\d]/g, '');
             if (parseInt(valor) > 100) {
                 valor = '100';
@@ -557,10 +558,10 @@ function formatarValor(e) {
             
         case 'valor_real':
         case 'preco_fixo':
-            // Formato monetário brasileiro
+            // Formato monetÃƒÆ’Ã‚Â¡rio brasileiro
             valor = valor.replace(/[^\d,]/g, '');
             
-            // Garantir apenas uma vírgula
+            // Garantir apenas uma vÃƒÆ’Ã‚Â­rgula
             const virgulas = (valor.match(/,/g) || []).length;
             if (virgulas > 1) {
                 valor = valor.replace(/,/g, (match, index) => {

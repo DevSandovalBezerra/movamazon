@@ -1,7 +1,8 @@
+if (window.getApiBase) { window.getApiBase(); }
 export class AutoSave {
     constructor(stateManager, options = {}) {
         if (!stateManager) {
-            throw new Error('StateManager é obrigatório para AutoSave');
+            throw new Error('StateManager ÃƒÂ© obrigatÃƒÂ³rio para AutoSave');
         }
         this.stateManager = stateManager;
         this.interval = options.interval || 30000;

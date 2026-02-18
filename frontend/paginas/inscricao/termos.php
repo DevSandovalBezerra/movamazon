@@ -5,41 +5,27 @@ $termos_evento = '';
 $termos_modalidades = [];
 $debug_info = [];
 
-// Função para construir URL absoluta da API
-function getApiUrl($endpoint) {
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    
-    // Detectar caminho base - remover /frontend/paginas/inscricao
-    $script_path = dirname($_SERVER['SCRIPT_NAME']);
-    $path_parts = explode('/', trim($script_path, '/'));
-    
-    // Remover partes do caminho: frontend, paginas, inscricao
-    $base_path = '';
-    $skip_parts = ['frontend', 'paginas', 'inscricao'];
-    foreach ($path_parts as $part) {
-        if (in_array($part, $skip_parts)) {
-            continue;
-        }
-        if (!empty($part)) {
-            $base_path .= '/' . $part;
-        }
+require_once dirname(__DIR__, 3) . '/api/helpers/url_base.php';
+
+function fetch_json_with_debug($url, &$httpCode = null, &$contentType = null, &$curlError = null)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    $response = curl_exec($ch);
+    $curlError = curl_error($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+    curl_close($ch);
+
+    if ($curlError) {
+        return false;
     }
-    
-    // Se não encontrou caminho base, tentar detectar pelo REQUEST_URI
-    if (empty($base_path) && isset($_SERVER['REQUEST_URI'])) {
-        $request_uri = $_SERVER['REQUEST_URI'];
-        // Remover /frontend se existir
-        $request_uri = preg_replace('#/frontend/#', '/', $request_uri);
-        if (preg_match('#^(/[^/]+)#', $request_uri, $matches)) {
-            $base_path = $matches[1];
-        }
-    }
-    
-    // Se ainda vazio, não usar caminho base (raiz do domínio)
-    $api_path = empty($base_path) ? '/api/' : $base_path . '/api/';
-    
-    return $protocol . '://' . $host . $api_path . $endpoint;
+
+    return $response;
 }
 
 // Obter evento_id da sessão ou GET (compatibilidade)
@@ -149,40 +135,22 @@ if ($evento_id) {
             if (!empty($regulamento_arquivo)) {
                 $regulamento_arquivo_trim = trim((string)$regulamento_arquivo);
                 error_log("[TERMOS] Regulamento arquivo: " . $regulamento_arquivo_trim);
-                
-                // Detectar protocolo e host
-                $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-                
-                // Detectar caminho base do projeto
-                $project_path = '';
-                if (isset($_SERVER['REQUEST_URI'])) {
-                    $request_uri = $_SERVER['REQUEST_URI'];
-                    if (preg_match('#(/movamazon/)#', $request_uri)) {
-                        $project_path = '/movamazon';
-                    }
-                }
-                if (empty($project_path) && strpos($host, 'localhost') === false && strpos($host, 'movamazon.com.br') !== false) {
-                    $project_path = ''; // Produção sem subpasta
-                } elseif (empty($project_path)) {
-                    $project_path = '/movamazon'; // Localhost
-                }
-                
+
                 // Se o caminho contém frontend/assets/docs/regulamentos/ (legado)
                 if (strpos($regulamento_arquivo_trim, 'frontend/assets/docs/regulamentos/') === 0) {
-                    $regulamento_url = $protocol . '://' . $host . $project_path . '/' . $regulamento_arquivo_trim;
+                    $regulamento_url = app_asset_url($regulamento_arquivo_trim);
                     error_log("[TERMOS] URL gerado (frontend/assets - legado): " . $regulamento_url);
                 }
                 // Se o caminho contém api/uploads/regulamentos/ (novo padrão)
                 elseif (strpos($regulamento_arquivo_trim, 'api/uploads/regulamentos/') === 0) {
-                    $regulamento_url = $protocol . '://' . $host . $project_path . '/' . $regulamento_arquivo_trim;
+                    $regulamento_url = app_asset_url($regulamento_arquivo_trim);
                     error_log("[TERMOS] URL gerado (api/uploads - novo): " . $regulamento_url);
                 }
                 // Caso contrário, usar download.php (apenas nome do arquivo)
                 else {
                     $nomeArquivo = basename($regulamento_arquivo_trim);
                     if (!empty($nomeArquivo) && $nomeArquivo !== '.' && $nomeArquivo !== '..') {
-                        $regulamento_url = getApiUrl('uploads/regulamentos/download.php?file=' . urlencode($nomeArquivo));
+                        $regulamento_url = app_api_url('uploads/regulamentos/download.php?file=' . urlencode($nomeArquivo));
                         error_log("[TERMOS] URL gerado (download.php - fallback): " . $regulamento_url);
                     }
                 }
@@ -200,31 +168,36 @@ try {
     $debug_info['modalidades_count'] = count($modalidades_selecionadas ?? []);
     $debug_info['modalidades_ids'] = array_column($modalidades_selecionadas ?? [], 'id');
 
+    $debug_info['url_base_resolvido'] = app_url_base();
+
     // Buscar termos gerais do evento usando URL absoluta
-    $url_termos = getApiUrl('inscricao/get_termos.php?evento_id=' . $evento_id);
+    $url_termos = app_api_url('inscricao/get_termos.php?evento_id=' . $evento_id);
     $debug_info['url_termos'] = $url_termos;
 
-    // Usar cURL para garantir funcionamento em produção
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url_termos);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    $response_termos = curl_exec($ch);
-    $curl_error = curl_error($ch);
-    curl_close($ch);
-    
+    $http_code_termos = null;
+    $content_type_termos = null;
+    $curl_error = null;
+    $response_termos = fetch_json_with_debug($url_termos, $http_code_termos, $content_type_termos, $curl_error);
+
+    $debug_info['http_code_termos'] = $http_code_termos;
+    $debug_info['content_type_termos'] = $content_type_termos;
     if ($curl_error) {
         error_log("Erro cURL ao buscar termos: " . $curl_error);
         $response_termos = false;
     }
-    $debug_info['response_termos_length'] = strlen($response_termos);
+    $debug_info['response_termos_length'] = $response_termos !== false ? strlen($response_termos) : 0;
 
     if ($response_termos) {
         $dados_termos = json_decode($response_termos, true);
+        $json_error_termos = json_last_error();
+        $json_error_msg_termos = json_last_error_msg();
         $debug_info['dados_termos'] = $dados_termos;
+        $debug_info['json_error_termos'] = $json_error_msg_termos;
 
-        if ($dados_termos && $dados_termos['success']) {
+        if ($json_error_termos !== JSON_ERROR_NONE) {
+            $debug_info['termos_gerais_encontrados'] = false;
+            $debug_info['erro_termos_gerais'] = 'JSON inválido da API: ' . $json_error_msg_termos;
+        } elseif ($dados_termos && !empty($dados_termos['success'])) {
             $termos_evento = $dados_termos['termos']['conteudo'] ?? '';
             $termos_dinamicos[] = [
                 'titulo' => $dados_termos['termos']['titulo'] ?? 'Termos Gerais',
@@ -247,30 +220,38 @@ try {
         $debug_info['buscando_termos_modalidades'] = true;
 
         foreach ($modalidades_selecionadas as $modalidade) {
-            $url_modalidade = getApiUrl('inscricao/get_termos.php?evento_id=' . $evento_id . '&modalidade_id=' . $modalidade['id']);
+            $modalidade_id = (int)($modalidade['id'] ?? 0);
+            if ($modalidade_id <= 0) {
+                continue;
+            }
+
+            $url_modalidade = app_api_url('inscricao/get_termos.php?evento_id=' . $evento_id . '&modalidade_id=' . $modalidade_id);
             $debug_info['url_modalidade_' . $modalidade['id']] = $url_modalidade;
 
-            // Usar cURL para garantir funcionamento em produção
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url_modalidade);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            $response_modalidade = curl_exec($ch);
-            $curl_error = curl_error($ch);
-            curl_close($ch);
-            
+            $http_code_modalidade = null;
+            $content_type_modalidade = null;
+            $curl_error = null;
+            $response_modalidade = fetch_json_with_debug($url_modalidade, $http_code_modalidade, $content_type_modalidade, $curl_error);
+
+            $debug_info['http_code_modalidade_' . $modalidade['id']] = $http_code_modalidade;
+            $debug_info['content_type_modalidade_' . $modalidade['id']] = $content_type_modalidade;
             if ($curl_error) {
                 error_log("Erro cURL ao buscar termos da modalidade {$modalidade['id']}: " . $curl_error);
                 $response_modalidade = false;
             }
-            $debug_info['response_modalidade_' . $modalidade['id'] . '_length'] = strlen($response_modalidade);
+            $debug_info['response_modalidade_' . $modalidade['id'] . '_length'] = $response_modalidade !== false ? strlen($response_modalidade) : 0;
 
             if ($response_modalidade) {
                 $dados_modalidade = json_decode($response_modalidade, true);
+                $json_error_modalidade = json_last_error();
+                $json_error_msg_modalidade = json_last_error_msg();
                 $debug_info['dados_modalidade_' . $modalidade['id']] = $dados_modalidade;
+                $debug_info['json_error_modalidade_' . $modalidade['id']] = $json_error_msg_modalidade;
 
-                if ($dados_modalidade && $dados_modalidade['success'] && $dados_modalidade['termos']['tipo'] === 'modalidade') {
+                if ($json_error_modalidade !== JSON_ERROR_NONE) {
+                    $debug_info['termos_modalidade_' . $modalidade['id'] . '_encontrados'] = false;
+                    $debug_info['erro_modalidade_' . $modalidade['id']] = 'JSON inválido da API: ' . $json_error_msg_modalidade;
+                } elseif ($dados_modalidade && !empty($dados_modalidade['success']) && ($dados_modalidade['termos']['tipo'] ?? '') === 'modalidade') {
                     $termos_modalidades[] = [
                         'titulo' => $dados_modalidade['termos']['titulo'] ?? 'Termos da Modalidade',
                         'conteudo' => $dados_modalidade['termos']['conteudo'] ?? '',
@@ -278,9 +259,13 @@ try {
                         'modalidade' => $modalidade['nome'] ?? 'Modalidade'
                     ];
                     $debug_info['termos_modalidade_' . $modalidade['id'] . '_encontrados'] = true;
+                } elseif ($dados_modalidade && !empty($dados_modalidade['success'])) {
+                    // Sem termo específico por modalidade: não é falha do fluxo.
+                    $debug_info['termos_modalidade_' . $modalidade['id'] . '_encontrados'] = false;
+                    $debug_info['status_modalidade_' . $modalidade['id']] = 'sem_termo_modalidade';
                 } else {
                     $debug_info['termos_modalidade_' . $modalidade['id'] . '_encontrados'] = false;
-                    $debug_info['erro_modalidade_' . $modalidade['id']] = $dados_modalidade['error'] ?? 'Tipo não é modalidade';
+                    $debug_info['erro_modalidade_' . $modalidade['id']] = $dados_modalidade['error'] ?? 'Erro na resposta da API';
                 }
             } else {
                 $debug_info['termos_modalidade_' . $modalidade['id'] . '_encontrados'] = false;

@@ -1,34 +1,35 @@
+if (window.getApiBase) { window.getApiBase(); }
 // Detectar caminho base da API
 if (!window.API_BASE) {
     (function () {
         var path = window.location.pathname || '';
         var idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     })();
 }
 
-const API_BASE_PARTICIPANTE = window.API_BASE ? `${window.API_BASE}/api/participante` : '/api/participante';
+const API_BASE_PARTICIPANTE = window.API_BASE ? `${window.API_BASE}/participante` : (window.API_BASE || '/api') + '/participante';
 
-// Inicializar objeto global para armazenar dados dos exercícios
+// Inicializar objeto global para armazenar dados dos exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cios
 if (typeof window.exerciciosData === 'undefined') {
     window.exerciciosData = {};
 }
 
-// Função global para exibir detalhes do exercício em modal (definida no início para garantir disponibilidade)
+// FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o global para exibir detalhes do exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio em modal (definida no inÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio para garantir disponibilidade)
 window.mostrarDetalhesExercicio = function(exercicioId) {
     if (!exercicioId || !window.exerciciosData) {
-        console.error('ID do exercício não fornecido ou dados não disponíveis');
+        console.error('ID do exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o fornecido ou dados nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis');
         return;
     }
     
     const exercicio = window.exerciciosData[exercicioId];
     if (!exercicio) {
-        console.error('Exercício não encontrado:', exercicioId);
+        console.error('ExercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado:', exercicioId);
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 icon: 'error',
                 title: 'Erro',
-                text: 'Exercício não encontrado.',
+                text: 'ExercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado.',
                 confirmButtonColor: '#ef4444'
             });
         }
@@ -36,7 +37,7 @@ window.mostrarDetalhesExercicio = function(exercicioId) {
     }
     
     try {
-        const nomeExercicio = exercicio.nome_item || exercicio.nome || exercicio.nome_exercicio || 'Exercício';
+        const nomeExercicio = exercicio.nome_item || exercicio.nome || exercicio.nome_exercicio || 'ExercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio';
         const detalhes = exercicio.detalhes_item || exercicio.detalhes || '';
         
         let detalhesHtml = '<div class="text-left">';
@@ -51,10 +52,10 @@ window.mostrarDetalhesExercicio = function(exercicioId) {
             detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">FC alvo:</span><span>${exercicio.fc_alvo}</span></div>`;
         }
         if (exercicio.tempo_execucao) {
-            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">Execução:</span><span>${exercicio.tempo_execucao}</span></div>`;
+            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">ExecuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</span><span>${exercicio.tempo_execucao}</span></div>`;
         }
         if (exercicio.tempo_recuperacao) {
-            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-yellow-100 text-yellow-800">Recuperação:</span><span>${exercicio.tempo_recuperacao}</span></div>`;
+            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-yellow-100 text-yellow-800">RecuperaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</span><span>${exercicio.tempo_recuperacao}</span></div>`;
         }
         if (exercicio.tipo_recuperacao) {
             detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-800">Tipo:</span><span>${exercicio.tipo_recuperacao}</span></div>`;
@@ -63,22 +64,22 @@ window.mostrarDetalhesExercicio = function(exercicioId) {
             detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">Carga:</span><span>${exercicio.carga}</span></div>`;
         }
         if (exercicio.distancia) {
-            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-pink-100 text-pink-800">Distância:</span><span>${exercicio.distancia}</span></div>`;
+            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-pink-100 text-pink-800">DistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ncia:</span><span>${exercicio.distancia}</span></div>`;
         }
         if (exercicio.velocidade) {
             detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-cyan-100 text-cyan-800">Velocidade:</span><span>${exercicio.velocidade}</span></div>`;
         }
         if (exercicio.cadencia) {
-            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-orange-100 text-orange-800">Cadência:</span><span>${exercicio.cadencia}</span></div>`;
+            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-orange-100 text-orange-800">CadÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia:</span><span>${exercicio.cadencia}</span></div>`;
         }
         if (exercicio.tipo_contracao) {
-            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-lime-100 text-lime-800">Contração:</span><span>${exercicio.tipo_contracao}</span></div>`;
+            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-lime-100 text-lime-800">ContraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</span><span>${exercicio.tipo_contracao}</span></div>`;
         }
         if (exercicio.angulo_articular) {
-            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-teal-100 text-teal-800">Ângulo:</span><span>${exercicio.angulo_articular}</span></div>`;
+            detalhesHtml += `<div class="flex items-center gap-2"><span class="px-2 py-1 text-xs font-medium rounded bg-teal-100 text-teal-800">ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ngulo:</span><span>${exercicio.angulo_articular}</span></div>`;
         }
         if (exercicio.observacoes) {
-            detalhesHtml += `<div class="mt-2 pt-2 border-t"><span class="px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-800">Observações:</span><p class="mt-1 text-sm text-gray-700">${exercicio.observacoes}</p></div>`;
+            detalhesHtml += `<div class="mt-2 pt-2 border-t"><span class="px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-800">ObservaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:</span><p class="mt-1 text-sm text-gray-700">${exercicio.observacoes}</p></div>`;
         }
         
         detalhesHtml += '</div></div>';
@@ -99,16 +100,16 @@ window.mostrarDetalhesExercicio = function(exercicioId) {
             alert(`${nomeExercicio}\n\n${detalhes}\n\n${JSON.stringify(exercicio, null, 2)}`);
         }
     } catch (error) {
-        console.error('Erro ao exibir detalhes do exercício:', error);
+        console.error('Erro ao exibir detalhes do exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio:', error);
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 icon: 'error',
                 title: 'Erro',
-                text: 'Não foi possível exibir os detalhes do exercício.',
+                text: 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel exibir os detalhes do exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio.',
                 confirmButtonColor: '#ef4444'
             });
         } else {
-            alert('Erro ao exibir detalhes do exercício.');
+            alert('Erro ao exibir detalhes do exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio.');
         }
     }
 };
@@ -126,7 +127,7 @@ export async function carregarInscricoesTreinos() {
         });
         
         if (!response.ok) {
-            console.error('Erro ao buscar inscrições:', response.status, response.statusText);
+            console.error('Erro ao buscar inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', response.status, response.statusText);
             loading.classList.add('hidden');
             nenhumaInscricao.classList.remove('hidden');
             return;
@@ -137,25 +138,25 @@ export async function carregarInscricoesTreinos() {
         loading.classList.add('hidden');
 
         if (!data.success || !data.inscricoes || data.inscricoes.length === 0) {
-            console.log('Nenhuma inscrição encontrada');
+            console.log('Nenhuma inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrada');
             nenhumaInscricao.classList.remove('hidden');
             return;
         }
 
-        // Filtrar apenas inscrições confirmadas (status = 'confirmada')
-        // Também incluir se status_pagamento = 'pago' mas status ainda não foi atualizado
+        // Filtrar apenas inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes confirmadas (status = 'confirmada')
+        // TambÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©m incluir se status_pagamento = 'pago' mas status ainda nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi atualizado
         const inscricoesConfirmadas = data.inscricoes.filter(i => {
             const statusConfirmado = i.status === 'confirmada';
             const pagamentoPago = i.status_pagamento === 'pago';
             return statusConfirmado || pagamentoPago;
         });
 
-        console.log('Total de inscrições:', data.inscricoes.length);
-        console.log('Inscrições confirmadas:', inscricoesConfirmadas.length);
-        console.log('Detalhes das inscrições:', data.inscricoes);
+        console.log('Total de inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', data.inscricoes.length);
+        console.log('InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes confirmadas:', inscricoesConfirmadas.length);
+        console.log('Detalhes das inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', data.inscricoes);
 
         if (inscricoesConfirmadas.length === 0) {
-            console.log('Nenhuma inscrição confirmada encontrada');
+            console.log('Nenhuma inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o confirmada encontrada');
             nenhumaInscricao.classList.remove('hidden');
             return;
         }
@@ -168,7 +169,7 @@ export async function carregarInscricoesTreinos() {
         });
 
         const ultimaInscricao = inscricoesConfirmadas[0];
-        console.log('Última inscrição selecionada:', ultimaInscricao);
+        console.log('ÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡ltima inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o selecionada:', ultimaInscricao);
         
         const statusAnamneseUltima = await verificarAnamnese(ultimaInscricao.inscricao_id);
         const statusTreinoUltima = await verificarTreino(ultimaInscricao.inscricao_id);
@@ -184,7 +185,7 @@ export async function carregarInscricoesTreinos() {
                         <div class="flex-grow">
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="px-3 py-1 text-xs font-bold rounded-full bg-brand-green text-white">
-                                    ÚLTIMA CORRIDA INSCRITA
+                                    ÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡LTIMA CORRIDA INSCRITA
                                 </span>
                             </div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">${ultimaInscricao.evento_nome}</h3>
@@ -194,19 +195,19 @@ export async function carregarInscricoesTreinos() {
                                 <span class="px-3 py-1 text-xs font-semibold rounded-full ${
                                     statusAnamneseUltima ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                                 }">
-                                    ${statusAnamneseUltima ? '✓ Anamnese Preenchida' : '⚠ Anamnese Pendente'}
+                                    ${statusAnamneseUltima ? 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ Anamnese Preenchida' : 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â  Anamnese Pendente'}
                                 </span>
                                 <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                                    ${statusTreinoUltima ? '✓ Treino Gerado' : 'Aguardando Geração'}
+                                    ${statusTreinoUltima ? 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ Treino Gerado' : 'Aguardando GeraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o'}
                                 </span>
                             </div>
                             ${!statusAnamneseUltima ? `
                                 <p class="text-sm text-yellow-700 mb-4">
-                                    <strong>Próximo passo:</strong> Preencha sua anamnese para gerar um treino personalizado.
+                                    <strong>PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo passo:</strong> Preencha sua anamnese para gerar um treino personalizado.
                                 </p>
                             ` : !statusTreinoUltima ? `
                                 <p class="text-sm text-green-700 mb-4">
-                                    <strong>Pronto para gerar!</strong> Sua anamnese está completa. Clique no botão abaixo para gerar seu treino personalizado.
+                                    <strong>Pronto para gerar!</strong> Sua anamnese estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ completa. Clique no botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o abaixo para gerar seu treino personalizado.
                                 </p>
                             ` : ''}
                         </div>
@@ -277,12 +278,12 @@ export async function carregarInscricoesTreinos() {
                             <span class="px-3 py-1 text-xs font-semibold rounded-full ${
                                 statusAnamnese ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                             }">
-                                ${statusAnamnese ? '✓ Anamnese' : '⚠ Sem Anamnese'}
+                                ${statusAnamnese ? 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ Anamnese' : 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â  Sem Anamnese'}
                             </span>
                             <span class="px-3 py-1 text-xs font-semibold rounded-full ${
                                 statusTreino ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
                             }">
-                                ${statusTreino ? '✓ Treino Gerado' : 'Sem Treino'}
+                                ${statusTreino ? 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ Treino Gerado' : 'Sem Treino'}
                             </span>
                         </div>
                     </div>
@@ -312,7 +313,7 @@ export async function carregarInscricoesTreinos() {
         }
 
     } catch (error) {
-        console.error('Erro ao carregar inscrições:', error);
+        console.error('Erro ao carregar inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', error);
         loading.classList.add('hidden');
         nenhumaInscricao.classList.remove('hidden');
     }
@@ -359,7 +360,7 @@ export async function salvarAnamnese(dados) {
 
 export async function buscarTermosTreino() {
     const apiBase = window.API_BASE || (window.location.pathname.indexOf('/frontend/') > 0 ? window.location.pathname.slice(0, window.location.pathname.indexOf('/frontend/')) : '');
-    const url = `${apiBase}/api/inscricao/get_termos.php?tipo=treino`;
+    const url = `${apiBase}/inscricao/get_termos.php?tipo=treino`;
     const res = await fetch(url);
     const data = await res.json();
     return (data.success && data.termos && data.termos.conteudo) ? data.termos : null;
@@ -367,20 +368,20 @@ export async function buscarTermosTreino() {
 
 export async function gerarTreino(inscricaoId, opts = {}) {
     const termosIdTreino = opts.termos_id_treino || null;
-    console.log('🚀 [gerarTreino] Iniciando geração de treino para inscrição:', inscricaoId);
-    console.log('📡 [gerarTreino] URL da API:', `${API_BASE_PARTICIPANTE}/treino/generate.php`);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ [gerarTreino] Iniciando geraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de treino para inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', inscricaoId);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [gerarTreino] URL da API:', `${API_BASE_PARTICIPANTE}/treino/generate.php`);
     const payload = { inscricao_id: inscricaoId };
     if (termosIdTreino) payload.termos_id_treino = termosIdTreino;
-    console.log('📦 [gerarTreino] Payload:', payload);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [gerarTreino] Payload:', payload);
     
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
-            console.warn('⏱️ [gerarTreino] Timeout de 180 segundos atingido, abortando requisição...');
+            console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [gerarTreino] Timeout de 180 segundos atingido, abortando requisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o...');
             controller.abort();
         }, 180000);
         
-        console.log('📡 [gerarTreino] Enviando requisição POST...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [gerarTreino] Enviando requisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o POST...');
         const startTime = Date.now();
         
         const response = await fetch(`${API_BASE_PARTICIPANTE}/treino/generate.php`, {
@@ -394,31 +395,31 @@ export async function gerarTreino(inscricaoId, opts = {}) {
         });
 
         const requestDuration = Date.now() - startTime;
-        console.log(`⏱️ [gerarTreino] Requisição concluída em ${requestDuration}ms`);
-        console.log('📡 [gerarTreino] Response status:', response.status, response.statusText);
-        console.log('📡 [gerarTreino] Response headers:', Object.fromEntries(response.headers.entries()));
-        console.log('📡 [gerarTreino] Response ok:', response.ok);
+        console.log(`ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [gerarTreino] RequisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o concluÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­da em ${requestDuration}ms`);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [gerarTreino] Response status:', response.status, response.statusText);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [gerarTreino] Response headers:', Object.fromEntries(response.headers.entries()));
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [gerarTreino] Response ok:', response.ok);
         
         clearTimeout(timeoutId);
         
-        console.log('📦 [gerarTreino] Parseando resposta JSON...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [gerarTreino] Parseando resposta JSON...');
         let data;
         try {
             const responseText = await response.text();
-            console.log('📦 [gerarTreino] Response text (tamanho):', responseText.length, 'caracteres');
-            console.log('📦 [gerarTreino] Response text (primeiros 500 chars):', responseText.substring(0, 500));
-            console.log('📦 [gerarTreino] Response text (últimos 500 chars):', responseText.substring(Math.max(0, responseText.length - 500)));
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [gerarTreino] Response text (tamanho):', responseText.length, 'caracteres');
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [gerarTreino] Response text (primeiros 500 chars):', responseText.substring(0, 500));
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [gerarTreino] Response text (ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºltimos 500 chars):', responseText.substring(Math.max(0, responseText.length - 500)));
             
             data = JSON.parse(responseText);
-            console.log('✅ [gerarTreino] JSON parseado com sucesso:', data);
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [gerarTreino] JSON parseado com sucesso:', data);
         } catch (parseError) {
-            console.error('❌ [gerarTreino] Erro ao parsear JSON:', parseError);
-            console.error('❌ [gerarTreino] Mensagem do erro:', parseError.message);
-            throw new Error('Resposta inválida do servidor. Não foi possível processar o JSON.');
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [gerarTreino] Erro ao parsear JSON:', parseError);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [gerarTreino] Mensagem do erro:', parseError.message);
+            throw new Error('Resposta invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida do servidor. NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel processar o JSON.');
         }
         
         if (!response.ok) {
-            console.error('❌ [gerarTreino] Resposta não OK:', {
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [gerarTreino] Resposta nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o OK:', {
                 status: response.status,
                 statusText: response.statusText,
                 data: data
@@ -429,7 +430,7 @@ export async function gerarTreino(inscricaoId, opts = {}) {
             };
         }
 
-        console.log('✅ [gerarTreino] Treino gerado com sucesso!', {
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [gerarTreino] Treino gerado com sucesso!', {
             success: data.success,
             message: data.message,
             plano_id: data.plano_id
@@ -437,25 +438,25 @@ export async function gerarTreino(inscricaoId, opts = {}) {
         
         return data;
     } catch (error) {
-        console.error('💥 [gerarTreino] Erro ao gerar treino:', error);
-        console.error('💥 [gerarTreino] Tipo do erro:', error.constructor.name);
-        console.error('💥 [gerarTreino] Nome do erro:', error.name);
-        console.error('💥 [gerarTreino] Mensagem:', error.message);
-        console.error('💥 [gerarTreino] Stack trace:', error.stack);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreino] Erro ao gerar treino:', error);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreino] Tipo do erro:', error.constructor.name);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreino] Nome do erro:', error.name);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreino] Mensagem:', error.message);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreino] Stack trace:', error.stack);
         
         if (error.name === 'AbortError') {
-            console.warn('⏱️ [gerarTreino] Requisição abortada por timeout');
+            console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [gerarTreino] RequisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o abortada por timeout');
             return {
                 success: false,
-                message: 'A geração do treino está demorando mais que o esperado. Por favor, tente novamente.'
+                message: 'A geraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do treino estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ demorando mais que o esperado. Por favor, tente novamente.'
             };
         }
         
         if (error.name === 'TypeError' && error.message.includes('fetch')) {
-            console.error('🌐 [gerarTreino] Erro de rede/conexão');
+            console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€šÃ‚Â [gerarTreino] Erro de rede/conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
             return {
                 success: false,
-                message: 'Erro de conexão. Verifique sua internet e tente novamente.'
+                message: 'Erro de conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o. Verifique sua internet e tente novamente.'
             };
         }
         
@@ -467,7 +468,7 @@ export async function gerarTreino(inscricaoId, opts = {}) {
 }
 
 export async function carregarTreino(inscricaoId) {
-    console.log('🔄 [carregarTreino] Iniciando carregamento do treino para inscrição:', inscricaoId);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ [carregarTreino] Iniciando carregamento do treino para inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', inscricaoId);
     
     const container = document.getElementById('treino-container');
     const loading = document.getElementById('loading');
@@ -476,37 +477,37 @@ export async function carregarTreino(inscricaoId) {
     const treinosList = document.getElementById('treinos-list');
 
     try {
-        console.log('📡 [carregarTreino] Fazendo requisição para:', `${API_BASE_PARTICIPANTE}/treino/get.php?inscricao_id=${inscricaoId}`);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [carregarTreino] Fazendo requisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para:', `${API_BASE_PARTICIPANTE}/treino/get.php?inscricao_id=${inscricaoId}`);
         
         const response = await fetch(`${API_BASE_PARTICIPANTE}/treino/get.php?inscricao_id=${inscricaoId}`, {
             credentials: 'same-origin'
         });
         
-        console.log('📡 [carregarTreino] Response status:', response.status, response.statusText);
-        console.log('📡 [carregarTreino] Response headers:', Object.fromEntries(response.headers.entries()));
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [carregarTreino] Response status:', response.status, response.statusText);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¡ [carregarTreino] Response headers:', Object.fromEntries(response.headers.entries()));
         
         if (!response.ok) {
-            console.error('❌ [carregarTreino] Erro HTTP:', response.status, response.statusText);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [carregarTreino] Erro HTTP:', response.status, response.statusText);
             throw new Error(`Erro ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
-        console.log('📦 [carregarTreino] Dados recebidos da API:', data);
-        console.log('📦 [carregarTreino] Success:', data.success);
-        console.log('📦 [carregarTreino] Plano:', data.plano);
-        console.log('📦 [carregarTreino] Número de treinos:', data.treinos ? data.treinos.length : 0);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [carregarTreino] Dados recebidos da API:', data);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [carregarTreino] Success:', data.success);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [carregarTreino] Plano:', data.plano);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [carregarTreino] NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºmero de treinos:', data.treinos ? data.treinos.length : 0);
         
         loading.classList.add('hidden');
 
         if (!data.success || !data.plano || !data.treinos || data.treinos.length === 0) {
-            console.warn('⚠️ [carregarTreino] Nenhum treino encontrado');
+            console.warn('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [carregarTreino] Nenhum treino encontrado');
             loading.classList.add('hidden');
             semTreino.classList.remove('hidden');
             return;
         }
 
-        console.log('✅ [carregarTreino] Dados válidos, iniciando renderização');
-        console.log('📊 [carregarTreino] Estrutura do plano:', {
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] Dados vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lidos, iniciando renderizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€¦Ã‚Â  [carregarTreino] Estrutura do plano:', {
             id: data.plano.id,
             foco_primario: data.plano.foco_primario,
             duracao_treino_geral: data.plano.duracao_treino_geral,
@@ -524,7 +525,7 @@ export async function carregarTreino(inscricaoId) {
             })
             : 'N/A';
         
-        // Calcular período total do treino
+        // Calcular perÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­odo total do treino
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
         const dataInicio = hoje;
@@ -559,7 +560,7 @@ export async function carregarTreino(inscricaoId) {
                                 <i class="fas fa-dumbbell text-white text-xl"></i>
                             </div>
                             <div>
-                                <h3 class="text-2xl font-bold text-blue-900">${data.plano.foco_primario || 'Preparação para Corrida'}</h3>
+                                <h3 class="text-2xl font-bold text-blue-900">${data.plano.foco_primario || 'PreparaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para Corrida'}</h3>
                                 <p class="text-sm text-blue-600 mt-1">${periodoTotal || 'Treino personalizado para sua corrida'}</p>
                             </div>
                         </div>
@@ -567,7 +568,7 @@ export async function carregarTreino(inscricaoId) {
                             <div class="flex items-center gap-2 p-3 bg-white rounded-lg border border-blue-100">
                                 <i class="fas fa-clock text-blue-600"></i>
                                 <div>
-                                    <div class="text-xs text-gray-500">Duração</div>
+                                    <div class="text-xs text-gray-500">DuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o</div>
                                     <div class="text-sm font-semibold text-gray-800">${data.plano.duracao_treino_geral || '-'}</div>
                                 </div>
                             </div>
@@ -591,27 +592,27 @@ export async function carregarTreino(inscricaoId) {
             </div>
         `;
 
-        const diasSemana = {1: 'Segunda', 2: 'Terça', 3: 'Quarta', 4: 'Quinta', 5: 'Sexta', 6: 'Sábado', 7: 'Domingo'};
+        const diasSemana = {1: 'Segunda', 2: 'TerÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a', 3: 'Quarta', 4: 'Quinta', 5: 'Sexta', 6: 'SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡bado', 7: 'Domingo'};
         
         // Agrupar treinos por semana usando semana_numero do banco
-        console.log('📅 [carregarTreino] Agrupando treinos por semana usando semana_numero...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] Agrupando treinos por semana usando semana_numero...');
         const treinosPorSemana = {};
         data.treinos.forEach((treino, idx) => {
-            // Usar semana_numero do banco, com fallback para cálculo se não existir (compatibilidade)
+            // Usar semana_numero do banco, com fallback para cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lculo se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o existir (compatibilidade)
             const semanaNum = treino.semana_numero || Math.ceil(treino.dia_semana_id / 7) || Math.ceil((idx + 1) / 7);
             if (!treinosPorSemana[semanaNum]) {
                 treinosPorSemana[semanaNum] = [];
             }
             treinosPorSemana[semanaNum].push({...treino, idxOriginal: idx});
-            console.log(`📅 [carregarTreino] Treino ${idx} (dia_semana_id: ${treino.dia_semana_id}, semana_numero: ${treino.semana_numero || 'N/A'}) -> Semana ${semanaNum}`);
+            console.log(`ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] Treino ${idx} (dia_semana_id: ${treino.dia_semana_id}, semana_numero: ${treino.semana_numero || 'N/A'}) -> Semana ${semanaNum}`);
         });
         
         const numSemanas = Object.keys(treinosPorSemana).length;
         const temMultiplasSemanas = numSemanas > 1;
-        console.log('📅 [carregarTreino] Total de semanas:', numSemanas);
-        console.log('📅 [carregarTreino] Tem múltiplas semanas:', temMultiplasSemanas);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] Total de semanas:', numSemanas);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] Tem mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºltiplas semanas:', temMultiplasSemanas);
         
-        // Criar navegação por semanas se houver múltiplas semanas
+        // Criar navegaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o por semanas se houver mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºltiplas semanas
         let navegacaoSemanasHtml = '';
         if (temMultiplasSemanas) {
             navegacaoSemanasHtml = '<div class="mb-6 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border-2 border-indigo-200 shadow-md">';
@@ -657,14 +658,14 @@ export async function carregarTreino(inscricaoId) {
         abasHtml += '</div>';
 
         // Limpar dados anteriores e inicializar contador
-        console.log('🧹 [carregarTreino] Limpando dados anteriores e inicializando contador de exercícios');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â§Ãƒâ€šÃ‚Â¹ [carregarTreino] Limpando dados anteriores e inicializando contador de exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cios');
         window.exerciciosData = {};
         let exercicioCounter = 0;
 
-        console.log('🎨 [carregarTreino] Iniciando renderização dos treinos...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¨ [carregarTreino] Iniciando renderizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o dos treinos...');
         let conteudosHtml = '<div class="relative">';
         data.treinos.forEach((treino, idx) => {
-            console.log(`🎨 [carregarTreino] Renderizando treino ${idx + 1}/${data.treinos.length}:`, {
+            console.log(`ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¨ [carregarTreino] Renderizando treino ${idx + 1}/${data.treinos.length}:`, {
                 id: treino.id,
                 nome: treino.nome,
                 dia_semana_id: treino.dia_semana_id,
@@ -715,7 +716,7 @@ export async function carregarTreino(inscricaoId) {
             const diaNome = diasSemana[treino.dia_semana_id] || `Dia ${treino.dia_semana_id}`;
             
             // Debug: verificar estrutura dos dados
-            console.log(`🔍 [carregarTreino] Treino ${idx} - Estrutura dos dados:`, {
+            console.log(`ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â [carregarTreino] Treino ${idx} - Estrutura dos dados:`, {
                 parteInicial: {
                     tipo: typeof parteInicial,
                     isArray: Array.isArray(parteInicial),
@@ -736,21 +737,21 @@ export async function carregarTreino(inscricaoId) {
                 }
             });
             
-            // Validação: garantir que arrays sejam válidos
+            // ValidaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: garantir que arrays sejam vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lidos
             if (!Array.isArray(parteInicial)) {
-                console.warn(`⚠️ [carregarTreino] Treino ${idx} - parteInicial não é array, convertendo...`);
+                console.warn(`ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [carregarTreino] Treino ${idx} - parteInicial nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© array, convertendo...`);
                 parteInicial = [];
             }
             if (!Array.isArray(partePrincipal)) {
-                console.warn(`⚠️ [carregarTreino] Treino ${idx} - partePrincipal não é array, convertendo...`);
+                console.warn(`ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [carregarTreino] Treino ${idx} - partePrincipal nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© array, convertendo...`);
                 partePrincipal = [];
             }
             if (!Array.isArray(voltaCalma)) {
-                console.warn(`⚠️ [carregarTreino] Treino ${idx} - voltaCalma não é array, convertendo...`);
+                console.warn(`ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â [carregarTreino] Treino ${idx} - voltaCalma nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© array, convertendo...`);
                 voltaCalma = [];
             }
             
-            console.log(`✅ [carregarTreino] Treino ${idx} - Arrays validados:`, {
+            console.log(`ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] Treino ${idx} - Arrays validados:`, {
                 parteInicial: parteInicial.length,
                 partePrincipal: partePrincipal.length,
                 voltaCalma: voltaCalma.length
@@ -782,7 +783,7 @@ export async function carregarTreino(inscricaoId) {
                                     const exercicioId = `ex-${exercicioCounter++}`;
                                     window.exerciciosData[exercicioId] = ex;
                                     
-                                    // Verificar todas as propriedades possíveis
+                                    // Verificar todas as propriedades possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis
                                     const temBadges = !!(ex.fc_alvo || ex.tempo_execucao || ex.tempo_recuperacao || ex.tipo_recuperacao || ex.carga || ex.distancia || ex.velocidade || ex.cadencia || ex.tipo_contracao || ex.angulo_articular || ex.observacoes || ex.peso || ex.tempo || ex.series || ex.repeticoes);
                                     
                                     return `<li class="flex items-start gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-blue-500 hover:from-blue-100 hover:to-indigo-100 transition-all shadow-sm">
@@ -792,20 +793,20 @@ export async function carregarTreino(inscricaoId) {
                                             </div>
                                             ${detalhes ? `<p class="text-sm text-gray-700 mb-3 leading-relaxed">${detalhes}</p>` : ''}
                                             ${temBadges ? `<div class="flex flex-wrap gap-2 mt-3">
-                                                ${ex.fc_alvo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border-2 border-blue-300 shadow-sm">💓 FC alvo: ${ex.fc_alvo}</span>` : ''}
-                                                ${ex.tempo_execucao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-2 border-green-300 shadow-sm">⏱️ Execução: ${ex.tempo_execucao}</span>` : ''}
-                                                ${ex.tempo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300 shadow-sm">🔄 Recuperação: ${ex.tempo_recuperacao}</span>` : ''}
-                                                ${ex.tipo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">📋 Tipo: ${ex.tipo_recuperacao}</span>` : ''}
-                                                ${ex.carga || ex.peso ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300 shadow-sm">⚖️ Carga: ${ex.carga || ex.peso}</span>` : ''}
-                                                ${ex.distancia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-pink-100 text-pink-800 border-2 border-pink-300 shadow-sm">📏 Distância: ${ex.distancia}</span>` : ''}
-                                                ${ex.velocidade ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800 border-2 border-cyan-300 shadow-sm">🏃 Velocidade: ${ex.velocidade}</span>` : ''}
-                                                ${ex.cadencia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300 shadow-sm">🎯 Cadência: ${ex.cadencia}</span>` : ''}
-                                                ${ex.tipo_contracao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-lime-100 text-lime-800 border-2 border-lime-300 shadow-sm">💪 Contração: ${ex.tipo_contracao}</span>` : ''}
-                                                ${ex.angulo_articular ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-100 text-teal-800 border-2 border-teal-300 shadow-sm">📐 Ângulo: ${ex.angulo_articular}</span>` : ''}
-                                                ${ex.series ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 border-2 border-indigo-300 shadow-sm">🔢 Séries: ${ex.series}</span>` : ''}
-                                                ${ex.repeticoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-violet-100 text-violet-800 border-2 border-violet-300 shadow-sm">🔁 Repetições: ${ex.repeticoes}</span>` : ''}
-                                                ${ex.tempo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border-2 border-emerald-300 shadow-sm">⏰ Tempo: ${ex.tempo}</span>` : ''}
-                                                ${ex.observacoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">📝 Obs: ${ex.observacoes}</span>` : ''}
+                                                ${ex.fc_alvo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border-2 border-blue-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ FC alvo: ${ex.fc_alvo}</span>` : ''}
+                                                ${ex.tempo_execucao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-2 border-green-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â ExecuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tempo_execucao}</span>` : ''}
+                                                ${ex.tempo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ RecuperaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tempo_recuperacao}</span>` : ''}
+                                                ${ex.tipo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ Tipo: ${ex.tipo_recuperacao}</span>` : ''}
+                                                ${ex.carga || ex.peso ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Carga: ${ex.carga || ex.peso}</span>` : ''}
+                                                ${ex.distancia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-pink-100 text-pink-800 border-2 border-pink-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â DistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ncia: ${ex.distancia}</span>` : ''}
+                                                ${ex.velocidade ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800 border-2 border-cyan-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂÃƒâ€ Ã¢â‚¬â„¢ Velocidade: ${ex.velocidade}</span>` : ''}
+                                                ${ex.cadencia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¯ CadÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia: ${ex.cadencia}</span>` : ''}
+                                                ${ex.tipo_contracao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-lime-100 text-lime-800 border-2 border-lime-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Âª ContraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tipo_contracao}</span>` : ''}
+                                                ${ex.angulo_articular ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-100 text-teal-800 border-2 border-teal-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ngulo: ${ex.angulo_articular}</span>` : ''}
+                                                ${ex.series ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 border-2 border-indigo-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¢ SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ries: ${ex.series}</span>` : ''}
+                                                ${ex.repeticoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-violet-100 text-violet-800 border-2 border-violet-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â RepetiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes: ${ex.repeticoes}</span>` : ''}
+                                                ${ex.tempo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border-2 border-emerald-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â° Tempo: ${ex.tempo}</span>` : ''}
+                                                ${ex.observacoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â Obs: ${ex.observacoes}</span>` : ''}
                                             </div>` : ''}
                                         </div>
                                         ${temBadges ? `<button onclick="mostrarDetalhesExercicio('${exercicioId}')" 
@@ -813,7 +814,7 @@ export async function carregarTreino(inscricaoId) {
                                             <i class="fas fa-info-circle"></i> Detalhes
                                         </button>` : ''}
                                     </li>`;
-                                }).join('') : '<li class="text-gray-400 italic p-4 bg-gray-50 rounded-lg">Nenhum exercício</li>'}
+                                }).join('') : '<li class="text-gray-400 italic p-4 bg-gray-50 rounded-lg">Nenhum exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio</li>'}
                             </ul>
                             <h5 class="font-bold text-blue-800 mt-6 mb-3 text-lg flex items-center gap-2">
                                 <i class="fas fa-dumbbell text-green-600"></i>
@@ -840,20 +841,20 @@ export async function carregarTreino(inscricaoId) {
                                             </div>
                                             ${detalhes ? `<p class="text-sm text-gray-700 mb-3 leading-relaxed">${detalhes}</p>` : ''}
                                             ${temBadges ? `<div class="flex flex-wrap gap-2 mt-3">
-                                                ${ex.fc_alvo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border-2 border-blue-300 shadow-sm">💓 FC alvo: ${ex.fc_alvo}</span>` : ''}
-                                                ${ex.tempo_execucao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-2 border-green-300 shadow-sm">⏱️ Execução: ${ex.tempo_execucao}</span>` : ''}
-                                                ${ex.tempo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300 shadow-sm">🔄 Recuperação: ${ex.tempo_recuperacao}</span>` : ''}
-                                                ${ex.tipo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">📋 Tipo: ${ex.tipo_recuperacao}</span>` : ''}
-                                                ${ex.carga || ex.peso ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300 shadow-sm">⚖️ Carga: ${ex.carga || ex.peso}</span>` : ''}
-                                                ${ex.distancia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-pink-100 text-pink-800 border-2 border-pink-300 shadow-sm">📏 Distância: ${ex.distancia}</span>` : ''}
-                                                ${ex.velocidade ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800 border-2 border-cyan-300 shadow-sm">🏃 Velocidade: ${ex.velocidade}</span>` : ''}
-                                                ${ex.cadencia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300 shadow-sm">🎯 Cadência: ${ex.cadencia}</span>` : ''}
-                                                ${ex.tipo_contracao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-lime-100 text-lime-800 border-2 border-lime-300 shadow-sm">💪 Contração: ${ex.tipo_contracao}</span>` : ''}
-                                                ${ex.angulo_articular ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-100 text-teal-800 border-2 border-teal-300 shadow-sm">📐 Ângulo: ${ex.angulo_articular}</span>` : ''}
-                                                ${ex.series ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 border-2 border-indigo-300 shadow-sm">🔢 Séries: ${ex.series}</span>` : ''}
-                                                ${ex.repeticoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-violet-100 text-violet-800 border-2 border-violet-300 shadow-sm">🔁 Repetições: ${ex.repeticoes}</span>` : ''}
-                                                ${ex.tempo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border-2 border-emerald-300 shadow-sm">⏰ Tempo: ${ex.tempo}</span>` : ''}
-                                                ${ex.observacoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">📝 Obs: ${ex.observacoes}</span>` : ''}
+                                                ${ex.fc_alvo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border-2 border-blue-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ FC alvo: ${ex.fc_alvo}</span>` : ''}
+                                                ${ex.tempo_execucao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-2 border-green-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â ExecuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tempo_execucao}</span>` : ''}
+                                                ${ex.tempo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ RecuperaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tempo_recuperacao}</span>` : ''}
+                                                ${ex.tipo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ Tipo: ${ex.tipo_recuperacao}</span>` : ''}
+                                                ${ex.carga || ex.peso ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Carga: ${ex.carga || ex.peso}</span>` : ''}
+                                                ${ex.distancia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-pink-100 text-pink-800 border-2 border-pink-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â DistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ncia: ${ex.distancia}</span>` : ''}
+                                                ${ex.velocidade ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800 border-2 border-cyan-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂÃƒâ€ Ã¢â‚¬â„¢ Velocidade: ${ex.velocidade}</span>` : ''}
+                                                ${ex.cadencia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¯ CadÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia: ${ex.cadencia}</span>` : ''}
+                                                ${ex.tipo_contracao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-lime-100 text-lime-800 border-2 border-lime-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Âª ContraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tipo_contracao}</span>` : ''}
+                                                ${ex.angulo_articular ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-100 text-teal-800 border-2 border-teal-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ngulo: ${ex.angulo_articular}</span>` : ''}
+                                                ${ex.series ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 border-2 border-indigo-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¢ SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ries: ${ex.series}</span>` : ''}
+                                                ${ex.repeticoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-violet-100 text-violet-800 border-2 border-violet-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â RepetiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes: ${ex.repeticoes}</span>` : ''}
+                                                ${ex.tempo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border-2 border-emerald-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â° Tempo: ${ex.tempo}</span>` : ''}
+                                                ${ex.observacoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â Obs: ${ex.observacoes}</span>` : ''}
                                             </div>` : ''}
                                         </div>
                                         ${temBadges ? `<button onclick="mostrarDetalhesExercicio('${exercicioId}')" 
@@ -861,11 +862,11 @@ export async function carregarTreino(inscricaoId) {
                                             <i class="fas fa-info-circle"></i> Detalhes
                                         </button>` : ''}
                                     </li>`;
-                                }).join('') : '<li class="text-gray-400 italic p-4 bg-gray-50 rounded-lg">Nenhum exercício</li>'}
+                                }).join('') : '<li class="text-gray-400 italic p-4 bg-gray-50 rounded-lg">Nenhum exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio</li>'}
                             </ul>
                             <h5 class="font-bold text-blue-800 mt-6 mb-3 text-lg flex items-center gap-2">
                                 <i class="fas fa-wind text-purple-600"></i>
-                                Volta à Calma
+                                Volta ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  Calma
                             </h5>
                             <ul class="list-none space-y-3 text-gray-800">
                                 ${voltaCalma.length > 0 ? voltaCalma.map((ex, exIdx) => {
@@ -888,20 +889,20 @@ export async function carregarTreino(inscricaoId) {
                                             </div>
                                             ${detalhes ? `<p class="text-sm text-gray-700 mb-3 leading-relaxed">${detalhes}</p>` : ''}
                                             ${temBadges ? `<div class="flex flex-wrap gap-2 mt-3">
-                                                ${ex.fc_alvo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border-2 border-blue-300 shadow-sm">💓 FC alvo: ${ex.fc_alvo}</span>` : ''}
-                                                ${ex.tempo_execucao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-2 border-green-300 shadow-sm">⏱️ Execução: ${ex.tempo_execucao}</span>` : ''}
-                                                ${ex.tempo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300 shadow-sm">🔄 Recuperação: ${ex.tempo_recuperacao}</span>` : ''}
-                                                ${ex.tipo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">📋 Tipo: ${ex.tipo_recuperacao}</span>` : ''}
-                                                ${ex.carga || ex.peso ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300 shadow-sm">⚖️ Carga: ${ex.carga || ex.peso}</span>` : ''}
-                                                ${ex.distancia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-pink-100 text-pink-800 border-2 border-pink-300 shadow-sm">📏 Distância: ${ex.distancia}</span>` : ''}
-                                                ${ex.velocidade ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800 border-2 border-cyan-300 shadow-sm">🏃 Velocidade: ${ex.velocidade}</span>` : ''}
-                                                ${ex.cadencia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300 shadow-sm">🎯 Cadência: ${ex.cadencia}</span>` : ''}
-                                                ${ex.tipo_contracao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-lime-100 text-lime-800 border-2 border-lime-300 shadow-sm">💪 Contração: ${ex.tipo_contracao}</span>` : ''}
-                                                ${ex.angulo_articular ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-100 text-teal-800 border-2 border-teal-300 shadow-sm">📐 Ângulo: ${ex.angulo_articular}</span>` : ''}
-                                                ${ex.series ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 border-2 border-indigo-300 shadow-sm">🔢 Séries: ${ex.series}</span>` : ''}
-                                                ${ex.repeticoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-violet-100 text-violet-800 border-2 border-violet-300 shadow-sm">🔁 Repetições: ${ex.repeticoes}</span>` : ''}
-                                                ${ex.tempo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border-2 border-emerald-300 shadow-sm">⏰ Tempo: ${ex.tempo}</span>` : ''}
-                                                ${ex.observacoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">📝 Obs: ${ex.observacoes}</span>` : ''}
+                                                ${ex.fc_alvo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border-2 border-blue-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ FC alvo: ${ex.fc_alvo}</span>` : ''}
+                                                ${ex.tempo_execucao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-2 border-green-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â ExecuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tempo_execucao}</span>` : ''}
+                                                ${ex.tempo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ RecuperaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tempo_recuperacao}</span>` : ''}
+                                                ${ex.tipo_recuperacao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ Tipo: ${ex.tipo_recuperacao}</span>` : ''}
+                                                ${ex.carga || ex.peso ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Carga: ${ex.carga || ex.peso}</span>` : ''}
+                                                ${ex.distancia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-pink-100 text-pink-800 border-2 border-pink-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â DistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ncia: ${ex.distancia}</span>` : ''}
+                                                ${ex.velocidade ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800 border-2 border-cyan-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂÃƒâ€ Ã¢â‚¬â„¢ Velocidade: ${ex.velocidade}</span>` : ''}
+                                                ${ex.cadencia ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¯ CadÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia: ${ex.cadencia}</span>` : ''}
+                                                ${ex.tipo_contracao ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-lime-100 text-lime-800 border-2 border-lime-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Âª ContraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${ex.tipo_contracao}</span>` : ''}
+                                                ${ex.angulo_articular ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-100 text-teal-800 border-2 border-teal-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ngulo: ${ex.angulo_articular}</span>` : ''}
+                                                ${ex.series ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 border-2 border-indigo-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¢ SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ries: ${ex.series}</span>` : ''}
+                                                ${ex.repeticoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-violet-100 text-violet-800 border-2 border-violet-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â RepetiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes: ${ex.repeticoes}</span>` : ''}
+                                                ${ex.tempo ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border-2 border-emerald-300 shadow-sm">ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â° Tempo: ${ex.tempo}</span>` : ''}
+                                                ${ex.observacoes ? `<span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â Obs: ${ex.observacoes}</span>` : ''}
                                             </div>` : ''}
                                         </div>
                                         ${temBadges ? `<button onclick="mostrarDetalhesExercicio('${exercicioId}')" 
@@ -909,12 +910,12 @@ export async function carregarTreino(inscricaoId) {
                                             <i class="fas fa-info-circle"></i> Detalhes
                                         </button>` : ''}
                                     </li>`;
-                                }).join('') : '<li class="text-gray-400 italic p-4 bg-gray-50 rounded-lg">Nenhum exercício</li>'}
+                                }).join('') : '<li class="text-gray-400 italic p-4 bg-gray-50 rounded-lg">Nenhum exercÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio</li>'}
                             </ul>
                             <div class="mt-6 p-5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl shadow-md border border-gray-200">
                                 <h3 class="font-bold text-blue-800 mb-4 text-lg flex items-center gap-2">
                                     <i class="fas fa-info-circle text-blue-600"></i>
-                                    Detalhes Avançados do Treino
+                                    Detalhes AvanÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ados do Treino
                                 </h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="p-3 bg-white rounded-lg border border-gray-200">
@@ -930,11 +931,11 @@ export async function carregarTreino(inscricaoId) {
                                         <div class="text-sm font-semibold text-gray-800">${treino.volume_total || '-'}</div>
                                     </div>
                                     <div class="p-3 bg-white rounded-lg border border-gray-200">
-                                        <div class="text-xs font-semibold text-gray-500 uppercase mb-1">FC Máxima</div>
+                                        <div class="text-xs font-semibold text-gray-500 uppercase mb-1">FC MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡xima</div>
                                         <div class="text-sm font-semibold text-gray-800">${(Array.isArray(partePrincipal) && partePrincipal.length > 0 && partePrincipal[0] && partePrincipal[0].fc_alvo) ? partePrincipal[0].fc_alvo : '-'}</div>
                                     </div>
                                     ${treino.observacoes ? `<div class="md:col-span-2 p-3 bg-white rounded-lg border border-gray-200">
-                                        <div class="text-xs font-semibold text-gray-500 uppercase mb-1">Observações</div>
+                                        <div class="text-xs font-semibold text-gray-500 uppercase mb-1">ObservaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes</div>
                                         <div class="whitespace-pre-line text-sm text-gray-700 mt-1">${treino.observacoes.replace(/==/g, '').trim()}</div>
                                     </div>` : ''}
                                 </div>
@@ -951,9 +952,9 @@ export async function carregarTreino(inscricaoId) {
             let bibliografia = data.plano.bibliografia_plano;
             // Remover marcadores ==
             bibliografia = bibliografia.replace(/==/g, '');
-            // Converter URLs em links clicáveis
+            // Converter URLs em links clicÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡veis
             bibliografia = bibliografia.replace(/(https?:\/\/[^\s\)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">$1</a>');
-            // Formatar como lista se houver múltiplas linhas
+            // Formatar como lista se houver mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºltiplas linhas
             const linhas = bibliografia.split('\n').filter(l => l.trim());
             if (linhas.length > 1) {
                 bibliografia = '<ul class="list-disc list-inside space-y-1">' + 
@@ -968,10 +969,10 @@ export async function carregarTreino(inscricaoId) {
             `;
         }
 
-        console.log('✅ [carregarTreino] Renderização HTML concluída, inserindo no DOM...');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] RenderizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o HTML concluÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­da, inserindo no DOM...');
         treinosList.innerHTML = navegacaoSemanasHtml + abasHtml + conteudosHtml + rodapeBibliografia;
-        console.log('✅ [carregarTreino] DOM atualizado com sucesso');
-        console.log('📊 [carregarTreino] Resumo final:', {
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [carregarTreino] DOM atualizado com sucesso');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€¦Ã‚Â  [carregarTreino] Resumo final:', {
             totalTreinos: data.treinos.length,
             totalSemanas: numSemanas,
             exerciciosArmazenados: Object.keys(window.exerciciosData).length
@@ -996,9 +997,9 @@ export async function carregarTreino(inscricaoId) {
             });
         };
         
-        // Função para selecionar semana (mostrar apenas abas e treinos daquela semana)
+        // FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para selecionar semana (mostrar apenas abas e treinos daquela semana)
         window.selecionarSemana = function(semanaNum) {
-            // Atualizar botões de semana
+            // Atualizar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes de semana
             document.querySelectorAll('.semana-tab').forEach((btn) => {
                 const btnSemana = parseInt(btn.id.replace('semana-btn-', ''));
                 if (btnSemana === semanaNum) {
@@ -1028,7 +1029,7 @@ export async function carregarTreino(inscricaoId) {
         };
 
     } catch (error) {
-        console.error('💥 [carregarTreino] Erro ao carregar treino:', error);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [carregarTreino] Erro ao carregar treino:', error);
         loading.classList.add('hidden');
         if (semTreino) {
             semTreino.classList.remove('hidden');
@@ -1046,7 +1047,7 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
         button.innerHTML = '<span class="flex items-center gap-2"><span class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span> Gerando...</span>';
     }
 
-    console.log('🚀 [gerarTreinoParaInscricao] Iniciando geração de treino para inscrição:', inscricaoId);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ [gerarTreinoParaInscricao] Iniciando geraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de treino para inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', inscricaoId);
     
     try {
         let termosIdTreino = null;
@@ -1054,7 +1055,7 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
 
         if (typeof Swal !== 'undefined') {
             if (termosTreino) {
-                console.log('💬 [gerarTreinoParaInscricao] Exibindo termos de treino...');
+                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¬ [gerarTreinoParaInscricao] Exibindo termos de treino...');
                 const confirmResult = await Swal.fire({
                     icon: 'info',
                     title: 'Termo de Responsabilidade',
@@ -1062,7 +1063,7 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
                         <div class="text-left max-h-64 overflow-y-auto mb-4 p-4 bg-gray-50 rounded-lg text-sm prose prose-sm max-w-none">${termosTreino.conteudo}</div>
                         <label class="flex items-start gap-3 cursor-pointer mt-4">
                             <input type="checkbox" id="swal-aceite-termos-treino" class="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600">
-                            <span class="text-sm">Li e concordo com o termo de responsabilidade pela prática de treinos</span>
+                            <span class="text-sm">Li e concordo com o termo de responsabilidade pela prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tica de treinos</span>
                         </label>
                     `,
                     showCancelButton: true,
@@ -1073,7 +1074,7 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
                     preConfirm: () => {
                         const checkbox = document.getElementById('swal-aceite-termos-treino');
                         if (!checkbox.checked) {
-                            Swal.showValidationMessage('É necessário aceitar o termo para continuar.');
+                            Swal.showValidationMessage('ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â° necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio aceitar o termo para continuar.');
                             return false;
                         }
                         return true;
@@ -1114,16 +1115,16 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
             return;
         }
 
-        console.log('⏳ [gerarTreinoParaInscricao] Aguardando resultado da geração...');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³ [gerarTreinoParaInscricao] Aguardando resultado da geraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o...');
         const resultado = await gerarTreino(inscricaoId, termosIdTreino ? { termos_id_treino: termosIdTreino } : {});
-        console.log('📦 [gerarTreinoParaInscricao] Resultado recebido:', resultado);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦ [gerarTreinoParaInscricao] Resultado recebido:', resultado);
         
         if (typeof Swal !== 'undefined') {
             Swal.close();
         }
 
         if (resultado.success) {
-            console.log('✅ [gerarTreinoParaInscricao] Treino gerado com sucesso!');
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ [gerarTreinoParaInscricao] Treino gerado com sucesso!');
             if (typeof Swal !== 'undefined') {
                 await Swal.fire({
                     icon: 'success',
@@ -1138,9 +1139,9 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
                 window.location.reload();
             }
         } else {
-            console.error('❌ [gerarTreinoParaInscricao] Erro ao gerar treino:', resultado);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [gerarTreinoParaInscricao] Erro ao gerar treino:', resultado);
             const mensagem = resultado.message || 'Erro desconhecido ao gerar treino';
-            console.error('❌ [gerarTreinoParaInscricao] Mensagem de erro:', mensagem);
+            console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ [gerarTreinoParaInscricao] Mensagem de erro:', mensagem);
             
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
@@ -1158,10 +1159,10 @@ window.gerarTreinoParaInscricao = async function(inscricaoId, event) {
             }
         }
     } catch (error) {
-        console.error('💥 [gerarTreinoParaInscricao] Erro capturado no catch:', error);
-        console.error('💥 [gerarTreinoParaInscricao] Tipo:', error.constructor.name);
-        console.error('💥 [gerarTreinoParaInscricao] Mensagem:', error.message);
-        console.error('💥 [gerarTreinoParaInscricao] Stack:', error.stack);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreinoParaInscricao] Erro capturado no catch:', error);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreinoParaInscricao] Tipo:', error.constructor.name);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreinoParaInscricao] Mensagem:', error.message);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥ [gerarTreinoParaInscricao] Stack:', error.stack);
         
         if (typeof Swal !== 'undefined') {
             Swal.close();

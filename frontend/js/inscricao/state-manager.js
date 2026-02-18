@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 export class InscricaoStateManager {
     constructor(eventoId) {
         this.eventoId = eventoId;
@@ -56,7 +57,7 @@ export class InscricaoStateManager {
     async syncWithSession() {
         try {
             const apiBase = window.API_BASE || '';
-            const url = `${apiBase}/api/inscricao/get_session.php?evento_id=${this.eventoId}`;
+            const url = `${apiBase}/inscricao/get_session.php?evento_id=${this.eventoId}`;
             const response = await fetch(url);
             if (response.ok) {
                 const sessionData = await response.json();
@@ -64,12 +65,12 @@ export class InscricaoStateManager {
                     this.mergeState(sessionData.data);
                 }
             } else if (response.status !== 404) {
-                console.warn('Erro ao sincronizar com sessão:', response.status);
+                console.warn('Erro ao sincronizar com sessÃƒÆ’Ã‚Â£o:', response.status);
             }
         } catch (error) {
-            // Ignorar erros de rede silenciosamente (API pode não existir)
+            // Ignorar erros de rede silenciosamente (API pode nÃƒÆ’Ã‚Â£o existir)
             if (error.message && !error.message.includes('404')) {
-                console.warn('Erro ao sincronizar com sessão:', error);
+                console.warn('Erro ao sincronizar com sessÃƒÆ’Ã‚Â£o:', error);
             }
         }
     }
@@ -77,7 +78,7 @@ export class InscricaoStateManager {
     async saveToSession() {
         try {
             const apiBase = window.API_BASE || '';
-            const url = `${apiBase}/api/inscricao/save_session.php`;
+            const url = `${apiBase}/inscricao/save_session.php`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -91,12 +92,12 @@ export class InscricaoStateManager {
                     return true;
                 }
             } else if (response.status !== 404) {
-                console.warn('Erro ao salvar na sessão:', response.status);
+                console.warn('Erro ao salvar na sessÃƒÆ’Ã‚Â£o:', response.status);
             }
         } catch (error) {
-            // Ignorar erros de rede silenciosamente (API pode não existir)
+            // Ignorar erros de rede silenciosamente (API pode nÃƒÆ’Ã‚Â£o existir)
             if (error.message && !error.message.includes('404')) {
-                console.warn('Erro ao salvar na sessão:', error);
+                console.warn('Erro ao salvar na sessÃƒÆ’Ã‚Â£o:', error);
             }
         }
         return false;

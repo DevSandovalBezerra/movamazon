@@ -1,4 +1,5 @@
-// JavaScript para Etapa 2: Termos e Condições
+if (window.getApiBase) { window.getApiBase(); }
+// JavaScript para Etapa 2: Termos e CondiÃƒÂ§ÃƒÂµes
 class EtapaTermos {
     constructor() {
         this.termosLidos = false;
@@ -19,7 +20,7 @@ class EtapaTermos {
             });
         }
 
-        // Event listener para mudança no checkbox
+        // Event listener para mudanÃƒÂ§a no checkbox
         const checkbox = document.getElementById('aceiteTermos');
         if (checkbox) {
             checkbox.addEventListener('change', () => {
@@ -27,7 +28,7 @@ class EtapaTermos {
             });
         }
 
-        // Event listener para botão próximo
+        // Event listener para botÃƒÂ£o prÃƒÂ³ximo
         const btnProximo = document.getElementById('btn-prosseguir');
         if (btnProximo) {
             btnProximo.addEventListener('click', () => {
@@ -68,7 +69,7 @@ class EtapaTermos {
             mensagem = document.createElement('div');
             mensagem.id = 'mensagem-termos-lidos';
             mensagem.className = 'alert alert-success mt-3';
-            mensagem.innerHTML = '<i class="fas fa-check-circle"></i> Termos lidos! Agora você pode marcar o aceite.';
+            mensagem.innerHTML = '<i class="fas fa-check-circle"></i> Termos lidos! Agora vocÃƒÂª pode marcar o aceite.';
 
             const aceiteContainer = document.querySelector('.aceite-container');
             if (aceiteContainer) {
@@ -98,16 +99,16 @@ class EtapaTermos {
         const checkbox = document.getElementById('aceiteTermos');
 
         if (!checkbox || !checkbox.checked) {
-            this.mostrarErro('Você deve aceitar os termos e condições para continuar.');
+            this.mostrarErro('VocÃƒÂª deve aceitar os termos e condiÃƒÂ§ÃƒÂµes para continuar.');
             return false;
         }
 
         if (!this.termosLidos) {
-            this.mostrarErro('Você deve ler todos os termos antes de prosseguir.');
+            this.mostrarErro('VocÃƒÂª deve ler todos os termos antes de prosseguir.');
             return false;
         }
 
-        // Salvar dados na sessão
+        // Salvar dados na sessÃƒÂ£o
         if (window.sistemaInscricao) {
             window.sistemaInscricao.salvarDadosEtapa({
                 termos_aceitos: true,
@@ -115,7 +116,7 @@ class EtapaTermos {
             });
         }
 
-        // Prosseguir para próxima etapa
+        // Prosseguir para prÃƒÂ³xima etapa
         if (window.sistemaInscricao) {
             window.sistemaInscricao.prosseguirEtapa();
         }
@@ -135,7 +136,7 @@ class EtapaTermos {
         }
     }
 
-    // Métodos utilitários
+    // MÃƒÂ©todos utilitÃƒÂ¡rios
     getTermosLidos() {
         return this.termosLidos;
     }
@@ -145,7 +146,7 @@ class EtapaTermos {
         return checkbox ? checkbox.checked : false;
     }
 
-    // Forçar leitura dos termos (para testes)
+    // ForÃƒÂ§ar leitura dos termos (para testes)
     forcarLeitura() {
         const termosDiv = document.getElementById('termosScroll');
         if (termosDiv) {
@@ -171,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.etapaTermos = new EtapaTermos();
 });
 
-// Exportar para uso em outros módulos
+// Exportar para uso em outros mÃƒÂ³dulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EtapaTermos;
 }

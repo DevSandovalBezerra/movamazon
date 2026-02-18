@@ -1,4 +1,5 @@
-// JavaScript para Etapa 1: Seleção de Modalidade
+if (window.getApiBase) { window.getApiBase(); }
+// JavaScript para Etapa 1: SeleÃƒÂ§ÃƒÂ£o de Modalidade
 class EtapaModalidade {
     constructor() {
         this.modalidadesSelecionadas = [];
@@ -12,7 +13,7 @@ class EtapaModalidade {
     }
 
     carregarDadosSessao() {
-        // Carregar modalidades já selecionadas da sessão
+        // Carregar modalidades jÃƒÂ¡ selecionadas da sessÃƒÂ£o
         if (window.sistemaInscricao && window.sistemaInscricao.dadosInscricao) {
             this.modalidadesSelecionadas = window.sistemaInscricao.dadosInscricao.modalidades_selecionadas || [];
         }
@@ -20,7 +21,7 @@ class EtapaModalidade {
     }
 
     bindEvents() {
-        // Event listeners para seleção de modalidades
+        // Event listeners para seleÃƒÂ§ÃƒÂ£o de modalidades
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-selecionar')) {
                 const modalidadeCard = e.target.closest('.modalidade-card');
@@ -31,7 +32,7 @@ class EtapaModalidade {
             }
         });
 
-        // Event listener para botão próximo
+        // Event listener para botÃƒÂ£o prÃƒÂ³ximo
         const btnProximo = document.getElementById('btn-prosseguir');
         if (btnProximo) {
             btnProximo.addEventListener('click', () => {
@@ -58,7 +59,7 @@ class EtapaModalidade {
         // Buscar dados da modalidade
         const dadosModalidade = this.obterDadosModalidade(cardElement);
 
-        // Verificar se já não foi adicionada
+        // Verificar se jÃƒÂ¡ nÃƒÂ£o foi adicionada
         if (!this.modalidadesSelecionadas.find(m => m.id === modalidadeId)) {
             this.modalidadesSelecionadas.push(dadosModalidade);
 
@@ -117,7 +118,7 @@ class EtapaModalidade {
     }
 
     atualizarSelecoes() {
-        // Marcar cards já selecionados
+        // Marcar cards jÃƒÂ¡ selecionados
         this.modalidadesSelecionadas.forEach(modalidade => {
             const card = document.querySelector(`[data-modalidade-id="${modalidade.id}"]`);
             if (card) {
@@ -135,7 +136,7 @@ class EtapaModalidade {
         // Atualizar contador de modalidades selecionadas
         this.atualizarContador();
 
-        // Atualizar botão próximo
+        // Atualizar botÃƒÂ£o prÃƒÂ³ximo
         this.atualizarBotaoProximo();
 
         // Atualizar resumo se existir
@@ -197,7 +198,7 @@ class EtapaModalidade {
             return false;
         }
 
-        // Salvar dados na sessão
+        // Salvar dados na sessÃƒÂ£o
         if (window.sistemaInscricao) {
             window.sistemaInscricao.salvarDadosEtapa({
                 modalidades_selecionadas: this.modalidadesSelecionadas,
@@ -205,7 +206,7 @@ class EtapaModalidade {
             });
         }
 
-        // Prosseguir para próxima etapa
+        // Prosseguir para prÃƒÂ³xima etapa
         if (window.sistemaInscricao) {
             window.sistemaInscricao.prosseguirEtapa();
         }
@@ -225,7 +226,7 @@ class EtapaModalidade {
         }
     }
 
-    // Métodos utilitários
+    // MÃƒÂ©todos utilitÃƒÂ¡rios
     getModalidadesSelecionadas() {
         return this.modalidadesSelecionadas;
     }
@@ -250,7 +251,7 @@ class EtapaModalidade {
     }
 }
 
-// Função global para seleção de modalidade
+// FunÃƒÂ§ÃƒÂ£o global para seleÃƒÂ§ÃƒÂ£o de modalidade
 function selecionarModalidade(modalidadeId) {
     if (window.etapaModalidade) {
         const cardElement = document.querySelector(`[data-modalidade-id="${modalidadeId}"]`);
@@ -265,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.etapaModalidade = new EtapaModalidade();
 });
 
-// Exportar para uso em outros módulos
+// Exportar para uso em outros mÃƒÂ³dulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EtapaModalidade;
 }

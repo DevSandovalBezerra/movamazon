@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title : 'MovAmazon - Encontre sua próxima corrida'; ?></title>
+    <title><?php echo isset($page_title) ? $page_title : 'MovAmazon - Encontre sua prÃ³xima corrida'; ?></title>
 
     <!-- Tailwind CSS Compilado -->
     <link rel="stylesheet" href="../../assets/css/tailwind.min.css">
@@ -17,20 +17,22 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- Swiper CSS para carrossel -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     
-    <!-- CSS específico da Landing Page Pública -->
+    <!-- CSS especÃ­fico da Landing Page PÃºblica -->
     <link rel="stylesheet" href="../../assets/css/public-landing.css">
     
-    <!-- CSS Customizado (importado após Tailwind) -->
+    <!-- CSS Customizado (importado apÃ³s Tailwind) -->
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/custom.css">
+    <!-- Base URL helper -->
+    <script src="../../js/core/url-base.js"></script>
 
     <!-- Alpine.js para interatividade -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- SweetAlert2 para confirmações -->
+    <!-- SweetAlert2 para confirmaÃ§Ãµes -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Font Awesome para ícones -->
+    <!-- Font Awesome para Ã­cones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts - Inter -->
@@ -50,7 +52,7 @@ if (session_status() === PHP_SESSION_NONE) {
             --brand-azul: #1E90FF;
         }
 
-        /* Garantir que o texto do menu seja visível */
+        /* Garantir que o texto do menu seja visÃ­vel */
         .bg-brand-green {
             background-color: var(--brand-green) !important;
         }
@@ -63,7 +65,7 @@ if (session_status() === PHP_SESSION_NONE) {
             color: var(--brand-yellow) !important;
         }
 
-        /* Estilos customizados para componentes específicos */
+        /* Estilos customizados para componentes especÃ­ficos */
         .btn-primary {
             background-color: var(--brand-green);
             color: white;
@@ -98,7 +100,7 @@ if (session_status() === PHP_SESSION_NONE) {
             box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        /* Animações customizadas */
+        /* AnimaÃ§Ãµes customizadas */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -115,7 +117,7 @@ if (session_status() === PHP_SESSION_NONE) {
             animation: fadeInUp 0.6s ease-out;
         }
 
-        /* Estilos específicos para Hero Section e Swiper */
+        /* Estilos especÃ­ficos para Hero Section e Swiper */
         .hero-section {
             min-height: 500px;
         }
@@ -154,16 +156,16 @@ if (session_status() === PHP_SESSION_NONE) {
             object-position: center !important;
         }
 
-        /* Reset de possíveis estilos conflitantes */
+        /* Reset de possÃ­veis estilos conflitantes */
         .hero-section * {
             box-sizing: border-box;
         }
     </style>
 
-    <!-- Script para validação de meses -->
+    <!-- Script para validaÃ§Ã£o de meses -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Obter mês corrente no formato YYYY-MM
+            // Obter mÃªs corrente no formato YYYY-MM
             const hoje = new Date();
             const mesCorrente = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
             
@@ -171,7 +173,7 @@ if (session_status() === PHP_SESSION_NONE) {
             const filtroMesFim = document.getElementById('filtro-mes-ano-fim');
             
             if (filtroMesInicio) {
-                // Definir valor mínimo e padrão como mês corrente
+                // Definir valor mÃ­nimo e padrÃ£o como mÃªs corrente
                 filtroMesInicio.setAttribute('min', mesCorrente);
                 filtroMesInicio.value = mesCorrente;
                 
@@ -181,14 +183,14 @@ if (session_status() === PHP_SESSION_NONE) {
                     if (valorSelecionado && valorSelecionado < mesCorrente) {
                         Swal.fire({
                             icon: 'warning',
-                            title: 'Data inválida',
-                            text: 'Não é possível selecionar um mês anterior ao mês corrente.',
+                            title: 'Data invÃ¡lida',
+                            text: 'NÃ£o Ã© possÃ­vel selecionar um mÃªs anterior ao mÃªs corrente.',
                             confirmButtonColor: '#0b4340'
                         });
                         this.value = mesCorrente;
                     }
                     
-                    // Validar se mês fim é menor que mês início
+                    // Validar se mÃªs fim Ã© menor que mÃªs inÃ­cio
                     if (filtroMesFim && filtroMesFim.value && valorSelecionado && valorSelecionado > filtroMesFim.value) {
                         filtroMesFim.value = valorSelecionado;
                     }
@@ -196,7 +198,7 @@ if (session_status() === PHP_SESSION_NONE) {
             }
             
             if (filtroMesFim) {
-                // Definir valor mínimo como mês corrente
+                // Definir valor mÃ­nimo como mÃªs corrente
                 filtroMesFim.setAttribute('min', mesCorrente);
                 filtroMesFim.value = mesCorrente;
                 
@@ -206,19 +208,19 @@ if (session_status() === PHP_SESSION_NONE) {
                     if (valorSelecionado && valorSelecionado < mesCorrente) {
                         Swal.fire({
                             icon: 'warning',
-                            title: 'Data inválida',
-                            text: 'Não é possível selecionar um mês anterior ao mês corrente.',
+                            title: 'Data invÃ¡lida',
+                            text: 'NÃ£o Ã© possÃ­vel selecionar um mÃªs anterior ao mÃªs corrente.',
                             confirmButtonColor: '#0b4340'
                         });
                         this.value = mesCorrente;
                     }
                     
-                    // Validar se mês fim é menor que mês início
+                    // Validar se mÃªs fim Ã© menor que mÃªs inÃ­cio
                     if (filtroMesInicio && filtroMesInicio.value && valorSelecionado && valorSelecionado < filtroMesInicio.value) {
                         Swal.fire({
                             icon: 'warning',
-                            title: 'Data inválida',
-                            text: 'O mês final não pode ser anterior ao mês inicial.',
+                            title: 'Data invÃ¡lida',
+                            text: 'O mÃªs final nÃ£o pode ser anterior ao mÃªs inicial.',
                             confirmButtonColor: '#0b4340'
                         });
                         this.value = filtroMesInicio.value;
@@ -325,7 +327,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <option value="">Cidades</option>
         </select>
         <div class="relative">
-          <label for="filtro-mes-ano-inicio" class="block text-xs text-gray-600 mb-1">Mês/Ano Início</label>
+          <label for="filtro-mes-ano-inicio" class="block text-xs text-gray-600 mb-1">MÃªs/Ano InÃ­cio</label>
           <input
             id="filtro-mes-ano-inicio"
             type="month"
@@ -333,7 +335,7 @@ if (session_status() === PHP_SESSION_NONE) {
             class="w-full pl-3 pr-3 py-2.5 sm:py-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent text-sm touch-manipulation min-h-[40px]">
         </div>
         <div class="relative">
-          <label for="filtro-mes-ano-fim" class="block text-xs text-gray-600 mb-1">Mês/Ano Fim</label>
+          <label for="filtro-mes-ano-fim" class="block text-xs text-gray-600 mb-1">MÃªs/Ano Fim</label>
           <input
             id="filtro-mes-ano-fim"
             type="month"

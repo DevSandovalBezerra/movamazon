@@ -1,4 +1,5 @@
-// Configuração do Mercado Pago (Bricks) - EXATAMENTE como no exemplo funcional
+if (window.getApiBase) { window.getApiBase(); }
+// ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do Mercado Pago (Bricks) - EXATAMENTE como no exemplo funcional
 const mp = new MercadoPago('TEST-08778670-bce3-4b7f-9641-be7d9103032e');
 const bricksBuilder = mp.bricks();
 
@@ -6,22 +7,22 @@ console.log("=== MERCADO PAGO INITIALIZATION ===");
 console.log("MercadoPago instance:", mp);
 console.log("BricksBuilder instance:", bricksBuilder);
 
-// ✅ Base dinâmico para APIs
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Base dinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mico para APIs
 if (!window.API_BASE) {
     (function () {
         var path = window.location.pathname || '';
         var idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     })();
 }
 
-// ✅ Função para construir URLs usando API_BASE
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para construir URLs usando API_BASE
 function getApiUrl(endpoint) {
-    const url = `${window.API_BASE}/api/${endpoint}`;
+    const url = `${window.API_BASE}/${endpoint}`;
     return url;
 }
 
-// ✅ Renderizar Payment Brick EXATAMENTE como no exemplo funcional
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Renderizar Payment Brick EXATAMENTE como no exemplo funcional
 const renderPaymentBrick = async (bricksBuilder) => {
     const amount = parseFloat(document.getElementById('valor_payment').value);
     const preferenceId = document.getElementById('preference_id').value;
@@ -35,14 +36,14 @@ const renderPaymentBrick = async (bricksBuilder) => {
     const settings = {
         initialization: usePreferenceId ? {
             /*
-             Usando preferenceId - MercadoPago usa configuração da preference
-             mas ainda precisa do amount para validação
+             Usando preferenceId - MercadoPago usa configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o da preference
+             mas ainda precisa do amount para validaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
             */
             amount: amount,
             preferenceId: preferenceId,
         } : {
             /*
-             Usando amount - MercadoPago decide métodos baseado no valor
+             Usando amount - MercadoPago decide mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©todos baseado no valor
             */
             amount: amount,
         },
@@ -57,7 +58,7 @@ const renderPaymentBrick = async (bricksBuilder) => {
             onReady: () => {
                 /*
                  Callback chamado quando o Brick estiver pronto.
-                 Aqui você pode ocultar loadings do seu site, por exemplo.
+                 Aqui vocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª pode ocultar loadings do seu site, por exemplo.
                 */
                 console.log("=== PAYMENT BRICK READY ===");
             },
@@ -65,7 +66,7 @@ const renderPaymentBrick = async (bricksBuilder) => {
                 selectedPaymentMethod,
                 formData
             }) => {
-                // callback chamado ao clicar no botão de submissão dos dados
+                // callback chamado ao clicar no botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de submissÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o dos dados
                 console.log("=== PAYMENT SUBMISSION ===");
                 console.log("Selected Payment Method:", selectedPaymentMethod);
                 console.log("Form Data:", formData);
@@ -133,37 +134,37 @@ const renderPaymentBrick = async (bricksBuilder) => {
     );
 };
 
-// ✅ Inicializar quando DOM estiver pronto
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Inicializar quando DOM estiver pronto
 document.addEventListener('DOMContentLoaded', async function () {
     try {
-        console.log('✅ DOM carregado, inicializando...');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ DOM carregado, inicializando...');
 
-        // Aguardar um pouco para garantir que tudo está pronto
+        // Aguardar um pouco para garantir que tudo estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ pronto
         setTimeout(async () => {
             try {
                 await inicializarPagamento();
             } catch (error) {
-                console.error('❌ Erro ao inicializar:', error);
+                console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao inicializar:', error);
             }
         }, 100);
 
     } catch (error) {
-        console.error('❌ Erro ao inicializar:', error);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao inicializar:', error);
     }
 });
 
-// ✅ Função principal para inicializar o pagamento
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o principal para inicializar o pagamento
 async function inicializarPagamento() {
     try {
         const total = calcularTotal();
 
         if (total <= 0) {
-            throw new Error('Valor total inválido');
+            throw new Error('Valor total invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
         }
 
-        console.log('✅ Valor total calculado:', total);
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Valor total calculado:', total);
 
-        // Criar pré-inscrição se necessário
+        // Criar prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o se necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
         let inscricaoId = window.dadosInscricao ? .inscricaoId;
         if (!inscricaoId) {
             inscricaoId = await criarPreInscricao(total);
@@ -172,21 +173,21 @@ async function inicializarPagamento() {
         // Criar preference
         const preferenceId = await criarPreference(inscricaoId, total);
 
-        // Configurar elementos HTML necessários
+        // Configurar elementos HTML necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios
         configurarElementosHTML(total, preferenceId);
 
         // Renderizar o Brick
         await renderPaymentBrick(bricksBuilder);
 
-        console.log('✅ Payment Brick renderizado com sucesso!');
+        console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Payment Brick renderizado com sucesso!');
 
     } catch (error) {
-        console.error('❌ Erro ao inicializar pagamento:', error);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao inicializar pagamento:', error);
         mostrarErro('Erro ao inicializar pagamento: ' + error.message);
     }
 }
 
-// ✅ Criar pré-inscrição
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Criar prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
 async function criarPreInscricao(total) {
     const payload = montarPayloadPreInscricao(total);
 
@@ -204,18 +205,18 @@ async function criarPreInscricao(total) {
 
     const result = await response.json();
     if (!result ? .success) {
-        throw new Error(result ? .message || 'Falha ao preparar inscrição');
+        throw new Error(result ? .message || 'Falha ao preparar inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
     }
 
     const inscricaoId = result.inscricao_id;
     if (!window.dadosInscricao) window.dadosInscricao = {};
     window.dadosInscricao.inscricaoId = inscricaoId;
 
-    console.log('✅ Pré-inscrição criada:', inscricaoId);
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o criada:', inscricaoId);
     return inscricaoId;
 }
 
-// ✅ Criar preference
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Criar preference
 async function criarPreference(inscricaoId, total) {
     const payload = montarPayloadCreatePreference(inscricaoId, total);
 
@@ -233,16 +234,16 @@ async function criarPreference(inscricaoId, total) {
 
     const result = await response.json();
     if (!result ? .success || !result ? .preference_id) {
-        throw new Error(result ? .error || 'Falha ao criar preferência');
+        throw new Error(result ? .error || 'Falha ao criar preferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia');
     }
 
-    console.log('✅ Preference criada:', result.preference_id);
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Preference criada:', result.preference_id);
     return result.preference_id;
 }
 
-// ✅ Configurar elementos HTML necessários (como no exemplo funcional)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Configurar elementos HTML necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios (como no exemplo funcional)
 function configurarElementosHTML(total, preferenceId) {
-    // Criar ou atualizar elementos necessários
+    // Criar ou atualizar elementos necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios
     let valorElement = document.getElementById('valor_payment');
     if (!valorElement) {
         valorElement = document.createElement('input');
@@ -270,14 +271,14 @@ function configurarElementosHTML(total, preferenceId) {
     }
     usePreferenceElement.value = 'true'; // Sempre usar preferenceId
 
-    console.log('✅ Elementos HTML configurados:', {
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Elementos HTML configurados:', {
         valor: total,
         preferenceId: preferenceId,
         usePreferenceId: 'true'
     });
 }
 
-// ✅ Calcular total
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Calcular total
 function calcularTotal() {
     const modalidades = window.dadosInscricao ? .modalidades || [];
     const produtosExtras = window.dadosInscricao ? .produtosExtras || [];
@@ -301,7 +302,7 @@ function calcularTotal() {
     return Math.max(0, total);
 }
 
-// ✅ Montar payload para pré-inscrição
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Montar payload para prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©-inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
 function montarPayloadPreInscricao(total) {
     const modalidade = window.dadosInscricao ? .modalidades ? . [0] || {};
     const produtosExtras = window.dadosInscricao ? .produtosExtras || [];
@@ -317,14 +318,14 @@ function montarPayloadPreInscricao(total) {
     };
 }
 
-// ✅ Montar payload para criar preference
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Montar payload para criar preference
 function montarPayloadCreatePreference(inscricaoId, total) {
     const modalidade = window.dadosInscricao ? .modalidades ? . [0] || {};
     const produtosExtras = window.dadosInscricao ? .produtosExtras || [];
 
     return {
         inscricao_id: inscricaoId,
-        modalidade_nome: modalidade.nome || 'Inscrição',
+        modalidade_nome: modalidade.nome || 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
         lote_numero: modalidade.lote_numero || null,
         valor_total: total,
         evento_nome: window.dadosInscricao ? .evento ? .nome || 'Evento',
@@ -336,9 +337,9 @@ function montarPayloadCreatePreference(inscricaoId, total) {
     };
 }
 
-// ✅ Mostrar erro
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Mostrar erro
 function mostrarErro(mensagem) {
-    console.error('❌ Erro:', mensagem);
+    console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro:', mensagem);
     Swal.fire({
         icon: 'error',
         title: 'Erro',
@@ -346,14 +347,14 @@ function mostrarErro(mensagem) {
     });
 }
 
-// ✅ Setup de event listeners
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Setup de event listeners
 function setupEventListeners() {
     const btnPagar = document.getElementById('btn-finalizar-compra');
     if (btnPagar) {
         btnPagar.addEventListener('click', async function (e) {
             e.preventDefault();
 
-            // Mostrar container do formulário
+            // Mostrar container do formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
             const container = document.getElementById('formulario-mercadopago');
             if (container) {
                 container.classList.remove('hidden');
@@ -365,7 +366,7 @@ function setupEventListeners() {
     }
 }
 
-// ✅ Renderizar resumo da compra
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Renderizar resumo da compra
 function renderizarResumoCompra() {
     const container = document.getElementById('resumo-compra');
     if (!container) return;
@@ -398,7 +399,7 @@ function renderizarResumoCompra() {
     container.innerHTML = html;
 }
 
-// ✅ Atualizar valor total
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Atualizar valor total
 function updateTotalAmount() {
     const totalElement = document.getElementById('total-geral');
     if (totalElement) {
@@ -409,5 +410,5 @@ function updateTotalAmount() {
     renderizarResumoCompra();
 }
 
-// ✅ Inicializar array global de produtos extras selecionados
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Inicializar array global de produtos extras selecionados
 window.produtosExtrasSelecionados = window.dadosInscricao ? .produtosExtras || [];

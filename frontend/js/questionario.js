@@ -1,10 +1,11 @@
-// Variáveis globais
+if (window.getApiBase) { window.getApiBase(); }
+// VariÃƒÆ’Ã‚Â¡veis globais
 let questionario = [];
 let questionarioFiltrado = [];
 let eventos = [];
 let eventoSelecionado = null;
 
-// Inicialização
+// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 document.addEventListener('DOMContentLoaded', function() {
     carregarEventos();
     configurarEventListeners();
@@ -29,70 +30,70 @@ function configurarEventListeners() {
 
 // Carregar eventos do organizador
 async function carregarEventos() {
-    console.log('🚀 questionario.js - Iniciando carregamento de eventos');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ questionario.js - Iniciando carregamento de eventos');
     try {
-        console.log('📡 questionario.js - Fazendo requisição para API eventos');
-        const response = await fetch('../../../api/organizador/eventos/list.php');
-        console.log('📡 questionario.js - Status da resposta:', response.status);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para API eventos');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Status da resposta:', response.status);
         
         const data = await response.json();
-        console.log('📡 questionario.js - Dados recebidos:', data);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Dados recebidos:', data);
         
         if (data.success) {
-            console.log('✅ questionario.js - Sucesso! Eventos carregados:', data.data.eventos.length);
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ questionario.js - Sucesso! Eventos carregados:', data.data.eventos.length);
             eventos = data.data.eventos;
             preencherSelectEventos();
         } else {
-            console.error('❌ questionario.js - Erro na resposta:', data.error);
+            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ questionario.js - Erro na resposta:', data.error);
             Swal.fire('Erro', data.error || 'Erro ao carregar eventos', 'error');
         }
     } catch (error) {
-        console.error('💥 questionario.js - Erro ao carregar eventos:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ questionario.js - Erro ao carregar eventos:', error);
         Swal.fire('Erro', 'Erro ao carregar eventos', 'error');
     }
 }
 
 // Preencher select de eventos
 function preencherSelectEventos() {
-    console.log('🔧 questionario.js - Preenchendo select de eventos');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â§ questionario.js - Preenchendo select de eventos');
     const select = document.getElementById('filtroEvento');
     select.innerHTML = '<option value="">Selecione um evento</option>';
     
-    console.log('📋 questionario.js - Eventos para preencher:', eventos);
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ questionario.js - Eventos para preencher:', eventos);
     eventos.forEach(evento => {
         const option = document.createElement('option');
         option.value = evento.id;
         option.textContent = evento.nome;
         select.appendChild(option);
     });
-    console.log('✅ questionario.js - Select de eventos preenchido com', eventos.length, 'eventos');
+    console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ questionario.js - Select de eventos preenchido com', eventos.length, 'eventos');
 }
 
-// Carregar questionário do evento
+// Carregar questionÃƒÆ’Ã‚Â¡rio do evento
 async function carregarQuestionario(eventoId) {
-    console.log('🚀 questionario.js - Carregando questionário para evento ID:', eventoId);
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ questionario.js - Carregando questionÃƒÆ’Ã‚Â¡rio para evento ID:', eventoId);
     try {
         mostrarLoading();
         
-        console.log('📡 questionario.js - Fazendo requisição para questionário');
-        const response = await fetch(`../../../api/organizador/questionario/list.php?evento_id=${eventoId}`);
-        console.log('📡 questionario.js - Status da resposta questionário:', response.status);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para questionÃƒÆ’Ã‚Â¡rio');
+        const response = await fetch(`${window.API_BASE || '/api'}/organizador/questionario/list.php?evento_id=${eventoId}`);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Status da resposta questionÃƒÆ’Ã‚Â¡rio:', response.status);
         
         const data = await response.json();
-        console.log('📡 questionario.js - Dados questionário recebidos:', data);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Dados questionÃƒÆ’Ã‚Â¡rio recebidos:', data);
         
         if (data.success) {
-            console.log('✅ questionario.js - Questionário carregado:', data.data.length);
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ questionario.js - QuestionÃƒÆ’Ã‚Â¡rio carregado:', data.data.length);
             questionario = data.data;
             questionarioFiltrado = [...questionario];
             renderizarQuestionario();
         } else {
-            console.error('❌ questionario.js - Erro na resposta questionário:', data.message);
+            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ questionario.js - Erro na resposta questionÃƒÆ’Ã‚Â¡rio:', data.message);
             throw new Error(data.message);
         }
     } catch (error) {
-        console.error('💥 questionario.js - Erro ao carregar questionário:', error);
-        mostrarErro('Erro ao carregar questionário: ' + error.message);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ questionario.js - Erro ao carregar questionÃƒÆ’Ã‚Â¡rio:', error);
+        mostrarErro('Erro ao carregar questionÃƒÆ’Ã‚Â¡rio: ' + error.message);
     } finally {
         ocultarLoading();
     }
@@ -113,7 +114,7 @@ function renderizarQuestionario() {
         const row = document.createElement('tr');
         row.className = 'hover:bg-gray-50';
         
-        // Determinar badge de classificação
+        // Determinar badge de classificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         const classificacao = pergunta.classificacao || 'evento';
         const badgeClassificacao = classificacao === 'atleta' 
             ? '<span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800"><i class="fas fa-user-alt mr-1"></i>Atleta</span>'
@@ -143,7 +144,7 @@ function renderizarQuestionario() {
                 </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${pergunta.obrigatorio ? 'Sim' : 'Não'}
+                ${pergunta.obrigatorio ? 'Sim' : 'NÃƒÆ’Ã‚Â£o'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <span class="px-2 py-1 text-xs font-medium rounded-full ${pergunta.status_site === 'publicada' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
@@ -214,7 +215,7 @@ function ocultarLoading() {
 // Aplicar filtros
 function aplicarFiltros() {
     if (!eventoSelecionado) {
-        Swal.fire('Atenção', 'Selecione um evento primeiro', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro', 'warning');
         return;
     }
     
@@ -230,7 +231,7 @@ function aplicarFiltros() {
 // Abrir modal para criar nova pergunta
 function abrirModal() {
     if (!eventoSelecionado) {
-        Swal.fire('Atenção', 'Selecione um evento primeiro', 'warning');
+        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro', 'warning');
         return;
     }
     
@@ -238,7 +239,7 @@ function abrirModal() {
     document.getElementById('formPergunta').reset();
     document.getElementById('perguntaId').value = '';
     
-    // Reset classificação para valor padrão
+    // Reset classificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para valor padrÃƒÆ’Ã‚Â£o
     const radioEvento = document.getElementById('classificacaoEvento');
     if (radioEvento) radioEvento.checked = true;
     
@@ -261,7 +262,7 @@ function editarPergunta(id) {
     document.getElementById('statusSite').value = pergunta.status_site || 'publicada';
     document.getElementById('observacoesPergunta').value = pergunta.observacoes || '';
     
-    // Preencher classificação
+    // Preencher classificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     const classificacao = pergunta.classificacao || 'evento';
     const radioEvento = document.getElementById('classificacaoEvento');
     const radioAtleta = document.getElementById('classificacaoAtleta');
@@ -285,7 +286,7 @@ function fecharModal() {
 
 // Carregar modalidades usando checkboxes
 function carregarModalidadesSelect(selecionadas = []) {
-    fetch(`../../../api/organizador/modalidades/list.php?evento_id=${eventoSelecionado}`)
+    fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoSelecionado}`)
         .then(response => response.json())
         .then(data => {
             if (data.success && data.modalidades) {
@@ -313,13 +314,13 @@ async function salvarPergunta() {
         
         const validacao = validarSelecaoModalidades('modalidades-container', 1);
         if (!validacao.valido) {
-            Swal.fire('Atenção', validacao.mensagem, 'warning');
+            Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', validacao.mensagem, 'warning');
             return;
         }
         
         const modalidades = obterModalidadesSelecionadas('modalidades-container');
         
-        // Obter classificação selecionada
+        // Obter classificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o selecionada
         const classificacaoRadio = document.querySelector('input[name="classificacao"]:checked');
         const classificacao = classificacaoRadio ? classificacaoRadio.value : 'evento';
         
@@ -336,7 +337,7 @@ async function salvarPergunta() {
         
         // Validar campos
         if (!dados.texto || !dados.tipo_resposta || modalidades.length === 0) {
-            Swal.fire('Atenção', 'Todos os campos obrigatórios devem ser preenchidos', 'warning');
+            Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Todos os campos obrigatÃƒÆ’Ã‚Â³rios devem ser preenchidos', 'warning');
             return;
         }
         
@@ -344,11 +345,11 @@ async function salvarPergunta() {
         
         if (perguntaId) {
             dados.id = parseInt(perguntaId);
-            url = '../../../api/organizador/questionario/update.php';
+            url = (window.API_BASE || '/api') + '/organizador/questionario/update.php';
             method = 'PUT';
             message = 'Pergunta atualizada com sucesso';
         } else {
-            url = '../../../api/organizador/questionario/create.php';
+            url = (window.API_BASE || '/api') + '/organizador/questionario/create.php';
             method = 'POST';
             message = 'Pergunta criada com sucesso';
         }
@@ -379,7 +380,7 @@ async function salvarPergunta() {
 // Mover ordem da pergunta
 async function moverPergunta(id, direcao) {
     try {
-        const response = await fetch('../../../api/organizador/questionario/move.php', {
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/questionario/move.php', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -407,7 +408,7 @@ async function moverPergunta(id, direcao) {
 async function excluirPergunta(id, texto) {
     try {
         const result = await Swal.fire({
-            title: 'Confirmar exclusão',
+            title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
             text: `Deseja realmente excluir a pergunta "${texto}"?`,
             icon: 'warning',
             showCancelButton: true,
@@ -418,14 +419,14 @@ async function excluirPergunta(id, texto) {
         });
         
         if (result.isConfirmed) {
-            const response = await fetch('../../../api/organizador/questionario/delete.php?id=' + id, {
+            const response = await fetch((window.API_BASE || '/api') + '/organizador/questionario/delete.php?id=' + id, {
                 method: 'DELETE'
             });
             
             const data = await response.json();
             
             if (data.success) {
-                Swal.fire('Sucesso', 'Pergunta excluída com sucesso', 'success');
+                Swal.fire('Sucesso', 'Pergunta excluÃƒÆ’Ã‚Â­da com sucesso', 'success');
                 carregarQuestionario(eventoSelecionado);
             } else {
                 Swal.fire('Erro', data.message, 'error');

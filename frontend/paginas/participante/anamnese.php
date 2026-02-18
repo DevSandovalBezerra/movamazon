@@ -121,6 +121,7 @@ if (!$inscricao_id) {
     </div>
 </div>
 
+<script src="../../js/core/url-base.js"></script>
 <script type="module">
 import { salvarAnamnese, gerarTreino, buscarTermosTreino } from '../../js/participante/treinos.js';
 
@@ -139,8 +140,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Carregar termos de anamnese
     let termosAnamnese = null;
     try {
-        const apiBase = window.API_BASE || (window.location.pathname.indexOf('/frontend/') > 0 ? window.location.pathname.slice(0, window.location.pathname.indexOf('/frontend/')) : '');
-        const url = `${apiBase}/api/inscricao/get_termos.php?tipo=anamnese`;
+        if (window.getApiBase) { window.getApiBase(); }
+        const apiBase = window.API_BASE || '';
+        const url = `${apiBase}/inscricao/get_termos.php?tipo=anamnese`;
         const res = await fetch(url);
         const data = await res.json();
         if (data.success && data.termos && data.termos.conteudo) {

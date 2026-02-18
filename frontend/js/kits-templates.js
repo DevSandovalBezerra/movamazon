@@ -1,5 +1,6 @@
+if (window.getApiBase) { window.getApiBase(); }
 // =====================================================
-// GESTÃO DE TEMPLATES DE KIT - JAVASCRIPT
+// GESTÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O DE TEMPLATES DE KIT - JAVASCRIPT
 // =====================================================
 
 let templates = [];
@@ -12,8 +13,18 @@ let filtros = {
     status: ''
 };
 
+function buildKitAssetUrl(path) {
+    if (window.buildAssetUrl) {
+        return window.buildAssetUrl(path);
+    }
+    const apiBase = window.API_BASE || '/api';
+    const appBase = apiBase.replace(/\/api\/?$/, '');
+    const clean = String(path || '').replace(/^\/+/, '');
+    return (appBase ? appBase + '/' : '/') + clean;
+}
+
 // =====================================================
-// INICIALIZAÇÃO
+// INICIALIZAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -23,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function configurarEventListeners() {
-    // Botão novo template
+    // BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o novo template
     document.getElementById('btnNovoTemplate').addEventListener('click', abrirModalTemplate);
 
     // Filtros
@@ -31,7 +42,7 @@ function configurarEventListeners() {
     document.getElementById('filtroDescricao').addEventListener('input', aplicarFiltros);
     document.getElementById('filtroStatus').addEventListener('change', aplicarFiltros);
 
-    // Paginação
+    // PaginaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
     document.getElementById('btn-anterior').addEventListener('click', () => {
         if (paginaAtual > 1) {
             paginaAtual--;
@@ -47,13 +58,13 @@ function configurarEventListeners() {
         }
     });
 
-    // Formulário
+    // FormulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
     document.getElementById('formTemplate').addEventListener('submit', salvarTemplate);
 
     // Preview de foto
     document.getElementById('template_foto').addEventListener('change', previewFotoTemplate);
 
-    // Cálculo automático de preços
+    // CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lculo automÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico de preÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§os
     document.getElementById('template_preco_base').addEventListener('input', calcularMargem);
 }
 
@@ -64,7 +75,7 @@ function configurarEventListeners() {
 // Carregar eventos do organizador
 async function carregarEventos() {
     try {
-        const response = await fetch('../../../api/organizador/eventos/list.php');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
         const data = await response.json();
 
         if (data.success) {
@@ -107,7 +118,7 @@ async function carregarTemplates() {
     mostrarLoading();
 
     try {
-        const response = await fetch('../../../api/organizador/kits-templates/list.php');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/kits-templates/list.php');
         const data = await response.json();
 
         if (data.success) {
@@ -126,13 +137,13 @@ async function carregarTemplates() {
             });
         }
     } catch (error) {
-        console.error('Erro na requisição:', error);
+        console.error('Erro na requisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', error);
 
         // SweetAlert de erro de rede
         Swal.fire({
             icon: 'error',
-            title: 'Erro de Conexão!',
-            text: 'Erro ao carregar templates. Verifique sua conexão.',
+            title: 'Erro de ConexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o!',
+            text: 'Erro ao carregar templates. Verifique sua conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.',
             confirmButtonText: 'OK',
             confirmButtonColor: '#EF4444'
         });
@@ -142,32 +153,32 @@ async function carregarTemplates() {
 }
 
 async function carregarProdutos() {
-    console.log('🔍 DEBUG kits-templates.js - Iniciando carregamento de produtos...');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Iniciando carregamento de produtos...');
 
     try {
-        const url = '../../../api/organizador/produtos/list.php';
-        console.log('🔍 DEBUG kits-templates.js - URL da API:', url);
+        const url = (window.API_BASE || '/api') + '/organizador/produtos/list.php';
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL da API:', url);
 
         const response = await fetch(url);
-        console.log('🔍 DEBUG kits-templates.js - Response status:', response.status);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Response status:', response.status);
 
         const data = await response.json();
-        console.log('🔍 DEBUG kits-templates.js - Dados recebidos:', data);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Dados recebidos:', data);
 
         if (data.success) {
             produtos = data.data;
-            console.log('🔍 DEBUG kits-templates.js - Produtos carregados:', produtos.length);
-            console.log('🔍 DEBUG kits-templates.js - Primeiro produto:', produtos[0]);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos carregados:', produtos.length);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Primeiro produto:', produtos[0]);
         } else {
-            console.error('🔍 DEBUG kits-templates.js - Erro na API:', data.error);
+            console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro na API:', data.error);
         }
     } catch (error) {
-        console.error('🔍 DEBUG kits-templates.js - Erro ao carregar produtos:', error);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro ao carregar produtos:', error);
     }
 }
 
 // =====================================================
-// RENDERIZAÇÃO
+// RENDERIZAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O
 // =====================================================
 
 function renderizarTemplates(templatesParaRenderizar = null) {
@@ -184,7 +195,7 @@ function renderizarTemplates(templatesParaRenderizar = null) {
             <div class="col-span-full text-center py-12">
                 <i class="fas fa-box-open text-gray-400 text-4xl mb-4"></i>
                 <p class="text-gray-500 text-lg">Nenhum template encontrado</p>
-                <p class="text-gray-400">Crie seu primeiro template para começar</p>
+                <p class="text-gray-400">Crie seu primeiro template para comeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ar</p>
             </div>
         `;
         return;
@@ -205,7 +216,7 @@ function criarCardTemplate(template) {
     const statusClass = template.ativo ? 'green' : 'red';
     const statusText = template.ativo ? 'Ativo' : 'Inativo';
     const disponivelVenda = template.disponivel_venda ?
-        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Disponível para venda</span>' :
+        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">DisponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel para venda</span>' :
         '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Apenas em kit</span>';
 
     // Corrige o caminho da imagem do kit
@@ -226,7 +237,7 @@ function criarCardTemplate(template) {
             <div class="flex items-start justify-between mb-4">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900">${template.nome}</h3>
-                    <p class="text-sm text-gray-500">${template.descricao || 'Sem descrição'}</p>
+                    <p class="text-sm text-gray-500">${template.descricao || 'Sem descriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o'}</p>
                 </div>
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-${statusClass}-100 text-${statusClass}-800">
                     ${statusText}
@@ -235,7 +246,7 @@ function criarCardTemplate(template) {
             
             <div class="space-y-2 mb-4">
                 <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Preço Base:</span>
+                    <span class="text-gray-600">PreÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o Base:</span>
                     <span class="font-semibold text-green-600">R$ ${parseFloat(template.preco_base).toFixed(2)}</span>
                 </div>
                 <div class="flex justify-between text-sm">
@@ -263,7 +274,7 @@ function criarCardTemplate(template) {
 }
 
 // =====================================================
-// FILTROS E PAGINAÇÃO
+// FILTROS E PAGINAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O
 // =====================================================
 
 function aplicarFiltros() {
@@ -301,11 +312,11 @@ function atualizarPaginacao() {
     const inicio = (paginaAtual - 1) * itensPorPagina + 1;
     const fim = Math.min(paginaAtual * itensPorPagina, templates.length);
 
-    // Atualizar botões
+    // Atualizar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     document.getElementById('btn-anterior').disabled = paginaAtual === 1;
     document.getElementById('btn-proximo').disabled = paginaAtual === totalPaginas;
 
-    // Mostrar/ocultar paginação
+    // Mostrar/ocultar paginaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
     const paginacao = document.getElementById('paginacao');
     if (totalPaginas > 1) {
         paginacao.style.display = 'flex';
@@ -317,12 +328,12 @@ function atualizarPaginacao() {
 // =====================================================
 // MODAL TEMPLATE
 // =====================================================
-// Função para montar o caminho correto da imagem do kit
+// FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para montar o caminho correto da imagem do kit
 function montarCaminhoImagemKit(nome, extension = 'png') {
-    // Usa encodeURIComponent para tratar espaços e acentos
+    // Usa encodeURIComponent para tratar espaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§os e acentos
     const nomeFormatado = encodeURIComponent(nome);
     const filename = `kit_template_${nomeFormatado}.${extension}`;
-    return `../../assets/img/kits/${filename}`;
+    return buildKitAssetUrl(`frontend/assets/img/kits/${filename}`);
 }
 
 function getBasePath() {
@@ -333,7 +344,7 @@ function getBasePath() {
     const idx = pathname.indexOf('frontend');
     
     if (idx !== -1) {
-        // Retorna URL completa: origin + caminho até e incluindo 'frontend'
+        // Retorna URL completa: origin + caminho atÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© e incluindo 'frontend'
         // Exemplo: http://movamazon.com.br/frontend
         // Exemplo: http://localhost/movamazon/frontend
         return origin + pathname.substring(0, idx + 'frontend'.length);
@@ -348,30 +359,14 @@ function getBasePath() {
 function resolverCaminhoFotoKit(caminho) {
     if (!caminho) return '';
     if (caminho.startsWith('http')) return caminho;
-    
-    const basePath = getBasePath();
     const cleaned = caminho.replace(/^\/+/, '');
-    
-    // Se basePath é URL completa (começa com http:// ou https://)
-    if (basePath.startsWith('http://') || basePath.startsWith('https://')) {
-        // URL completa: adiciona /assets/img/kits/...
-        const separator = basePath.endsWith('/') ? '' : '/';
-        return `${basePath}${separator}assets/img/kits/${encodeURIComponent(cleaned)}`;
-    }
-    
-    // Se basePath é caminho relativo (../../)
-    if (basePath.startsWith('../') || basePath.startsWith('./')) {
-        return `${basePath}assets/img/kits/${encodeURIComponent(cleaned)}`;
-    }
-    
-    // Fallback: assume caminho absoluto relativo à raiz
-    return `/frontend/assets/img/kits/${encodeURIComponent(cleaned)}`;
+    return buildKitAssetUrl(`frontend/assets/img/kits/${encodeURIComponent(cleaned)}`);
 }
 
 function abrirModalTemplate(template = null) {
-    console.log('🔍 DEBUG kits-templates.js - Abrindo modal template');
-    console.log('🔍 DEBUG kits-templates.js - Template:', template);
-    console.log('🔍 DEBUG kits-templates.js - Produtos carregados:', produtos.length);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Abrindo modal template');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Template:', template);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos carregados:', produtos.length);
 
     const modal = document.getElementById('modalTemplate');
     const titulo = document.getElementById('modalTemplateTitulo');
@@ -399,7 +394,7 @@ function fecharModalTemplate() {
 }
 
 function preencherFormularioTemplate(template) {
-    console.log('🔍 DEBUG kits-templates.js - Preenchendo formulário template:', template);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Preenchendo formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio template:', template);
 
     const idElement = document.getElementById('template_id');
     const nomeElement = document.getElementById('template_nome');
@@ -422,10 +417,10 @@ function preencherFormularioTemplate(template) {
 
     // Carregar produtos do template
     if (template.id) {
-        console.log('🔍 DEBUG kits-templates.js - Chamando carregarProdutosTemplate com ID:', template.id);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Chamando carregarProdutosTemplate com ID:', template.id);
         carregarProdutosTemplate(template.id);
     } else {
-        console.log('🔍 DEBUG kits-templates.js - Template sem ID, não carregando produtos');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Template sem ID, nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o carregando produtos');
     }
 }
 
@@ -447,16 +442,16 @@ function previewFotoTemplate(event) {
 }
 
 // =====================================================
-// GESTÃO DE PRODUTOS DO TEMPLATE
+// GESTÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O DE PRODUTOS DO TEMPLATE
 // =====================================================
 
 function adicionarProdutoTemplate() {
     const container = document.getElementById('produtos-template-container');
     const produtoIndex = container.children.length;
 
-    console.log('🔍 DEBUG kits-templates.js - Adicionando produto template');
-    console.log('🔍 DEBUG kits-templates.js - Produtos disponíveis:', produtos);
-    console.log('🔍 DEBUG kits-templates.js - Quantidade de produtos:', produtos.length);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Adicionando produto template');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis:', produtos);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Quantidade de produtos:', produtos.length);
 
     const produtoDiv = document.createElement('div');
     produtoDiv.className = 'flex items-center space-x-4 p-4 border border-gray-200 rounded-lg';
@@ -480,7 +475,7 @@ function adicionarProdutoTemplate() {
 
     container.appendChild(produtoDiv);
 
-    // Adicionar event listeners para cálculo automático
+    // Adicionar event listeners para cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lculo automÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico
     const select = produtoDiv.querySelector('.produto-select');
     const quantidade = produtoDiv.querySelector('.produto-quantidade');
     const ordem = produtoDiv.querySelector('.produto-ordem');
@@ -524,37 +519,37 @@ function limparProdutosTemplate() {
 }
 
 async function carregarProdutosTemplate(templateId) {
-    console.log('🔍 DEBUG kits-templates.js - Carregando produtos do template ID:', templateId);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Carregando produtos do template ID:', templateId);
 
-    // Aguardar produtos serem carregados se necessário
+    // Aguardar produtos serem carregados se necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
     if (produtos.length === 0) {
-        console.log('🔍 DEBUG kits-templates.js - Produtos não carregados, aguardando...');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o carregados, aguardando...');
         await carregarProdutos();
     }
 
     try {
-        const url = `../../../api/organizador/kits-templates/get-produtos-template.php?id=${templateId}&t=${Date.now()}`;
-        console.log('🔍 DEBUG kits-templates.js - URL da API:', url);
-        console.log('🔍 DEBUG kits-templates.js - URL completa:', window.location.origin + '/movamazonas' + url);
+        const url = `${window.API_BASE || '/api'}/organizador/kits-templates/get-produtos-template.php?id=${templateId}&t=${Date.now()}`;
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL da API:', url);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL completa:', window.location.origin + '/movamazonas' + url);
 
         const response = await fetch(url);
-        console.log('🔍 DEBUG kits-templates.js - Response status:', response.status);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Response status:', response.status);
 
         const data = await response.json();
-        console.log('🔍 DEBUG kits-templates.js - Dados recebidos:', data);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Dados recebidos:', data);
 
         if (data.success) {
-            console.log('🔍 DEBUG kits-templates.js - Produtos encontrados:', data.data.length);
-            console.log('🔍 DEBUG kits-templates.js - Produtos:', data.data);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos encontrados:', data.data.length);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos:', data.data);
 
             limparProdutosTemplate();
             data.data.forEach(produto => {
-                console.log('🔍 DEBUG kits-templates.js - Adicionando produto:', produto);
+                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Adicionando produto:', produto);
                 adicionarProdutoTemplateComDados(produto);
             });
             calcularCustoProdutos();
 
-            // Se o preço base estiver vazio, calcular automaticamente
+            // Se o preÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o base estiver vazio, calcular automaticamente
             const precoBaseElement = document.getElementById('template_preco_base');
             if (precoBaseElement && (precoBaseElement.value === '' || parseFloat(precoBaseElement.value) === 0)) {
                 setTimeout(() => {
@@ -562,29 +557,29 @@ async function carregarProdutosTemplate(templateId) {
                 }, 100);
             }
         } else {
-            console.error('🔍 DEBUG kits-templates.js - Erro na API:', data.error);
+            console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro na API:', data.error);
         }
     } catch (error) {
-        console.error('🔍 DEBUG kits-templates.js - Erro ao carregar produtos do template:', error);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro ao carregar produtos do template:', error);
     }
 }
 
 function adicionarProdutoTemplateComDados(produto) {
-    console.log('🔍 DEBUG kits-templates.js - Adicionando produto com dados:', produto);
-    console.log('🔍 DEBUG kits-templates.js - Produtos disponíveis:', produtos.length);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Adicionando produto com dados:', produto);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis:', produtos.length);
 
     const container = document.getElementById('produtos-template-container');
     if (!container) {
-        console.error('🔍 DEBUG kits-templates.js - Container não encontrado!');
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Container nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado!');
         return;
     }
 
     const produtoDiv = document.createElement('div');
     produtoDiv.className = 'flex items-center space-x-4 p-4 border border-gray-200 rounded-lg';
 
-    // Verificar se o produto existe na lista de produtos disponíveis
+    // Verificar se o produto existe na lista de produtos disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis
     const produtoEncontrado = produtos.find(p => p.id == produto.produto_id);
-    console.log('🔍 DEBUG kits-templates.js - Produto encontrado na lista:', produtoEncontrado);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto encontrado na lista:', produtoEncontrado);
 
     produtoDiv.innerHTML = `
         <div class="flex-1">
@@ -605,7 +600,7 @@ function adicionarProdutoTemplateComDados(produto) {
     `;
 
     container.appendChild(produtoDiv);
-    console.log('🔍 DEBUG kits-templates.js - Produto adicionado ao DOM');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto adicionado ao DOM');
 
     // Adicionar event listeners
     const select = produtoDiv.querySelector('.produto-select');
@@ -618,7 +613,7 @@ function adicionarProdutoTemplateComDados(produto) {
 }
 
 // =====================================================
-// CÁLCULO DE PREÇOS
+// CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂLCULO DE PREÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡OS
 // =====================================================
 
 function calcularCustoProdutos() {
@@ -637,16 +632,16 @@ function calcularCustoProdutos() {
     atualizarContadorProdutos();
 
     // Log para debug
-    console.log('🔍 DEBUG kits-templates.js - Cálculo atualizado:', {
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lculo atualizado:', {
         custoTotal: custoTotal.toFixed(2),
         quantidadeTotal: quantidadeTotal,
         produtosCalculados: quantidadeTotal
     });
 
-    // Verificar se deve calcular preço base automaticamente
+    // Verificar se deve calcular preÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o base automaticamente
     const precoBaseElement = document.getElementById('template_preco_base');
     if (precoBaseElement && precoBaseElement.value === '' && custoTotal > 0) {
-        // Se preço base está vazio e há custo, calcular automaticamente
+        // Se preÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o base estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ vazio e hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ custo, calcular automaticamente
         calcularPrecoBaseAutomatico();
     }
 }
@@ -673,7 +668,7 @@ function calcularMargem() {
 
 function calcularPrecoBaseAutomatico() {
     const custoProdutos = parseFloat(document.getElementById('custo_produtos').textContent.replace('R$ ', '')) || 0;
-    const margemPercentual = 0.30; // 30% de margem padrão
+    const margemPercentual = 0.30; // 30% de margem padrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
 
     const precoBaseCalculado = custoProdutos * (1 + margemPercentual);
 
@@ -683,8 +678,8 @@ function calcularPrecoBaseAutomatico() {
     // Feedback visual
     Swal.fire({
         icon: 'success',
-        title: 'Preço Base Calculado!',
-        text: `Preço base definido em R$ ${precoBaseCalculado.toFixed(2)} com margem de 30%`,
+        title: 'PreÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o Base Calculado!',
+        text: `PreÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o base definido em R$ ${precoBaseCalculado.toFixed(2)} com margem de 30%`,
         timer: 2000,
         showConfirmButton: false
     });
@@ -715,7 +710,7 @@ function calcularSomaTotal() {
                 custoTotal += custoProduto;
                 quantidadeTotal += quantidade;
 
-                console.log('🔍 DEBUG kits-templates.js - Produto calculado:', {
+                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto calculado:', {
                     produto: option.text,
                     quantidade: quantidade,
                     precoUnitario: precoUnitario,
@@ -737,20 +732,20 @@ function calcularSomaTotal() {
 
 async function verificarContagemProdutos() {
     try {
-        const response = await fetch('../../../api/organizador/kits-templates/debug-produtos.php');
+        const response = await fetch((window.API_BASE || '/api') + '/organizador/kits-templates/debug-produtos.php');
         const data = await response.json();
 
         if (data.success) {
-            console.log('🔍 DEBUG kits-templates.js - Contagem de produtos por template:');
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Contagem de produtos por template:');
             data.data.forEach(template => {
-                console.log(`🔍 DEBUG kits-templates.js - Template ${template.id} (${template.nome}): ${template.total_produtos} produtos`);
+                console.log(`ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Template ${template.id} (${template.nome}): ${template.total_produtos} produtos`);
                 if (template.produtos_lista) {
-                    console.log(`🔍 DEBUG kits-templates.js - Produtos: ${template.produtos_lista}`);
+                    console.log(`ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos: ${template.produtos_lista}`);
                 }
             });
         }
     } catch (error) {
-        console.error('🔍 DEBUG kits-templates.js - Erro ao verificar contagem:', error);
+        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro ao verificar contagem:', error);
     }
 }
 
@@ -767,12 +762,12 @@ async function salvarTemplate(e) {
     const precoBase = document.getElementById('template_preco_base').value;
     const disponivelVenda = document.getElementById('template_disponivel_venda').checked ? '1' : '0';
 
-    // Validação dos campos obrigatórios
+    // ValidaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o dos campos obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios
     if (!nome || !precoBase || parseFloat(precoBase) <= 0) {
         Swal.fire({
             icon: 'error',
-            title: 'Campos Obrigatórios!',
-            text: 'Nome e preço base são obrigatórios e o preço deve ser maior que zero.',
+            title: 'Campos ObrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios!',
+            text: 'Nome e preÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o base sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios e o preÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o deve ser maior que zero.',
             confirmButtonText: 'OK',
             confirmButtonColor: '#EF4444'
         });
@@ -799,24 +794,24 @@ async function salvarTemplate(e) {
     const produtosDivs = container.querySelectorAll('.produto-select');
     const produtosData = [];
 
-    console.log('🔍 DEBUG kits-templates.js - Coletando produtos do formulário');
-    console.log('🔍 DEBUG kits-templates.js - Produtos encontrados no DOM:', produtosDivs.length);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Coletando produtos do formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos encontrados no DOM:', produtosDivs.length);
 
     produtosDivs.forEach((select, index) => {
-        console.log('🔍 DEBUG kits-templates.js - Processando produto', index, ':', select.value);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Processando produto', index, ':', select.value);
 
         if (select.value) {
             // Encontrar o container do produto (div pai)
             const produtoContainer = select.closest('.flex.items-center.space-x-4');
-            console.log('🔍 DEBUG kits-templates.js - Container encontrado:', produtoContainer);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Container encontrado:', produtoContainer);
 
             const quantidadeElement = produtoContainer ? produtoContainer.querySelector('.produto-quantidade') : null;
             const ordemElement = produtoContainer ? produtoContainer.querySelector('.produto-ordem') : null;
 
-            console.log('🔍 DEBUG kits-templates.js - Elementos encontrados:', {
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Elementos encontrados:', {
                 quantidade: quantidadeElement ? quantidadeElement.value : '',
                 ordem: ordemElement ? ordemElement.value : '',
-                container: produtoContainer ? 'SIM' : 'NÃO'
+                container: produtoContainer ? 'SIM' : 'NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O'
             });
 
             if (quantidadeElement && ordemElement) {
@@ -826,35 +821,35 @@ async function salvarTemplate(e) {
                     ordem: ordemElement.value
                 };
                 produtosData.push(produto);
-                console.log('🔍 DEBUG kits-templates.js - Produto adicionado:', produto);
+                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto adicionado:', produto);
             } else {
-                console.error('🔍 DEBUG kits-templates.js - Elementos não encontrados para produto:', select.value);
-                console.error('🔍 DEBUG kits-templates.js - Container:', produtoContainer);
-                console.error('🔍 DEBUG kits-templates.js - Quantidade element:', quantidadeElement);
-                console.error('🔍 DEBUG kits-templates.js - Ordem element:', ordemElement);
+                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Elementos nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrados para produto:', select.value);
+                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Container:', produtoContainer);
+                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Quantidade element:', quantidadeElement);
+                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Ordem element:', ordemElement);
             }
         }
     });
 
-    // Se não há produtos no formulário, verificar se é uma edição e manter produtos existentes
+    // Se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ produtos no formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio, verificar se ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© uma ediÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e manter produtos existentes
     if (produtosData.length === 0 && templateId) {
-        console.log('🔍 DEBUG kits-templates.js - Nenhum produto no formulário, mantendo produtos existentes');
-        // Não enviar array vazio, deixar o backend manter produtos existentes
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Nenhum produto no formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio, mantendo produtos existentes');
+        // NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o enviar array vazio, deixar o backend manter produtos existentes
         formData.append('produtos', JSON.stringify([]));
     } else {
-        console.log('🔍 DEBUG kits-templates.js - Produtos finais:', produtosData);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos finais:', produtosData);
         formData.append('produtos', JSON.stringify(produtosData));
     }
 
     try {
-        const url = templateId ? '../../../api/organizador/kits-templates/update.php' : '../../../api/organizador/kits-templates/create.php';
+        const url = templateId ? (window.API_BASE || '/api') + '/organizador/kits-templates/update.php' : (window.API_BASE || '/api') + '/organizador/kits-templates/create.php';
         const method = templateId ? 'POST' : 'POST';
 
-        console.log('🔍 DEBUG kits-templates.js - URL:', url);
-        console.log('🔍 DEBUG kits-templates.js - Method:', method);
-        console.log('🔍 DEBUG kits-templates.js - FormData entries:');
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL:', url);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Method:', method);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - FormData entries:');
         for (let [key, value] of formData.entries()) {
-            console.log('🔍 DEBUG kits-templates.js -', key, ':', value);
+            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js -', key, ':', value);
         }
 
         const response = await fetch(url, {
@@ -892,8 +887,8 @@ async function salvarTemplate(e) {
         // SweetAlert de erro de rede
         Swal.fire({
             icon: 'error',
-            title: 'Erro de Conexão!',
-            text: 'Erro ao salvar template. Verifique sua conexão.',
+            title: 'Erro de ConexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o!',
+            text: 'Erro ao salvar template. Verifique sua conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.',
             confirmButtonText: 'OK',
             confirmButtonColor: '#EF4444'
         });
@@ -913,17 +908,17 @@ async function duplicarTemplate(id) {
         const templateDuplicado = {
             ...template
         };
-        templateDuplicado.nome = templateDuplicado.nome + ' (Cópia)';
+        templateDuplicado.nome = templateDuplicado.nome + ' (CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³pia)';
         templateDuplicado.id = null;
         abrirModalTemplate(templateDuplicado);
     }
 }
 
 async function excluirTemplate(id) {
-    // SweetAlert de confirmação
+    // SweetAlert de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
     const result = await Swal.fire({
         icon: 'warning',
-        title: 'Confirmar Exclusão',
+        title: 'Confirmar ExclusÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
         text: 'Tem certeza que deseja excluir este template?',
         showCancelButton: true,
         confirmButtonText: 'Sim, excluir',
@@ -934,7 +929,7 @@ async function excluirTemplate(id) {
 
     if (result.isConfirmed) {
         try {
-            const response = await fetch('../../../api/organizador/kits-templates/delete.php', {
+            const response = await fetch((window.API_BASE || '/api') + '/organizador/kits-templates/delete.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -953,7 +948,7 @@ async function excluirTemplate(id) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Sucesso!',
-                    text: 'Template excluído com sucesso!',
+                    text: 'Template excluÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­do com sucesso!',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#10B981'
                 });
@@ -973,8 +968,8 @@ async function excluirTemplate(id) {
             // SweetAlert de erro de rede
             Swal.fire({
                 icon: 'error',
-                title: 'Erro de Conexão!',
-                text: 'Erro ao excluir template. Verifique sua conexão.',
+                title: 'Erro de ConexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o!',
+                text: 'Erro ao excluir template. Verifique sua conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#EF4444'
             });
@@ -983,17 +978,17 @@ async function excluirTemplate(id) {
 }
 
 // =====================================================
-// FUNÇÕES DE RESUMO E ESTATÍSTICAS
+// FUNÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ES DE RESUMO E ESTATÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂSTICAS
 // =====================================================
 
 function atualizarResumo() {
-    // Esta função pode ser expandida para mostrar estatísticas dos templates
-    // Por enquanto, apenas garante que não há erro
+    // Esta funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode ser expandida para mostrar estatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­sticas dos templates
+    // Por enquanto, apenas garante que nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ erro
     console.log('Resumo atualizado - Templates carregados:', templates.length);
 }
 
 // =====================================================
-// UTILITÁRIOS
+// UTILITÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂRIOS
 // =====================================================
 
 function mostrarLoading() {
@@ -1007,4 +1002,4 @@ function ocultarLoading() {
     document.getElementById('templates-container').style.display = 'grid';
 }
 
-// Funções antigas removidas - agora usando SweetAlert para todos os feedbacks 
+// FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes antigas removidas - agora usando SweetAlert para todos os feedbacks 

@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 export class ProgressTracker {
     constructor(containerId, etapas = []) {
         this.container = document.getElementById(containerId) || document.querySelector('.progress-container');
@@ -10,9 +11,9 @@ export class ProgressTracker {
     getDefaultEtapas() {
         return [
             { id: 1, nome: 'Modalidade', descricao: 'Escolha sua modalidade', icon: 'fa-list' },
-            { id: 2, nome: 'Termos', descricao: 'Termos e condições', icon: 'fa-file-contract' },
+            { id: 2, nome: 'Termos', descricao: 'Termos e condiÃƒÂ§ÃƒÂµes', icon: 'fa-file-contract' },
             { id: 3, nome: 'Cadastro', descricao: 'Preencha seus dados', icon: 'fa-user-edit' },
-            { id: 4, nome: 'Resumo', descricao: 'Revise sua inscrição', icon: 'fa-clipboard-check' },
+            { id: 4, nome: 'Resumo', descricao: 'Revise sua inscriÃƒÂ§ÃƒÂ£o', icon: 'fa-clipboard-check' },
             { id: 5, nome: 'Pagamento', descricao: 'Finalize o pagamento', icon: 'fa-credit-card' }
         ];
     }
@@ -80,8 +81,8 @@ export class ProgressTracker {
         this.container.innerHTML = `
             <div class="progress-header mb-4">
                 <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-semibold text-gray-800">Progresso da Inscrição</h3>
-                    <span class="text-sm font-medium text-gray-600">${progress.percentage}% concluído</span>
+                    <h3 class="text-lg font-semibold text-gray-800">Progresso da InscriÃƒÂ§ÃƒÂ£o</h3>
+                    <span class="text-sm font-medium text-gray-600">${progress.percentage}% concluÃƒÂ­do</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
                     <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500" 

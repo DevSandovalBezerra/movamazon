@@ -1,13 +1,14 @@
+if (window.getApiBase) { window.getApiBase(); }
 (() => {
     if (!window.API_BASE) {
         const path = window.location.pathname || '';
         const idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     }
 
     const api = (endpoint, params = '') => {
         const sep = params ? `?${params}` : '';
-        return `${window.API_BASE}/api/${endpoint}${sep}`;
+        return `${window.API_BASE}/${endpoint}${sep}`;
     };
 
     const PROVIDERS = {
@@ -68,7 +69,7 @@
         btnSaveProvider: document.getElementById('btn-save-provider')
     };
 
-    // Usar função comum do AdminUtils se disponível
+    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
     const showMessage = (type, message) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, message);
@@ -87,7 +88,7 @@
         const statusText = document.getElementById(`status-text-${provider}`);
 
         if (keyStatus) {
-            keyStatus.textContent = hasKey ? 'Configurado' : 'Não configurado';
+            keyStatus.textContent = hasKey ? 'Configurado' : 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado';
             keyStatus.className = hasKey ? 'text-green-600 font-medium' : 'text-gray-400';
         }
 
@@ -100,7 +101,7 @@
                 statusText.textContent = 'Configurado';
             } else {
                 statusDot.className = 'w-3 h-3 rounded-full bg-gray-300';
-                statusText.textContent = 'Não configurado';
+                statusText.textContent = 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado';
             }
         }
     };
@@ -144,8 +145,8 @@
                 if (els.timeout) els.timeout.value = state.configs['ai.timeout'] || '120';
             }
         } catch (err) {
-            console.error('Erro ao carregar configurações:', err);
-            showMessage('error', 'Erro ao carregar configurações');
+            console.error('Erro ao carregar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', err);
+            showMessage('error', 'Erro ao carregar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         }
     };
 
@@ -205,18 +206,18 @@
             const allSuccess = results.every(async r => (await r.json()).success);
 
             if (allSuccess) {
-                showMessage('success', 'Configurações salvas com sucesso!');
+                showMessage('success', 'ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes salvas com sucesso!');
                 els.modal.classList.add('hidden');
                 await carregarConfiguracoes();
             } else {
-                showMessage('error', 'Erro ao salvar algumas configurações');
+                showMessage('error', 'Erro ao salvar algumas configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
             }
         } catch (err) {
             console.error('Erro ao salvar:', err);
-            showMessage('error', 'Erro ao salvar configurações');
+            showMessage('error', 'Erro ao salvar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         } finally {
             els.btnSaveProvider.disabled = false;
-            els.btnSaveProvider.innerHTML = 'Salvar Configurações';
+            els.btnSaveProvider.innerHTML = 'Salvar ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
         }
     };
 
@@ -239,13 +240,13 @@
             );
 
             await Promise.all(promises);
-            showMessage('success', 'Configurações globais salvas!');
+            showMessage('success', 'ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes globais salvas!');
         } catch (err) {
             console.error('Erro ao salvar:', err);
-            showMessage('error', 'Erro ao salvar configurações');
+            showMessage('error', 'Erro ao salvar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         } finally {
             els.btnSaveGeral.disabled = false;
-            els.btnSaveGeral.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar Configurações';
+            els.btnSaveGeral.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
         }
     };
 
@@ -275,17 +276,17 @@
             if (data.success) {
                 statusDot.className = 'w-3 h-3 rounded-full bg-green-500 animate-pulse';
                 statusText.textContent = 'Online';
-                showMessage('success', `${PROVIDERS[provider].name}: Conexão bem-sucedida!`);
+                showMessage('success', `${PROVIDERS[provider].name}: ConexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o bem-sucedida!`);
             } else {
                 statusDot.className = 'w-3 h-3 rounded-full bg-red-500';
                 statusText.textContent = 'Erro';
-                showMessage('error', data.message || 'Erro ao testar conexão');
+                showMessage('error', data.message || 'Erro ao testar conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
             }
         } catch (err) {
             console.error('Erro ao testar:', err);
             statusDot.className = 'w-3 h-3 rounded-full bg-red-500';
             statusText.textContent = 'Erro';
-            showMessage('error', 'Erro ao testar conexão');
+            showMessage('error', 'Erro ao testar conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalHTML;

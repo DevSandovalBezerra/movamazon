@@ -1,18 +1,19 @@
-// Termos de Inscrição - JavaScript
-console.log('Termos de Inscrição - JavaScript carregado');
+if (window.getApiBase) { window.getApiBase(); }
+// Termos de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o - JavaScript
+console.log('Termos de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o - JavaScript carregado');
 
 let editor = null;
 
 function abrirModalCriar() {
     console.log('Abrindo modal para criar termo');
 
-    // Limpar formulário
+    // Limpar formulÃƒÆ’Ã‚Â¡rio
     document.getElementById('formTermo').reset();
     document.getElementById('termoId').value = '';
     document.getElementById('modalTitulo').textContent = 'Novo Termo';
     document.getElementById('ativo').checked = true;
 
-    // Inicializar CKEditor se ainda não foi inicializado e se estiver disponível
+    // Inicializar CKEditor se ainda nÃƒÆ’Ã‚Â£o foi inicializado e se estiver disponÃƒÆ’Ã‚Â­vel
     if (!editor && typeof ClassicEditor !== 'undefined') {
         ClassicEditor
             .create(document.querySelector('#conteudo'))
@@ -25,7 +26,7 @@ function abrirModalCriar() {
                 editor = null;
             });
     } else if (typeof ClassicEditor === 'undefined') {
-        console.warn('CKEditor não está disponível, usando textarea simples');
+        console.warn('CKEditor nÃƒÆ’Ã‚Â£o estÃƒÆ’Ã‚Â¡ disponÃƒÆ’Ã‚Â­vel, usando textarea simples');
     }
 
     // Mostrar modal
@@ -45,7 +46,7 @@ function fecharModal() {
 function salvarTermo() {
     console.log('Salvando termo');
 
-    // Determinar se é criação ou edição
+    // Determinar se ÃƒÆ’Ã‚Â© criaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o ou ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     const termoId = document.getElementById('termoId').value;
     const isEdit = termoId && termoId !== '';
 
@@ -59,19 +60,19 @@ function salvarTermo() {
         ativo: document.getElementById('ativo').checked ? 1 : 0
     };
 
-    // Adicionar conteúdo do editor ou textarea
+    // Adicionar conteÃƒÆ’Ã‚Âºdo do editor ou textarea
     if (editor) {
         data.conteudo = editor.getData();
     } else {
         data.conteudo = document.getElementById('conteudo').value;
     }
 
-    // Adicionar ID se for edição
+    // Adicionar ID se for ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     if (isEdit) {
         data.id = termoId;
     }
 
-    console.log('Dados do formulário:', data);
+    console.log('Dados do formulÃƒÆ’Ã‚Â¡rio:', data);
 
     const endpoint = isEdit ? 'update.php' : 'create.php';
     const method = 'POST';
@@ -81,7 +82,7 @@ function salvarTermo() {
     // Mostrar loading
     document.getElementById('loading').style.display = 'block';
 
-    fetch(`../../../api/organizador/termos-inscricao/${endpoint}`, {
+    fetch(`${window.API_BASE || '/api'}/organizador/termos-inscricao/${endpoint}`, {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
@@ -118,7 +119,7 @@ function carregarModalidadesModal(eventoId) {
         return Promise.resolve();
     }
 
-    return fetch(`../../../api/organizador/modalidades/list.php?evento_id=${eventoId}`)
+    return fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -157,7 +158,7 @@ function carregarTermos() {
         return;
     }
 
-    fetch(`../../../api/organizador/termos-inscricao/list.php?evento_id=${eventoId}`)
+    fetch(`${window.API_BASE || '/api'}/organizador/termos-inscricao/list.php?evento_id=${eventoId}`)
         .then(response => {
             console.log('Status:', response.status);
             return response.json();
@@ -179,7 +180,7 @@ function carregarTermos() {
 function renderizarTabela(termos) {
     const tbody = document.getElementById('termosTableBody');
     if (!tbody) {
-        console.log('Tbody não encontrado');
+        console.log('Tbody nÃƒÆ’Ã‚Â£o encontrado');
         return;
     }
 
@@ -215,14 +216,14 @@ function renderizarTabela(termos) {
     `).join('');
 }
 
-// Função para editar termo
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para editar termo
 function editarTermo(id) {
     console.log('Editando termo:', id);
 
     // Mostrar loading
     document.getElementById('loading').style.display = 'block';
 
-    fetch(`../../../api/organizador/termos-inscricao/get.php?id=${id}`)
+    fetch(`${window.API_BASE || '/api'}/organizador/termos-inscricao/get.php?id=${id}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -235,7 +236,7 @@ function editarTermo(id) {
             if (data.success && data.termo) {
                 console.log('Termo carregado:', data.termo);
 
-                // Preencher formulário
+                // Preencher formulÃƒÆ’Ã‚Â¡rio
                 document.getElementById('termoId').value = data.termo.id || '';
                 document.getElementById('eventoId').value = data.termo.evento_id || '';
                 document.getElementById('titulo').value = data.termo.titulo || '';
@@ -245,19 +246,19 @@ function editarTermo(id) {
                 // Carregar modalidades do evento
                 if (data.termo.evento_id) {
                     carregarModalidadesModal(data.termo.evento_id).then(() => {
-                        // Aguardar um pouco para o select carregar e então selecionar a modalidade
+                        // Aguardar um pouco para o select carregar e entÃƒÆ’Ã‚Â£o selecionar a modalidade
                         setTimeout(() => {
                             document.getElementById('modalidadeId').value = data.termo.modalidade_id || '';
                         }, 300);
                     });
                 }
 
-                // Definir conteúdo no editor
+                // Definir conteÃƒÆ’Ã‚Âºdo no editor
                 const conteudo = data.termo.conteudo || '';
                 if (editor) {
                     editor.setData(conteudo);
                 } else if (typeof ClassicEditor !== 'undefined') {
-                    // Se o editor ainda não foi inicializado, inicializar agora
+                    // Se o editor ainda nÃƒÆ’Ã‚Â£o foi inicializado, inicializar agora
                     ClassicEditor
                         .create(document.querySelector('#conteudo'))
                         .then(newEditor => {
@@ -270,12 +271,12 @@ function editarTermo(id) {
                             document.getElementById('conteudo').value = conteudo;
                         });
                 } else {
-                    // Se o CKEditor não estiver disponível, usar textarea normal
-                    console.warn('CKEditor não está disponível, usando textarea simples');
+                    // Se o CKEditor nÃƒÆ’Ã‚Â£o estiver disponÃƒÆ’Ã‚Â­vel, usar textarea normal
+                    console.warn('CKEditor nÃƒÆ’Ã‚Â£o estÃƒÆ’Ã‚Â¡ disponÃƒÆ’Ã‚Â­vel, usando textarea simples');
                     document.getElementById('conteudo').value = conteudo;
                 }
 
-                // Atualizar título do modal
+                // Atualizar tÃƒÆ’Ã‚Â­tulo do modal
                 document.getElementById('modalTitulo').textContent = 'Editar Termo';
 
                 // Mostrar modal
@@ -294,7 +295,7 @@ function editarTermo(id) {
         });
 }
 
-// Função para alternar status do termo
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para alternar status do termo
 function toggleStatusTermo(id, statusAtual) {
     console.log('Alternando status do termo:', id, 'Status atual:', statusAtual);
 
@@ -312,7 +313,7 @@ function toggleStatusTermo(id, statusAtual) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`../../../api/organizador/termos-inscricao/toggle_status.php`, {
+            fetch(`${window.API_BASE || '/api'}/organizador/termos-inscricao/toggle_status.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -340,13 +341,13 @@ function toggleStatusTermo(id, statusAtual) {
     });
 }
 
-// Função para excluir termo
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para excluir termo
 function excluirTermo(id) {
     console.log('Excluindo termo:', id);
 
     Swal.fire({
-        title: 'Confirmar exclusão',
-        text: 'Deseja realmente excluir este termo? Esta ação não pode ser desfeita.',
+        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
+        text: 'Deseja realmente excluir este termo? Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
@@ -355,7 +356,7 @@ function excluirTermo(id) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`../../../api/organizador/termos-inscricao/delete.php`, {
+            fetch(`${window.API_BASE || '/api'}/organizador/termos-inscricao/delete.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -367,7 +368,7 @@ function excluirTermo(id) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire('Sucesso', 'Termo excluído com sucesso!', 'success');
+                        Swal.fire('Sucesso', 'Termo excluÃƒÆ’Ã‚Â­do com sucesso!', 'success');
                         // Recarregar termos
                         carregarTermos();
                     } else {
@@ -382,13 +383,13 @@ function excluirTermo(id) {
     });
 }
 
-// Carregar termos quando a página carregar
+// Carregar termos quando a pÃƒÆ’Ã‚Â¡gina carregar
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('Página carregada');
-    // Não carregar termos automaticamente - seguir padrão do questionário
+    console.log('PÃƒÆ’Ã‚Â¡gina carregada');
+    // NÃƒÆ’Ã‚Â£o carregar termos automaticamente - seguir padrÃƒÆ’Ã‚Â£o do questionÃƒÆ’Ã‚Â¡rio
     mostrarMensagemInicial();
 
-    // Event listener para filtro de evento (igual ao questionário)
+    // Event listener para filtro de evento (igual ao questionÃƒÆ’Ã‚Â¡rio)
     document.getElementById('filtroEvento').addEventListener('change', function () {
         const eventoId = this.value;
         if (eventoId) {

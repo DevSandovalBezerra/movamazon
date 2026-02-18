@@ -1,6 +1,7 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
  * UI: Contador de Eventos
- * Gerencia a exibição do contador de eventos na interface
+ * Gerencia a exibiÃƒÂ§ÃƒÂ£o do contador de eventos na interface
  */
 
 /**
@@ -12,7 +13,7 @@ export function atualizarContadorEventos(estado, dados = null) {
     const contador = document.getElementById('eventos-count');
     if (!contador) return;
 
-    // Adicionar classe de fade-out para transição suave
+    // Adicionar classe de fade-out para transiÃƒÂ§ÃƒÂ£o suave
     contador.classList.add('fade-out');
 
     setTimeout(() => {
@@ -32,7 +33,7 @@ export function atualizarContadorEventos(estado, dados = null) {
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span>${total} eventos disponíveis</span>
+                        <span>${total} eventos disponÃƒÂ­veis</span>
                     </div>
                 `;
                 break;
@@ -58,11 +59,11 @@ export function atualizarContadorEventos(estado, dados = null) {
                 break;
         }
 
-        // Remover fade-out e adicionar fade-in para transição suave
+        // Remover fade-out e adicionar fade-in para transiÃƒÂ§ÃƒÂ£o suave
         contador.classList.remove('fade-out');
         contador.classList.add('fade-in');
 
-        // Remover fade-in após a animação
+        // Remover fade-in apÃƒÂ³s a animaÃƒÂ§ÃƒÂ£o
         setTimeout(() => {
             contador.classList.remove('fade-in');
         }, 300);

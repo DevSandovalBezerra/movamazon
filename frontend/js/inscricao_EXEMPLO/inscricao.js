@@ -1,15 +1,26 @@
-// Orquestrador do sistema de inscrição - usa arquivos específicos de cada fase
+if (window.getApiBase) { window.getApiBase(); }
+// Orquestrador do sistema de inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o - usa arquivos especÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ficos de cada fase
 
-// Base dinâmico para APIs (funciona em subpasta como /movamazonas e em raiz)
+// Base dinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mico para APIs (funciona em subpasta como /movamazonas e em raiz)
 if (!window.API_BASE) {
   (function () {
     var path = window.location.pathname || '';
     var idx = path.indexOf('/frontend/');
-    window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+    window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
   })();
 }
 
-// Configuração das etapas (Fase 3 - Identificação removida - usuários são redirecionados para login/registro)
+function buildKitImageUrl(foto) {
+  if (!foto) return '';
+  if (window.buildAssetUrl) {
+    return window.buildAssetUrl(`frontend/assets/img/kits/${foto}`);
+  }
+  const apiBase = window.API_BASE || '/api';
+  const appBase = apiBase.replace(/\/api\/?$/, '');
+  return appBase + `/frontend/assets/img/kits/${foto}`;
+}
+
+// ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o das etapas (Fase 3 - IdentificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o removida - usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o redirecionados para login/registro)
 const inscricaoSteps = [{
     id: 'modalidade',
     title: 'Escolha da Modalidade',
@@ -18,13 +29,13 @@ const inscricaoSteps = [{
   },
   {
     id: 'termos',
-    title: 'Termos e Condições',
+    title: 'Termos e CondiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes',
     file: 'termos.js',
     class: 'EtapaTermos'
   },
   {
     id: 'ficha',
-    title: 'Ficha de Inscrição',
+    title: 'Ficha de InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
     file: 'ficha.js',
     class: 'EtapaFicha'
   },
@@ -80,8 +91,8 @@ class InscricaoFormManager {
         <div class="mt-6 flex items-center justify-between">
           <button type="button" class="inline-flex items-center rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed" ${this.currentStep === 0 ? 'disabled' : ''} id="btnAnterior">Anterior</button>
           ${this.currentStep === inscricaoSteps.length - 1 ?
-            '<button type="button" id="btnFinalizar" class="inline-flex items-center rounded-lg bg-brand-green px-5 py-2 font-semibold text-white hover:bg-green-700">Finalizar Inscrição</button>' :
-            '<button type="button" id="btnProximo" class="inline-flex items-center rounded-lg bg-brand-green px-5 py-2 font-semibold text-white hover:bg-green-700">Próximo</button>'
+            '<button type="button" id="btnFinalizar" class="inline-flex items-center rounded-lg bg-brand-green px-5 py-2 font-semibold text-white hover:bg-green-700">Finalizar InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o</button>' :
+            '<button type="button" id="btnProximo" class="inline-flex items-center rounded-lg bg-brand-green px-5 py-2 font-semibold text-white hover:bg-green-700">PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo</button>'
           }
         </div>
       </div>
@@ -120,7 +131,7 @@ class InscricaoFormManager {
 
     if (!container) return;
 
-    // Carregar conteúdo específico da etapa
+    // Carregar conteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdo especÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­fico da etapa
     switch (step.id) {
       case 'modalidade':
         this.carregarModalidades(container);
@@ -137,18 +148,18 @@ class InscricaoFormManager {
     }
   }
 
-  // Métodos para carregar conteúdo de cada etapa
+  // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©todos para carregar conteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdo de cada etapa
   carregarModalidades(container) {
-    fetch(`${window.API_BASE}/api/inscricao/list_modalidades_kits.php?evento_id=${window.eventoId || ''}`)
+    fetch(`${window.API_BASE}/inscricao/list_modalidades_kits.php?evento_id=${window.eventoId || ''}`)
       .then(res => res.json())
       .then(resp => {
         if (!resp.success) {
           container.innerHTML = '<div class="text-center text-red-500">Erro ao carregar modalidades</div>';
           return;
         }
-        console.log('🔵 [DEBUG] Opções:', resp.opcoes);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] OpÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', resp.opcoes);
         if (resp.opcoes.length === 0) {
-          container.innerHTML = '<div class="text-center text-gray-500">Nenhuma modalidade disponível</div>';
+          container.innerHTML = '<div class="text-center text-gray-500">Nenhuma modalidade disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel</div>';
           return;
         }
 
@@ -163,11 +174,11 @@ class InscricaoFormManager {
   carregarTermos(container) {
     const modalidadeId = this.formData.modalidade_id;
     if (!modalidadeId) {
-      container.innerHTML = '<div class="text-center text-red-500">Erro: Modalidade não selecionada</div>';
+      container.innerHTML = '<div class="text-center text-red-500">Erro: Modalidade nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o selecionada</div>';
       return;
     }
 
-    fetch(`${window.API_BASE}/api/inscricao/get_termos.php?evento_id=${window.eventoId || ''}&modalidade_id=${modalidadeId}`)
+    fetch(`${window.API_BASE}/inscricao/get_termos.php?evento_id=${window.eventoId || ''}&modalidade_id=${modalidadeId}`)
       .then(res => res.json())
       .then(resp => {
         if (!resp.success) {
@@ -183,14 +194,14 @@ class InscricaoFormManager {
   }
 
   carregarIdentificacao(container) {
-    //console.log('🔵 [DEBUG] Carregando identificação...');
-    //console.log('🔵 [DEBUG] Container:', container);
+    //console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Carregando identificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o...');
+    //console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Container:', container);
 
     container.innerHTML = `
       <div class="space-y-6">
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h5 class="font-semibold text-blue-800 mb-2">Faça login ou crie sua conta</h5>
-          <p class="text-sm text-blue-600">Para continuar com a inscrição, você precisa estar logado.</p>
+          <h5 class="font-semibold text-blue-800 mb-2">FaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a login ou crie sua conta</h5>
+          <p class="text-sm text-blue-600">Para continuar com a inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o, vocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª precisa estar logado.</p>
         </div>
         
         <!-- Tabs de Login/Registro -->
@@ -205,7 +216,7 @@ class InscricaoFormManager {
           </nav>
         </div>
 
-        <!-- Conteúdo das Tabs -->
+        <!-- ConteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdo das Tabs -->
         <div class="tab-content active" id="login" style="display: block !important;">
           <form id="loginForm" class="space-y-4">
             <div>
@@ -336,17 +347,17 @@ class InscricaoFormManager {
           </form>
         </div>
         
-        <!-- Interface do usuário logado -->
+        <!-- Interface do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio logado -->
         <div class="usuario-logado-container" style="display: none;">
           <div class="bg-green-50 border border-green-200 rounded-lg p-4">
             <div class="flex items-center justify-between">
               <div>
-                <h5 class="font-semibold text-green-800">Usuário identificado</h5>
-                <p class="text-sm text-green-600" id="usuario-nome">Nome do usuário</p>
+                <h5 class="font-semibold text-green-800">UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio identificado</h5>
+                <p class="text-sm text-green-600" id="usuario-nome">Nome do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio</p>
                 <p class="text-sm text-green-600" id="usuario-email">email@exemplo.com</p>
               </div>
               <button type="button" onclick="alterarUsuario()" class="text-sm text-green-700 hover:text-green-900 underline">
-                Alterar usuário
+                Alterar usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
               </button>
             </div>
           </div>
@@ -354,36 +365,36 @@ class InscricaoFormManager {
       </div>
     `;
 
-    console.log('🔵 [DEBUG] HTML renderizado, verificando elementos...');
-    console.log('🔵 [DEBUG] Tab buttons encontradas:', document.querySelectorAll('.tab-btn').length);
-    console.log('🔵 [DEBUG] Tab contents encontradas:', document.querySelectorAll('.tab-content').length);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] HTML renderizado, verificando elementos...');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab buttons encontradas:', document.querySelectorAll('.tab-btn').length);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab contents encontradas:', document.querySelectorAll('.tab-content').length);
 
     // BINDAR EVENTOS DIRETAMENTE - SEM DEPENDER DA CLASSE
     setTimeout(() => {
-      console.log('🔵 [DEBUG] Bindando eventos diretamente...');
+      console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Bindando eventos diretamente...');
       this.bindarEventosIdentificacao();
     }, 100);
   }
 
   bindarEventosIdentificacao() {
-    console.log('🔵 [DEBUG] Bindando eventos de identificação diretamente...');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Bindando eventos de identificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o diretamente...');
 
     // Event listeners para tabs
     const tabBtns = document.querySelectorAll('.tab-btn');
-    console.log('🔵 [DEBUG] Tab buttons encontradas para bind:', tabBtns.length);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab buttons encontradas para bind:', tabBtns.length);
 
     tabBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
-        console.log('🔵 [DEBUG] Tab clicada:', e.target.dataset.tab);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab clicada:', e.target.dataset.tab);
         this.trocarTabIdentificacao(e.target.dataset.tab);
       });
     });
 
-    console.log('🔵 [DEBUG] Eventos de identificação bindados com sucesso!');
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Eventos de identificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o bindados com sucesso!');
   }
 
   trocarTabIdentificacao(tabName) {
-    console.log('🔵 [DEBUG] Trocando para tab:', tabName);
+    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Trocando para tab:', tabName);
 
     // Remover active de todas as tabs
     const allTabBtns = document.querySelectorAll('.tab-btn');
@@ -403,13 +414,13 @@ class InscricaoFormManager {
 
     if (tabBtn) {
       tabBtn.classList.add('active');
-      console.log('🔵 [DEBUG] Tab button ativada:', tabName);
+      console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab button ativada:', tabName);
     }
 
     if (tabContent) {
       tabContent.classList.add('active');
       tabContent.style.display = 'block';
-      console.log('🔵 [DEBUG] Tab content ativada:', tabName);
+      console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab content ativada:', tabName);
     }
   }
 
@@ -418,10 +429,10 @@ class InscricaoFormManager {
       <div class="space-y-4">
         <div class="bg-green-50 border border-green-200 rounded-lg p-4">
           <h5 class="font-semibold text-green-800 mb-2">Confirme seus dados</h5>
-          <p class="text-sm text-green-600">Verifique e complete as informações necessárias.</p>
+          <p class="text-sm text-green-600">Verifique e complete as informaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rias.</p>
         </div>
         <div id="form-ficha">
-          <!-- Conteúdo será carregado pelo ficha.js -->
+          <!-- ConteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdo serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ carregado pelo ficha.js -->
         </div>
       </div>
     `;
@@ -436,11 +447,11 @@ class InscricaoFormManager {
     container.innerHTML = `
       <div class="space-y-4">
         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h5 class="font-semibold text-yellow-800 mb-2">Finalize sua inscrição</h5>
-          <p class="text-sm text-yellow-600">Escolha a forma de pagamento e confirme sua inscrição.</p>
+          <h5 class="font-semibold text-yellow-800 mb-2">Finalize sua inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o</h5>
+          <p class="text-sm text-yellow-600">Escolha a forma de pagamento e confirme sua inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.</p>
         </div>
         <div id="form-pagamento">
-          <!-- Conteúdo será carregado pelo pagamento.js -->
+          <!-- ConteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdo serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ carregado pelo pagamento.js -->
         </div>
       </div>
     `;
@@ -475,7 +486,7 @@ class InscricaoFormManager {
     }
   }
 
-  // Métodos de navegação
+  // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©todos de navegaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
   prosseguirEtapa() {
     const step = inscricaoSteps[this.currentStep];
 
@@ -487,7 +498,7 @@ class InscricaoFormManager {
     // Salvar dados da etapa atual
     this.salvarDadosEtapa();
 
-    // Avançar para próxima etapa
+    // AvanÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ar para prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³xima etapa
     if (this.currentStep < inscricaoSteps.length - 1) {
       this.currentStep++;
       this.renderStep();
@@ -523,7 +534,7 @@ class InscricaoFormManager {
           Swal.fire({
             icon: 'warning',
             title: 'Aceite os termos',
-            text: 'Você deve aceitar os termos e condições para continuar'
+            text: 'VocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª deve aceitar os termos e condiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes para continuar'
           });
           return false;
         }
@@ -533,8 +544,8 @@ class InscricaoFormManager {
         if (this.etapas.identificacao && !this.etapas.identificacao.getUsuarioIdentificado()) {
           Swal.fire({
             icon: 'warning',
-            title: 'Login necessário',
-            text: 'Você deve fazer login ou criar uma conta para continuar'
+            title: 'Login necessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio',
+            text: 'VocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª deve fazer login ou criar uma conta para continuar'
           });
           return false;
         }
@@ -544,8 +555,8 @@ class InscricaoFormManager {
         if (this.etapas.ficha && !this.etapas.ficha.validarFormulario()) {
           Swal.fire({
             icon: 'warning',
-            title: 'Campos obrigatórios',
-            text: 'Preencha todos os campos obrigatórios'
+            title: 'Campos obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios',
+            text: 'Preencha todos os campos obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios'
           });
           return false;
         }
@@ -622,7 +633,7 @@ class InscricaoFormManager {
     }
   }
 
-  // Métodos de renderização (mantidos da implementação anterior)
+  // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©todos de renderizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o (mantidos da implementaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o anterior)
   renderizarCardsModalidades(opcoes) {
     let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
 
@@ -660,11 +671,11 @@ class InscricaoFormManager {
         <div class="flex items-start justify-between mb-3">
           <div class="flex-1">
             <h3 class="font-semibold text-gray-800">${opcao.modalidade_nome}</h3>
-            <p class="text-sm text-gray-600">${opcao.distancia} • ${opcao.categoria_nome}</p>
+            <p class="text-sm text-gray-600">${opcao.distancia} ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${opcao.categoria_nome}</p>
             ${kit ? `<p class="text-sm text-brand-green font-medium">${kit.kit_nome}</p>` : ''}
           </div>
           <div class="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-            ${foto ? `<img src="${window.API_BASE}/frontend/assets/img/kits/${foto}" alt="Kit" class="w-32 h-32 object-contain">` : '<div class="w-32 h-32 bg-gray-300 rounded"></div>'}
+            ${foto ? `<img src="${buildKitImageUrl(foto)}" alt="Kit" class="w-32 h-32 object-contain">` : '<div class="w-32 h-32 bg-gray-300 rounded"></div>'}
           </div>
         </div>
         
@@ -720,7 +731,7 @@ class InscricaoFormManager {
           ${termos.conteudo.replace(/\n/g, '<br>')}
         </div>
         <div class="mt-3 text-xs text-gray-500">
-          Versão: ${termos.versao} | Tipo: ${termos.tipo}
+          VersÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${termos.versao} | Tipo: ${termos.tipo}
         </div>
       </div>
       
@@ -735,7 +746,7 @@ class InscricaoFormManager {
             data-termos-id="${termos.id}"
             data-versao-termos="${termos.versao}">
           <span class="text-sm text-gray-700">
-            Li e aceito os <strong>Termos e Condições</strong> acima *
+            Li e aceito os <strong>Termos e CondiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes</strong> acima *
           </span>
         </label>
       </div>
@@ -749,8 +760,8 @@ class InscricaoFormManager {
 
     this.salvarDadosEtapa();
 
-    // Enviar inscrição
-    fetch(`${window.API_BASE}/api/inscricao/create.php`, {
+    // Enviar inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
+    fetch(`${window.API_BASE}/inscricao/create.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -760,20 +771,20 @@ class InscricaoFormManager {
       .then(res => res.json())
       .then(resp => {
         if (resp.success) {
-          this.container.innerHTML = '<div class="p-6 text-green-700 bg-green-50 rounded-lg">Inscrição realizada com sucesso!</div>';
+          this.container.innerHTML = '<div class="p-6 text-green-700 bg-green-50 rounded-lg">InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o realizada com sucesso!</div>';
         } else {
-          this.container.innerHTML = `<div class="p-6 text-red-700 bg-red-50 rounded-lg">${resp.error || 'Erro ao salvar inscrição.'}</div>`;
+          this.container.innerHTML = `<div class="p-6 text-red-700 bg-red-50 rounded-lg">${resp.error || 'Erro ao salvar inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.'}</div>`;
         }
       })
       .catch(() => {
-        this.container.innerHTML = '<div class="p-6 text-red-700 bg-red-50 rounded-lg">Erro de conexão ao salvar inscrição.</div>';
+        this.container.innerHTML = '<div class="p-6 text-red-700 bg-red-50 rounded-lg">Erro de conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ao salvar inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.</div>';
       });
   }
 
 
 }
 
-// Inicialização automática ao abrir o modal
+// InicializaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o automÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tica ao abrir o modal
 window.renderInscricaoForm = function () {
   new InscricaoFormManager('container-etapa-inscricao');
 };

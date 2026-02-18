@@ -1,13 +1,14 @@
+if (window.getApiBase) { window.getApiBase(); }
 if (!window.API_BASE) {
     (function () {
         var path = window.location.pathname || '';
         var idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     })();
 }
 
 function getApiUrl(endpoint) {
-    const url = `${window.API_BASE}/api/${endpoint}`;
+    const url = `${window.API_BASE}/${endpoint}`;
     return url;
 }
 
@@ -135,7 +136,7 @@ function criarGraficoInscricoesMensal(dados) {
         data: {
             labels: dados.map(d => d.mes),
             datasets: [{
-                label: 'Inscrições',
+                label: 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes',
                 data: dados.map(d => d.total),
                 backgroundColor: '#0b4340',
                 borderColor: '#1a5f5a',
@@ -208,7 +209,7 @@ function criarGraficoTopEventos(dados) {
         data: {
             labels: dados.map(d => d.nome.length > 20 ? d.nome.substring(0, 20) + '...' : d.nome),
             datasets: [{
-                label: 'Inscrições',
+                label: 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes',
                 data: dados.map(d => d.total_inscricoes || 0),
                 backgroundColor: '#f5c113',
                 borderColor: '#0b4340',
@@ -264,7 +265,7 @@ function renderizarEventosRecentes(eventos) {
                     <p class="text-sm font-medium text-gray-900 truncate">${escapeHtml(evento.nome)}</p>
                     <p class="text-xs text-gray-500">${dataFormatada}</p>
                     <p class="text-xs text-gray-600 mt-1">
-                        <span class="font-semibold">${evento.total_inscricoes || 0}</span> inscrições
+                        <span class="font-semibold">${evento.total_inscricoes || 0}</span> inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
                     </p>
                 </div>
             </div>
@@ -277,7 +278,7 @@ function renderizarInscricoesRecentes(inscricoes) {
     if (!container) return;
     
     if (inscricoes.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">Nenhuma inscrição recente</p>';
+        container.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">Nenhuma inscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o recente</p>';
         return;
     }
     

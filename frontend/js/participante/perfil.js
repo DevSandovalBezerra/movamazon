@@ -1,13 +1,14 @@
+if (window.getApiBase) { window.getApiBase(); }
 if (!window.API_BASE) {
     (function () {
         var path = window.location.pathname || '';
         var idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     })();
 }
 
 function getApiUrl(endpoint) {
-    const url = `${window.API_BASE}/api/${endpoint}`;
+    const url = `${window.API_BASE}/${endpoint}`;
     return url;
 }
 

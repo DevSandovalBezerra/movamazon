@@ -1,13 +1,14 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
  * Componente: Drawer Lateral
- * Menu lateral para mobile com animações suaves
+ * Menu lateral para mobile com animaÃƒÂ§ÃƒÂµes suaves
  */
 
 /**
  * Cria e inicializa um drawer lateral
  * @param {string} drawerId - ID do elemento drawer
- * @param {string} triggerId - ID do botão que abre o drawer
- * @param {string} closeId - ID do botão que fecha o drawer
+ * @param {string} triggerId - ID do botÃƒÂ£o que abre o drawer
+ * @param {string} closeId - ID do botÃƒÂ£o que fecha o drawer
  * @param {string} overlayId - ID do overlay de fundo
  */
 export function inicializarDrawer(drawerId, triggerId, closeId, overlayId) {

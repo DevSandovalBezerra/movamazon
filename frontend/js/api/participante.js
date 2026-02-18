@@ -1,18 +1,19 @@
+if (window.getApiBase) { window.getApiBase(); }
 /**
  * API: Participante
- * Funções para interagir com APIs do portal do participante
+ * FunÃƒÂ§ÃƒÂµes para interagir com APIs do portal do participante
  */
 
-const API_BASE = '../../../api/participante';
+const API_BASE = (window.API_BASE || '/api') + '/participante';
 
 /**
- * Busca todas as inscrições do usuário logado
+ * Busca todas as inscriÃƒÂ§ÃƒÂµes do usuÃƒÂ¡rio logado
  * @returns {Promise<Object>} Objeto com success e inscricoes ou erro
  */
 export async function getInscricoes() {
     try {
         const url = `${API_BASE}/get_inscricoes.php`;
-        console.log('🌐 Chamando API:', url);
+        console.log('Ã°Å¸Å’Â Chamando API:', url);
         
         const response = await fetch(url, {
             method: 'GET',
@@ -22,23 +23,23 @@ export async function getInscricoes() {
             }
         });
 
-        console.log('📡 Resposta HTTP:', response.status, response.statusText);
+        console.log('Ã°Å¸â€œÂ¡ Resposta HTTP:', response.status, response.statusText);
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('❌ Erro HTTP:', response.status, errorText);
+            console.error('Ã¢ÂÅ’ Erro HTTP:', response.status, errorText);
             
             if (response.status === 403) {
-                throw new Error('Acesso negado. Faça login novamente.');
+                throw new Error('Acesso negado. FaÃƒÂ§a login novamente.');
             }
             throw new Error(`Erro HTTP: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
-        console.log('📦 Dados recebidos:', data);
+        console.log('Ã°Å¸â€œÂ¦ Dados recebidos:', data);
         
         if (!data.success) {
-            throw new Error(data.message || 'Erro ao buscar inscrições');
+            throw new Error(data.message || 'Erro ao buscar inscriÃƒÂ§ÃƒÂµes');
         }
 
         return {
@@ -46,7 +47,7 @@ export async function getInscricoes() {
             inscricoes: data.inscricoes || []
         };
     } catch (error) {
-        console.error('❌ Erro ao buscar inscrições:', error);
+        console.error('Ã¢ÂÅ’ Erro ao buscar inscriÃƒÂ§ÃƒÂµes:', error);
         return {
             success: false,
             message: error.message || 'Erro ao conectar com o servidor',
@@ -56,8 +57,8 @@ export async function getInscricoes() {
 }
 
 /**
- * Busca dados completos de uma inscrição específica
- * @param {number} inscricaoId - ID da inscrição
+ * Busca dados completos de uma inscriÃƒÂ§ÃƒÂ£o especÃƒÂ­fica
+ * @param {number} inscricaoId - ID da inscriÃƒÂ§ÃƒÂ£o
  * @returns {Promise<Object>} Objeto com success e inscricao ou erro
  */
 export async function getInscricao(inscricaoId) {
@@ -75,7 +76,7 @@ export async function getInscricao(inscricaoId) {
                 throw new Error('Acesso negado.');
             }
             if (response.status === 404) {
-                throw new Error('Inscrição não encontrada.');
+                throw new Error('InscriÃƒÂ§ÃƒÂ£o nÃƒÂ£o encontrada.');
             }
             throw new Error(`Erro HTTP: ${response.status}`);
         }
@@ -83,7 +84,7 @@ export async function getInscricao(inscricaoId) {
         const data = await response.json();
         
         if (!data.success) {
-            throw new Error(data.message || 'Erro ao buscar inscrição');
+            throw new Error(data.message || 'Erro ao buscar inscriÃƒÂ§ÃƒÂ£o');
         }
 
         return {
@@ -91,7 +92,7 @@ export async function getInscricao(inscricaoId) {
             inscricao: data.inscricao
         };
     } catch (error) {
-        console.error('Erro ao buscar inscrição:', error);
+        console.error('Erro ao buscar inscriÃƒÂ§ÃƒÂ£o:', error);
         return {
             success: false,
             message: error.message || 'Erro ao conectar com o servidor'
@@ -100,8 +101,8 @@ export async function getInscricao(inscricaoId) {
 }
 
 /**
- * Gera URL do QR Code para uma inscrição
- * @param {string} numeroInscricao - Número da inscrição
+ * Gera URL do QR Code para uma inscriÃƒÂ§ÃƒÂ£o
+ * @param {string} numeroInscricao - NÃƒÂºmero da inscriÃƒÂ§ÃƒÂ£o
  * @returns {string} URL do QR Code
  */
 export function getQRCodeUrl(numeroInscricao) {

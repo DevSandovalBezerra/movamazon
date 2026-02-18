@@ -1,4 +1,5 @@
-// JavaScript para Etapa 4: Ficha de Inscrição
+if (window.getApiBase) { window.getApiBase(); }
+// JavaScript para Etapa 4: Ficha de InscriÃƒÂ§ÃƒÂ£o
 class EtapaFicha {
     constructor() {
         this.produtosExtras = [];
@@ -15,11 +16,11 @@ class EtapaFicha {
         this.bindEvents();
         this.atualizarResumoCompra();
         this.validarFormulario();
-        console.log('[FICHA] EtapaFicha.init() fim - botão disabled=', document.getElementById('btn-prosseguir')?.disabled);
+        console.log('[FICHA] EtapaFicha.init() fim - botÃƒÂ£o disabled=', document.getElementById('btn-prosseguir')?.disabled);
     }
 
     carregarDadosSessao() {
-        // Carregar dados da sessão se existirem
+        // Carregar dados da sessÃƒÂ£o se existirem
         if (window.sistemaInscricao && window.sistemaInscricao.dadosInscricao) {
             this.produtosExtras = window.sistemaInscricao.dadosInscricao.produtos_extras || [];
             this.cupomAplicado = window.sistemaInscricao.dadosInscricao.cupom_aplicado || null;
@@ -32,7 +33,7 @@ class EtapaFicha {
     }
 
     bindEvents() {
-        // Event listener para seleção de tamanho (radios, se existirem)
+        // Event listener para seleÃƒÂ§ÃƒÂ£o de tamanho (radios, se existirem)
         document.querySelectorAll('input[name="tamanho_camiseta"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 this.tamanhoCamiseta = e.target.value;
@@ -51,7 +52,7 @@ class EtapaFicha {
             });
         }
 
-        // Event listener para questionário
+        // Event listener para questionÃƒÂ¡rio
         document.querySelectorAll('#questionarioForm input, #questionarioForm textarea, #questionarioForm select').forEach(input => {
             input.addEventListener('input', () => {
                 this.capturarRespostasQuestionario();
@@ -59,12 +60,12 @@ class EtapaFicha {
             });
         });
 
-        // Event listener para botão próximo (prevenir double-call com onclick inline)
+        // Event listener para botÃƒÂ£o prÃƒÂ³ximo (prevenir double-call com onclick inline)
         const btnProximo = document.getElementById('btn-prosseguir');
         console.log('[FICHA] bindEvents btn-prosseguir=', !!btnProximo, 'disabled=', btnProximo?.disabled);
         if (btnProximo) {
             btnProximo.addEventListener('click', (e) => {
-                console.log('[FICHA] clique no botão Próximo (listener ficha.js) - bloqueando onclick inline');
+                console.log('[FICHA] clique no botÃƒÂ£o PrÃƒÂ³ximo (listener ficha.js) - bloqueando onclick inline');
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 this.validarESalvar();
@@ -91,13 +92,13 @@ class EtapaFicha {
         const codigo = document.getElementById('cupomCodigo').value.trim();
 
         if (!codigo) {
-            this.mostrarErroCupom('Digite o código do cupom');
+            this.mostrarErroCupom('Digite o cÃƒÂ³digo do cupom');
             return;
         }
 
         this.mostrarLoading('Validando cupom...');
 
-        fetch((window.API_BASE || '') + '/api/inscricao/validar_cupom.php', {
+        fetch((window.API_BASE || '/api') + '/inscricao/validar_cupom.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,18 +118,18 @@ class EtapaFicha {
                     this.mostrarSucessoCupom(`Cupom aplicado! Desconto: R$ ${data.valor_desconto.toFixed(2)}`);
                     this.atualizarResumoCompra();
                 } else {
-                    this.mostrarErroCupom(data.error || 'Cupom inválido');
+                    this.mostrarErroCupom(data.error || 'Cupom invÃƒÂ¡lido');
                 }
             })
             .catch(error => {
                 this.ocultarLoading();
-                this.mostrarErroCupom('Erro na comunicação com o servidor');
+                this.mostrarErroCupom('Erro na comunicaÃƒÂ§ÃƒÂ£o com o servidor');
                 console.error('Erro:', error);
             });
     }
 
     adicionarProdutoExtra(produtoId, nome, valor) {
-        // Verificar se já foi adicionado
+        // Verificar se jÃƒÂ¡ foi adicionado
         const index = this.produtosExtras.findIndex(p => p.id === produtoId);
 
         if (index === -1) {
@@ -247,7 +248,7 @@ class EtapaFicha {
             valido = false;
         }
 
-        // Validar questionário obrigatório (radio/checkbox: verificar :checked; demais: value.trim())
+        // Validar questionÃƒÂ¡rio obrigatÃƒÂ³rio (radio/checkbox: verificar :checked; demais: value.trim())
         const questionariosObrigatorios = document.querySelectorAll('#questionarioForm [required]');
         let qInvalidos = 0;
         questionariosObrigatorios.forEach(input => {
@@ -260,7 +261,7 @@ class EtapaFicha {
             }
         });
 
-        // Não desabilitar o botão: deixar sempre clicável; validação na hora do envio (salvarFicha/validarFicha)
+        // NÃƒÂ£o desabilitar o botÃƒÂ£o: deixar sempre clicÃƒÂ¡vel; validaÃƒÂ§ÃƒÂ£o na hora do envio (salvarFicha/validarFicha)
         if (btnProximo && typeof console !== 'undefined' && console.log) {
             console.log('[FICHA] validarFormulario tamanhoPreenchido=', tamanhoPreenchido, 'questionarioObrig=', questionariosObrigatorios.length, 'invalidos=', qInvalidos, 'valido=', valido);
         }
@@ -271,15 +272,15 @@ class EtapaFicha {
     validarESalvar() {
         console.log('[FICHA] validarESalvar()');
         if (!this.validarFormulario()) {
-            console.log('[FICHA] validarESalvar validação falhou');
-            this.mostrarErro('Preencha todos os campos obrigatórios');
+            console.log('[FICHA] validarESalvar validaÃƒÂ§ÃƒÂ£o falhou');
+            this.mostrarErro('Preencha todos os campos obrigatÃƒÂ³rios');
             return false;
         }
 
-        // Capturar respostas do questionário
+        // Capturar respostas do questionÃƒÂ¡rio
         this.capturarRespostasQuestionario();
 
-        // Salvar dados na sessão
+        // Salvar dados na sessÃƒÂ£o
         if (window.sistemaInscricao) {
             window.sistemaInscricao.salvarDadosEtapa({
                 produtos_extras: this.produtosExtras,
@@ -292,7 +293,7 @@ class EtapaFicha {
             });
         }
 
-        // Prosseguir para próxima etapa (se sistemaInscricao não existir, usar salvarFicha global)
+        // Prosseguir para prÃƒÂ³xima etapa (se sistemaInscricao nÃƒÂ£o existir, usar salvarFicha global)
         if (window.sistemaInscricao) {
             console.log('[FICHA] validarESalvar chamando sistemaInscricao.prosseguirEtapa()');
             window.sistemaInscricao.prosseguirEtapa();
@@ -300,7 +301,7 @@ class EtapaFicha {
             console.log('[FICHA] validarESalvar chamando salvarFicha()');
             salvarFicha();
         } else {
-            console.error('[FICHA] validarESalvar salvarFicha não definida');
+            console.error('[FICHA] validarESalvar salvarFicha nÃƒÂ£o definida');
         }
 
         return true;
@@ -319,7 +320,7 @@ class EtapaFicha {
             }
         }
 
-        // Preencher respostas do questionário
+        // Preencher respostas do questionÃƒÂ¡rio
         Object.keys(this.respostasQuestionario).forEach(questionarioId => {
             const input = document.getElementById(`questionario_${questionarioId}`);
             if (input) {
@@ -339,7 +340,7 @@ class EtapaFicha {
         this.validarFormulario();
     }
 
-    // Funções de feedback
+    // FunÃƒÂ§ÃƒÂµes de feedback
     mostrarErroCupom(mensagem) {
         const container = document.getElementById('cupomResultado');
         if (container) {
@@ -390,7 +391,7 @@ class EtapaFicha {
         }
     }
 
-    // Métodos de acesso
+    // MÃƒÂ©todos de acesso
     getProdutosExtras() {
         return this.produtosExtras;
     }
@@ -411,7 +412,7 @@ class EtapaFicha {
         return this.respostasQuestionario;
     }
 
-    // Métodos utilitários
+    // MÃƒÂ©todos utilitÃƒÂ¡rios
     limparCupom() {
         this.cupomAplicado = null;
         this.valorDesconto = 0;
@@ -437,7 +438,7 @@ class EtapaFicha {
     }
 }
 
-// Funções globais
+// FunÃƒÂ§ÃƒÂµes globais
 function aplicarCupom() {
     if (window.etapaFicha) {
         window.etapaFicha.aplicarCupom();
@@ -461,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.etapaFicha = new EtapaFicha();
 });
 
-// Exportar para uso em outros módulos
+// Exportar para uso em outros mÃƒÂ³dulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EtapaFicha;
 }

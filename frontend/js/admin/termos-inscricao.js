@@ -1,3 +1,4 @@
+if (window.getApiBase) { window.getApiBase(); }
 (() => {
     if (!document.getElementById('termos-table-body')) {
         return;
@@ -6,13 +7,13 @@
     if (!window.API_BASE) {
         const path = window.location.pathname || '';
         const idx = path.indexOf('/frontend/');
-        window.API_BASE = idx > 0 ? path.slice(0, idx) : '';
+        window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
         console.log('[TERMOS] API_BASE definido:', window.API_BASE, '| Pathname:', path);
     }
 
     const api = (endpoint, params = '') => {
         const sep = params ? `?${params}` : '';
-        const url = `${window.API_BASE}/api/${endpoint}${sep}`;
+        const url = `${window.API_BASE}/${endpoint}${sep}`;
         console.log('[TERMOS] Chamando API:', url);
         return url;
     };
@@ -58,7 +59,7 @@
         }
     };
 
-    // Usar função comum do AdminUtils se disponível
+    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
     const showMessage = (type, message) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, message);
@@ -129,7 +130,7 @@
             const contentType = response.headers.get('content-type');
             if (!contentType || !contentType.includes('application/json')) {
                 const text = await response.text();
-                throw new Error(`Resposta não é JSON. Tipo: ${contentType}, Conteúdo: ${text.substring(0, 200)}`);
+                throw new Error(`Resposta nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© JSON. Tipo: ${contentType}, ConteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdo: ${text.substring(0, 200)}`);
             }
 
             const data = await response.json();
@@ -169,13 +170,13 @@
                 ? '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Ativo</span>'
                 : '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Inativo</span>';
 
-            const tipoLabel = { inscricao: 'Inscrição', anamnese: 'Anamnese', treino: 'Treino' }[termo.tipo] || termo.tipo || 'Inscrição';
+            const tipoLabel = { inscricao: 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', anamnese: 'Anamnese', treino: 'Treino' }[termo.tipo] || termo.tipo || 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o';
 
             return `
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${termo.id}</td>
                     <td class="px-6 py-4 text-sm text-gray-900">
-                        <div class="font-medium">${termo.titulo || 'Sem título'}</div>
+                        <div class="font-medium">${termo.titulo || 'Sem tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tulo'}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${tipoLabel}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${termo.versao || '1.0'}</td>
@@ -202,7 +203,7 @@
         }).join('');
     };
 
-    // Renderizar paginação
+    // Renderizar paginaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
     const renderizarPaginacao = () => {
         if (!els.pagination) return;
 
@@ -215,10 +216,10 @@
         html += `<div class="text-sm text-gray-700">Mostrando ${((state.pagination.page - 1) * state.pagination.perPage) + 1} a ${Math.min(state.pagination.page * state.pagination.perPage, state.pagination.total)} de ${state.pagination.total}</div>`;
         html += '<div class="flex items-center gap-2">';
 
-        // Botão anterior
+        // BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o anterior
         html += `<button onclick="termosAdmin.paginaAnterior()" ${state.pagination.page === 1 ? 'disabled' : ''} class="px-3 py-1 text-sm border rounded ${state.pagination.page === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}">Anterior</button>`;
 
-        // Páginas
+        // PÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ginas
         const startPage = Math.max(1, state.pagination.page - 2);
         const endPage = Math.min(state.pagination.totalPages, state.pagination.page + 2);
 
@@ -236,8 +237,8 @@
             html += `<button onclick="termosAdmin.irParaPagina(${state.pagination.totalPages})" class="px-3 py-1 text-sm border rounded hover:bg-gray-50">${state.pagination.totalPages}</button>`;
         }
 
-        // Botão próximo
-        html += `<button onclick="termosAdmin.paginaProxima()" ${state.pagination.page === state.pagination.totalPages ? 'disabled' : ''} class="px-3 py-1 text-sm border rounded ${state.pagination.page === state.pagination.totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}">Próximo</button>`;
+        // BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo
+        html += `<button onclick="termosAdmin.paginaProxima()" ${state.pagination.page === state.pagination.totalPages ? 'disabled' : ''} class="px-3 py-1 text-sm border rounded ${state.pagination.page === state.pagination.totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}">PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo</button>`;
 
         html += '</div></div>';
         els.pagination.innerHTML = html;
@@ -291,8 +292,8 @@
             if (data.success && data.data) {
                 const termo = data.data;
                 els.modalVisualizarTitulo.textContent = termo.titulo || 'Visualizar Termo';
-                const tipoLabel = { inscricao: 'Inscrição', anamnese: 'Anamnese', treino: 'Treino' }[termo.tipo] || termo.tipo || 'Inscrição';
-                els.modalVisualizarConteudo.innerHTML = `<div class="mb-4"><strong>Tipo:</strong> ${tipoLabel} &nbsp;|&nbsp; <strong>Versão:</strong> ${termo.versao || '1.0'}</div><div class="border-t pt-4 mt-4">${termo.conteudo || ''}</div>`;
+                const tipoLabel = { inscricao: 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', anamnese: 'Anamnese', treino: 'Treino' }[termo.tipo] || termo.tipo || 'InscriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o';
+                els.modalVisualizarConteudo.innerHTML = `<div class="mb-4"><strong>Tipo:</strong> ${tipoLabel} &nbsp;|&nbsp; <strong>VersÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</strong> ${termo.versao || '1.0'}</div><div class="border-t pt-4 mt-4">${termo.conteudo || ''}</div>`;
                 openModal('modal-visualizar-termo');
             } else {
                 showMessage('error', data.message || 'Erro ao carregar termo');
@@ -319,7 +320,7 @@
         }
 
         if (!payload.titulo || !payload.conteudo) {
-            showMessage('error', 'Preencha todos os campos obrigatórios');
+            showMessage('error', 'Preencha todos os campos obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios');
             return;
         }
 
@@ -385,7 +386,7 @@
             const data = await response.json();
 
             if (data.success) {
-                showMessage('success', 'Termo excluído com sucesso');
+                showMessage('success', 'Termo excluÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­do com sucesso');
                 carregarTermos();
             } else {
                 showMessage('error', data.message || 'Erro ao excluir termo');
@@ -396,7 +397,7 @@
         }
     };
 
-    // Paginação
+    // PaginaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
     const irParaPagina = (page) => {
         state.pagination.page = page;
         carregarTermos();
@@ -451,7 +452,7 @@
         });
     }
 
-    // Exportar funções para uso global
+    // Exportar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes para uso global
     window.termosAdmin = {
         editar,
         visualizar,

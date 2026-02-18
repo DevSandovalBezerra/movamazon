@@ -1,13 +1,14 @@
-// URL da imagem do evento (usa window.getEventImageUrl quando disponível)
+if (window.getApiBase) { window.getApiBase(); }
+// URL da imagem do evento (usa window.getEventImageUrl quando disponÃƒÆ’Ã‚Â­vel)
 function getEventImageUrlLocal(imagem) {
     if (typeof window.getEventImageUrl === 'function') return window.getEventImageUrl(imagem);
     return imagem ? '../../assets/img/eventos/' + imagem : 'https://placehold.co/400x200?text=Evento';
 }
 
-// Função para carregar eventos na página Meus Eventos
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar eventos na pÃƒÆ’Ã‚Â¡gina Meus Eventos
 async function carregarMeusEventos(pagina = 1) {
     try {
-        console.log('📡 Iniciando carregamento de eventos - Página:', pagina);
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Iniciando carregamento de eventos - PÃƒÆ’Ã‚Â¡gina:', pagina);
         
         document.getElementById('loading').style.display = 'block';
         document.getElementById('eventos-container').style.display = 'none';
@@ -20,9 +21,9 @@ async function carregarMeusEventos(pagina = 1) {
         const busca = document.getElementById('busca')?.value || '';
         const porPagina = 10;
 
-        console.log('📋 Filtros coletados:', { status, filtroData, busca, pagina, porPagina });
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Filtros coletados:', { status, filtroData, busca, pagina, porPagina });
 
-        // Construir parâmetros
+        // Construir parÃƒÆ’Ã‚Â¢metros
         const params = new URLSearchParams({
             pagina: pagina.toString(),
             por_pagina: porPagina.toString()
@@ -32,8 +33,8 @@ async function carregarMeusEventos(pagina = 1) {
         if (filtroData) params.append('data', filtroData);
         if (busca) params.append('busca', busca);
 
-        const apiUrl = `../../../api/organizador/eventos/list.php?${params.toString()}`;
-        console.log('🌐 URL da requisição:', apiUrl);
+        const apiUrl = `${window.API_BASE || '/api'}/organizador/eventos/list.php?${params.toString()}`;
+        console.log('ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â URL da requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', apiUrl);
 
         const response = await fetch(apiUrl);
         console.log('[EVENTOS] Response status:', response.status);
@@ -45,8 +46,8 @@ async function carregarMeusEventos(pagina = 1) {
         console.log('[EVENTOS] Data parsed:', data);
         
         if (data.success) {
-            console.log('✅ Eventos carregados com sucesso:', data.data.eventos.length, 'eventos');
-            console.log('✅ Dados completos da API:', data);
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Eventos carregados com sucesso:', data.data.eventos.length, 'eventos');
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Dados completos da API:', data);
             renderizarListaMeusEventos(data.data.eventos);
             renderizarPaginacao(data.data.paginacao, pagina);
             
@@ -56,20 +57,20 @@ async function carregarMeusEventos(pagina = 1) {
                 document.getElementById('paginacao').style.display = 'block';
             }
         } else {
-            console.error('❌ Erro na API:', data);
+            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro na API:', data);
             throw new Error(data.message || 'Erro ao carregar eventos');
         }
     } catch (error) {
-        console.error('💥 Erro ao carregar eventos:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
         document.getElementById('loading').style.display = 'none';
         document.getElementById('error-message').style.display = 'block';
     }
 }
 
-// Função para verificar status de implementação do evento
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para verificar status de implementaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento
 async function verificarStatusImplementacao(eventoId) {
     try {
-        const response = await fetch(`../../../api/evento/check_implementation_status.php?id=${eventoId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/evento/check_implementation_status.php?id=${eventoId}`);
         const data = await response.json();
         
         if (data.success) {
@@ -82,7 +83,7 @@ async function verificarStatusImplementacao(eventoId) {
     }
 }
 
-// Função para renderizar checklist de implementação com checkboxes individuais
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para renderizar checklist de implementaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o com checkboxes individuais
 function renderizarChecklistImplementacao(status) {
     if (!status || !status.features) return '';
     
@@ -93,13 +94,13 @@ function renderizarChecklistImplementacao(status) {
     const pode_ativar = status.pode_ativar || false;
     const pendencias = status.pendencias_obrigatorias || [];
     
-    // Mapear nomes para exibição (trocar Programação por Checklist)
+    // Mapear nomes para exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (trocar ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o por Checklist)
     const nomeExibicao = {
-        'Programação': 'Checklist',
+        'ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o': 'Checklist',
         'programacao': 'Checklist'
     };
     
-    // Mapear pendências também
+    // Mapear pendÃƒÆ’Ã‚Âªncias tambÃƒÆ’Ã‚Â©m
     const pendenciasMapeadas = pendencias.map(p => nomeExibicao[p] || p);
     
     let html = `
@@ -107,7 +108,7 @@ function renderizarChecklistImplementacao(status) {
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-tasks text-gray-500"></i>
-                    <span class="text-sm font-medium text-gray-700">Configuração do Evento</span>
+                    <span class="text-sm font-medium text-gray-700">ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do Evento</span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-semibold text-gray-700">${concluidos}/${total}</span>
@@ -130,9 +131,9 @@ function renderizarChecklistImplementacao(status) {
                 <div class="mb-3 p-2 bg-red-50 border border-red-200 rounded-lg">
                     <div class="flex items-center space-x-2 mb-2">
                         <i class="fas fa-exclamation-triangle text-red-500"></i>
-                        <span class="text-sm font-medium text-red-700">Não é possível ativar o evento</span>
+                        <span class="text-sm font-medium text-red-700">NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© possÃƒÆ’Ã‚Â­vel ativar o evento</span>
                     </div>
-                    <p class="text-xs text-red-600 mb-2 font-medium">Configure as seguintes features obrigatórias:</p>
+                    <p class="text-xs text-red-600 mb-2 font-medium">Configure as seguintes features obrigatÃƒÆ’Ã‚Â³rias:</p>
                     <ul class="text-xs text-red-600 ml-4 space-y-1">
                         ${pendenciasMapeadas.map(p => `<li class="flex items-center space-x-1">
                             <i class="fas fa-circle text-red-400 text-[6px]"></i>
@@ -146,12 +147,12 @@ function renderizarChecklistImplementacao(status) {
     `;
     
     status.features.forEach(feature => {
-        // Verificar se está configurado: usar count > 0 como fonte de verdade principal
+        // Verificar se estÃƒÆ’Ã‚Â¡ configurado: usar count > 0 como fonte de verdade principal
         const count = parseInt(feature.count) || 0;
         const isCompleted = count > 0 || feature.configurado === true || feature.configurado === 'true';
         const isObrigatorio = feature.obrigatorio === true || feature.obrigatorio === 'true';
         
-        // Trocar nome "Programação" por "Checklist" apenas na exibição
+        // Trocar nome "ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o" por "Checklist" apenas na exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
         const nomeExibir = nomeExibicao[feature.nome] || feature.nome;
         
         let checkboxClass = 'rounded border-2 flex items-center justify-center w-5 h-5 ';
@@ -195,20 +196,20 @@ function renderizarChecklistImplementacao(status) {
     return html;
 }
 
-// Função para renderizar lista de eventos
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para renderizar lista de eventos
 function renderizarListaMeusEventos(eventos) {
-    console.log('🎨 Renderizando lista de eventos:', eventos.length, 'eventos');
-    console.log('🎨 Eventos recebidos:', eventos);
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ Renderizando lista de eventos:', eventos.length, 'eventos');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ Eventos recebidos:', eventos);
     
     const container = document.getElementById('eventos-container');
-    console.log('🎨 Container encontrado:', container);
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ Container encontrado:', container);
     
     if (!eventos || eventos.length === 0) {
-        console.log('🎨 Nenhum evento encontrado, exibindo mensagem');
+        console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ Nenhum evento encontrado, exibindo mensagem');
         container.innerHTML = `
             <div class="col-span-full text-center py-12">
                 <div class="text-gray-500 text-lg mb-2">Nenhum evento encontrado</div>
-                <div class="text-gray-400 text-sm">Crie seu primeiro evento para começar</div>
+                <div class="text-gray-400 text-sm">Crie seu primeiro evento para comeÃƒÆ’Ã‚Â§ar</div>
             </div>
         `;
         return;
@@ -217,7 +218,7 @@ function renderizarListaMeusEventos(eventos) {
     let html = '';
     
     for (const evento of eventos) {
-        // Normalizações para compatibilidade com a API atual
+        // NormalizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes para compatibilidade com a API atual
         if (!evento.status_traduzido) {
             const mapa = {
                 'ativo': 'Ativo',
@@ -227,7 +228,7 @@ function renderizarListaMeusEventos(eventos) {
                 'pausado': 'Pausado',
                 'rascunho': 'Rascunho'
             };
-            evento.status_traduzido = mapa[evento.status] || evento.status || '—';
+            evento.status_traduzido = mapa[evento.status] || evento.status || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â';
         }
         if (!evento.imagem_url) {
             evento.imagem_url = evento.imagem ? getEventImageUrlLocal(evento.imagem) : null;
@@ -261,9 +262,9 @@ function renderizarListaMeusEventos(eventos) {
                     </div>
                 </div>
                 
-                <!-- Conteúdo do Card -->
+                <!-- ConteÃƒÆ’Ã‚Âºdo do Card -->
                 <div class="p-6">
-                    <!-- Título do Evento -->
+                    <!-- TÃƒÆ’Ã‚Â­tulo do Evento -->
                     <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2">${evento.nome}</h3>
                     
                     <!-- Data e Hora -->
@@ -273,26 +274,26 @@ function renderizarListaMeusEventos(eventos) {
                         ${evento.hora_inicio ? `<span class="ml-2">${evento.hora_inicio}</span>` : ''}
                     </div>
                     
-                    <!-- Localização -->
+                    <!-- LocalizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
                     <div class="flex items-center text-gray-600 mb-4">
                         <i class="fas fa-map-marker-alt text-green-500 mr-2"></i>
-                        <span>${evento.cidade ? `${evento.cidade}/${evento.estado}` : 'Local não informado'}</span>
+                        <span>${evento.cidade ? `${evento.cidade}/${evento.estado}` : 'Local nÃƒÆ’Ã‚Â£o informado'}</span>
                     </div>
                     
-                    <!-- Descrição -->
-                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">${evento.descricao || 'Sem descrição'}</p>
+                    <!-- DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">${evento.descricao || 'Sem descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o'}</p>
                     
-                    <!-- Checklist de Implementação -->
+                    <!-- Checklist de ImplementaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
                     <div id="checklist-${evento.id}" class="mb-4">
-                        <!-- Será preenchido via JavaScript -->
+                        <!-- SerÃƒÆ’Ã‚Â¡ preenchido via JavaScript -->
                     </div>
                     
-                    <!-- Botões de Ação -->
+                    <!-- BotÃƒÆ’Ã‚Âµes de AÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
                     <div class="flex flex-wrap gap-2 mb-4">
                         <a href="lotes/index.php?evento_id=${evento.id}" 
                            class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-green-50 text-green-600 hover:bg-green-100 transition-colors">
                             <i class="fas fa-tags mr-1 text-xs"></i>
-                            Lotes de Inscrição
+                            Lotes de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
                         </a>
                         <a href="kits/index.php?evento_id=${evento.id}" 
                            class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors">
@@ -306,7 +307,7 @@ function renderizarListaMeusEventos(eventos) {
                         </a>
                     </div>
                     
-                    <!-- Botões Principais -->
+                    <!-- BotÃƒÆ’Ã‚Âµes Principais -->
                     <div class="flex space-x-2">
                         <button onclick="editarEvento(${evento.id})" 
                                 class="inline-flex items-center bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium text-sm">
@@ -325,9 +326,9 @@ function renderizarListaMeusEventos(eventos) {
     }
     
     container.innerHTML = html;
-    console.log('✅ Lista de eventos renderizada com sucesso');
+    console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Lista de eventos renderizada com sucesso');
     
-    // Carregar checklists de implementação para cada evento
+    // Carregar checklists de implementaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para cada evento
     eventos.forEach(async (evento) => {
         try {
             const status = await verificarStatusImplementacao(evento.id);
@@ -338,7 +339,7 @@ function renderizarListaMeusEventos(eventos) {
                     checklistElement.innerHTML = renderizarChecklistImplementacao(status);
                 }
             } else {
-                console.warn(`[Checklist] Status não retornado para evento ${evento.id}`);
+                console.warn(`[Checklist] Status nÃƒÆ’Ã‚Â£o retornado para evento ${evento.id}`);
             }
         } catch (error) {
             console.error(`Erro ao carregar checklist para evento ${evento.id}:`, error);
@@ -346,23 +347,23 @@ function renderizarListaMeusEventos(eventos) {
     });
 }
 
-// Função para visualizar evento (placeholder)
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para visualizar evento (placeholder)
 function visualizarEvento(eventoId) {
-    console.log('👁️ Visualizando evento:', eventoId);
-    // Implementar visualização do evento
-    alert('Funcionalidade de visualização será implementada em breve!');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â Visualizando evento:', eventoId);
+    // Implementar visualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento
+    alert('Funcionalidade de visualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o serÃƒÆ’Ã‚Â¡ implementada em breve!');
 }
 
-// Função para editar evento
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para editar evento
 async function editarEvento(eventoId) {
-    console.log('✏️ Editando evento ID:', eventoId);
+    console.log('ÃƒÂ¢Ã…â€œÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â Editando evento ID:', eventoId);
     
     try {
         // Mostrar loading
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 title: 'Carregando dados...',
-                text: 'Aguarde enquanto buscamos as informações do evento.',
+                text: 'Aguarde enquanto buscamos as informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do evento.',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -371,18 +372,18 @@ async function editarEvento(eventoId) {
         }
         
         // Buscar dados do evento usando API existente
-        const response = await fetch(`../../../api/evento/get.php?id=${eventoId}`);
+        const response = await fetch(`${window.API_BASE || '/api'}/evento/get.php?id=${eventoId}`);
         const data = await response.json();
         
         if (data.success) {
-            console.log('✅ Dados do evento carregados:', data.evento);
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Dados do evento carregados:', data.evento);
             
-            // Fechar loading e abrir modal de edição
+            // Fechar loading e abrir modal de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             if (typeof Swal !== 'undefined') {
                 Swal.close();
             }
             
-            // Abrir modal de edição
+            // Abrir modal de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             abrirModalEdicao(data.evento);
             
         } else {
@@ -390,7 +391,7 @@ async function editarEvento(eventoId) {
         }
         
     } catch (error) {
-        console.error('💥 Erro ao carregar dados do evento:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar dados do evento:', error);
         
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -404,9 +405,9 @@ async function editarEvento(eventoId) {
     }
 }
 
-// Função para abrir modal de edição
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para abrir modal de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function abrirModalEdicao(evento) {
-    console.log('🎨 Abrindo modal de edição para:', evento.nome);
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ Abrindo modal de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para:', evento.nome);
     
     // Criar HTML do modal
     const modalHTML = `
@@ -420,11 +421,11 @@ function abrirModalEdicao(evento) {
                     </button>
                 </div>
                 
-                <!-- Formulário -->
+                <!-- FormulÃƒÆ’Ã‚Â¡rio -->
                 <form id="form-editar-evento" class="p-6 space-y-6">
                     <input type="hidden" name="evento_id" value="${evento.id}">
                     
-                    <!-- Seção: Informações Básicas -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes BÃƒÆ’Ã‚Â¡sicas -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Evento *</label>
@@ -445,10 +446,10 @@ function abrirModalEdicao(evento) {
                         </div>
                     </div>
                     
-                    <!-- Seção: Datas e Horário -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: Datas e HorÃƒÆ’Ã‚Â¡rio -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Data de Início *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Data de InÃƒÆ’Ã‚Â­cio *</label>
                             <input type="date" name="data_inicio" value="${evento.data_inicio && evento.data_inicio !== '0000-00-00' ? evento.data_inicio : ''}" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         </div>
@@ -460,13 +461,13 @@ function abrirModalEdicao(evento) {
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Hora de Início</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Hora de InÃƒÆ’Ã‚Â­cio</label>
                             <input type="time" name="hora_inicio" value="${evento.hora_inicio && evento.hora_inicio !== '00:00:00' ? evento.hora_inicio : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         </div>
                     </div>
                     
-                    <!-- Seção: Categoria e Gênero -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: Categoria e GÃƒÆ’Ã‚Âªnero -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
@@ -475,14 +476,14 @@ function abrirModalEdicao(evento) {
                                 <option value="corrida_rua" ${evento.categoria === 'corrida_rua' ? 'selected' : ''}>Corrida de Rua</option>
                                 <option value="caminhada" ${evento.categoria === 'caminhada' ? 'selected' : ''}>Caminhada</option>
                                 <option value="ciclismo" ${evento.categoria === 'ciclismo' ? 'selected' : ''}>Ciclismo</option>
-                                <option value="natacao" ${evento.categoria === 'natacao' ? 'selected' : ''}>Natação</option>
+                                <option value="natacao" ${evento.categoria === 'natacao' ? 'selected' : ''}>NataÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o</option>
                                 <option value="triatlo" ${evento.categoria === 'triatlo' ? 'selected' : ''}>Triatlo</option>
                                 <option value="outros" ${evento.categoria === 'outros' ? 'selected' : ''}>Outros</option>
                             </select>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Gênero</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">GÃƒÆ’Ã‚Âªnero</label>
                             <select name="genero" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                                 <option value="">Selecione...</option>
                                 <option value="masculino" ${evento.genero === 'masculino' ? 'selected' : ''}>Masculino</option>
@@ -493,7 +494,7 @@ function abrirModalEdicao(evento) {
                         </div>
                     </div>
                     
-                    <!-- Seção: Endereço Completo -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: EndereÃƒÆ’Ã‚Â§o Completo -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
@@ -508,13 +509,13 @@ function abrirModalEdicao(evento) {
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Número</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">NÃƒÆ’Ã‚Âºmero</label>
                             <input type="text" name="numero" value="${evento.numero || ''}" placeholder="123"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         </div>
                     </div>
                     
-                    <!-- Seção: Localização -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: LocalizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Local</label>
@@ -534,58 +535,58 @@ function abrirModalEdicao(evento) {
                                 <option value="">Selecione...</option>
                                 <option value="AC" ${evento.estado === 'AC' ? 'selected' : ''}>Acre</option>
                                 <option value="AL" ${evento.estado === 'AL' ? 'selected' : ''}>Alagoas</option>
-                                <option value="AP" ${evento.estado === 'AP' ? 'selected' : ''}>Amapá</option>
+                                <option value="AP" ${evento.estado === 'AP' ? 'selected' : ''}>AmapÃƒÆ’Ã‚Â¡</option>
                                 <option value="AM" ${evento.estado === 'AM' ? 'selected' : ''}>Amazonas</option>
                                 <option value="BA" ${evento.estado === 'BA' ? 'selected' : ''}>Bahia</option>
-                                <option value="CE" ${evento.estado === 'CE' ? 'selected' : ''}>Ceará</option>
+                                <option value="CE" ${evento.estado === 'CE' ? 'selected' : ''}>CearÃƒÆ’Ã‚Â¡</option>
                                 <option value="DF" ${evento.estado === 'DF' ? 'selected' : ''}>Distrito Federal</option>
-                                <option value="ES" ${evento.estado === 'ES' ? 'selected' : ''}>Espírito Santo</option>
-                                <option value="GO" ${evento.estado === 'GO' ? 'selected' : ''}>Goiás</option>
-                                <option value="MA" ${evento.estado === 'MA' ? 'selected' : ''}>Maranhão</option>
+                                <option value="ES" ${evento.estado === 'ES' ? 'selected' : ''}>EspÃƒÆ’Ã‚Â­rito Santo</option>
+                                <option value="GO" ${evento.estado === 'GO' ? 'selected' : ''}>GoiÃƒÆ’Ã‚Â¡s</option>
+                                <option value="MA" ${evento.estado === 'MA' ? 'selected' : ''}>MaranhÃƒÆ’Ã‚Â£o</option>
                                 <option value="MT" ${evento.estado === 'MT' ? 'selected' : ''}>Mato Grosso</option>
                                 <option value="MS" ${evento.estado === 'MS' ? 'selected' : ''}>Mato Grosso do Sul</option>
                                 <option value="MG" ${evento.estado === 'MG' ? 'selected' : ''}>Minas Gerais</option>
-                                <option value="PA" ${evento.estado === 'PA' ? 'selected' : ''}>Pará</option>
-                                <option value="PB" ${evento.estado === 'PB' ? 'selected' : ''}>Paraíba</option>
-                                <option value="PR" ${evento.estado === 'PR' ? 'selected' : ''}>Paraná</option>
+                                <option value="PA" ${evento.estado === 'PA' ? 'selected' : ''}>ParÃƒÆ’Ã‚Â¡</option>
+                                <option value="PB" ${evento.estado === 'PB' ? 'selected' : ''}>ParaÃƒÆ’Ã‚Â­ba</option>
+                                <option value="PR" ${evento.estado === 'PR' ? 'selected' : ''}>ParanÃƒÆ’Ã‚Â¡</option>
                                 <option value="PE" ${evento.estado === 'PE' ? 'selected' : ''}>Pernambuco</option>
-                                <option value="PI" ${evento.estado === 'PI' ? 'selected' : ''}>Piauí</option>
+                                <option value="PI" ${evento.estado === 'PI' ? 'selected' : ''}>PiauÃƒÆ’Ã‚Â­</option>
                                 <option value="RJ" ${evento.estado === 'RJ' ? 'selected' : ''}>Rio de Janeiro</option>
                                 <option value="RN" ${evento.estado === 'RN' ? 'selected' : ''}>Rio Grande do Norte</option>
                                 <option value="RS" ${evento.estado === 'RS' ? 'selected' : ''}>Rio Grande do Sul</option>
-                                <option value="RO" ${evento.estado === 'RO' ? 'selected' : ''}>Rondônia</option>
+                                <option value="RO" ${evento.estado === 'RO' ? 'selected' : ''}>RondÃƒÆ’Ã‚Â´nia</option>
                                 <option value="RR" ${evento.estado === 'RR' ? 'selected' : ''}>Roraima</option>
                                 <option value="SC" ${evento.estado === 'SC' ? 'selected' : ''}>Santa Catarina</option>
-                                <option value="SP" ${evento.estado === 'SP' ? 'selected' : ''}>São Paulo</option>
+                                <option value="SP" ${evento.estado === 'SP' ? 'selected' : ''}>SÃƒÆ’Ã‚Â£o Paulo</option>
                                 <option value="SE" ${evento.estado === 'SE' ? 'selected' : ''}>Sergipe</option>
                                 <option value="TO" ${evento.estado === 'TO' ? 'selected' : ''}>Tocantins</option>
                             </select>
                         </div>
                     </div>
                     
-                    <!-- Seção: URL do Mapa -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: URL do Mapa -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">URL do Mapa</label>
                         <input type="url" name="url_mapa" value="${evento.url_mapa || ''}" placeholder="https://maps.google.com/..."
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                     </div>
                     
-                    <!-- Seção: Datas de Inscrições -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: Datas de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Data Fim das Inscrições</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Data Fim das InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes</label>
                             <input type="date" name="data_fim_inscricoes" value="${evento.data_fim_inscricoes && evento.data_fim_inscricoes !== '0000-00-00' ? evento.data_fim_inscricoes : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Hora Fim das Inscrições</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Hora Fim das InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes</label>
                             <input type="time" name="hora_fim_inscricoes" value="${evento.hora_fim_inscricoes && evento.hora_fim_inscricoes !== '00:00:00' ? evento.hora_fim_inscricoes : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         </div>
                     </div>
                     
-                    <!-- Seção: Configurações de Vagas e Taxas -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de Vagas e Taxas -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Limite de Vagas</label>
@@ -602,7 +603,7 @@ function abrirModalEdicao(evento) {
                         </div>
                     </div>
                     
-                    <!-- Seção: Configurações Financeiras -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Financeiras -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Taxa Setup (R$)</label>
@@ -629,28 +630,28 @@ function abrirModalEdicao(evento) {
                         </div>
                     </div>
                     
-                    <!-- Seção: Descrição -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">DescriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o</label>
                         <textarea name="descricao" rows="4" 
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">${evento.descricao || ''}</textarea>
                     </div>
                     
-                    <!-- Seção: Regulamento -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: Regulamento -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Regulamento</label>
                         <textarea name="regulamento" rows="6" 
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">${evento.regulamento || ''}</textarea>
                     </div>
                     
-                    <!-- Seção: Upload de Imagem -->
+                    <!-- SeÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: Upload de Imagem -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Imagem do Evento</label>
                         <div class="flex items-center space-x-4">
                             <div class="flex-1">
                                 <input type="file" name="imagem" accept="image/*" onchange="previewNovaImagem(this, ${evento.id})"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                                <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG, WEBP, SVG. Máximo 5MB.</p>
+                                <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG, WEBP, SVG. MÃƒÆ’Ã‚Â¡ximo 5MB.</p>
                             </div>
                             <div id="preview-imagem-${evento.id}" class="w-20 h-20 rounded-lg overflow-hidden border">
                                 ${evento.imagem ? `
@@ -665,7 +666,7 @@ function abrirModalEdicao(evento) {
                         </div>
                     </div>
                     
-                    <!-- Botões -->
+                    <!-- BotÃƒÆ’Ã‚Âµes -->
                     <div class="flex items-center justify-end space-x-4 pt-6 border-t">
                         <button type="button" onclick="fecharModalEdicao()" 
                                 class="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
@@ -674,7 +675,7 @@ function abrirModalEdicao(evento) {
                         <button type="submit" 
                                 class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
                             <i class="fas fa-save mr-2"></i>
-                            Salvar Alterações
+                            Salvar AlteraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
                         </button>
                     </div>
                 </form>
@@ -685,10 +686,10 @@ function abrirModalEdicao(evento) {
     // Adicionar modal ao DOM
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     
-    // Configurar envio do formulário
+    // Configurar envio do formulÃƒÆ’Ã‚Â¡rio
     document.getElementById('form-editar-evento').addEventListener('submit', salvarEdicaoEvento);
 
-    // Verificar checklist para habilitar/desabilitar opção "Ativo"
+    // Verificar checklist para habilitar/desabilitar opÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o "Ativo"
     (async () => {
         try {
             const status = await verificarStatusImplementacao(evento.id);
@@ -715,15 +716,15 @@ function abrirModalEdicao(evento) {
             if (!pode_ativar && pendentes.length > 0) {
                 if (optionAtivo) {
                     optionAtivo.disabled = true;
-                    optionAtivo.title = 'Configure todas as features obrigatórias primeiro';
+                    optionAtivo.title = 'Configure todas as features obrigatÃƒÆ’Ã‚Â³rias primeiro';
                 }
                 aviso.className += ' bg-red-50 border border-red-200';
                 aviso.innerHTML = `
                     <div class="flex items-start space-x-2">
                         <i class="fas fa-exclamation-triangle text-red-500 mt-0.5"></i>
                         <div>
-                            <p class="font-medium text-red-700 mb-1">Não é possível ativar o evento</p>
-                            <p class="text-red-600 mb-2">Configure primeiro as seguintes features obrigatórias:</p>
+                            <p class="font-medium text-red-700 mb-1">NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© possÃƒÆ’Ã‚Â­vel ativar o evento</p>
+                            <p class="text-red-600 mb-2">Configure primeiro as seguintes features obrigatÃƒÆ’Ã‚Â³rias:</p>
                             <ul class="list-disc list-inside text-red-600 space-y-1">
                                 ${pendentes.map(p => `<li>${p}</li>`).join('')}
                             </ul>
@@ -739,7 +740,7 @@ function abrirModalEdicao(evento) {
                 aviso.innerHTML = `
                     <div class="flex items-center space-x-2">
                         <i class="fas fa-check-circle text-green-500"></i>
-                        <p class="text-green-700 font-medium">Checklist completo. Você pode ativar o evento.</p>
+                        <p class="text-green-700 font-medium">Checklist completo. VocÃƒÆ’Ã‚Âª pode ativar o evento.</p>
                     </div>
                 `;
             }
@@ -748,12 +749,12 @@ function abrirModalEdicao(evento) {
                 statusContainer.appendChild(aviso);
             }
         } catch (e) {
-            console.warn('Não foi possível validar checklist para status ativo:', e);
+            console.warn('NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel validar checklist para status ativo:', e);
         }
     })();
 }
 
-// Função para fechar modal de edição
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para fechar modal de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function fecharModalEdicao() {
     const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
     if (modal) {
@@ -761,17 +762,17 @@ function fecharModalEdicao() {
     }
 }
 
-// Função para salvar edição do evento
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para salvar ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento
 async function salvarEdicaoEvento(event) {
     event.preventDefault();
     
-    console.log('💾 Salvando edição do evento...');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ Salvando ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento...');
     
     try {
         // Mostrar loading
         if (typeof Swal !== 'undefined') {
             Swal.fire({
-                title: 'Salvando alterações...',
+                title: 'Salvando alteraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes...',
                 text: 'Aguarde enquanto processamos.',
                 allowOutsideClick: false,
                 didOpen: () => {
@@ -780,12 +781,12 @@ async function salvarEdicaoEvento(event) {
             });
         }
         
-        // Preparar dados do formulário
+        // Preparar dados do formulÃƒÆ’Ã‚Â¡rio
         const formData = new FormData(event.target);
         const eventoId = formData.get('evento_id');
         const statusSelecionado = (formData.get('status') || '').toString();
 
-        // Bloquear ativação se checklist incompleto
+        // Bloquear ativaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o se checklist incompleto
         if (statusSelecionado === 'ativo') {
             try {
                 const status = await verificarStatusImplementacao(eventoId);
@@ -795,12 +796,12 @@ async function salvarEdicaoEvento(event) {
                         if (typeof Swal !== 'undefined') {
                             await Swal.fire({
                                 icon: 'warning',
-                                title: 'Não é possível ativar',
+                                title: 'NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© possÃƒÆ’Ã‚Â­vel ativar',
                                 html: `Conclua antes: <b>${pendentes.join(', ')}</b>.`,
                                 confirmButtonColor: '#F59E0B'
                             });
                         } else {
-                            alert('Não é possível ativar. Conclua antes: ' + pendentes.join(', '));
+                            alert('NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© possÃƒÆ’Ã‚Â­vel ativar. Conclua antes: ' + pendentes.join(', '));
                         }
                         return;
                     }
@@ -811,7 +812,7 @@ async function salvarEdicaoEvento(event) {
         }
         
         // Enviar dados usando API existente
-        const response = await fetch('../../../api/evento/update.php', {
+        const response = await fetch((window.API_BASE || '/api') + '/evento/update.php', {
             method: 'POST',
             body: formData
         });
@@ -819,7 +820,7 @@ async function salvarEdicaoEvento(event) {
         const data = await response.json();
         
         if (data.success) {
-            console.log('✅ Evento atualizado com sucesso');
+            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Evento atualizado com sucesso');
             
             // Fechar modal
             fecharModalEdicao();
@@ -829,7 +830,7 @@ async function salvarEdicaoEvento(event) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Evento atualizado!',
-                    text: 'As alterações foram salvas com sucesso.',
+                    text: 'As alteraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes foram salvas com sucesso.',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -841,16 +842,16 @@ async function salvarEdicaoEvento(event) {
             carregarMeusEventos();
             
         } else {
-            // Se a resposta tem código 422 (Unprocessable Entity), é erro de validação
+            // Se a resposta tem cÃƒÆ’Ã‚Â³digo 422 (Unprocessable Entity), ÃƒÆ’Ã‚Â© erro de validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             if (response.status === 422 && data.pendencias) {
                 const pendentes = Array.isArray(data.pendencias) ? data.pendencias.join(', ') : data.pendencias;
-                throw new Error(data.message || `Não é possível ativar. Configure: ${pendentes}`);
+                throw new Error(data.message || `NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© possÃƒÆ’Ã‚Â­vel ativar. Configure: ${pendentes}`);
             }
             throw new Error(data.message || 'Erro ao atualizar evento');
         }
         
     } catch (error) {
-        console.error('💥 Erro ao salvar evento:', error);
+        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao salvar evento:', error);
         
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -864,30 +865,30 @@ async function salvarEdicaoEvento(event) {
     }
 }
 
-// Função para excluir evento
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para excluir evento
 async function excluirEvento(eventoId) {
-    console.log('🗑️ Iniciando exclusão do evento:', eventoId);
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬â€Ã¢â‚¬ËœÃƒÂ¯Ã‚Â¸Ã‚Â Iniciando exclusÃƒÆ’Ã‚Â£o do evento:', eventoId);
     
     try {
-        // 1. Verificar dependências primeiro
-        const response = await fetch(`../../../api/evento/check_dependencies.php?evento_id=${eventoId}`);
+        // 1. Verificar dependÃƒÆ’Ã‚Âªncias primeiro
+        const response = await fetch(`${window.API_BASE || '/api'}/evento/check_dependencies.php?evento_id=${eventoId}`);
         const data = await response.json();
         
         if (!data.success) {
-            Swal.fire('Erro', data.message || 'Erro ao verificar dependências do evento', 'error');
+            Swal.fire('Erro', data.message || 'Erro ao verificar dependÃƒÆ’Ã‚Âªncias do evento', 'error');
             return;
         }
         
         const { evento, pode_excluir, motivo_bloqueio, dependencias } = data.data;
         
-        // 2. Se não pode excluir, mostrar motivo
+        // 2. Se nÃƒÆ’Ã‚Â£o pode excluir, mostrar motivo
         if (!pode_excluir) {
             Swal.fire({
-                title: 'Não é possível excluir',
+                title: 'NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© possÃƒÆ’Ã‚Â­vel excluir',
                 html: `
                     <div class="text-left">
                         <p class="mb-3"><strong>Motivo:</strong> ${motivo_bloqueio}</p>
-                        <p class="mb-3"><strong>Dependências encontradas:</strong></p>
+                        <p class="mb-3"><strong>DependÃƒÆ’Ã‚Âªncias encontradas:</strong></p>
                         <ul class="list-disc list-inside space-y-1">
                             ${dependencias.map(dep => `
                                 <li class="text-red-600">
@@ -896,7 +897,7 @@ async function excluirEvento(eventoId) {
                             `).join('')}
                         </ul>
                         <p class="mt-3 text-sm text-gray-600">
-                            Entre em contato com o suporte para mais informações.
+                            Entre em contato com o suporte para mais informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes.
                         </p>
                     </div>
                 `,
@@ -906,16 +907,16 @@ async function excluirEvento(eventoId) {
             return;
         }
         
-        // 3. Se tem dependências não críticas, avisar
+        // 3. Se tem dependÃƒÆ’Ã‚Âªncias nÃƒÆ’Ã‚Â£o crÃƒÆ’Ã‚Â­ticas, avisar
         if (dependencias.length > 0) {
-            const dependenciasNaoCriticas = dependencias.filter(dep => dep.nivel !== 'CRÍTICO');
+            const dependenciasNaoCriticas = dependencias.filter(dep => dep.nivel !== 'CRÃƒÆ’Ã‚ÂTICO');
             
             if (dependenciasNaoCriticas.length > 0) {
                 const result = await Swal.fire({
-                    title: 'Atenção!',
+                    title: 'AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o!',
                     html: `
                         <div class="text-left">
-                            <p class="mb-3">Este evento possui configurações que serão perdidas:</p>
+                            <p class="mb-3">Este evento possui configuraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes que serÃƒÆ’Ã‚Â£o perdidas:</p>
                             <ul class="list-disc list-inside space-y-1">
                                 ${dependenciasNaoCriticas.map(dep => `
                                     <li class="text-orange-600">
@@ -942,15 +943,15 @@ async function excluirEvento(eventoId) {
             }
         }
         
-        // 4. Confirmar exclusão final
+        // 4. Confirmar exclusÃƒÆ’Ã‚Â£o final
         const confirmResult = await Swal.fire({
-            title: 'Confirmar Exclusão',
+            title: 'Confirmar ExclusÃƒÆ’Ã‚Â£o',
             html: `
                 <div class="text-center">
                     <p class="mb-3">Tem certeza que deseja excluir o evento:</p>
                     <p class="font-bold text-lg">"${evento.nome}"</p>
                     <p class="mt-3 text-sm text-gray-600">
-                        Esta ação não pode ser desfeita.
+                        Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.
                     </p>
                 </div>
             `,
@@ -966,21 +967,21 @@ async function excluirEvento(eventoId) {
             return;
         }
         
-        // 5. Executar exclusão
-        const deleteResponse = await fetch('../../../api/evento/soft_delete.php', {
+        // 5. Executar exclusÃƒÆ’Ã‚Â£o
+        const deleteResponse = await fetch((window.API_BASE || '/api') + '/evento/soft_delete.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `evento_id=${eventoId}&motivo_exclusao=Exclusão solicitada pelo organizador`
+            body: `evento_id=${eventoId}&motivo_exclusao=ExclusÃƒÆ’Ã‚Â£o solicitada pelo organizador`
         });
         
         const deleteData = await deleteResponse.json();
         
         if (deleteData.success) {
             Swal.fire({
-                title: 'Evento Excluído!',
-                text: 'O evento foi excluído com sucesso.',
+                title: 'Evento ExcluÃƒÆ’Ã‚Â­do!',
+                text: 'O evento foi excluÃƒÆ’Ã‚Â­do com sucesso.',
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
@@ -997,22 +998,22 @@ async function excluirEvento(eventoId) {
     }
 }
 
-// Função para aplicar filtros
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para aplicar filtros
 function aplicarFiltros() {
-    console.log('🔍 Aplicando filtros de eventos');
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Aplicando filtros de eventos');
     
     // Coletar valores dos filtros
     const status = document.getElementById('filtro-status').value;
     const data = document.getElementById('filtro-data').value;
     const busca = document.getElementById('busca').value;
     
-    console.log('📋 Filtros aplicados:', { status, data, busca });
+    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Filtros aplicados:', { status, data, busca });
     
     // Recarregar eventos com os filtros
     carregarMeusEventos(1);
 }
 
-// Função para renderizar paginação
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para renderizar paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
 function renderizarPaginacao(paginacao, paginaAtual) {
     const container = document.getElementById('paginas');
     const btnAnterior = document.getElementById('btn-anterior');
@@ -1023,14 +1024,14 @@ function renderizarPaginacao(paginacao, paginaAtual) {
         return;
     }
     
-    // Configurar botões anterior/próximo
+    // Configurar botÃƒÆ’Ã‚Âµes anterior/prÃƒÆ’Ã‚Â³ximo
     btnAnterior.disabled = paginaAtual <= 1;
     btnAnterior.onclick = () => carregarMeusEventos(paginaAtual - 1);
     
     btnProximo.disabled = paginaAtual >= paginacao.total_paginas;
     btnProximo.onclick = () => carregarMeusEventos(paginaAtual + 1);
     
-    // Gerar páginas
+    // Gerar pÃƒÆ’Ã‚Â¡ginas
     container.innerHTML = '';
     const inicio = Math.max(1, paginaAtual - 2);
     const fim = Math.min(paginacao.total_paginas, paginaAtual + 2);
@@ -1048,7 +1049,7 @@ function renderizarPaginacao(paginacao, paginaAtual) {
     }
 }
 
-// Função para preview da nova imagem
+// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para preview da nova imagem
 function previewNovaImagem(input, eventoId) {
     const preview = document.getElementById(`preview-imagem-${eventoId}`);
     
@@ -1067,20 +1068,20 @@ function previewNovaImagem(input, eventoId) {
 }
 
 
-// Detectar página e chamar função correta
+// Detectar pÃƒÆ’Ã‚Â¡gina e chamar funÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o correta
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOMContentLoaded - Detectando página');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ DOMContentLoaded - Detectando pÃƒÆ’Ã‚Â¡gina');
     
     if (document.getElementById('dashboard-content')) {
-        console.log('📊 Página detectada: Dashboard');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  PÃƒÆ’Ã‚Â¡gina detectada: Dashboard');
         // carregarDashboard(); // This function is not defined in the original file
     } else if (document.getElementById('eventos-container')) {
-        console.log('📅 Página detectada: Meus Eventos');
-        console.log('📅 Container encontrado:', document.getElementById('eventos-container'));
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¦ PÃƒÆ’Ã‚Â¡gina detectada: Meus Eventos');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¦ Container encontrado:', document.getElementById('eventos-container'));
         carregarMeusEventos();
     } else {
-        console.log('❌ Nenhuma página conhecida detectada');
-        console.log('❌ Elementos encontrados:', {
+        console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Nenhuma pÃƒÆ’Ã‚Â¡gina conhecida detectada');
+        console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Elementos encontrados:', {
             dashboard: document.getElementById('dashboard-content'),
             eventos: document.getElementById('eventos-container')
         });
@@ -1093,9 +1094,9 @@ function obterItensPendentes(status) {
         return [];
     }
     
-    // Mapear nomes para exibição (trocar Programação por Checklist)
+    // Mapear nomes para exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (trocar ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o por Checklist)
     const nomeExibicao = {
-        'Programação': 'Checklist',
+        'ProgramaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o': 'Checklist',
         'programacao': 'Checklist'
     };
     

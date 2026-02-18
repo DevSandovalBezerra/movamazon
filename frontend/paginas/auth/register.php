@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Iniciar output buffering
 if (!ob_get_level()) {
     ob_start();
@@ -6,7 +6,7 @@ if (!ob_get_level()) {
 
 $pageTitle = 'Criar Conta';
 
-// Verificar se há redirecionamento pendente
+// Verificar se hÃ¡ redirecionamento pendente
 $redirect = $_GET['redirect'] ?? '';
 $evento_id = isset($_GET['evento_id']) ? intval($_GET['evento_id']) : 0;
 
@@ -28,7 +28,7 @@ include '../../includes/navbar.php';
                 </p>
             </div>
 
-            <!-- Formulário de Cadastro -->
+            <!-- FormulÃ¡rio de Cadastro -->
             <form id="registerForm" class="space-y-6">
                 <!-- Dados Pessoais -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -70,7 +70,7 @@ include '../../includes/navbar.php';
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="sexo" class="block text-sm font-medium text-gray-700 mb-2">
-                            Gênero *
+                            GÃªnero *
                         </label>
                         <select id="sexo" name="sexo" required class="block w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900">
                             <option value="">Selecione</option>
@@ -97,7 +97,7 @@ include '../../includes/navbar.php';
                         </label>
                         <div class="relative">
                             <input type="password" id="senha" name="senha" required
-                                   class="block w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900" placeholder="Mínimo 6 caracteres">
+                                   class="block w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900" placeholder="MÃ­nimo 6 caracteres">
                             <button type="button" id="toggleSenha" class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                 <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
                             </button>
@@ -118,14 +118,14 @@ include '../../includes/navbar.php';
                     </div>
                 </div>
 
-                <!-- Dados Obrigatórios para Boleto Bancário -->
+                <!-- Dados ObrigatÃ³rios para Boleto BancÃ¡rio -->
                 <fieldset class="border-2 border-primary-600 rounded-lg p-6 mt-6">
                     <legend class="px-2 text-sm font-semibold text-primary-600">
                         <i class="fas fa-file-invoice-dollar mr-1"></i>
-                        Dados Obrigatórios para Boleto Bancário
+                        Dados ObrigatÃ³rios para Boleto BancÃ¡rio
                     </legend>
                     <p class="text-xs text-gray-600 mb-4">
-                        Estes dados são necessários caso você escolha pagar com boleto bancário.
+                        Estes dados sÃ£o necessÃ¡rios caso vocÃª escolha pagar com boleto bancÃ¡rio.
                     </p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -149,7 +149,7 @@ include '../../includes/navbar.php';
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
                         <div>
                             <label for="numero" class="block text-sm font-medium text-gray-700 mb-2">
-                                Número *
+                                NÃºmero *
                             </label>
                             <input type="text" id="numero" name="numero" 
                                    class="block w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900" placeholder="123">
@@ -188,29 +188,29 @@ include '../../includes/navbar.php';
                             <option value="">Selecione o estado</option>
                             <option value="AC">Acre</option>
                             <option value="AL">Alagoas</option>
-                            <option value="AP">Amapá</option>
+                            <option value="AP">AmapÃ¡</option>
                             <option value="AM">Amazonas</option>
                             <option value="BA">Bahia</option>
-                            <option value="CE">Ceará</option>
+                            <option value="CE">CearÃ¡</option>
                             <option value="DF">Distrito Federal</option>
-                            <option value="ES">Espírito Santo</option>
-                            <option value="GO">Goiás</option>
-                            <option value="MA">Maranhão</option>
+                            <option value="ES">EspÃ­rito Santo</option>
+                            <option value="GO">GoiÃ¡s</option>
+                            <option value="MA">MaranhÃ£o</option>
                             <option value="MT">Mato Grosso</option>
                             <option value="MS">Mato Grosso do Sul</option>
                             <option value="MG">Minas Gerais</option>
-                            <option value="PA">Pará</option>
-                            <option value="PB">Paraíba</option>
-                            <option value="PR">Paraná</option>
+                            <option value="PA">ParÃ¡</option>
+                            <option value="PB">ParaÃ­ba</option>
+                            <option value="PR">ParanÃ¡</option>
                             <option value="PE">Pernambuco</option>
-                            <option value="PI">Piauí</option>
+                            <option value="PI">PiauÃ­</option>
                             <option value="RJ">Rio de Janeiro</option>
                             <option value="RN">Rio Grande do Norte</option>
                             <option value="RS">Rio Grande do Sul</option>
-                            <option value="RO">Rondônia</option>
+                            <option value="RO">RondÃ´nia</option>
                             <option value="RR">Roraima</option>
                             <option value="SC">Santa Catarina</option>
-                            <option value="SP">São Paulo</option>
+                            <option value="SP">SÃ£o Paulo</option>
                             <option value="SE">Sergipe</option>
                             <option value="TO">Tocantins</option>
                         </select>
@@ -226,7 +226,7 @@ include '../../includes/navbar.php';
                     <div class="ml-3 text-sm">
                         <label for="aceitar_termos" class="text-gray-700">
                             Eu aceito os <a href="#" class="text-primary-600 hover:text-primary-700 underline">Termos de Uso</a> 
-                            e a <a href="#" class="text-primary-600 hover:text-primary-700 underline">Política de Privacidade</a>
+                            e a <a href="#" class="text-primary-600 hover:text-primary-700 underline">PolÃ­tica de Privacidade</a>
                         </label>
                     </div>
                 </div>
@@ -254,7 +254,7 @@ include '../../includes/navbar.php';
             <!-- Link para Login -->
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
-                    Já tem uma conta?
+                    JÃ¡ tem uma conta?
                     <a href="login.php<?php echo $redirect ? '?redirect=' . $redirect . ($evento_id ? '&evento_id=' . $evento_id : '') : ''; ?>" 
                        class="text-primary-600 hover:text-primary-700 font-medium underline">
                         Fazer login
@@ -263,14 +263,14 @@ include '../../includes/navbar.php';
             </div>
         </div>
 
-        <!-- Informações do Evento -->
+        <!-- InformaÃ§Ãµes do Evento -->
         <?php if ($evento_id > 0): ?>
         <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
             <div class="flex items-center">
                 <i class="fas fa-info-circle text-blue-600 mr-3"></i>
                 <div>
                     <h3 class="text-sm font-medium text-blue-800">Evento Selecionado</h3>
-                    <p class="text-sm text-blue-600">Após criar sua conta, você será redirecionado para a inscrição no evento.</p>
+                    <p class="text-sm text-blue-600">ApÃ³s criar sua conta, vocÃª serÃ¡ redirecionado para a inscriÃ§Ã£o no evento.</p>
                 </div>
             </div>
         </div>
@@ -284,11 +284,12 @@ include '../../includes/navbar.php';
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
 <script>
-// Variáveis globais
+if (window.getApiBase) { window.getApiBase(); }
+</script>
+<script>
+// VariÃ¡veis globais
 window.eventoId = <?= $evento_id ?>;
 window.redirect = '<?= $redirect ?>';
-window.API_BASE = '../../../api';
-
 // Toggle de senhas
 function setupPasswordToggle(inputId, buttonId) {
     const btn = document.getElementById(buttonId);
@@ -313,32 +314,24 @@ function setupPasswordToggle(inputId, buttonId) {
 setupPasswordToggle('senha', 'toggleSenha');
 setupPasswordToggle('confirmar_senha', 'toggleConfirmarSenha');
 
-// Máscara de CPF
+// MÃ¡scara de CPF
 document.getElementById('documento').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
     if (value.length <= 11) {
-        value = value.replace(/(\d{3})(\d)/, '$1.$2');
-        value = value.replace(/(\d{3})(\d)/, '$1.$2');
-        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
         e.target.value = value;
     }
 });
 
-// Máscara de CEP e busca automática via ViaCEP
+// MÃ¡scara de CEP e busca automÃ¡tica via ViaCEP
 document.getElementById('cep').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
     if (value.length <= 8) {
-        value = value.replace(/(\d{5})(\d)/, '$1-$2');
         e.target.value = value;
         
-        // Buscar endereço quando CEP tiver 8 dígitos
-        if (value.replace(/\D/g, '').length === 8) {
-            buscarEnderecoPorCEP(value.replace(/\D/g, ''));
+        // Buscar endereÃ§o quando CEP tiver 8 dÃ­gitos
         }
     }
 });
 
-// Função para buscar endereço via ViaCEP
+// FunÃ§Ã£o para buscar endereÃ§o via ViaCEP
 async function buscarEnderecoPorCEP(cep) {
     try {
         const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -350,27 +343,24 @@ async function buscarEnderecoPorCEP(cep) {
             document.getElementById('cidade').value = data.localidade || '';
             document.getElementById('uf').value = data.uf || '';
             
-            // Focar no campo número após preencher
+            // Focar no campo nÃºmero apÃ³s preencher
             document.getElementById('numero').focus();
         } else {
-            console.log('CEP não encontrado');
+            console.log('CEP nÃ£o encontrado');
         }
     } catch (error) {
         console.error('Erro ao buscar CEP:', error);
     }
 }
 
-// Máscara de telefone
+// MÃ¡scara de telefone
 document.getElementById('telefone').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
     if (value.length <= 11) {
-        value = value.replace(/(\d{2})(\d)/, '($1) $2');
-        value = value.replace(/(\d{5})(\d)/, '$1-$2');
         e.target.value = value;
     }
 });
 
-// Formulário de cadastro
+// FormulÃ¡rio de cadastro
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -381,8 +371,8 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     if (senha !== confirmarSenha) {
         Swal.fire({
             icon: 'error',
-            title: 'Senhas não coincidem',
-            text: 'As senhas digitadas não são iguais. Tente novamente.',
+            title: 'Senhas nÃ£o coincidem',
+            text: 'As senhas digitadas nÃ£o sÃ£o iguais. Tente novamente.',
             confirmButtonText: 'OK'
         });
         return;
@@ -432,7 +422,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             Swal.fire({
                 icon: 'success',
                 title: 'Conta criada!',
-                text: window.redirect === 'inscricao' ? 'Redirecionando para a inscrição...' : 'Redirecionando para login...',
+                text: window.redirect === 'inscricao' ? 'Redirecionando para a inscriÃ§Ã£o...' : 'Redirecionando para login...',
                 timer: 2000,
                 showConfirmButton: false
             }).then(() => {
@@ -450,7 +440,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             Swal.fire({
                 icon: 'error',
                 title: 'Erro no cadastro',
-                text: result.message || 'Não foi possível criar sua conta',
+                text: result.message || 'NÃ£o foi possÃ­vel criar sua conta',
                 confirmButtonText: 'Tentar novamente'
             });
         }
@@ -458,10 +448,15 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         console.error('Erro no cadastro:', error);
         Swal.fire({
             icon: 'error',
-            title: 'Erro de conexão',
-            text: 'Não foi possível conectar ao servidor. Tente novamente.',
+            title: 'Erro de conexÃ£o',
+            text: 'NÃ£o foi possÃ­vel conectar ao servidor. Tente novamente.',
             confirmButtonText: 'OK'
         });
     }
 });
 </script>
+
+
+
+
+

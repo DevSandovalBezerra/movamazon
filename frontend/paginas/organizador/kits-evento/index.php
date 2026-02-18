@@ -51,7 +51,7 @@ ob_start();
         <div class="flex space-x-2">
             <button id="btnAplicarTemplate" class="btn-primary text-xs sm:text-sm py-2 sm:py-2.5">
                 <i class="fas fa-magic mr-2"></i>
-                Aplicar Template
+                Criar Kit
             </button>
             <!-- <button id="btnNovoKit" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>
@@ -165,13 +165,13 @@ ob_start();
         </div>
     </div>
 
-    <!-- Modal Aplicar Template -->
+    <!-- Modal Criar Kit -->
     <div id="modalAplicarTemplate" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900">Aplicar Template</h2>
+                        <h2 class="text-2xl font-bold text-gray-900">Criar Kit</h2>
                         <button onclick="fecharModalAplicarTemplate()" class="text-gray-400 hover:text-gray-600">
                             <i class="fas fa-times text-xl"></i>
                         </button>
@@ -204,7 +204,7 @@ ob_start();
                                 Cancelar
                             </button>
                             <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg">
-                                Aplicar Template
+                                Criar Kit
                             </button>
                         </div>
                     </form>
