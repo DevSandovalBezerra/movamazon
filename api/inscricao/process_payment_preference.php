@@ -3,6 +3,7 @@ header('Content-Type: application/json');
 require_once '../db.php';
 require_once '../helpers/inscricao_logger.php';
 require_once '../mercadolivre/MercadoPagoClient.php';
+require_once '../mercadolivre/payment_helper.php';
 
 // Configurações do Mercado Pago
 $config = require '../mercadolivre/config.php';
@@ -28,8 +29,29 @@ try {
         throw new Exception('Dados não fornecidos');
     }
 
-    // Validar campos obrigatórios
-    $required_fields = ['token', 'payment_method_id', 'transaction_amount', 'payer'];
+    $payment_method_id = $input['payment_method_id'] ?? '';
+    $payment_type_id = $input['payment_type_id'] ?? '';
+
+    if ($payment_method_id === '') {
+        throw new Exception('Campo obrigatório não fornecido: payment_method_id');
+    }
+
+    // PIX/Boleto não usam token; devem usar endpoints dedicados
+    $is_pix = $payment_method_id === 'pix';
+    $is_boleto = $payment_type_id === 'ticket' || (is_string($payment_method_id) && str_starts_with($payment_method_id, 'bol'));
+    if ($is_pix || $is_boleto) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Método de pagamento inválido para este endpoint.',
+            'message' => 'Use o endpoint correto: create_pix.php ou create_boleto.php.',
+            'redirect_endpoint' => $is_pix ? 'inscricao/create_pix.php' : 'inscricao/create_boleto.php'
+        ]);
+        exit;
+    }
+
+    // Validar campos obrigatórios (cartão)
+    $required_fields = ['token', 'transaction_amount', 'payer'];
     foreach ($required_fields as $field) {
         if (!isset($input[$field])) {
             throw new Exception("Campo obrigatório não fornecido: $field");
@@ -41,7 +63,7 @@ try {
         throw new Exception('Dados do pagador incompletos');
     }
 
-    $isPix = isset($input['payment_method_id']) && $input['payment_method_id'] === 'pix';
+    $isPix = $payment_method_id === 'pix';
 
     $statement_descriptor = $config['statement_descriptor'] ?? 'MOVAMAZON';
 
@@ -57,7 +79,7 @@ try {
                 'number' => $input['payer']['identification']['number']
             ]
         ],
-        'payment_method_id' => $input['payment_method_id'],
+        'payment_method_id' => $payment_method_id,
         'token' => $input['token'],
         'transaction_amount' => (float)$input['transaction_amount']
     ];
@@ -69,6 +91,7 @@ try {
 
     // external_reference para webhook e rastreio
     $inscricao_id_input = isset($input['inscricao_id']) ? (int)$input['inscricao_id'] : 0;
+    $inscricao_user_id = null;
     if ($inscricao_id_input > 0) {
         $payment_data['external_reference'] = 'MOVAMAZON_' . $inscricao_id_input;
     }
@@ -76,7 +99,7 @@ try {
     // Items para melhorar aprovação (exigência MP): buscar por inscricao_id quando enviado
     if ($inscricao_id_input > 0) {
         $stmt_ins = $pdo->prepare("
-            SELECT i.id, i.valor_total, i.produtos_extras_ids,
+            SELECT i.id, i.usuario_id, i.external_reference, i.valor_total, i.produtos_extras_ids,
                    e.nome as evento_nome, m.nome as modalidade_nome
             FROM inscricoes i
             LEFT JOIN eventos e ON i.evento_id = e.id
@@ -86,6 +109,7 @@ try {
         $stmt_ins->execute([$inscricao_id_input]);
         $insc = $stmt_ins->fetch(PDO::FETCH_ASSOC);
         if ($insc) {
+            $inscricao_user_id = $insc['usuario_id'] ?? null;
             $evento_nome = $insc['evento_nome'] ?? 'Evento';
             $modalidade_nome = $insc['modalidade_nome'] ?? 'Inscrição';
             $valor_total_ins = (float)$insc['valor_total'];
@@ -135,6 +159,85 @@ try {
 
     // Log da operação
     error_log("Pagamento processado: " . $payment_result['id'] . " - Status: " . $payment_result['status']);
+
+    // Registrar tentativa em pagamentos_ml (sem aguardar webhook)
+    if ($inscricao_id_input > 0 && !empty($inscricao_user_id)) {
+        try {
+            $pdo->query("SELECT 1 FROM pagamentos_ml LIMIT 1");
+            $payment_id_str = (string)$payment_result['id'];
+            $status_mp = (string)($payment_result['status'] ?? '');
+            $status_pagamento_ml = PaymentHelper::mapearStatusPagamentosML($status_mp);
+            $preference_id = $payment_result['preference_id'] ?? ('card_' . $payment_id_str);
+            $init_point = $payment_result['point_of_interaction']['transaction_data']['ticket_url']
+                ?? $payment_result['transaction_details']['external_resource_url']
+                ?? 'direct_payment';
+            $dados_pagamento_json = json_encode($payment_result, JSON_UNESCAPED_UNICODE);
+            $valor_pago = ($status_pagamento_ml === 'pago') ? ($payment_result['transaction_amount'] ?? null) : null;
+            $metodo_pagamento = $payment_result['payment_method_id'] ?? $payment_method_id;
+            $parcelas = $payment_result['installments'] ?? ($input['installments'] ?? 1);
+            $taxa_ml = null;
+
+            $stmt_check_ml = $pdo->prepare("SELECT id, status FROM pagamentos_ml WHERE payment_id = ? LIMIT 1");
+            $stmt_check_ml->execute([$payment_id_str]);
+            $pagamento_ml_existente = $stmt_check_ml->fetch(PDO::FETCH_ASSOC);
+
+            if ($pagamento_ml_existente) {
+                $status_final = $pagamento_ml_existente['status'] === 'pago' && $status_pagamento_ml !== 'pago'
+                    ? 'pago'
+                    : $status_pagamento_ml;
+                $stmt_update_ml = $pdo->prepare("
+                    UPDATE pagamentos_ml SET 
+                        status = ?,
+                        valor_pago = COALESCE(valor_pago, ?),
+                        metodo_pagamento = COALESCE(metodo_pagamento, ?),
+                        parcelas = COALESCE(parcelas, ?),
+                        dados_pagamento = COALESCE(dados_pagamento, ?),
+                        preference_id = COALESCE(preference_id, ?),
+                        init_point = COALESCE(init_point, ?),
+                        data_atualizacao = NOW()
+                    WHERE id = ?
+                ");
+                $stmt_update_ml->execute([
+                    $status_final,
+                    $valor_pago,
+                    $metodo_pagamento,
+                    $parcelas,
+                    $dados_pagamento_json,
+                    $preference_id,
+                    $init_point,
+                    $pagamento_ml_existente['id']
+                ]);
+            } else {
+                $stmt_insert_ml = $pdo->prepare("
+                    INSERT INTO pagamentos_ml (
+                        inscricao_id, preference_id, payment_id, init_point, status,
+                        valor_pago, metodo_pagamento, parcelas, taxa_ml,
+                        dados_pagamento, user_id, data_criacao, data_atualizacao
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+                ");
+                $stmt_insert_ml->execute([
+                    $inscricao_id_input,
+                    $preference_id,
+                    $payment_id_str,
+                    $init_point,
+                    $status_pagamento_ml,
+                    $valor_pago,
+                    $metodo_pagamento,
+                    $parcelas,
+                    $taxa_ml,
+                    $dados_pagamento_json,
+                    $inscricao_user_id
+                ]);
+            }
+        } catch (Exception $e) {
+            error_log("PROCESS_PAYMENT - Aviso: falha ao registrar pagamentos_ml: " . $e->getMessage());
+            logInscricaoPagamento('WARNING', 'ERRO_REGISTRO_PAGAMENTOS_ML_CARTAO', [
+                'inscricao_id' => $inscricao_id_input,
+                'payment_id' => (string)$payment_result['id'],
+                'erro' => $e->getMessage()
+            ]);
+        }
+    }
     
     // Log success: pagamento processado
     logInscricaoPagamento('SUCCESS', 'PAGAMENTO_PROCESSADO', [

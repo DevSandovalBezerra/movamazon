@@ -442,6 +442,7 @@ try {
         $status_map = [
             'approved' => 'pago',
             'pending' => 'pendente',
+            'in_process' => 'pendente',
             'rejected' => 'rejeitado',
             'cancelled' => 'cancelado'
         ];
@@ -459,6 +460,82 @@ try {
     $stmt->execute([$status_pagamento, $external_ref, $dateOfExpirationFormatted, $inscricaoId]);
     
     error_log("BOLETO INSCRICAO - Inscrição atualizada: ID=$inscricaoId, Status=$status_pagamento, PaymentID=$paymentId");
+
+    // Registrar tentativa em pagamentos_ml (sem aguardar webhook)
+    try {
+        $pdo->query("SELECT 1 FROM pagamentos_ml LIMIT 1");
+        $payment_id_str = (string)$paymentId;
+        $preference_id = $boletoData['preference_id'] ?? ('boleto_' . $payment_id_str);
+        $init_point = $externalResourceUrl ?: $ticketUrl;
+        if ($init_point === '') {
+            $init_point = 'boleto_' . $payment_id_str;
+        }
+        $dados_pagamento_json = json_encode($boletoData, JSON_UNESCAPED_UNICODE);
+        $valor_pago = ($status_pagamento === 'pago') ? $valorTotal : null;
+        $metodo_pagamento = $payment_method_id;
+        $parcelas = 1;
+        $taxa_ml = null;
+
+        $stmt_check_ml = $pdo->prepare("SELECT id, status FROM pagamentos_ml WHERE payment_id = ? LIMIT 1");
+        $stmt_check_ml->execute([$payment_id_str]);
+        $pagamento_ml_existente = $stmt_check_ml->fetch(PDO::FETCH_ASSOC);
+
+        if ($pagamento_ml_existente) {
+            $status_final = $pagamento_ml_existente['status'] === 'pago' && $status_pagamento !== 'pago'
+                ? 'pago'
+                : $status_pagamento;
+            $stmt_update_ml = $pdo->prepare("
+                UPDATE pagamentos_ml SET 
+                    status = ?,
+                    valor_pago = COALESCE(valor_pago, ?),
+                    metodo_pagamento = COALESCE(metodo_pagamento, ?),
+                    parcelas = COALESCE(parcelas, ?),
+                    dados_pagamento = COALESCE(dados_pagamento, ?),
+                    preference_id = COALESCE(preference_id, ?),
+                    init_point = COALESCE(init_point, ?),
+                    data_atualizacao = NOW()
+                WHERE id = ?
+            ");
+            $stmt_update_ml->execute([
+                $status_final,
+                $valor_pago,
+                $metodo_pagamento,
+                $parcelas,
+                $dados_pagamento_json,
+                $preference_id,
+                $init_point,
+                $pagamento_ml_existente['id']
+            ]);
+        } else {
+            $stmt_insert_ml = $pdo->prepare("
+                INSERT INTO pagamentos_ml (
+                    inscricao_id, preference_id, payment_id, init_point, status,
+                    valor_pago, metodo_pagamento, parcelas, taxa_ml,
+                    dados_pagamento, user_id, data_criacao, data_atualizacao
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+            ");
+            $stmt_insert_ml->execute([
+                $inscricaoId,
+                $preference_id,
+                $payment_id_str,
+                $init_point,
+                $status_pagamento,
+                $valor_pago,
+                $metodo_pagamento,
+                $parcelas,
+                $taxa_ml,
+                $dados_pagamento_json,
+                $inscricao['usuario_id']
+            ]);
+        }
+    } catch (Exception $e) {
+        error_log("BOLETO INSCRICAO - Aviso: falha ao registrar pagamentos_ml: " . $e->getMessage());
+        logInscricaoPagamento('WARNING', 'ERRO_REGISTRO_PAGAMENTOS_ML_BOLETO', [
+            'inscricao_id' => $inscricaoId,
+            'payment_id' => (string)$paymentId,
+            'erro' => $e->getMessage()
+        ]);
+    }
     
     // Log success: boleto gerado com sucesso
     logInscricaoPagamento('SUCCESS', 'BOLETO_GERADO', [

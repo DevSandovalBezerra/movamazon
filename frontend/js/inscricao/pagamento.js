@@ -175,6 +175,29 @@ const renderPaymentBrick = async (bricksBuilder) => {
                 console.log("Form Data:", formData);
 
                 return new Promise((resolve, reject) => {
+                    const paymentMethodId = formData?.payment_method_id || selectedPaymentMethod?.payment_method_id || selectedPaymentMethod?.id || '';
+                    const paymentTypeId = formData?.payment_type_id || selectedPaymentMethod?.payment_type_id || selectedPaymentMethod?.type || '';
+                    const isPix = paymentMethodId === 'pix';
+                    const isBoleto = paymentTypeId === 'ticket' || (typeof paymentMethodId === 'string' && paymentMethodId.startsWith('bol'));
+
+                    if (isPix) {
+                        if (typeof gerarPixPagamento === 'function') {
+                            gerarPixPagamento().then(resolve).catch(reject);
+                        } else {
+                            reject(new Error('PIX nÃ£o disponÃ­vel neste fluxo.'));
+                        }
+                        return;
+                    }
+
+                    if (isBoleto) {
+                        if (typeof gerarBoletoPagamento === 'function') {
+                            gerarBoletoPagamento().then(resolve).catch(reject);
+                        } else {
+                            reject(new Error('Boleto nÃ£o disponÃ­vel neste fluxo.'));
+                        }
+                        return;
+                    }
+
                     const payload = {
                         ...formData,
                         device_id: (typeof window.MP_DEVICE_SESSION_ID !== 'undefined' ? window.MP_DEVICE_SESSION_ID : '') || '',

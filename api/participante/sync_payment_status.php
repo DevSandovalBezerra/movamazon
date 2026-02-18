@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 /**
  * Endpoint para sincronizar status de pagamento
  * 1. Verifica a tabela pagamentos_ml
- * 2. Se não houver registro (ex.: PIX), consulta a API do Mercado Pago usando external_reference como payment_id
+ * 2. Se nÃ£o houver registro (ex.: PIX), consulta a API do Mercado Pago usando external_reference como payment_id
  */
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -15,7 +15,7 @@ require_once __DIR__ . '/../mercadolivre/payment_helper.php';
 
 header('Content-Type: application/json');
 
-// Verificar autenticação
+// Verificar autenticaÃ§Ã£o
 if (!isset($_SESSION['user_id'])) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Acesso negado.']);
@@ -27,12 +27,12 @@ $inscricao_id = $_GET['inscricao_id'] ?? null;
 
 if (!$inscricao_id) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'ID da inscrição é obrigatório.']);
+    echo json_encode(['success' => false, 'message' => 'ID da inscriÃ§Ã£o Ã© obrigatÃ³rio.']);
     exit();
 }
 
 try {
-    // ✅ IDEMPOTÊNCIA: Buscar inscrição com TODOS os dados necessários para verificação completa
+    // âœ… IDEMPOTÃŠNCIA: Buscar inscriÃ§Ã£o com TODOS os dados necessÃ¡rios para verificaÃ§Ã£o completa
     $stmt = $pdo->prepare("
         SELECT 
             i.id, 
@@ -51,11 +51,11 @@ try {
 
     if (!$inscricao) {
         http_response_code(404);
-        echo json_encode(['success' => false, 'message' => 'Inscrição não encontrada ou não pertence ao usuário.']);
+        echo json_encode(['success' => false, 'message' => 'InscriÃ§Ã£o nÃ£o encontrada ou nÃ£o pertence ao usuÃ¡rio.']);
         exit();
     }
 
-    // ✅ IDEMPOTÊNCIA: Verificar se existe registro em pagamentos_ml separadamente
+    // âœ… IDEMPOTÃŠNCIA: Verificar se existe registro em pagamentos_ml separadamente
     $tem_registro_ml = 0;
     $pm_payment_id = null;
     $pm_status = null;
@@ -77,12 +77,12 @@ try {
             $pm_status = $ml_data['status'] ?? null;
         }
     } catch (Exception $e) {
-        // Se tabela não existe ou erro, considerar como sem registro
-        error_log("[SYNC_PAYMENT_STATUS] ⚠️ Erro ao verificar pagamentos_ml: " . $e->getMessage());
+        // Se tabela nÃ£o existe ou erro, considerar como sem registro
+        error_log("[SYNC_PAYMENT_STATUS] âš ï¸ Erro ao verificar pagamentos_ml: " . $e->getMessage());
         $tem_registro_ml = 0;
     }
 
-    // ✅ IDEMPOTÊNCIA: Verificar se JÁ ESTÁ TUDO COMPLETO - se sim, retornar sem fazer nada
+    // âœ… IDEMPOTÃŠNCIA: Verificar se JÃ ESTÃ TUDO COMPLETO - se sim, retornar sem fazer nada
     $ja_completo = (
         $inscricao['status'] === 'confirmada' &&
         $inscricao['status_pagamento'] === 'pago' &&
@@ -93,10 +93,10 @@ try {
     );
 
     if ($ja_completo) {
-        error_log("[SYNC_PAYMENT_STATUS] ✅ Inscrição ID $inscricao_id já está completa - nenhuma ação necessária (idempotência)");
+        error_log("[SYNC_PAYMENT_STATUS] âœ… InscriÃ§Ã£o ID $inscricao_id jÃ¡ estÃ¡ completa - nenhuma aÃ§Ã£o necessÃ¡ria (idempotÃªncia)");
         echo json_encode([
             'success' => true,
-            'message' => 'Inscrição já está completa. Nenhuma ação necessária.',
+            'message' => 'InscriÃ§Ã£o jÃ¡ estÃ¡ completa. Nenhuma aÃ§Ã£o necessÃ¡ria.',
             'atualizado' => false,
             'ja_completo' => true,
             'inscricao' => [
@@ -121,44 +121,57 @@ try {
     $stmt_payment->execute([$inscricao_id]);
     $pagamento = $stmt_payment->fetch(PDO::FETCH_ASSOC);
 
-    // PIX: quando não há registro em pagamentos_ml, external_reference pode ser o payment_id (create_pix grava assim)
-    $payment_data_from_api = null; // Armazenar dados completos da API para criar registro em pagamentos_ml
-    if (!$pagamento) {
-        $payment_lookup_key = null;
+    // Consultar API do MP quando nÃ£o hÃ¡ registro OU quando status ainda nÃ£o Ã© final
+    $payment_data_from_api = null; // Armazenar dados completos da API para criar/atualizar pagamentos_ml
+    $payment_lookup_key = null;
+    $should_consult_api = false;
+    if ($pagamento) {
+        $payment_lookup_key = !empty($pagamento['payment_id']) ? (string)$pagamento['payment_id'] : null;
+        if (!$payment_lookup_key) {
+            if (!empty($pm_payment_id)) {
+                $payment_lookup_key = (string)$pm_payment_id;
+            } elseif (!empty($inscricao['external_reference'])) {
+                $payment_lookup_key = (string)$inscricao['external_reference'];
+            }
+        }
+        if ($payment_lookup_key && in_array($pagamento['status'], ['pendente', 'processando'], true)) {
+            $should_consult_api = true;
+        }
+    } else {
+        $should_consult_api = true;
         if (!empty($pm_payment_id)) {
             $payment_lookup_key = (string)$pm_payment_id;
         } elseif (!empty($inscricao['external_reference'])) {
             $payment_lookup_key = (string)$inscricao['external_reference'];
         }
-
-        if ($payment_lookup_key) {
-            try {
-                $paymentHelper = new PaymentHelper();
-                $data = $paymentHelper->consultarStatusPagamento($payment_lookup_key);
-                $payment_data_from_api = $data; // Guardar dados completos
-
-                $payment_id_real = (string)($data['id'] ?? $payment_lookup_key);
-                $status_mp = (string)($data['status'] ?? '');
-                $status_pagamento_ml = PaymentHelper::mapearStatusPagamentosML($status_mp);
-
-                $pagamento = [
-                    'status' => $status_pagamento_ml,
-                    'payment_id' => $payment_id_real,
-                    'data_atualizacao' => date('Y-m-d H:i:s'),
-                    'valor_pago' => $data['transaction_amount'] ?? $inscricao['valor_total'] ?? 0
-                ];
-                error_log("[SYNC_PAYMENT_STATUS] consultou MP lookup_key=$payment_lookup_key, payment_id=$payment_id_real, status=$status_pagamento_ml");
-            } catch (Exception $e) {
-                error_log("[SYNC_PAYMENT_STATUS] Falha ao consultar MP com lookup_key=$payment_lookup_key: " . $e->getMessage());
-            }
-        }
     }
 
-    // ✅ IDEMPOTÊNCIA: Se não encontrou pagamento nem na tabela nem na API, retornar
+    if ($should_consult_api && $payment_lookup_key) {
+        try {
+            $paymentHelper = new PaymentHelper();
+            $data = $paymentHelper->consultarStatusPagamento($payment_lookup_key);
+            $payment_data_from_api = $data; // Guardar dados completos
+
+            $payment_id_real = (string)($data['id'] ?? $payment_lookup_key);
+            $status_mp = (string)($data['status'] ?? '');
+            $status_pagamento_ml = PaymentHelper::mapearStatusPagamentosML($status_mp);
+
+            $pagamento = [
+                'status' => $status_pagamento_ml,
+                'payment_id' => $payment_id_real,
+                'data_atualizacao' => date('Y-m-d H:i:s'),
+                'valor_pago' => $data['transaction_amount'] ?? $inscricao['valor_total'] ?? 0
+            ];
+            error_log("[SYNC_PAYMENT_STATUS] consultou MP lookup_key=$payment_lookup_key, payment_id=$payment_id_real, status=$status_pagamento_ml");
+        } catch (Exception $e) {
+            error_log("[SYNC_PAYMENT_STATUS] Falha ao consultar MP com lookup_key=$payment_lookup_key: " . $e->getMessage());
+        }
+    }
+    // âœ… IDEMPOTÃŠNCIA: Se nÃ£o encontrou pagamento nem na tabela nem na API, retornar
     if (!$pagamento) {
         echo json_encode([
             'success' => false,
-            'message' => 'Nenhum pagamento encontrado para esta inscrição.',
+            'message' => 'Nenhum pagamento encontrado para esta inscriÃ§Ã£o.',
             'inscricao' => [
                 'id' => $inscricao_id,
                 'status' => $inscricao['status'],
@@ -169,19 +182,27 @@ try {
     }
 
     $status_pagamento_ml = $pagamento['status'];
-    
-    // ✅ IDEMPOTÊNCIA: Se já tem registro em pagamentos_ml do banco, usar dados dele
-    // e verificar se precisa atualizar a inscrição
-    if (!$payment_data_from_api && $tem_registro_ml > 0) {
-        // Pagamento já existe no banco - só verificar se inscrição precisa ser atualizada
-        error_log("[SYNC_PAYMENT_STATUS] ✅ Pagamento já existe em pagamentos_ml para inscrição ID $inscricao_id - usando dados do banco");
+
+    // Anti-regressão: não permitir pago -> pendente/processando (exceto cancelado/rejeitado)
+    if ($inscricao['status_pagamento'] === 'pago' && $status_pagamento_ml !== 'pago') {
+        if (!in_array($status_pagamento_ml, ['cancelado', 'rejeitado'], true)) {
+            error_log("[SYNC_PAYMENT_STATUS] ⚠️ Ignorando regressão de status: pago -> $status_pagamento_ml (mantendo pago)");
+            $status_pagamento_ml = 'pago';
+        }
     }
     
-    // Mapear status da tabela pagamentos_ml para status da inscrição
-    // Se status é 'pago', marcar inscrição como confirmada
+    // âœ… IDEMPOTÃŠNCIA: Se jÃ¡ tem registro em pagamentos_ml do banco, usar dados dele
+    // e verificar se precisa atualizar a inscriÃ§Ã£o
+    if (!$payment_data_from_api && $tem_registro_ml > 0) {
+        // Pagamento jÃ¡ existe no banco - sÃ³ verificar se inscriÃ§Ã£o precisa ser atualizada
+        error_log("[SYNC_PAYMENT_STATUS] âœ… Pagamento jÃ¡ existe em pagamentos_ml para inscriÃ§Ã£o ID $inscricao_id - usando dados do banco");
+    }
+    
+    // Mapear status da tabela pagamentos_ml para status da inscriÃ§Ã£o
+    // Se status Ã© 'pago', marcar inscriÃ§Ã£o como confirmada
     $novo_status = ($status_pagamento_ml === 'pago') ? 'confirmada' : $inscricao['status'];
     
-    // Se já está confirmada, manter confirmada (não reverter)
+    // Se jÃ¡ estÃ¡ confirmada, manter confirmada (nÃ£o reverter)
     if ($inscricao['status'] === 'confirmada' && $status_pagamento_ml !== 'pago') {
         $novo_status = 'confirmada';
     }
@@ -189,21 +210,21 @@ try {
     // Gerar numero_inscricao se status for confirmada e numero_inscricao estiver vazio
     $numero_inscricao = null;
     if ($novo_status === 'confirmada' && empty($inscricao['numero_inscricao'])) {
-        // Formato: MOV + YYYYMMDD + - + ID com 4 dígitos
+        // Formato: MOV + YYYYMMDD + - + ID com 4 dÃ­gitos
         $ano = date('Y');
         $mes = str_pad(date('m'), 2, '0', STR_PAD_LEFT);
         $dia = str_pad(date('d'), 2, '0', STR_PAD_LEFT);
         $id_formatado = str_pad($inscricao_id, 4, '0', STR_PAD_LEFT);
         $numero_inscricao = "MOV{$ano}{$mes}{$dia}-{$id_formatado}";
-        error_log("[SYNC_PAYMENT_STATUS] Gerando numero_inscricao: $numero_inscricao para inscrição ID: $inscricao_id");
+        error_log("[SYNC_PAYMENT_STATUS] Gerando numero_inscricao: $numero_inscricao para inscriÃ§Ã£o ID: $inscricao_id");
     }
     
-    // ✅ IDEMPOTÊNCIA: Criar/atualizar registro em pagamentos_ml APENAS se necessário
+    // âœ… IDEMPOTÃŠNCIA: Criar/atualizar registro em pagamentos_ml APENAS se necessÃ¡rio
     $pagamento_ml_criado = false;
     $pagamento_ml_atualizado = false;
     
-    // Só processar se encontrou pagamento via API E ainda não tem registro completo em pagamentos_ml
-    if ($payment_data_from_api && $pagamento && $tem_registro_ml == 0) {
+    // Se encontrou pagamento via API, atualizar/criar pagamentos_ml
+    if ($payment_data_from_api && $pagamento) {
         // Verificar se tabela pagamentos_ml existe
         $hasPagamentosMl = false;
         try {
@@ -216,7 +237,7 @@ try {
         if ($hasPagamentosMl) {
             $payment_id = $pagamento['payment_id'];
             
-            // ✅ IDEMPOTÊNCIA: Verificar novamente se já existe registro (por payment_id OU inscricao_id)
+            // âœ… IDEMPOTÃŠNCIA: Verificar novamente se jÃ¡ existe registro (por payment_id OU inscricao_id)
             $stmt_check_ml = $pdo->prepare("
                 SELECT id, status, payment_id 
                 FROM pagamentos_ml 
@@ -227,7 +248,7 @@ try {
             $pagamento_ml_existente = $stmt_check_ml->fetch(PDO::FETCH_ASSOC);
 
             if ($pagamento_ml_existente) {
-                // ✅ IDEMPOTÊNCIA: Só atualizar se status for diferente ou dados estiverem incompletos
+                // âœ… IDEMPOTÃŠNCIA: SÃ³ atualizar se status for diferente ou dados estiverem incompletos
                 $status_atual_ml = $pagamento_ml_existente['status'];
                 if ($status_atual_ml !== $status_pagamento_ml || empty($pagamento_ml_existente['payment_id'])) {
                     $valor_pago = $pagamento['valor_pago'] ?? $payment_data_from_api['transaction_amount'] ?? $inscricao['valor_total'] ?? 0;
@@ -259,12 +280,12 @@ try {
                         $pagamento_ml_existente['id']
                     ]);
                     $pagamento_ml_atualizado = true;
-                    error_log("[SYNC_PAYMENT_STATUS] ✅ Registro pagamentos_ml atualizado (ID: {$pagamento_ml_existente['id']}) via sync");
+                    error_log("[SYNC_PAYMENT_STATUS] âœ… Registro pagamentos_ml atualizado (ID: {$pagamento_ml_existente['id']}) via sync");
                 } else {
-                    error_log("[SYNC_PAYMENT_STATUS] ✅ Registro pagamentos_ml já está atualizado - nenhuma ação necessária (idempotência)");
+                    error_log("[SYNC_PAYMENT_STATUS] âœ… Registro pagamentos_ml jÃ¡ estÃ¡ atualizado - nenhuma aÃ§Ã£o necessÃ¡ria (idempotÃªncia)");
                 }
             } else {
-                // ✅ IDEMPOTÊNCIA: Criar novo registro APENAS se não existe
+                // âœ… IDEMPOTÃŠNCIA: Criar novo registro APENAS se nÃ£o existe
                 $valor_pago = $pagamento['valor_pago'] ?? $payment_data_from_api['transaction_amount'] ?? $inscricao['valor_total'] ?? 0;
                 $metodo_pagamento = $payment_data_from_api['payment_method_id'] ?? 'pix';
                 $parcelas = $payment_data_from_api['installments'] ?? 1;
@@ -274,7 +295,7 @@ try {
                 $preference_id = $payment_data_from_api['preference_id'] ?? 'sync_' . $payment_id;
                 $init_point = $payment_data_from_api['point_of_interaction']['transaction_data']['ticket_url'] ?? 'https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=' . $preference_id;
 
-                // ✅ CORREÇÃO: 11 colunas que precisam de valores + 2 NOW() para data_criacao e data_atualizacao
+                // âœ… CORREÃ‡ÃƒO: 11 colunas que precisam de valores + 2 NOW() para data_criacao e data_atualizacao
                 $stmt_insert_ml = $pdo->prepare("
                     INSERT INTO pagamentos_ml (
                         inscricao_id, payment_id, preference_id, init_point, status,
@@ -282,7 +303,7 @@ try {
                         dados_pagamento, user_id, data_criacao, data_atualizacao
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
                 ");
-                // ✅ 11 valores correspondendo aos 11 placeholders
+                // âœ… 11 valores correspondendo aos 11 placeholders
                 $stmt_insert_ml->execute([
                     $inscricao_id,        // 1
                     $payment_id,          // 2
@@ -297,16 +318,16 @@ try {
                     $user_id              // 11
                 ]);
                 $pagamento_ml_criado = true;
-                error_log("[SYNC_PAYMENT_STATUS] ⚠️ ATENÇÃO: Registro pagamentos_ml criado via sync (não webhook). Payment ID: $payment_id");
-                error_log("[SYNC_PAYMENT_STATUS] ⚠️ Isso pode indicar que o webhook do Mercado Pago não foi recebido. Verifique a configuração do webhook.");
+                error_log("[SYNC_PAYMENT_STATUS] âš ï¸ ATENÃ‡ÃƒO: Registro pagamentos_ml criado via sync (nÃ£o webhook). Payment ID: $payment_id");
+                error_log("[SYNC_PAYMENT_STATUS] âš ï¸ Isso pode indicar que o webhook do Mercado Pago nÃ£o foi recebido. Verifique a configuraÃ§Ã£o do webhook.");
             }
         }
-    } elseif ($tem_registro_ml > 0) {
-        // ✅ IDEMPOTÊNCIA: Se já tem registro em pagamentos_ml, não precisa criar
-        error_log("[SYNC_PAYMENT_STATUS] ✅ Registro pagamentos_ml já existe para inscrição ID $inscricao_id - nenhuma ação necessária (idempotência)");
+    } elseif (!$payment_data_from_api && $tem_registro_ml > 0) {
+        // âœ… IDEMPOTÃŠNCIA: Se jÃ¡ tem registro em pagamentos_ml, nÃ£o precisa criar
+        error_log("[SYNC_PAYMENT_STATUS] âœ… Registro pagamentos_ml jÃ¡ existe para inscriÃ§Ã£o ID $inscricao_id - nenhuma aÃ§Ã£o necessÃ¡ria (idempotÃªncia)");
     }
 
-    // ✅ IDEMPOTÊNCIA: Atualizar inscrição APENAS se houver mudanças necessárias
+    // âœ… IDEMPOTÃŠNCIA: Atualizar inscriÃ§Ã£o APENAS se houver mudanÃ§as necessÃ¡rias
     $atualizado = false;
     $precisa_atualizar = (
         $inscricao['status'] !== $novo_status || 
@@ -355,15 +376,15 @@ try {
         }
         
         $atualizado = true;
-        $fonte = $pagamento_ml_criado ? 'sync (não webhook)' : ($pagamento_ml_atualizado ? 'sync (atualizado)' : 'sync');
-        error_log("[SYNC_PAYMENT_STATUS] ✅ Inscrição ID $inscricao_id sincronizada via $fonte: status='$novo_status', status_pagamento='$status_pagamento_ml'");
+        $fonte = $pagamento_ml_criado ? 'sync (nÃ£o webhook)' : ($pagamento_ml_atualizado ? 'sync (atualizado)' : 'sync');
+        error_log("[SYNC_PAYMENT_STATUS] âœ… InscriÃ§Ã£o ID $inscricao_id sincronizada via $fonte: status='$novo_status', status_pagamento='$status_pagamento_ml'");
     } else {
-        error_log("[SYNC_PAYMENT_STATUS] ✅ Inscrição ID $inscricao_id já está atualizada - nenhuma ação necessária (idempotência)");
+        error_log("[SYNC_PAYMENT_STATUS] âœ… InscriÃ§Ã£o ID $inscricao_id jÃ¡ estÃ¡ atualizada - nenhuma aÃ§Ã£o necessÃ¡ria (idempotÃªncia)");
     }
 
     echo json_encode([
         'success' => true,
-        'message' => $atualizado ? 'Status sincronizado e atualizado.' : 'Status já está atualizado.',
+        'message' => $atualizado ? 'Status sincronizado e atualizado.' : 'Status jÃ¡ estÃ¡ atualizado.',
         'atualizado' => $atualizado,
         'inscricao' => [
             'id' => $inscricao_id,
@@ -382,8 +403,8 @@ try {
     ]);
 
 } catch (Exception $e) {
-    error_log("[SYNC_PAYMENT_STATUS] ❌ ERRO: " . $e->getMessage());
-    error_log("[SYNC_PAYMENT_STATUS] ❌ Stack trace: " . $e->getTraceAsString());
+    error_log("[SYNC_PAYMENT_STATUS] âŒ ERRO: " . $e->getMessage());
+    error_log("[SYNC_PAYMENT_STATUS] âŒ Stack trace: " . $e->getTraceAsString());
     http_response_code(500);
     echo json_encode([
         'success' => false, 
@@ -391,4 +412,6 @@ try {
         'error_details' => (ini_get('display_errors') ? $e->getTraceAsString() : 'Verifique os logs do servidor')
     ]);
 }
+
+
 

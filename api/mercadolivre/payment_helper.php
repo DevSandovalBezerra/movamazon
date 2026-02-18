@@ -83,7 +83,7 @@ class PaymentHelper {
      * @return string|null ID do pagamento ou null se não encontrado
      */
     public function buscarPaymentIdPorExternalReference($external_reference) {
-        $url = $this->baseUrl . '/payments/search?external_reference=' . urlencode($external_reference) . '&limit=1&offset=0';
+        $url = $this->baseUrl . '/payments/search?external_reference=' . urlencode($external_reference) . '&limit=20&offset=0';
         $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
@@ -106,11 +106,29 @@ class PaymentHelper {
 
         $data = json_decode($response, true);
         $results = $data['results'] ?? [];
-        if (empty($results) || !isset($results[0]['id'])) {
+        if (empty($results)) {
             return null;
         }
 
-        return (string) $results[0]['id'];
+        $best = null;
+        $bestTime = -1;
+        foreach ($results as $result) {
+            if (!isset($result['id'])) {
+                continue;
+            }
+            $ts = $result['date_last_updated'] ?? $result['date_created'] ?? '';
+            $time = $ts ? strtotime($ts) : 0;
+            if ($time >= $bestTime) {
+                $bestTime = $time;
+                $best = $result;
+            }
+        }
+
+        if (!$best || !isset($best['id'])) {
+            return null;
+        }
+
+        return (string) $best['id'];
     }
     
     /**

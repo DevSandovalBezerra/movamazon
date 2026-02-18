@@ -242,13 +242,14 @@ try {
     $ticketUrl = $pixData['point_of_interaction']['transaction_data']['ticket_url'];
 
     // Atualizar inscrição com status de pagamento pendente
-    // O payment_id será armazenado na tabela pagamentos_ml pelo webhook quando o pagamento for confirmado
+    // payment_id é registrado em pagamentos_ml na criação; webhook confirma/atualiza o status
     $status_pagamento = 'processando';
     if (isset($pixData['status'])) {
         // Mapear status do Mercado Pago para status da inscrição
         $status_map = [
             'approved' => 'pago',
             'pending' => 'processando',
+            'in_process' => 'processando',
             'rejected' => 'rejeitado',
             'cancelled' => 'cancelado'
         ];
@@ -265,6 +266,82 @@ try {
     $stmt->execute([$status_pagamento, $external_ref, $inscricaoId]);
     
     error_log("PIX INSCRICAO - Inscrição atualizada: ID=$inscricaoId, Status=$status_pagamento, PaymentID=$paymentId");
+
+    // Registrar tentativa em pagamentos_ml (sem aguardar webhook)
+    try {
+        $pdo->query("SELECT 1 FROM pagamentos_ml LIMIT 1");
+        $payment_id_str = (string)$paymentId;
+        $preference_id = $pixData['preference_id'] ?? ('pix_' . $payment_id_str);
+        $init_point = $ticketUrl ?: ($pixData['point_of_interaction']['transaction_data']['ticket_url'] ?? '');
+        if ($init_point === '') {
+            $init_point = 'pix_' . $payment_id_str;
+        }
+        $dados_pagamento_json = json_encode($pixData, JSON_UNESCAPED_UNICODE);
+        $valor_pago = ($status_pagamento === 'pago') ? $valorTotal : null;
+        $metodo_pagamento = 'pix';
+        $parcelas = 1;
+        $taxa_ml = null;
+
+        $stmt_check_ml = $pdo->prepare("SELECT id, status FROM pagamentos_ml WHERE payment_id = ? LIMIT 1");
+        $stmt_check_ml->execute([$payment_id_str]);
+        $pagamento_ml_existente = $stmt_check_ml->fetch(PDO::FETCH_ASSOC);
+
+        if ($pagamento_ml_existente) {
+            $status_final = $pagamento_ml_existente['status'] === 'pago' && $status_pagamento !== 'pago'
+                ? 'pago'
+                : $status_pagamento;
+            $stmt_update_ml = $pdo->prepare("
+                UPDATE pagamentos_ml SET 
+                    status = ?,
+                    valor_pago = COALESCE(valor_pago, ?),
+                    metodo_pagamento = COALESCE(metodo_pagamento, ?),
+                    parcelas = COALESCE(parcelas, ?),
+                    dados_pagamento = COALESCE(dados_pagamento, ?),
+                    preference_id = COALESCE(preference_id, ?),
+                    init_point = COALESCE(init_point, ?),
+                    data_atualizacao = NOW()
+                WHERE id = ?
+            ");
+            $stmt_update_ml->execute([
+                $status_final,
+                $valor_pago,
+                $metodo_pagamento,
+                $parcelas,
+                $dados_pagamento_json,
+                $preference_id,
+                $init_point,
+                $pagamento_ml_existente['id']
+            ]);
+        } else {
+            $stmt_insert_ml = $pdo->prepare("
+                INSERT INTO pagamentos_ml (
+                    inscricao_id, preference_id, payment_id, init_point, status,
+                    valor_pago, metodo_pagamento, parcelas, taxa_ml,
+                    dados_pagamento, user_id, data_criacao, data_atualizacao
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+            ");
+            $stmt_insert_ml->execute([
+                $inscricaoId,
+                $preference_id,
+                $payment_id_str,
+                $init_point,
+                $status_pagamento,
+                $valor_pago,
+                $metodo_pagamento,
+                $parcelas,
+                $taxa_ml,
+                $dados_pagamento_json,
+                $inscricao['usuario_id']
+            ]);
+        }
+    } catch (Exception $e) {
+        error_log("PIX INSCRICAO - Aviso: falha ao registrar pagamentos_ml: " . $e->getMessage());
+        logInscricaoPagamento('WARNING', 'ERRO_REGISTRO_PAGAMENTOS_ML_PIX', [
+            'inscricao_id' => $inscricaoId,
+            'payment_id' => (string)$paymentId,
+            'erro' => $e->getMessage()
+        ]);
+    }
     
     // Log success: PIX gerado com sucesso
     logInscricaoPagamento('SUCCESS', 'PIX_GERADO', [
