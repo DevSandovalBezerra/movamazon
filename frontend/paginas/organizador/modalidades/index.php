@@ -74,6 +74,19 @@ $pageTitle = 'Modalidades do Evento';
         .slide-in-right {
             animation: slideInRight 0.3s ease-out;
         }
+
+        /* Ajuste de scroll para o modal de modalidades em telas baixas */
+        #modalModalidade .modal-modalidade-panel {
+            max-height: calc(100vh - 2rem);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #modalModalidade .modal-modalidade-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -225,8 +238,8 @@ $pageTitle = 'Modalidades do Evento';
     <!-- Modal Criar/Editar Modalidade -->
     <div id="modalModalidade" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
-                <div class="p-6">
+            <div class="bg-white rounded-lg shadow-xl max-w-lg w-full modal-modalidade-panel">
+                <div class="p-6 modal-modalidade-body">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-2xl font-bold text-gray-900" id="modalTitulo">Criar Nova Modalidade</h2>
                         <button onclick="fecharModalModalidade()" class="text-gray-400 hover:text-gray-600">

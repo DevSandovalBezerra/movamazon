@@ -988,7 +988,14 @@ async function adicionarLote(modalidadeId) {
                 return false;
             }
 
+            if (!eventoAtual || !eventoAtual.id) {
+                Swal.showValidationMessage('Selecione um evento primeiro');
+                return false;
+            }
+
             return {
+                evento_id: eventoAtual.id,
+                modalidades: [modalidadeId],
                 modalidade_id: modalidadeId,
                 numero_lote: numeroLote,
                 preco: preco,
@@ -1105,8 +1112,22 @@ async function editarLote(loteId) {
                 return false;
             }
 
+            if (!eventoAtual || !eventoAtual.id) {
+                Swal.showValidationMessage('Selecione um evento primeiro');
+                return false;
+            }
+
+            const modalidadesLote = Array.from(new Set(
+                (eventoAtual.lotes || [])
+                    .filter(l => l.numero_lote === lote.numero_lote)
+                    .map(l => l.modalidade_id)
+                    .filter(Boolean)
+            ));
+
             return {
                 id: loteId,
+                evento_id: eventoAtual.id,
+                modalidades: modalidadesLote.length ? modalidadesLote : [lote.modalidade_id],
                 numero_lote: numeroLote,
                 preco: preco,
                 data_inicio: dataInicio,

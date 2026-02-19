@@ -137,7 +137,7 @@ $pageTitle = 'programacao';
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Dia de realização do evento</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data de início das inscrições</label>
                             <input type="date" id="dataInicio" class="w-full border border-gray-300 rounded-lg px-3 py-2" disabled>
                         </div>
                         <div>
@@ -156,7 +156,7 @@ $pageTitle = 'programacao';
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Data de Realização</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data de realização do evento</label>
                             <input type="date" id="dataRealizacao" class="w-full border border-gray-300 rounded-lg px-3 py-2" disabled>
                         </div>
                     </div>
