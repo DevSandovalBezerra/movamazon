@@ -13,6 +13,9 @@ if (!isLoggedIn()) {
 try {
     $usuario_id = $_SESSION['user_id'];
     $status = $_GET['status'] ?? 'pendente';
+    if (!in_array($status, ['pendente', 'todos'])) {
+        $status = 'pendente';
+    }
 
     // Atualizar convites expirados
     $pdo->prepare("

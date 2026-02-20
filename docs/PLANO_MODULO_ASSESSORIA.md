@@ -13,6 +13,7 @@
 ### Migracoes SQL pendentes de execucao
 - `migrations/2026-02-20_assessoria_modulo.sql` -- tabelas e papeis RBAC
 - `migrations/2026-02-20_assessoria_convites.sql` -- tabela de convites
+- `migrations/2026-02-20_assessoria_indexes.sql` -- indexes de performance
 
 ### Arquivos criados (Fases 1-3)
 
@@ -56,6 +57,51 @@
 - `api/auth/middleware.php` -- adicionado assessoria_admin/assessor no redirectByRole
 - `frontend/includes/header_index.php` -- card Assessoria aponta para login
 - `frontend/paginas/participante/index.php` -- rota convites + sidebar com badge
+
+---
+
+## Revisao de Qualidade (Fases 1-3) -- Melhorias Identificadas
+
+### BUG -- Ordem de execucao em convites/list.php
+**Arquivo:** `api/assessoria/convites/list.php`
+**Problema:** O UPDATE que marca convites expirados roda DEPOIS do SELECT. Isso faz o frontend receber dados desatualizados (convites que ja expiraram ainda aparecem como "pendente").
+**Correcao:** Mover o UPDATE para ANTES do SELECT.
+
+### BUG -- Falta de transacao em convites/reenviar.php
+**Arquivo:** `api/assessoria/convites/reenviar.php`
+**Problema:** O cancelamento do convite antigo e a criacao do novo convite sao feitos sem transacao. Se o INSERT falhar apos o UPDATE, o convite antigo fica cancelado sem substituto.
+**Correcao:** Envolver as 3 operacoes (UPDATE cancel + SELECT email + INSERT novo) em `beginTransaction/commit/rollBack`.
+
+### BUG -- Null-check em expira_em no responder.php
+**Arquivo:** `api/participante/convites/responder.php`
+**Problema:** `strtotime($convite['expira_em'])` pode falhar se `expira_em` for NULL.
+**Correcao:** Adicionar verificacao `if ($convite['expira_em'] && strtotime(...))`.
+
+### PERFORMANCE -- Indexes ausentes nas migrations
+**Arquivo:** `migrations/2026-02-20_assessoria_modulo.sql`
+**Problema:** Faltam indexes nas colunas `status` das tabelas `assessorias`, `assessoria_equipe`, `assessoria_atletas`, `assessoria_programas`. Essas colunas sao frequentemente filtradas em queries.
+**Correcao:** Adicionar `INDEX idx_<tabela>_status (status)` em cada tabela.
+
+**Arquivo:** `migrations/2026-02-20_assessoria_convites.sql`
+**Problema:** Faltam indexes compostos para queries frequentes: `(assessoria_id, status)`, `(atleta_usuario_id, status)`, e index em `expira_em` para checagem de expiracao.
+**Correcao:** Adicionar esses indexes na migration.
+
+### UX -- Tabelas sem scroll horizontal em mobile
+**Arquivos:** `frontend/paginas/assessoria/pages/equipe.php`, `atletas.php`
+**Problema:** As tabelas podem estourar o layout em telas pequenas.
+**Correcao:** Envolver tabelas em `<div class="overflow-x-auto">`.
+
+### ROBUSTEZ -- Funcao getAssessoriaLoginUrl() fragil
+**Arquivo:** `api/assessoria/middleware.php`
+**Problema:** A funcao calcula o path relativo contando barras no `SCRIPT_NAME`, o que pode falhar dependendo de como o servidor resolve os caminhos (especialmente com `.htaccess` rewrite).
+**Correcao:** Usar uma constante de base URL ou calcular a partir de `$_SERVER['DOCUMENT_ROOT']`.
+
+### SEGURANCA -- Validacao de status em participante/convites/list.php
+**Arquivo:** `api/participante/convites/list.php`
+**Problema:** O parametro `$status` da query string nao e validado contra valores permitidos antes de ser usado na query.
+**Correcao:** Adicionar `if (!in_array($status, ['pendente', 'todos'])) $status = 'pendente';`.
+
+### STATUS: Todas as melhorias acima foram aplicadas e commitadas.
 
 ---
 

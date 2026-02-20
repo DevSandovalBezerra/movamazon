@@ -43,7 +43,7 @@ try {
     }
 
     // Verificar expiracao
-    if (strtotime($convite['expira_em']) < time()) {
+    if ($convite['expira_em'] && strtotime($convite['expira_em']) < time()) {
         $pdo->prepare("UPDATE assessoria_convites SET status = 'expirado' WHERE id = ?")->execute([$convite_id]);
         throw new Exception('Este convite expirou');
     }

@@ -41,17 +41,18 @@ try {
         throw new Exception('Apenas convites expirados, recusados ou cancelados podem ser reenviados');
     }
 
+    $pdo->beginTransaction();
+
     // Marcar antigo como cancelado
     $pdo->prepare("UPDATE assessoria_convites SET status = 'cancelado' WHERE id = ?")->execute([$convite_id]);
 
-    // Criar novo convite
+    // Buscar email do atleta
     $token = bin2hex(random_bytes(32));
-    $stmt = $pdo->prepare("
-        SELECT email FROM usuarios WHERE id = ? LIMIT 1
-    ");
+    $stmt = $pdo->prepare("SELECT email FROM usuarios WHERE id = ? LIMIT 1");
     $stmt->execute([$convite['atleta_usuario_id']]);
     $email = $stmt->fetchColumn();
 
+    // Criar novo convite
     $stmt = $pdo->prepare("
         INSERT INTO assessoria_convites 
             (assessoria_id, atleta_usuario_id, email_convidado, token, status, 
@@ -66,8 +67,13 @@ try {
         $_SESSION['user_id']
     ]);
 
+    $pdo->commit();
+
     echo json_encode(['success' => true, 'message' => 'Convite reenviado com sucesso']);
 } catch (Exception $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }

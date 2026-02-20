@@ -15,6 +15,13 @@ if (!$assessoria_id) {
 try {
     $status_filtro = $_GET['status'] ?? '';
 
+    // Marcar convites expirados ANTES de listar
+    $pdo->prepare("
+        UPDATE assessoria_convites 
+        SET status = 'expirado' 
+        WHERE assessoria_id = ? AND status = 'pendente' AND expira_em < NOW()
+    ")->execute([$assessoria_id]);
+
     $sql = "
         SELECT c.id, c.status, c.mensagem, c.criado_em, c.respondido_em, c.expira_em,
                u.nome_completo as atleta_nome, u.email as atleta_email,
@@ -36,13 +43,6 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $convites = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Marcar convites expirados automaticamente
-    $pdo->prepare("
-        UPDATE assessoria_convites 
-        SET status = 'expirado' 
-        WHERE assessoria_id = ? AND status = 'pendente' AND expira_em < NOW()
-    ")->execute([$assessoria_id]);
 
     echo json_encode([
         'success' => true,

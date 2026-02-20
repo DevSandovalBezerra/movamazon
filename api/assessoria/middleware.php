@@ -101,11 +101,12 @@ function getAssessoriaDoUsuario() {
 }
 
 /**
- * Retorna URL do login da assessoria (relativa ao projeto)
+ * Retorna URL absoluta do login da assessoria
  */
 function getAssessoriaLoginUrl() {
-    $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
-    $depth = substr_count($scriptDir, '/') + substr_count($scriptDir, '\\');
-    $prefix = str_repeat('../', max(0, $depth - 1));
-    return $prefix . 'frontend/paginas/assessoria/auth/login.php';
+    $docRoot = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\');
+    $projectDir = str_replace('\\', '/', __DIR__);
+    $projectDir = str_replace(str_replace('\\', '/', $docRoot), '', $projectDir);
+    $basePath = dirname(dirname($projectDir));
+    return $basePath . '/frontend/paginas/assessoria/auth/login.php';
 }
