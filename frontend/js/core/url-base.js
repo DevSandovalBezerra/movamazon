@@ -1,13 +1,26 @@
-﻿(function () {
+(function () {
   if (typeof window === 'undefined') {
     return;
   }
 
-  function normalizePath(path) {
-    if (!path) {
+  // SUPER WARNING: Arquivo canonico de URL base.
+  // Nao introduzir fallback por pagina/rota nem recriar logica em modulos locais.
+  // Qualquer mudanca aqui exige aprovacao explicita (ADR/ticket).
+  window.__URL_BASE_CANONICAL__ = true;
+
+  function normalizeApiBaseValue(value) {
+    var base = (value || '').trim();
+    if (!base) {
       return '';
     }
-    return path.replace(/\\/g, '/');
+
+    // Remove barras finais
+    base = base.replace(/\/+$/, '');
+
+    // Corrige duplicidade de /api no final (ex.: /api/api -> /api)
+    base = base.replace(/\/api\/api$/i, '/api');
+
+    return base;
   }
 
   function detectAppBase() {
@@ -15,19 +28,17 @@
       return window.URL_BASE.replace(/\/$/, '');
     }
 
+    if (typeof window.APP_BASE === 'string' && window.APP_BASE.trim() !== '') {
+      return window.APP_BASE.replace(/\/$/, '');
+    }
+
     if (typeof window.API_BASE === 'string' && window.API_BASE.trim() !== '') {
       var apiBase = window.API_BASE.trim();
-      if (apiBase.startsWith('http')) {
-        return apiBase.replace(/\/api\/?$/, '');
-      }
       return apiBase.replace(/\/api\/?$/, '');
     }
 
-    var path = normalizePath(window.location.pathname || '');
-    var idx = path.indexOf('/frontend/');
-    if (idx >= 0) {
-      return path.slice(0, idx);
-    }
+    // Fallback deterministico sem heuristica por pathname/rota
+    // (alinhado ao padrao canônico do helper backend).
     return '';
   }
 
@@ -41,20 +52,21 @@
 
   function ensureApiBase() {
     if (typeof window.API_BASE === 'string' && window.API_BASE !== '') {
+      window.API_BASE = normalizeApiBaseValue(window.API_BASE);
+      if (window.API_BASE === '') {
+        window.API_BASE = '/api';
+      }
       return window.API_BASE;
     }
     var appBase = ensureAppBase();
-    window.API_BASE = appBase ? appBase + '/api' : '/api';
+    window.API_BASE = normalizeApiBaseValue(appBase ? appBase + '/api' : '/api') || '/api';
     return window.API_BASE;
   }
 
   function buildApiUrl(endpoint) {
-    var base = ensureApiBase();
+    var base = normalizeApiBaseValue(ensureApiBase()) || '/api';
     var clean = endpoint || '';
-    clean = clean.replace(/^\//, '');
-    if (base.endsWith('/')) {
-      return base + clean;
-    }
+    clean = clean.replace(/^\/+/, '').replace(/^api\/+/i, '');
     return base + '/' + clean;
   }
 

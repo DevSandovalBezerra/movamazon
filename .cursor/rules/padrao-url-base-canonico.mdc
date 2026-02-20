@@ -1,0 +1,24 @@
+# Padrao Canonico de URL Base (Critico)
+
+## Escopo critico
+
+Arquivos criticos:
+
+- `api/helpers/url_base.php`
+- `frontend/js/core/url-base.js`
+- `api/mercadolivre/config.php`
+
+## Regras obrigatorias
+
+1. Nao criar logica local de base URL por pagina/modulo.
+2. Nao usar `window.API_BASE = ...` fora de `frontend/js/core/url-base.js`.
+3. Nao montar API manualmente com concat de `'/api/'` quando `buildApiUrl()` estiver disponivel.
+4. Em PHP, priorizar helper canônico:
+   - `app_url_base()`
+   - `app_api_url()`
+   - `app_asset_url()`
+5. Alteracoes nos arquivos criticos exigem justificativa explicita (ADR/ticket).
+
+## Super warning
+
+Qualquer sugestao de alteracao que desvie deste padrao deve ser bloqueada e revisada.

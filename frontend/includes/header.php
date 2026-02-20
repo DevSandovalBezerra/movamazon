@@ -2,6 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once dirname(__DIR__, 2) . '/api/helpers/url_base.php';
+$resolvedUrlBase = function_exists('app_url_base') ? rtrim(app_url_base(), '/') : '';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -17,6 +19,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- CSS Customizado (importado apÃ³s Tailwind) -->
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/custom.css">
+    <script>
+        window.URL_BASE = <?php echo json_encode($resolvedUrlBase, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
+    </script>
     <!-- Base URL helper -->
     <script src="../../js/core/url-base.js"></script>
 

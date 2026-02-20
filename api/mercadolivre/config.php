@@ -1,10 +1,13 @@
 <?php
 // ✅ Configuração baseada no mercadoPago funcional
+// SUPER WARNING: arquivo crítico em produção.
+// Mudanças de padrão de URL/base exigem aprovação explícita (ADR/ticket).
 
 // ✅ CRÍTICO: Garantir que db.php foi carregado para ter as variáveis de ambiente
 if (!function_exists('envValue')) {
     require_once __DIR__ . '/../db.php';
 }
+require_once __DIR__ . '/../helpers/url_base.php';
 
 // ✅ Função auxiliar para buscar variáveis de ambiente de múltiplas fontes
 // (caso envValue não esteja disponível por algum motivo)
@@ -27,44 +30,43 @@ if (!function_exists('getEnvVar')) {
     }
 }
 
-// Detectar domínio automaticamente para compatibilidade com hospedagem
+// Canonico: URL_BASE > helper central.
+// Fallback legado preservado apenas para segurança em ambientes sem helper.
+$base_url = '';
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-
-// Detectar o caminho base do projeto (movamazon)
 $project_path = '';
 
-// Tentar detectar pelo REQUEST_URI primeiro
-if (isset($_SERVER['REQUEST_URI'])) {
-    $request_uri = $_SERVER['REQUEST_URI'];
-    // Se contém /movamazon/, extrair o caminho
-    if (preg_match('#(/movamazon/)#', $request_uri, $matches)) {
-        $project_path = '/movamazon';
-    }
-}
-
-// Se não encontrou, tentar pelo SCRIPT_NAME
-if (empty($project_path) && isset($_SERVER['SCRIPT_NAME'])) {
-    $script_name = $_SERVER['SCRIPT_NAME'];
-    $path_parts = explode('/', trim($script_name, '/'));
-    if (isset($path_parts[0]) && $path_parts[0] === 'movamazon') {
-        $project_path = '/movamazon';
-    } elseif (isset($path_parts[0]) && $path_parts[0] !== '' && $path_parts[0] !== 'api') {
-        // Se houver outro caminho base (e não for 'api'), usar ele
-        $project_path = '/' . $path_parts[0];
-    }
-}
-
-// Se ainda não encontrou, usar padrão baseado no host
-if (empty($project_path) && strpos($host, 'localhost') !== false) {
-    // Em localhost, assumir que está em /movamazon
-    $project_path = '/movamazon';
-}
-
-$base_url = $protocol . '://' . $host . $project_path;
 $site_base_url = rtrim(getEnvVar('URL_BASE', ''), '/');
 if ($site_base_url === '') {
+    if (function_exists('app_url_base')) {
+        $site_base_url = rtrim(app_url_base(), '/');
+    }
+}
+
+if ($site_base_url === '') {
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $request_uri = $_SERVER['REQUEST_URI'];
+        if (preg_match('#(/movamazon/)#', $request_uri)) {
+            $project_path = '/movamazon';
+        }
+    }
+    if (empty($project_path) && isset($_SERVER['SCRIPT_NAME'])) {
+        $script_name = $_SERVER['SCRIPT_NAME'];
+        $path_parts = explode('/', trim($script_name, '/'));
+        if (isset($path_parts[0]) && $path_parts[0] === 'movamazon') {
+            $project_path = '/movamazon';
+        } elseif (isset($path_parts[0]) && $path_parts[0] !== '' && $path_parts[0] !== 'api') {
+            $project_path = '/' . $path_parts[0];
+        }
+    }
+    if (empty($project_path) && strpos($host, 'localhost') !== false) {
+        $project_path = '/movamazon';
+    }
+    $base_url = $protocol . '://' . $host . $project_path;
     $site_base_url = rtrim($base_url, '/');
+} else {
+    $base_url = $site_base_url;
 }
 
 // Sistema funciona apenas em produção - tokens de produção obrigatórios

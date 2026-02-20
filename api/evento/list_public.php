@@ -5,7 +5,7 @@ error_log("[LIST_PUBLIC] Timestamp: " . date('Y-m-d H:i:s'));
 error_log("[LIST_PUBLIC] Método: " . $_SERVER['REQUEST_METHOD']);
 error_log ("[LIST_PUBLIC] URL: " . $_SERVER['REQUEST_URI']);*/
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require_once '../db.php';
 
 error_log("[LIST_PUBLIC] db.php incluído");
@@ -200,7 +200,7 @@ try {
     ##error_log("[LIST_PUBLIC] ✅ Resposta preparada com " . count($eventos) . " eventos");
     #error_log("[LIST_PUBLIC] Enviando resposta JSON...");
     
-    echo json_encode($response);
+    echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     error_log("[LIST_PUBLIC] ✅ Resposta enviada com sucesso");
     error_log("============================================");
     
@@ -209,13 +209,13 @@ try {
     error_log("[LIST_PUBLIC] Código do erro: " . $e->getCode());
     error_log("[LIST_PUBLIC] Trace: " . $e->getTraceAsString());
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor']);
+    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     error_log("============================================");
 } catch (Exception $e) {
     error_log("[LIST_PUBLIC] ❌ ERRO GERAL: " . $e->getMessage());
     error_log("[LIST_PUBLIC] Código do erro: " . $e->getCode());
     error_log("[LIST_PUBLIC] Trace: " . $e->getTraceAsString());
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor']);
+    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     error_log("============================================");
 }

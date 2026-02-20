@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $pageTitle = 'MovAmazon - Encontre sua próxima corrida';
 include '../../includes/header_index.php';
+$bannersJsVersion = @filemtime(__DIR__ . '/../../js/public/banners.js') ?: time();
+$mainJsVersion = @filemtime(__DIR__ . '/../../js/main.js') ?: time();
 
 // Verificar se houve logout
 $logoutMessage = '';
@@ -239,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   </script>
 <script type="module">
-  import { carregarBanners } from '../../js/public/banners.js';
+  import { carregarBanners } from '../../js/public/banners.js?v=<?php echo (int) $bannersJsVersion; ?>';
   
   // Função para inicializar o Swiper
   function inicializarSwiper() {
@@ -325,27 +327,10 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(() => {
     if (!bannersCarregados && !window.heroSwiper) {
       console.warn('[INDEX] Módulo ES6 pode não ter carregado, tentando fallback');
-      // Tentar carregar banners diretamente via fetch
-      const apiBase = window.API_BASE || '';
-      let apiUrl;
-      if (apiBase && apiBase.trim() !== '') {
-        const baseClean = apiBase.replace(/\/$/, '');
-        apiUrl = `${baseClean}/banners/public.php`;
-      } else {
-        const path = window.location.pathname || '';
-        const pathParts = path.split('/').filter(p => p);
-        const frontendIdx = pathParts.indexOf('frontend');
-        if (frontendIdx >= 0) {
-          const baseParts = pathParts.slice(0, frontendIdx);
-          if (baseParts.length > 0) {
-            apiUrl = '/' + baseParts.join('/') + '/api/banners/public.php';
-          } else {
-            apiUrl = '/api/banners/public.php';
-          }
-        } else {
-          apiUrl = '/api/banners/public.php';
-        }
-      }
+      // Tentar carregar banners diretamente via fetch (fonte única de URL)
+      const apiUrl = window.buildApiUrl
+        ? window.buildApiUrl('banners/public.php')
+        : ((window.API_BASE || '/api').replace(/\/+$/, '').replace(/\/api\/api$/i, '/api') + '/banners/public.php');
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
@@ -379,4 +364,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 </script>
-<script type="module" src="../../js/main.js"></script>
+<script type="module" src="../../js/main.js?v=<?php echo (int) $mainJsVersion; ?>"></script>

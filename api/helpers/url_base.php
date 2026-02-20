@@ -1,4 +1,6 @@
 <?php
+// SUPER WARNING: helper canônico de URL base.
+// Nao alterar regras de resolucao de base sem aprovacao explicita (ADR/ticket).
 
 if (!function_exists('app_env_value')) {
     function app_env_value($key, $default = '')
