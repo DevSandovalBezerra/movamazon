@@ -26,7 +26,7 @@ $user = [
 ];
 $page_inicial = 'dashboard';
 $page = isset($_GET['page']) ? $_GET['page'] : $page_inicial;
-$allowedPages = ['dashboard', 'minhas-inscricoes', 'meu-perfil', 'meus-treinos', 'meu-cashback', 'anamnese', 'ver-treino', 'pagamento-inscricao', 'pagamento-sucesso', 'pagamento-pendente', 'pagamento-erro'];
+$allowedPages = ['dashboard', 'minhas-inscricoes', 'meu-perfil', 'meus-treinos', 'meu-cashback', 'anamnese', 'ver-treino', 'pagamento-inscricao', 'pagamento-sucesso', 'pagamento-pendente', 'pagamento-erro', 'convites-assessoria'];
 if (!in_array($page, $allowedPages)) $page = $page_inicial;
 ?>
 <?php include dirname(__DIR__, 2) . '/includes/mobile-menu.php'; ?>
@@ -95,6 +95,28 @@ if (!in_array($page, $allowedPages)) $page = $page_inicial;
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         Meu Cashback
+      </a>
+
+      <a href="?page=convites-assessoria"
+        class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 group <?php if ($page == 'convites-assessoria') echo 'bg-brand-yellow text-brand-green font-semibold shadow-md';
+                                                                                        else echo 'hover:bg-green-600 hover:text-white'; ?>">
+        <svg class="h-5 w-5 mr-3 transition-colors duration-200 <?php if ($page == 'convites-assessoria') echo 'text-brand-green';
+                                                                else echo 'text-green-300 group-hover:text-white'; ?>"
+          fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        Assessoria
+        <?php
+        // Badge de convites pendentes
+        try {
+            $stmt_conv = $pdo->prepare("SELECT COUNT(*) FROM assessoria_convites WHERE atleta_usuario_id = ? AND status = 'pendente' AND expira_em > NOW()");
+            $stmt_conv->execute([$_SESSION['user_id']]);
+            $conv_pendentes = (int) $stmt_conv->fetchColumn();
+            if ($conv_pendentes > 0): ?>
+            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full"><?= $conv_pendentes ?></span>
+            <?php endif;
+        } catch (Exception $e) {}
+        ?>
       </a>
     </nav>
 

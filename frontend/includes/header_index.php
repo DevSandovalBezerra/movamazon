@@ -290,8 +290,8 @@ $resolvedUrlBase = function_exists('app_url_base') ? rtrim(app_url_base(), '/') 
               </svg>
             </div>
             <h3 class="text-xs font-bold text-gray-900 mb-1">Assessoria</h3>
-            <a href="assessoria.php" class="inline-block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white px-2 py-1.5 rounded-md text-xs font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
-              Conhecer
+            <a href="../assessoria/auth/login.php" class="inline-block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white px-2 py-1.5 rounded-md text-xs font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+              Acessar
             </a>
           </div>
         </div>

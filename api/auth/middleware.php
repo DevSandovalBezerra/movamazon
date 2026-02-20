@@ -90,6 +90,10 @@ if (!function_exists('redirectByRole')) {
             case 'organizador':
                 header('Location: ../../paginas/organizador/index.php?page=dashboard');
                 exit();
+            case 'assessoria_admin':
+            case 'assessor':
+                header('Location: ../../paginas/assessoria/index.php?page=dashboard');
+                exit();
             case 'participante':
             default:
                 header('Location: ../../paginas/participante/index.php?page=dashboard');
