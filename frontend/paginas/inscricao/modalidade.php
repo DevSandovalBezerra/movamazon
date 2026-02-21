@@ -1,13 +1,13 @@
 <?php
-// Debug: verificar se evento_id estÃ¡ disponÃ­vel
+// Debug: verificar se evento_id está disponível
 if (!isset($evento_id) || empty($evento_id)) {
-    error_log("ERRO: evento_id nÃ£o estÃ¡ definido em modalidade.php");
+    error_log("ERRO: evento_id não está definido em modalidade.php");
     $evento_id = 1; // Fallback para teste
 }
 
 error_log("Modalidade.php - evento_id: " . $evento_id);
 
-// FunÃ§Ãµes utilitÃ¡rias para resolver URL de imagens de kit
+// Funções utilitárias para resolver URL de imagens de kit
 // Utilitario: resolver URL base por helper central
 require_once dirname(__DIR__, 3) . '/api/helpers/url_base.php';
 
@@ -16,7 +16,7 @@ function resolverNomeArquivoKit($foto_kit, $root_dir) {
         return null;
     }
 
-    // Se jÃ¡ Ã© uma URL completa (http/https), retorna como estÃ¡
+    // Se já é uma URL completa (http/https), retorna como está
     if (preg_match('#^https?://#i', $foto_kit)) {
         return $foto_kit;
     }
@@ -28,7 +28,7 @@ function resolverNomeArquivoKit($foto_kit, $root_dir) {
     $kit_dir = $root_dir . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'kits' . DIRECTORY_SEPARATOR;
     $caminho = $kit_dir . $nome_original;
 
-    // Debug: log para diagnÃ³stico (apenas em desenvolvimento)
+    // Debug: log para diagnóstico (apenas em desenvolvimento)
     if (defined('DEBUG') && DEBUG) {
         error_log("[resolverNomeArquivoKit] foto_kit: $foto_kit");
         error_log("[resolverNomeArquivoKit] root_dir: $root_dir");
@@ -42,7 +42,7 @@ function resolverNomeArquivoKit($foto_kit, $root_dir) {
     }
 
     // Fallback: mesmo se is_file() falhar, retorna o nome do arquivo
-    // O navegador tentarÃ¡ carregar e mostrarÃ¡ placeholder se nÃ£o existir
+    // O navegador tentará carregar e mostrará placeholder se não existir
     // Isso evita mostrar placeholder quando a imagem existe mas is_file() falha
     return $nome_original;
 }
@@ -50,8 +50,8 @@ function resolverNomeArquivoKit($foto_kit, $root_dir) {
 $base_url = app_url_base();
 $root_dir = dirname(__DIR__, 3);
 
-// Buscar modalidades disponÃ­veis para o evento com preÃ§os dos lotes
-// FILTRO: Apenas modalidades que possuem kit de evento associado serÃ£o exibidas
+// Buscar modalidades disponíveis para o evento com preços dos lotes
+// FILTRO: Apenas modalidades que possuem kit de evento associado serão exibidas
 $stmt = $pdo->prepare("
     SELECT 
         m.id,
@@ -87,7 +87,7 @@ $modalidades = $stmt->fetchAll();
 // Debug: verificar se modalidades foram encontradas
 error_log("Modalidades encontradas: " . count($modalidades));
 foreach($modalidades as $mod) {
-    error_log("Modalidade: " . $mod['modalidade_nome'] . " - Categoria: " . $mod['categoria_nome'] . " - PreÃ§o: " . ($mod['preco_modalidade'] ?? 'N/A') . " - Lote: " . ($mod['lote_id'] ?? 'N/A'));
+    error_log("Modalidade: " . $mod['modalidade_nome'] . " - Categoria: " . $mod['categoria_nome'] . " - Preço: " . ($mod['preco_modalidade'] ?? 'N/A') . " - Lote: " . ($mod['lote_id'] ?? 'N/A'));
 }
 
 // Buscar produtos dos kits encontrados
@@ -131,7 +131,7 @@ foreach ($modalidades as &$modalidade) {
         ? $produtos_por_kit[$kit_id] 
         : [];
 }
-unset($modalidade); // Importante: remover referÃªncia
+unset($modalidade); // Importante: remover referência
 ?>
 
 <div class="modalidade-etapa">
@@ -142,9 +142,9 @@ unset($modalidade); // Importante: remover referÃªncia
         <?php if (empty($modalidades)): ?>
             <div class="text-center py-12">
                 <i class="fas fa-info-circle text-gray-400 text-5xl mb-4"></i>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">Nenhuma modalidade disponÃ­vel</h3>
-                <p class="text-gray-500">NÃ£o hÃ¡ modalidades com kit de evento configurado para este evento no momento.</p>
-                <p class="text-sm text-gray-400 mt-2">Entre em contato com o organizador para mais informaÃ§Ãµes.</p>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">Nenhuma modalidade disponível</h3>
+                <p class="text-gray-500">Não há modalidades com kit de evento configurado para este evento no momento.</p>
+                <p class="text-sm text-gray-400 mt-2">Entre em contato com o organizador para mais informações.</p>
             </div>
         <?php else: ?>
         <div class="modalidades-grid">
@@ -168,7 +168,7 @@ unset($modalidade); // Importante: remover referÃªncia
                                     }
                                     echo htmlspecialchars($distancia);
                                 } else {
-                                    echo 'DistÃ¢ncia nÃ£o definida';
+                                    echo 'Distância não definida';
                                 }
                                 ?> â€¢ 
                                 <?php echo htmlspecialchars($modalidade['categoria_nome']); ?>
@@ -184,11 +184,11 @@ unset($modalidade); // Importante: remover referÃªncia
                             $kit_src = null;
                             
                             if ($arquivo_kit) {
-                                // Se jÃ¡ Ã© URL completa, usa diretamente
+                                // Se já é URL completa, usa diretamente
                                 if (preg_match('#^https?://#i', $arquivo_kit)) {
                                     $kit_src = $arquivo_kit;
                                 } else {
-                                    // ConstrÃ³i URL completa
+                                    // Constrói URL completa
                                     $kit_src = app_asset_url('frontend/assets/img/kits/' . rawurlencode($arquivo_kit));
                                 }
                             }
@@ -228,7 +228,7 @@ unset($modalidade); // Importante: remover referÃªncia
                                     <?php endif; ?>
                                 </div>
                             <?php else: ?>
-                                <div class="preco-indisponivel">PreÃ§o nÃ£o disponÃ­vel</div>
+                                <div class="preco-indisponivel">Preço não disponível</div>
                             <?php endif; ?>
                         </div>
                         <input type="radio" 
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalidadeCards = document.querySelectorAll('.modalidade-card');
     modalidadeCards.forEach(card => {
         card.addEventListener('click', function() {
-            // Remover seleÃ§Ã£o anterior
+            // Remover seleção anterior
             modalidadeCards.forEach(c => c.classList.remove('selected'));
             
             // Selecionar card atual
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Event listener para botÃ£o continuar
+    // Event listener para botão continuar
     document.getElementById('btn-prosseguir-modalidade').addEventListener('click', function() {
         const modalidadeSelecionada = document.querySelector('input[name="modalidade_id"]:checked');
         
@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Salvar modalidade selecionada na sessÃ£o
+        // Salvar modalidade selecionada na sessão
         const modalidadeId = modalidadeSelecionada.value;
         const modalidadeCard = modalidadeSelecionada.closest('.modalidade-card');
         const modalidadeNome = modalidadeCard.querySelector('h3').textContent;
@@ -304,27 +304,27 @@ document.addEventListener('DOMContentLoaded', function() {
             dataFimLote
         });
         
-        // âœ… ValidaÃ§Ã£o de preÃ§o
+        // âœ… Validação de preço
         if (precoNumerico <= 0 || !loteId) {
             Swal.fire({
                 icon: 'error',
-                title: 'PreÃ§o invÃ¡lido',
-                text: 'Esta modalidade nÃ£o possui preÃ§o vÃ¡lido'
+                title: 'Preço inválido',
+                text: 'Esta modalidade não possui preço válido'
             });
             return;
         }
         
-        // âœ… Verificar se lote ainda estÃ¡ vÃ¡lido (comentado temporariamente para teste)
+        // âœ… Verificar se lote ainda está válido (comentado temporariamente para teste)
         // if (dataFimLote && new Date(dataFimLote) < new Date()) {
         //     Swal.fire({
         //         icon: 'error',
         //         title: 'Lote expirado',
-        //         text: 'Este lote de inscriÃ§Ã£o jÃ¡ expirou'
+        //         text: 'Este lote de inscrição já expirou'
         //     });
         //     return;
         // }
         
-        // Atualizar sessÃ£o via AJAX
+        // Atualizar sessão via AJAX
         fetch('salvar_modalidade.php', {
             method: 'POST',
             headers: {
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({
                 modalidade_id: modalidadeId,
                 modalidade_nome: modalidadeNome,
-                preco_total: precoNumerico, // âœ… NumÃ©rico
+                preco_total: precoNumerico, // âœ… Numérico
                 lote_id: loteId,
                 lote_numero: loteNumero,
                 data_fim_lote: dataFimLote
@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Prosseguir para prÃ³xima etapa
+                // Prosseguir para próxima etapa
                 prosseguirEtapa();
             } else {
                 Swal.fire({
@@ -354,8 +354,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erro:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erro de conexÃ£o',
-                text: 'NÃ£o foi possÃ­vel conectar ao servidor'
+                title: 'Erro de conexão',
+                text: 'Não foi possível conectar ao servidor'
             });
         });
     });

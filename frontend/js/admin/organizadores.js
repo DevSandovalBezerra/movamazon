@@ -64,7 +64,7 @@ if (window.getApiBase) { window.getApiBase(); }
         }
     };
 
-    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
+    // Usar função comum do AdminUtils se disponível
     const showMessage = (type, message) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, message);
@@ -111,7 +111,7 @@ if (window.getApiBase) { window.getApiBase(); }
         .replace(/'/g, '&#039;');
 
     const formatDate = (dateStr) => {
-        if (!dateStr) return 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â';
+        if (!dateStr) return 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â';
         const date = new Date(dateStr);
         return date.toLocaleDateString('pt-BR');
     };
@@ -141,10 +141,10 @@ if (window.getApiBase) { window.getApiBase(); }
                     ${escapeHtml(org.email)}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${escapeHtml(org.empresa || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}
+                    ${escapeHtml(org.empresa || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${escapeHtml(org.regiao || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}
+                    ${escapeHtml(org.regiao || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -198,11 +198,11 @@ if (window.getApiBase) { window.getApiBase(); }
                     <i class="fas fa-chevron-left"></i> Anterior
                 </button>
                 <span class="px-4 py-2 text-sm text-gray-700">
-                    PÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡gina ${page} de ${totalPages}
+                    Página ${page} de ${totalPages}
                 </span>
                 <button class="btn-secondary ${page === totalPages ? 'opacity-50 cursor-not-allowed' : ''}" 
                         data-page="${page + 1}" ${page === totalPages ? 'disabled' : ''}>
-                    PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³xima <i class="fas fa-chevron-right"></i>
+                    Próxima <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
         `;
@@ -245,7 +245,7 @@ if (window.getApiBase) { window.getApiBase(); }
             renderPagination();
         } catch (error) {
             console.error(error);
-            showMessage('error', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel carregar os organizadores');
+            showMessage('error', 'Não foi possível carregar os organizadores');
         } finally {
             toggleLoading(false);
         }
@@ -287,7 +287,7 @@ if (window.getApiBase) { window.getApiBase(); }
         };
 
         if (!payload.nome_completo || !payload.email || !payload.empresa || !payload.regiao || !payload.modalidade_esportiva) {
-            showMessage('error', 'Preencha todos os campos obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios');
+            showMessage('error', 'Preencha todos os campos obrigatórios');
             return;
         }
 
@@ -335,19 +335,19 @@ if (window.getApiBase) { window.getApiBase(); }
                         <div class="space-y-2 text-sm">
                             <div><strong>Nome:</strong> ${escapeHtml(org.nome_completo)}</div>
                             <div><strong>Email:</strong> ${escapeHtml(org.email)}</div>
-                            <div><strong>Telefone:</strong> ${escapeHtml(org.telefone || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Celular:</strong> ${escapeHtml(org.celular || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Telefone:</strong> ${escapeHtml(org.telefone || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Celular:</strong> ${escapeHtml(org.celular || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
                             <div><strong>Status:</strong> <span class="badge ${org.status === 'ativo' ? 'badge-success' : 'badge-muted'}">${org.status}</span></div>
                         </div>
                     </div>
                     <div>
                         <h4 class="font-semibold text-gray-900 mb-2">Dados do Organizador</h4>
                         <div class="space-y-2 text-sm">
-                            <div><strong>Empresa:</strong> ${escapeHtml(org.empresa || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}</div>
-                            <div><strong>RegiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</strong> ${escapeHtml(org.regiao || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Modalidade:</strong> ${escapeHtml(org.modalidade_esportiva || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Quantidade Eventos:</strong> ${escapeHtml(org.quantidade_eventos || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Regulamento:</strong> ${escapeHtml(org.regulamento || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Empresa:</strong> ${escapeHtml(org.empresa || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Região:</strong> ${escapeHtml(org.regiao || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Modalidade:</strong> ${escapeHtml(org.modalidade_esportiva || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Quantidade Eventos:</strong> ${escapeHtml(org.quantidade_eventos || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Regulamento:</strong> ${escapeHtml(org.regulamento || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
                         </div>
                     </div>
                 </div>
@@ -370,7 +370,7 @@ if (window.getApiBase) { window.getApiBase(); }
             openModal('modal-detalhes');
         } catch (error) {
             console.error(error);
-            showMessage('error', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel carregar os detalhes');
+            showMessage('error', 'Não foi possível carregar os detalhes');
         }
     };
 
@@ -413,12 +413,12 @@ if (window.getApiBase) { window.getApiBase(); }
                     title: 'Senha resetada',
                     html: senha ? `
                         <div class="space-y-3">
-                            <p>Nova senha temporÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ria gerada:</p>
+                            <p>Nova senha temporária gerada:</p>
                             <div class="flex items-center gap-2 justify-center">
                                 <code class="px-3 py-2 bg-gray-100 rounded text-lg">${senha}</code>
                                 <button id="copy-temp-password" class="btn-table-primary">Copiar</button>
                             </div>
-                            <p class="text-xs text-gray-500">TambÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©m enviada por e-mail.</p>
+                            <p class="text-xs text-gray-500">Também enviada por e-mail.</p>
                         </div>
                     ` : 'Nova senha gerada e enviada por e-mail!',
                     showConfirmButton: true,
@@ -432,7 +432,7 @@ if (window.getApiBase) { window.getApiBase(); }
                                 await navigator.clipboard.writeText(senha);
                                 showMessage('success', 'Senha copiada');
                             } catch (_) {
-                                showMessage('error', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel copiar');
+                                showMessage('error', 'Não foi possível copiar');
                             }
                         });
                     }
@@ -532,7 +532,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 openModal('modal-confirmacao');
             } else if (acao === 'reset') {
                 els.confirmTitulo.textContent = 'Resetar Senha';
-                els.confirmTexto.textContent = 'Uma nova senha temporÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ria serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ gerada e enviada por e-mail. Deseja continuar?';
+                els.confirmTexto.textContent = 'Uma nova senha temporária será gerada e enviada por e-mail. Deseja continuar?';
                 state.pendingAction = () => resetPassword(id);
                 openModal('modal-confirmacao');
             }

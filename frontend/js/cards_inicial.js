@@ -11,7 +11,7 @@ function carregarEstados() {
     console.log('Ã°Å¸â€œâ€¹ Elemento select encontrado:', select);
 
     if (!select) {
-        console.error('Ã¢ÂÅ’ Elemento select de estado nÃƒÂ£o encontrado');
+        console.error('âÂÅ’ Elemento select de estado nÃƒÂ£o encontrado');
         console.log('Ã°Å¸â€Â Elementos disponÃƒÂ­veis na pÃƒÂ¡gina:');
         console.log(document.querySelectorAll('select'));
         return;
@@ -45,7 +45,7 @@ function carregarEstados() {
             console.log('Ã°Å¸â€œÅ  Quantidade de estados:', data.estados ? data.estados.length : 'N/A');
 
             if (!data.estados || !Array.isArray(data.estados)) {
-                console.warn('Ã¢Å¡Â Ã¯Â¸Â Formato invÃƒÂ¡lido do arquivo estados-cidades.json');
+                console.warn('âÅ¡Â Ã¯Â¸Â Formato invÃƒÂ¡lido do arquivo estados-cidades.json');
                 console.log('Ã°Å¸â€œâ€¹ Estrutura esperada: { estados: [{ sigla: "AC", nome: "Acre", cidades: [...] }] }');
                 console.log('Ã°Å¸â€œâ€¹ Estrutura recebida:', Object.keys(data));
                 return;
@@ -58,7 +58,7 @@ function carregarEstados() {
             // Limpa todas as opÃƒÂ§ÃƒÂµes exceto a primeira ("Todos os estados")
             const optionsCountBefore = select.options.length;
             select.options.length = 1;
-            console.log(`Ã°Å¸Â§Â¹ Limpeza: ${optionsCountBefore} Ã¢â€ â€™ ${select.options.length} opÃƒÂ§ÃƒÂµes`);
+            console.log(`Ã°Å¸Â§Â¹ Limpeza: ${optionsCountBefore} ââ€ â€™ ${select.options.length} opÃƒÂ§ÃƒÂµes`);
 
             console.log('Ã°Å¸â€œÂ Adicionando estados ao dropdown...');
             data.estados.forEach((estado, index) => {
@@ -67,10 +67,10 @@ function carregarEstados() {
                 opt.value = estado.sigla;
                 opt.textContent = estado.nome;
                 select.appendChild(opt);
-                console.log(`Ã¢Å“â€¦ OpÃƒÂ§ÃƒÂ£o adicionada: ${estado.sigla} - ${estado.nome}`);
+                console.log(`âÅ“â€¦ OpÃƒÂ§ÃƒÂ£o adicionada: ${estado.sigla} - ${estado.nome}`);
             });
 
-            console.log(`Ã¢Å“â€¦ ${data.estados.length} estados carregados no dropdown`);
+            console.log(`âÅ“â€¦ ${data.estados.length} estados carregados no dropdown`);
             console.log(`Ã°Å¸â€œÅ  Total de opÃƒÂ§ÃƒÂµes no select: ${select.options.length}`);
 
             // Verificar se realmente foram adicionados
@@ -92,7 +92,7 @@ function carregarCidades(uf = '') {
 
     const select = document.getElementById('filtro-cidade');
     if (!select) {
-        console.error('Ã¢ÂÅ’ Elemento select de cidade nÃƒÂ£o encontrado');
+        console.error('âÂÅ’ Elemento select de cidade nÃƒÂ£o encontrado');
         return;
     }
 
@@ -100,19 +100,19 @@ function carregarCidades(uf = '') {
     select.options.length = 1;
 
     if (!uf) {
-        console.log('Ã¢Å¡Â Ã¯Â¸Â UF nÃƒÂ£o informada, mantendo lista vazia');
+        console.log('âÅ¡Â Ã¯Â¸Â UF nÃƒÂ£o informada, mantendo lista vazia');
         return;
     }
 
     if (!dadosEstadosCidades) {
-        console.warn('Ã¢Å¡Â Ã¯Â¸Â Dados de estados/cidades nÃƒÂ£o carregados ainda');
+        console.warn('âÅ¡Â Ã¯Â¸Â Dados de estados/cidades nÃƒÂ£o carregados ainda');
         return;
     }
 
     // Busca o estado pela sigla
     const estado = dadosEstadosCidades.estados.find(e => e.sigla === uf);
     if (!estado || !estado.cidades) {
-        console.warn(`Ã¢Å¡Â Ã¯Â¸Â Estado ${uf} nÃƒÂ£o encontrado ou sem cidades`);
+        console.warn(`âÅ¡Â Ã¯Â¸Â Estado ${uf} nÃƒÂ£o encontrado ou sem cidades`);
         return;
     }
 
@@ -124,7 +124,7 @@ function carregarCidades(uf = '') {
         select.appendChild(opt);
     });
 
-    console.log(`Ã¢Å“â€¦ ${estado.cidades.length} cidades carregadas para ${uf}`);
+    console.log(`âÅ“â€¦ ${estado.cidades.length} cidades carregadas para ${uf}`);
 }
 
 // FunÃƒÂ§ÃƒÂ£o para atualizar o estado do contador de eventos
@@ -222,19 +222,19 @@ function carregarEventos() {
             console.log('Ã°Å¸â€œÅ  Dados de eventos recebidos:', data);
             const container = document.getElementById('eventos-dinamicos');
             if (!container) {
-                console.error('Ã¢ÂÅ’ Container de eventos nÃƒÂ£o encontrado');
+                console.error('âÂÅ’ Container de eventos nÃƒÂ£o encontrado');
                 atualizarContadorEventos('erro');
                 return;
             }
             container.innerHTML = '';
 
             if (!data.success || !data.eventos || data.eventos.length === 0) {
-                console.log('Ã¢Å¡Â Ã¯Â¸Â Nenhum evento encontrado');
+                console.log('âÅ¡Â Ã¯Â¸Â Nenhum evento encontrado');
                 atualizarContadorEventos('vazio');
                 return;
             }
 
-            console.log(`Ã¢Å“â€¦ ${data.eventos.length} eventos encontrados`);
+            console.log(`âÅ“â€¦ ${data.eventos.length} eventos encontrados`);
             atualizarContadorEventos('sucesso', data.eventos);
 
             data.eventos.forEach((evento, index) => {
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Ã°Å¸â€œâ€¹ Select estado HTML:', selectEstado.outerHTML);
         console.log('Ã°Å¸â€œâ€¹ Select estado opÃƒÂ§ÃƒÂµes iniciais:', selectEstado.options.length);
     } else {
-        console.error('Ã¢ÂÅ’ Select estado NÃƒÆ’O encontrado!');
+        console.error('âÂÅ’ Select estado NÃƒÆ’O encontrado!');
         console.log('Ã°Å¸â€Â Todos os selects na pÃƒÂ¡gina:', document.querySelectorAll('select'));
         console.log('Ã°Å¸â€Â Todos os elementos com ID:', document.querySelectorAll('[id]'));
     }
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Carregar eventos iniciais apÃƒÂ³s um pequeno delay para garantir que os estados carregaram
     setTimeout(() => {
-        console.log('Ã¢ÂÂ° Timeout executado, carregando eventos...');
+        console.log('âÂÂ° Timeout executado, carregando eventos...');
         carregarEventos();
     }, 1000); // Aumentei para 1 segundo para dar mais tempo
 
@@ -337,7 +337,7 @@ function renderizarCard(evento, index) {
                         </svg>
                     </div>
                     <span class="font-medium">${evento.data_formatada || 'Data nÃƒÂ£o informada'}</span>
-                    <span class="text-gray-400">Ã¢â‚¬Â¢</span>
+                    <span class="text-gray-400">ââ‚¬Â¢</span>
                     <span>${formatarHora(evento.hora_inicio) || '--:--'}</span>
                 </div>
                 
@@ -377,7 +377,7 @@ function renderizarCard(evento, index) {
         </div>
     `;
 
-    console.log(`Ã¢Å“â€¦ Card moderno criado para: ${evento.nome}`);
+    console.log(`âÅ“â€¦ Card moderno criado para: ${evento.nome}`);
     return card;
 }
 

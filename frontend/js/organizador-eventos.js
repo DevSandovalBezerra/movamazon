@@ -8,7 +8,7 @@ function getEventImageUrlLocal(imagem) {
 // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar eventos na pÃƒÆ’Ã‚Â¡gina Meus Eventos
 async function carregarMeusEventos(pagina = 1) {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Iniciando carregamento de eventos - PÃƒÆ’Ã‚Â¡gina:', pagina);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Iniciando carregamento de eventos - PÃƒÆ’Ã‚Â¡gina:', pagina);
         
         document.getElementById('loading').style.display = 'block';
         document.getElementById('eventos-container').style.display = 'none';
@@ -21,7 +21,7 @@ async function carregarMeusEventos(pagina = 1) {
         const busca = document.getElementById('busca')?.value || '';
         const porPagina = 10;
 
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Filtros coletados:', { status, filtroData, busca, pagina, porPagina });
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ Filtros coletados:', { status, filtroData, busca, pagina, porPagina });
 
         // Construir parÃƒÆ’Ã‚Â¢metros
         const params = new URLSearchParams({
@@ -46,8 +46,8 @@ async function carregarMeusEventos(pagina = 1) {
         console.log('[EVENTOS] Data parsed:', data);
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Eventos carregados com sucesso:', data.data.eventos.length, 'eventos');
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Dados completos da API:', data);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Eventos carregados com sucesso:', data.data.eventos.length, 'eventos');
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Dados completos da API:', data);
             renderizarListaMeusEventos(data.data.eventos);
             renderizarPaginacao(data.data.paginacao, pagina);
             
@@ -61,7 +61,7 @@ async function carregarMeusEventos(pagina = 1) {
             throw new Error(data.message || 'Erro ao carregar eventos');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
         document.getElementById('loading').style.display = 'none';
         document.getElementById('error-message').style.display = 'block';
     }
@@ -228,7 +228,7 @@ function renderizarListaMeusEventos(eventos) {
                 'pausado': 'Pausado',
                 'rascunho': 'Rascunho'
             };
-            evento.status_traduzido = mapa[evento.status] || evento.status || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â';
+            evento.status_traduzido = mapa[evento.status] || evento.status || 'ÃƒÂ¢ââ€šÂ¬ââ‚¬Â';
         }
         if (!evento.imagem_url) {
             evento.imagem_url = evento.imagem ? getEventImageUrlLocal(evento.imagem) : null;
@@ -326,7 +326,7 @@ function renderizarListaMeusEventos(eventos) {
     }
     
     container.innerHTML = html;
-    console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Lista de eventos renderizada com sucesso');
+    console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Lista de eventos renderizada com sucesso');
     
     // Carregar checklists de implementaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para cada evento
     eventos.forEach(async (evento) => {
@@ -349,7 +349,7 @@ function renderizarListaMeusEventos(eventos) {
 
 // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para visualizar evento (placeholder)
 function visualizarEvento(eventoId) {
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â Visualizando evento:', eventoId);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ËœÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â Visualizando evento:', eventoId);
     // Implementar visualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento
     alert('Funcionalidade de visualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o serÃƒÆ’Ã‚Â¡ implementada em breve!');
 }
@@ -376,7 +376,7 @@ async function editarEvento(eventoId) {
         const data = await response.json();
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Dados do evento carregados:', data.evento);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Dados do evento carregados:', data.evento);
             
             // Fechar loading e abrir modal de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
             if (typeof Swal !== 'undefined') {
@@ -391,7 +391,7 @@ async function editarEvento(eventoId) {
         }
         
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar dados do evento:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar dados do evento:', error);
         
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -766,7 +766,7 @@ function fecharModalEdicao() {
 async function salvarEdicaoEvento(event) {
     event.preventDefault();
     
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ Salvando ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento...');
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¾ Salvando ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento...');
     
     try {
         // Mostrar loading
@@ -820,7 +820,7 @@ async function salvarEdicaoEvento(event) {
         const data = await response.json();
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Evento atualizado com sucesso');
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Evento atualizado com sucesso');
             
             // Fechar modal
             fecharModalEdicao();
@@ -851,7 +851,7 @@ async function salvarEdicaoEvento(event) {
         }
         
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao salvar evento:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao salvar evento:', error);
         
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -867,7 +867,7 @@ async function salvarEdicaoEvento(event) {
 
 // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para excluir evento
 async function excluirEvento(eventoId) {
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬â€Ã¢â‚¬ËœÃƒÂ¯Ã‚Â¸Ã‚Â Iniciando exclusÃƒÆ’Ã‚Â£o do evento:', eventoId);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬â€ââ‚¬ËœÃƒÂ¯Ã‚Â¸Ã‚Â Iniciando exclusÃƒÆ’Ã‚Â£o do evento:', eventoId);
     
     try {
         // 1. Verificar dependÃƒÆ’Ã‚Âªncias primeiro
@@ -1000,14 +1000,14 @@ async function excluirEvento(eventoId) {
 
 // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para aplicar filtros
 function aplicarFiltros() {
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Aplicando filtros de eventos');
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â Aplicando filtros de eventos');
     
     // Coletar valores dos filtros
     const status = document.getElementById('filtro-status').value;
     const data = document.getElementById('filtro-data').value;
     const busca = document.getElementById('busca').value;
     
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Filtros aplicados:', { status, data, busca });
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ Filtros aplicados:', { status, data, busca });
     
     // Recarregar eventos com os filtros
     carregarMeusEventos(1);
@@ -1070,14 +1070,14 @@ function previewNovaImagem(input, eventoId) {
 
 // Detectar pÃƒÆ’Ã‚Â¡gina e chamar funÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o correta
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ DOMContentLoaded - Detectando pÃƒÆ’Ã‚Â¡gina');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ DOMContentLoaded - Detectando pÃƒÆ’Ã‚Â¡gina');
     
     if (document.getElementById('dashboard-content')) {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  PÃƒÆ’Ã‚Â¡gina detectada: Dashboard');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  PÃƒÆ’Ã‚Â¡gina detectada: Dashboard');
         // carregarDashboard(); // This function is not defined in the original file
     } else if (document.getElementById('eventos-container')) {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¦ PÃƒÆ’Ã‚Â¡gina detectada: Meus Eventos');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¦ Container encontrado:', document.getElementById('eventos-container'));
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¦ PÃƒÆ’Ã‚Â¡gina detectada: Meus Eventos');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¦ Container encontrado:', document.getElementById('eventos-container'));
         carregarMeusEventos();
     } else {
         console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Nenhuma pÃƒÆ’Ã‚Â¡gina conhecida detectada');

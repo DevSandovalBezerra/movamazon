@@ -85,14 +85,14 @@ async function carregarLotes() {
         mostrarLoading();
         
         const url = `${window.API_BASE || '/api'}/organizador/lotes/list.php?evento_id=${eventoId}${modalidadeId ? `&modalidade_id=${modalidadeId}` : ''}`;
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Buscando lotes:', url);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â Buscando lotes:', url);
         const response = await fetch(url);
         const data = await response.json();
 
         if (data.success) {
             lotesData = data.lotes;
             
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Debug API Response:', {
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Debug API Response:', {
                 total_lotes: data.total_lotes,
                 lotes_encontrados: data.lotes_encontrados,
                 lotes_recebidos: data.lotes.length,
@@ -128,7 +128,7 @@ function atualizarPaginacao() {
     const fim = inicio + itensPorPagina;
     const lotesPagina = lotesFiltrados.slice(inicio, fim);
 
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â Debug PaginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', {
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â Debug PaginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', {
         totalLotes: totalLotes,
         totalPaginas: totalPaginas,
         paginaAtual: paginaAtual,

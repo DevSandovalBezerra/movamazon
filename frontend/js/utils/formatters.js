@@ -1,23 +1,46 @@
 if (window.getApiBase) { window.getApiBase(); }
 /**
- * UtilitÃƒÂ¡rios: Formatadores
- * FunÃƒÂ§ÃƒÂµes para formatar dados exibidos na interface
+ * Utilitários: Formatadores
+ * Funções para formatar dados exibidos na interface
  */
+
+function countMojibakeMarkers(texto) {
+    const matches = (texto || '').match(/Ã|Â|â€|Å|�/g);
+    return matches ? matches.length : 0;
+}
+
+/**
+ * Tenta corrigir textos que vieram em UTF-8 lido como latin1/windows-1252.
+ * Mantém o valor original quando não detecta melhoria.
+ */
+export function corrigirMojibake(texto) {
+    if (typeof texto !== 'string' || texto === '') {
+        return texto;
+    }
+
+    if (!/[ÃÂâÅ�]/.test(texto)) {
+        return texto;
+    }
+
+    try {
+        const bytes = Uint8Array.from(texto, (char) => char.charCodeAt(0) & 0xff);
+        const decodificado = new TextDecoder('utf-8').decode(bytes);
+        return countMojibakeMarkers(decodificado) < countMojibakeMarkers(texto) ? decodificado : texto;
+    } catch (_) {
+        return texto;
+    }
+}
 
 /**
  * Formata a hora (converte 07:00:00 para 07:00)
- * @param {string} hora - Hora no formato HH:MM:SS ou HH:MM
- * @returns {string|null} Hora formatada ou null
  */
 export function formatarHora(hora) {
     if (!hora) return null;
 
-    // Se jÃƒÂ¡ estiver no formato correto (07:00), retorna como estÃƒÂ¡
     if (typeof hora === 'string' && hora.match(/^\d{1,2}:\d{2}$/)) {
         return hora;
     }
 
-    // Se estiver no formato 07:00:00, remove os segundos
     if (typeof hora === 'string' && hora.match(/^\d{1,2}:\d{2}:\d{2}$/)) {
         return hora.substring(0, 5);
     }
@@ -26,41 +49,30 @@ export function formatarHora(hora) {
 }
 
 /**
- * Formata localizaÃƒÂ§ÃƒÂ£o (cidade/estado)
- * @param {string} cidade - Nome da cidade
- * @param {string} estado - Sigla do estado
- * @returns {string} LocalizaÃƒÂ§ÃƒÂ£o formatada
+ * Formata localização (cidade/estado)
  */
 export function formatarLocal(cidade, estado) {
-    if (!cidade && !estado) return 'Local nÃƒÂ£o informado';
+    const cidadeSafe = corrigirMojibake(cidade);
+    const estadoSafe = corrigirMojibake(estado);
 
-    if (cidade && estado) {
-        return `${cidade}/${estado}`;
-    } else if (cidade) {
-        return cidade;
-    } else {
-        return estado;
-    }
+    if (!cidadeSafe && !estadoSafe) return 'Local não informado';
+    if (cidadeSafe && estadoSafe) return `${cidadeSafe}/${estadoSafe}`;
+    return cidadeSafe || estadoSafe;
 }
 
 /**
- * Trunca texto se exceder o tamanho mÃƒÂ¡ximo
- * @param {string} texto - Texto a ser truncado
- * @param {number} maxCaracteres - NÃƒÂºmero mÃƒÂ¡ximo de caracteres
- * @returns {string} Texto truncado com "..."
+ * Trunca texto se exceder o tamanho máximo
  */
 export function truncarTexto(texto, maxCaracteres = 20) {
-    if (!texto || texto.length <= maxCaracteres) {
-        return texto;
+    const textoSafe = corrigirMojibake(texto);
+    if (!textoSafe || textoSafe.length <= maxCaracteres) {
+        return textoSafe;
     }
-
-    return texto.substring(0, maxCaracteres) + '...';
+    return textoSafe.substring(0, maxCaracteres) + '...';
 }
 
 /**
- * ObtÃƒÂ©m a base para URLs de assets (atÃƒÂ© a pasta frontend) a partir do pathname atual.
- * Usado para montar a URL da imagem do evento de forma consistente em todas as pÃƒÂ¡ginas.
- * @returns {string} Base (ex: /movamazon/frontend ou ../../ para fallback relativo)
+ * Obtém a base para URLs de assets (até a pasta frontend).
  */
 export function getEventImageBase() {
     const pathname = (window.location.pathname || '').replace(/\\/g, '/');
@@ -68,34 +80,38 @@ export function getEventImageBase() {
     if (idx !== -1) {
         return pathname.substring(0, idx + 'frontend'.length);
     }
-    return '../../';
+    return '';
 }
 
 /**
- * Monta a URL da imagem do evento (nome do arquivo vindo do banco).
- * Base derivada do pathname para funcionar em qualquer pÃƒÂ¡gina (organizador, public, etc.).
- * @param {string} imagem - Nome do arquivo (ex: evento_2.png)
- * @returns {string} URL completa ou relativa para o src da img
+ * Monta a URL da imagem do evento.
  */
 export function getEventImageUrl(imagem) {
     if (!imagem || (typeof imagem === 'string' && !imagem.trim())) {
         return 'https://placehold.co/640x360?text=Evento';
     }
-    if (/^https?:\/\//.test(imagem)) {
-        return imagem;
+
+    const imagemSafe = corrigirMojibake(String(imagem).trim());
+
+    if (/^https?:\/\//i.test(imagemSafe)) {
+        return imagemSafe;
     }
+
+    if (imagemSafe.startsWith('/')) {
+        return imagemSafe;
+    }
+
+    if (imagemSafe.includes('/assets/')) {
+        return '/' + imagemSafe.replace(/^\/+/, '');
+    }
+
     const base = getEventImageBase();
-    const path = 'assets/img/eventos/' + imagem;
-    if (base === '../../') {
-        return base + path;
-    }
-    return base + (base.endsWith('/') ? '' : '/') + path;
+    const path = 'assets/img/eventos/' + imagemSafe.replace(/^\/+/, '');
+    return base ? `${base}/${path}` : `/${path}`;
 }
 
 /**
- * ObtÃƒÂ©m o caminho correto da imagem do evento (usa getEventImageUrl).
- * @param {string} imagem - Nome ou URL da imagem
- * @returns {string} Caminho completo da imagem
+ * Obtém o caminho correto da imagem do evento.
  */
 export function getImagemEvento(imagem) {
     return getEventImageUrl(imagem);
@@ -103,23 +119,15 @@ export function getImagemEvento(imagem) {
 
 /**
  * Determina o nome correto da empresa organizadora
- * @param {Object} evento - Objeto do evento
- * @returns {string} Nome do organizador
  */
 export function getNomeOrganizador(evento) {
-    // Se for o evento especÃƒÂ­fico da UEA, retornar o nome da empresa
-    if (evento.nome && evento.nome.includes('SAUIM DE COLEIRA')) {
-        return 'UEA - APOIO TÃƒâ€°CNICO MENTE DE CORREDOR';
+    const nomeEvento = corrigirMojibake(evento?.nome || '');
+    if (nomeEvento.includes('SAUIM DE COLEIRA')) {
+        return 'UEA - APOIO TÉCNICO MENTE DE CORREDOR';
     }
 
-    // Caso contrÃƒÂ¡rio, usar o campo disponÃƒÂ­vel
-    if (evento.organizador) {
-        return evento.organizador;
-    } else if (evento.organizadora) {
-        return evento.organizadora;
-    } else {
-        return 'Organizador nÃƒÂ£o informado';
-    }
+    const organizador = corrigirMojibake(evento?.organizador || evento?.organizadora || '');
+    return organizador || 'Organizador não informado';
 }
 
 

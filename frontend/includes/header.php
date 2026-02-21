@@ -11,12 +11,12 @@ $resolvedUrlBase = function_exists('app_url_base') ? rtrim(app_url_base(), '/') 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title : 'MovAmazon - Encontre sua prÃ³xima corrida'; ?></title>
+    <title><?php echo isset($page_title) ? $page_title : 'MovAmazon - Encontre sua próxima corrida'; ?></title>
 
     <!-- Tailwind CSS Compilado -->
     <link rel="stylesheet" href="../../assets/css/tailwind.min.css">
     
-    <!-- CSS Customizado (importado apÃ³s Tailwind) -->
+    <!-- CSS Customizado (importado após Tailwind) -->
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/custom.css">
     <script>
@@ -28,10 +28,10 @@ $resolvedUrlBase = function_exists('app_url_base') ? rtrim(app_url_base(), '/') 
     <!-- Alpine.js para interatividade -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- SweetAlert2 para confirmaÃ§Ãµes -->
+    <!-- SweetAlert2 para confirmações -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Font Awesome para Ã­cones -->
+    <!-- Font Awesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts - Inter -->
@@ -54,7 +54,7 @@ $resolvedUrlBase = function_exists('app_url_base') ? rtrim(app_url_base(), '/') 
             --brand-azul: #1E90FF;
         }
 
-        /* Garantir que o texto do menu seja visÃ­vel */
+        /* Garantir que o texto do menu seja visível */
         .bg-brand-green {
             background-color: var(--brand-green) !important;
         }
@@ -67,7 +67,7 @@ $resolvedUrlBase = function_exists('app_url_base') ? rtrim(app_url_base(), '/') 
             color: var(--brand-yellow) !important;
         }
 
-        /* Estilos customizados para componentes especÃ­ficos */
+        /* Estilos customizados para componentes específicos */
         .btn-primary {
             background-color: var(--brand-green);
             color: white;
@@ -102,7 +102,7 @@ $resolvedUrlBase = function_exists('app_url_base') ? rtrim(app_url_base(), '/') 
             box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        /* AnimaÃ§Ãµes customizadas */
+        /* Animações customizadas */
         @keyframes fadeInUp {
             from {
                 opacity: 0;

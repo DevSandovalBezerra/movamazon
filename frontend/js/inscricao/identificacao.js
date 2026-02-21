@@ -212,7 +212,7 @@ class EtapaIdentificacao {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Resposta do login:', data);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Resposta do login:', data);
 
                 if (data.success) {
                     this.usuarioIdentificado = true;
@@ -253,20 +253,20 @@ class EtapaIdentificacao {
     }
 
     fazerRegistro() {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] ===== INICIANDO REGISTRO =====');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ===== INICIANDO REGISTRO =====');
         const formData = new FormData(document.getElementById('registroForm'));
         const dados = Object.fromEntries(formData.entries());
 
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Dados do formulÃƒÆ’Ã‚Â¡rio capturados:', dados);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] FormData entries:', Array.from(formData.entries()));
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados do formulÃƒÆ’Ã‚Â¡rio capturados:', dados);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] FormData entries:', Array.from(formData.entries()));
 
         // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Iniciando validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o dos dados...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Iniciando validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o dos dados...');
         if (!this.validarDadosRegistro(dados)) {
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o falhou, interrompendo registro');
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o falhou, interrompendo registro');
             return;
         }
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o passou, prosseguindo com registro...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o passou, prosseguindo com registro...');
 
         // Mostrar loading com SweetAlert
         Swal.fire({
@@ -281,30 +281,30 @@ class EtapaIdentificacao {
         });
 
         // Usar FormData para compatibilidade com a API existente
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Enviando requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para:', `${window.API_BASE}/auth/register.php`);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] MÃƒÆ’Ã‚Â©todo: POST');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Body (FormData):', formData);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Enviando requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para:', `${window.API_BASE}/auth/register.php`);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] MÃƒÆ’Ã‚Â©todo: POST');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Body (FormData):', formData);
 
         fetch(`${window.API_BASE}/auth/register.php`, {
                 method: 'POST',
                 body: formData
             })
             .then(response => {
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Resposta recebida - Status:', response.status);
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Headers da resposta:', response.headers);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Resposta recebida - Status:', response.status);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Headers da resposta:', response.headers);
                 return response.json();
             })
             .then(data => {
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Dados JSON da resposta:', data);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados JSON da resposta:', data);
 
                 if (data.success) {
-                    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Registro bem-sucedido!');
+                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Registro bem-sucedido!');
                     // Fechar loading
                     Swal.close();
                     // Fazer login automÃƒÆ’Ã‚Â¡tico apÃƒÆ’Ã‚Â³s criar conta
                     this.fazerLoginAposRegistro(dados.email, dados.senha);
                 } else {
-                    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Erro no registro:', data.message);
+                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro no registro:', data.message);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro ao criar conta',
@@ -314,7 +314,7 @@ class EtapaIdentificacao {
                 }
             })
             .catch(error => {
-                console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de registro:', error);
+                console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de registro:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro de comunicaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
@@ -325,17 +325,17 @@ class EtapaIdentificacao {
     }
 
     fazerLoginAposRegistro(email, senha) {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] ===== INICIANDO LOGIN AUTOMÃƒÆ’Ã‚ÂTICO =====');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Email:', email);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Senha: [OCULTA] (tamanho:', senha.length, ')');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ===== INICIANDO LOGIN AUTOMÃƒÆ’Ã‚ÂTICO =====');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Email:', email);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Senha: [OCULTA] (tamanho:', senha.length, ')');
 
         const loginData = {
             identificacao: email,
             senha: senha
         };
 
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Dados do login:', loginData);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Enviando para:', `${window.API_BASE}/auth/login.php`);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados do login:', loginData);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Enviando para:', `${window.API_BASE}/auth/login.php`);
 
         fetch(`${window.API_BASE}/auth/login.php`, {
                 method: 'POST',
@@ -345,17 +345,17 @@ class EtapaIdentificacao {
                 body: JSON.stringify(loginData)
             })
             .then(response => {
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Resposta do login - Status:', response.status);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Resposta do login - Status:', response.status);
                 return response.json();
             })
             .then(data => {
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Dados do login recebidos:', data);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados do login recebidos:', data);
 
                 if (data.success) {
-                    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Login automÃƒÆ’Ã‚Â¡tico bem-sucedido!');
+                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Login automÃƒÆ’Ã‚Â¡tico bem-sucedido!');
                     this.usuarioIdentificado = true;
                     this.dadosUsuario = data.usuario;
-                    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] UsuÃƒÆ’Ã‚Â¡rio identificado:', this.dadosUsuario);
+                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] UsuÃƒÆ’Ã‚Â¡rio identificado:', this.dadosUsuario);
 
                     this.atualizarInterface();
 
@@ -368,7 +368,7 @@ class EtapaIdentificacao {
                         timer: 2000,
                         timerProgressBar: true
                     }).then(() => {
-                        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Redirecionando para pÃƒÆ’Ã‚Â¡gina de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...');
+                        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Redirecionando para pÃƒÆ’Ã‚Â¡gina de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...');
                         // Redirecionar para pÃƒÆ’Ã‚Â¡gina de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
                         const urlParams = new URLSearchParams(window.location.search);
                         const eventoId = urlParams.get('evento_id');
@@ -379,7 +379,7 @@ class EtapaIdentificacao {
                         }
                     });
                 } else {
-                    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Erro no login automÃƒÆ’Ã‚Â¡tico:', data.error);
+                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro no login automÃƒÆ’Ã‚Â¡tico:', data.error);
                     Swal.fire({
                         icon: 'warning',
                         title: 'Conta criada!',
@@ -389,13 +389,13 @@ class EtapaIdentificacao {
                 }
             })
             .catch(error => {
-                console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de login automÃƒÆ’Ã‚Â¡tico:', error);
+                console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de login automÃƒÆ’Ã‚Â¡tico:', error);
                 this.mostrarErro('Conta criada, mas erro no login automÃƒÆ’Ã‚Â¡tico. FaÃƒÆ’Ã‚Â§a login manualmente.');
             });
     }
 
     validarDadosRegistro(dados) {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] Validando dados de registro:', dados);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Validando dados de registro:', dados);
 
         // Limpar erros anteriores
         this.limparErrosRegistro();
@@ -453,7 +453,7 @@ class EtapaIdentificacao {
             valido = false;
         }
 
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o concluÃƒÆ’Ã‚Â­da. VÃƒÆ’Ã‚Â¡lido:', valido);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o concluÃƒÆ’Ã‚Â­da. VÃƒÆ’Ã‚Â¡lido:', valido);
         return valido;
     }
 

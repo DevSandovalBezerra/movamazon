@@ -3,7 +3,7 @@ if (window.getApiBase) { window.getApiBase(); }
 let categoriasData = [];
 let categoriaEditando = null;
 
-// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CONTROLE DA JANELA CORTINA =====
+// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CONTROLE DA JANELA CORTINA =====
 
 function abrirPanelCategorias() {
     const panel = document.getElementById('categoriasPanel');
@@ -44,7 +44,7 @@ function fecharPanelCategorias() {
     limparFormCategoria();
 }
 
-// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE TOGGLE =====
+// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE TOGGLE =====
 
 function configurarToggles() {
     // Toggle de status
@@ -68,7 +68,7 @@ function configurarToggles() {
     });
 }
 
-// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CONTADORES =====
+// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CONTADORES =====
 
 function configurarContadores() {
     const nomeInput = document.getElementById('nomeCategoria');
@@ -89,7 +89,7 @@ function configurarContadores() {
     });
 }
 
-// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE VALIDAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE IDADE =====
+// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE VALIDAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O DE IDADE =====
 
 function configurarValidacaoIdade() {
     const idadeMin = document.getElementById('idadeMin');
@@ -118,7 +118,7 @@ function configurarValidacaoIdade() {
 
 
 
-// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE FORMULÃƒÆ’Ã‚ÂRIO =====
+// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE FORMULÃƒÆ’Ã‚ÂRIO =====
 
 function limparFormCategoria() {
     document.getElementById('formCategoria').reset();
@@ -166,7 +166,7 @@ function editarCategoria(categoria) {
     document.getElementById('contadorDescricao').textContent = 450 - (categoria.descricao?.length || 0);
 }
 
-// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CRUD =====
+// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CRUD =====
 
 async function salvarCategoria() {
     const form = document.getElementById('formCategoria');
@@ -222,7 +222,7 @@ async function salvarCategoria() {
 
         if (data.success) {
             Swal.fire({
-                title: 'Sucesso! ÃƒÂ°Ã…Â¸Ã…Â½Ã¢â‚¬Â°',
+                title: 'Sucesso! ÃƒÂ°Ã…Â¸Ã…Â½ââ‚¬Â°',
                 text: categoriaEditando ? 'Categoria atualizada com sucesso!' : 'Categoria criada com sucesso!',
                 icon: 'success',
                 confirmButtonColor: '#10B981'
@@ -283,7 +283,7 @@ async function excluirCategoria(categoriaId) {
 
             if (data.success) {
                 Swal.fire({
-                    title: 'ExcluÃƒÆ’Ã‚Â­da! ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦',
+                    title: 'ExcluÃƒÆ’Ã‚Â­da! ÃƒÂ¢Ã…â€œââ‚¬Â¦',
                     text: 'Categoria excluÃƒÆ’Ã‚Â­da com sucesso!',
                     icon: 'success',
                     confirmButtonColor: '#10B981'
@@ -316,7 +316,7 @@ async function excluirCategoria(categoriaId) {
     }
 }
 
-// ===== FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DE CARREGAMENTO =====
+// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CARREGAMENTO =====
 
 async function carregarCategorias() {
     try {
@@ -379,7 +379,7 @@ function renderizarCategorias() {
                                          <div class=\"flex items-center gap-4 text-xs text-gray-500\">
                          <span class="flex items-center gap-1">
                              <i class="fas fa-users"></i>
-                             ${categoria.tipo_publico || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â'}
+                             ${categoria.tipo_publico || 'ÃƒÂ¢ââ€šÂ¬ââ‚¬Â'}
                          </span>
                          <span class="flex items-center gap-1">
                              <i class="fas fa-birthday-cake"></i>
@@ -407,7 +407,7 @@ function renderizarCategorias() {
     `).join('');
 }
 
-// ===== INICIALIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O =====
+// ===== INICIALIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O =====
 
 document.addEventListener('DOMContentLoaded', function () {
     // Fechar panel ao clicar no overlay

@@ -98,7 +98,7 @@ function renderizarLotes() {
                     </div>
                     <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900">${lote.modalidade_completa}</div>
-                        <div class="text-sm text-gray-500">${lote.tipo_publico_formatado} ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ ${lote.faixa_etaria}</div>
+                        <div class="text-sm text-gray-500">${lote.tipo_publico_formatado} ÃƒÂ¢ââ€šÂ¬Ã‚Â¢ ${lote.faixa_etaria}</div>
                     </div>
                 </div>
             </td>

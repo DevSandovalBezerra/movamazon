@@ -14,7 +14,7 @@ let filtros = {
 };
 
 // =====================================================
-// INICIALIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
+// INICIALIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -146,7 +146,7 @@ function preencherSelectProdutos() {
 }
 
 // =====================================================
-// RENDERIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
+// RENDERIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 function mostrarMensagemInicial() {
@@ -243,7 +243,7 @@ function criarCardProdutoExtra(produtoExtra) {
 }
 
 // =====================================================
-// FILTROS E PAGINAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
+// FILTROS E PAGINAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 function aplicarFiltros() {
@@ -491,7 +491,7 @@ function removerProdutoSelecionado(button) {
     button.parentElement.remove();
 }
 
-// ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O REMOVIDA - SEM VALIDAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE CONTADOR
+// ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O REMOVIDA - SEM VALIDAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O DE CONTADOR
 
 function coletarProdutosSelecionados() {
     const container = document.getElementById('produtos-selecionados');
@@ -576,7 +576,7 @@ async function editarProdutoExtra(id) {
 }
 
 async function excluirProdutoExtra(id) {
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Iniciando exclusÃƒÆ’Ã‚Â£o do produto extra ID:', id);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Iniciando exclusÃƒÆ’Ã‚Â£o do produto extra ID:', id);
 
     const result = await Swal.fire({
         title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
@@ -590,34 +590,34 @@ async function excluirProdutoExtra(id) {
     });
 
     if (!result.isConfirmed) {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - ExclusÃƒÆ’Ã‚Â£o cancelada pelo usuÃƒÆ’Ã‚Â¡rio');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - ExclusÃƒÆ’Ã‚Â£o cancelada pelo usuÃƒÆ’Ã‚Â¡rio');
         return;
     }
 
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - UsuÃƒÆ’Ã‚Â¡rio confirmou exclusÃƒÆ’Ã‚Â£o, enviando requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...');
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - UsuÃƒÆ’Ã‚Â¡rio confirmou exclusÃƒÆ’Ã‚Â£o, enviando requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...');
 
     try {
         const url = `${window.API_BASE || '/api'}/organizador/produtos-extras/delete.php?id=${id}`;
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - URL da exclusÃƒÆ’Ã‚Â£o:', url);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - URL da exclusÃƒÆ’Ã‚Â£o:', url);
 
         const response = await fetch(url, {
             method: 'DELETE'
         });
 
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response status:', response.status);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Response status:', response.status);
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados recebidos:', data);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Dados recebidos:', data);
 
         if (data.success) {
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - ExclusÃƒÆ’Ã‚Â£o bem-sucedida, recarregando lista...');
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - ExclusÃƒÆ’Ã‚Â£o bem-sucedida, recarregando lista...');
             carregarProdutosExtras();
             showSuccess('Produto extra excluÃƒÆ’Ã‚Â­do com sucesso!');
         } else {
-            console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro na exclusÃƒÆ’Ã‚Â£o:', data.error);
+            console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Erro na exclusÃƒÆ’Ã‚Â£o:', data.error);
             showError(data.error);
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', error);
         showError('Erro ao excluir produto extra');
     }
 }

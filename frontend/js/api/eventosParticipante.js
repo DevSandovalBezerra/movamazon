@@ -35,7 +35,7 @@ export async function getProximosEventos(limit = 5) {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Ã¢ÂÅ’ Erro HTTP eventos:', response.status, errorText);
+            console.error('âÂÅ’ Erro HTTP eventos:', response.status, errorText);
             throw new Error(`Erro HTTP: ${response.status} - ${errorText}`);
         }
 
@@ -48,14 +48,14 @@ export async function getProximosEventos(limit = 5) {
 
         // Limitar quantidade e retornar apenas os prÃƒÂ³ximos
         const eventos = (data.eventos || []).slice(0, limit);
-        console.log(`Ã¢Å“â€¦ ${eventos.length} eventos processados (limite: ${limit})`);
+        console.log(`âÅ“â€¦ ${eventos.length} eventos processados (limite: ${limit})`);
 
         return {
             success: true,
             eventos: eventos
         };
     } catch (error) {
-        console.error('Ã¢ÂÅ’ Erro ao buscar prÃƒÂ³ximos eventos:', error);
+        console.error('âÂÅ’ Erro ao buscar prÃƒÂ³ximos eventos:', error);
         return {
             success: false,
             message: error.message || 'Erro ao conectar com o servidor',

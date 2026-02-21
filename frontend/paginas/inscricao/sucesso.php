@@ -175,12 +175,12 @@ if (empty($inscricao)) {
                     </button>
                 <?php endif; ?>
 
-                <a href="/dashboard" class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors text-center block">
+                <a href="../../participante/index.php" class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors text-center block">
                     <i class="fas fa-home mr-2"></i>
-                    Ir para Dashboard
+                    Ir para Minhas Inscrições
                 </a>
 
-                <a href="/eventos" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors text-center block">
+                <a href="../public/index.php" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors text-center block">
                     <i class="fas fa-calendar mr-2"></i>
                     Ver Outros Eventos
                 </a>

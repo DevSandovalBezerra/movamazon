@@ -30,17 +30,17 @@ function configurarEventListeners() {
 
 // Carregar eventos do organizador
 async function carregarEventos() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ questionario.js - Iniciando carregamento de eventos');
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ questionario.js - Iniciando carregamento de eventos');
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para API eventos');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ questionario.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para API eventos');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Status da resposta:', response.status);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ questionario.js - Status da resposta:', response.status);
         
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Dados recebidos:', data);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ questionario.js - Dados recebidos:', data);
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ questionario.js - Sucesso! Eventos carregados:', data.data.eventos.length);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ questionario.js - Sucesso! Eventos carregados:', data.data.eventos.length);
             eventos = data.data.eventos;
             preencherSelectEventos();
         } else {
@@ -48,42 +48,42 @@ async function carregarEventos() {
             Swal.fire('Erro', data.error || 'Erro ao carregar eventos', 'error');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ questionario.js - Erro ao carregar eventos:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ questionario.js - Erro ao carregar eventos:', error);
         Swal.fire('Erro', 'Erro ao carregar eventos', 'error');
     }
 }
 
 // Preencher select de eventos
 function preencherSelectEventos() {
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â§ questionario.js - Preenchendo select de eventos');
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â§ questionario.js - Preenchendo select de eventos');
     const select = document.getElementById('filtroEvento');
     select.innerHTML = '<option value="">Selecione um evento</option>';
     
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ questionario.js - Eventos para preencher:', eventos);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ questionario.js - Eventos para preencher:', eventos);
     eventos.forEach(evento => {
         const option = document.createElement('option');
         option.value = evento.id;
         option.textContent = evento.nome;
         select.appendChild(option);
     });
-    console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ questionario.js - Select de eventos preenchido com', eventos.length, 'eventos');
+    console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ questionario.js - Select de eventos preenchido com', eventos.length, 'eventos');
 }
 
 // Carregar questionÃƒÆ’Ã‚Â¡rio do evento
 async function carregarQuestionario(eventoId) {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ questionario.js - Carregando questionÃƒÆ’Ã‚Â¡rio para evento ID:', eventoId);
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ questionario.js - Carregando questionÃƒÆ’Ã‚Â¡rio para evento ID:', eventoId);
     try {
         mostrarLoading();
         
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para questionÃƒÆ’Ã‚Â¡rio');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ questionario.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para questionÃƒÆ’Ã‚Â¡rio');
         const response = await fetch(`${window.API_BASE || '/api'}/organizador/questionario/list.php?evento_id=${eventoId}`);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Status da resposta questionÃƒÆ’Ã‚Â¡rio:', response.status);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ questionario.js - Status da resposta questionÃƒÆ’Ã‚Â¡rio:', response.status);
         
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ questionario.js - Dados questionÃƒÆ’Ã‚Â¡rio recebidos:', data);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ questionario.js - Dados questionÃƒÆ’Ã‚Â¡rio recebidos:', data);
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ questionario.js - QuestionÃƒÆ’Ã‚Â¡rio carregado:', data.data.length);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ questionario.js - QuestionÃƒÆ’Ã‚Â¡rio carregado:', data.data.length);
             questionario = data.data;
             questionarioFiltrado = [...questionario];
             renderizarQuestionario();
@@ -92,7 +92,7 @@ async function carregarQuestionario(eventoId) {
             throw new Error(data.message);
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ questionario.js - Erro ao carregar questionÃƒÆ’Ã‚Â¡rio:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ questionario.js - Erro ao carregar questionÃƒÆ’Ã‚Â¡rio:', error);
         mostrarErro('Erro ao carregar questionÃƒÆ’Ã‚Â¡rio: ' + error.message);
     } finally {
         ocultarLoading();

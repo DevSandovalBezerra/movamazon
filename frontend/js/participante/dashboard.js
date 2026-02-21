@@ -88,7 +88,7 @@ function renderizarEstatisticas(stats) {
         const element = document.getElementById(stat.id);
         if (element) {
             element.textContent = stat.value;
-            console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Atualizado ${stat.id}: ${stat.value}`);
+            console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ Atualizado ${stat.id}: ${stat.value}`);
         } else {
             console.warn(`ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Elemento nÃƒÆ’Ã‚Â£o encontrado: ${stat.id}`);
         }
@@ -255,7 +255,7 @@ function removerLoading() {
  */
 export async function carregarDashboard(forceRefresh = false) {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬Å¾ Iniciando carregamento do dashboard...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Âââ‚¬Å¾ Iniciando carregamento do dashboard...');
         
         // Mostrar loading states
         mostrarLoading();
@@ -264,47 +264,47 @@ export async function carregarDashboard(forceRefresh = false) {
         let inscricoes = forceRefresh ? null : getCache(CACHE_KEY_INSCRICOES);
         
         if (!inscricoes) {
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Buscando inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes da API...');
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Buscando inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes da API...');
             const result = await getInscricoes();
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Resultado da API de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:', result);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Resultado da API de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:', result);
             
             if (result.success) {
                 inscricoes = result.inscricoes || [];
-                console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ${inscricoes.length} inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes encontradas`);
+                console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${inscricoes.length} inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes encontradas`);
                 setCache(CACHE_KEY_INSCRICOES, inscricoes);
             } else {
                 console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao buscar inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:', result.message);
                 throw new Error(result.message || 'Erro ao carregar inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes');
             }
         } else {
-            console.log(`ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ Usando ${inscricoes.length} inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do cache`);
+            console.log(`ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¾ Usando ${inscricoes.length} inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do cache`);
         }
 
         // Buscar prÃƒÆ’Ã‚Â³ximos eventos (com cache)
         let eventos = forceRefresh ? null : getCache(CACHE_KEY_EVENTOS);
         
         if (!eventos) {
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Buscando eventos da API...');
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Buscando eventos da API...');
             const result = await getProximosEventos(5);
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Resultado da API de eventos:', result);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Resultado da API de eventos:', result);
             
             if (result.success) {
                 eventos = result.eventos || [];
-                console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ${eventos.length} eventos encontrados`);
+                console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${eventos.length} eventos encontrados`);
                 setCache(CACHE_KEY_EVENTOS, eventos);
             } else {
                 console.warn('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Erro ao carregar eventos:', result.message);
                 eventos = [];
             }
         } else {
-            console.log(`ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ Usando ${eventos.length} eventos do cache`);
+            console.log(`ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¾ Usando ${eventos.length} eventos do cache`);
         }
 
         // Calcular estatÃƒÆ’Ã‚Â­sticas
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‹â€  Calculando estatÃƒÆ’Ã‚Â­sticas...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‹â€  Calculando estatÃƒÆ’Ã‚Â­sticas...');
         const stats = calcularEstatisticas(inscricoes);
         stats.proximosEventos = eventos.length;
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  EstatÃƒÆ’Ã‚Â­sticas calculadas:', stats);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  EstatÃƒÆ’Ã‚Â­sticas calculadas:', stats);
 
         // Renderizar componentes
         removerLoading();
@@ -313,7 +313,7 @@ export async function carregarDashboard(forceRefresh = false) {
         renderizarInscricoes(inscricoes);
         renderizarProximosEventos(eventos);
         
-        console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Dashboard carregado com sucesso!');
+        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Dashboard carregado com sucesso!');
 
     } catch (error) {
         console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao carregar dashboard:', error);
@@ -345,17 +345,17 @@ export async function carregarDashboard(forceRefresh = false) {
  * Inicializa o dashboard quando a pÃƒÆ’Ã‚Â¡gina carrega
  */
 export function initDashboard() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ Inicializando dashboard...');
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Å¾ DOM readyState:', document.readyState);
+    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ Inicializando dashboard...');
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ DOM readyState:', document.readyState);
     
     if (document.readyState === 'loading') {
         console.log('ÃƒÂ¢Ã‚ÂÃ‚Â³ Aguardando DOMContentLoaded...');
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ DOM carregado, iniciando dashboard...');
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ DOM carregado, iniciando dashboard...');
             carregarDashboard();
         });
     } else {
-        console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ DOM jÃƒÆ’Ã‚Â¡ carregado, iniciando dashboard...');
+        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ DOM jÃƒÆ’Ã‚Â¡ carregado, iniciando dashboard...');
         carregarDashboard();
     }
 }

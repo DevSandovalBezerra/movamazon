@@ -27,7 +27,7 @@ export async function getInscricoes() {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Ã¢ÂÅ’ Erro HTTP:', response.status, errorText);
+            console.error('âÂÅ’ Erro HTTP:', response.status, errorText);
             
             if (response.status === 403) {
                 throw new Error('Acesso negado. FaÃƒÂ§a login novamente.');
@@ -47,7 +47,7 @@ export async function getInscricoes() {
             inscricoes: data.inscricoes || []
         };
     } catch (error) {
-        console.error('Ã¢ÂÅ’ Erro ao buscar inscriÃƒÂ§ÃƒÂµes:', error);
+        console.error('âÂÅ’ Erro ao buscar inscriÃƒÂ§ÃƒÂµes:', error);
         return {
             success: false,
             message: error.message || 'Erro ao conectar com o servidor',

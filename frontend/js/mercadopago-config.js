@@ -1,8 +1,8 @@
 if (window.getApiBase) { window.getApiBase(); }
-// UtilitÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio para buscar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do Mercado Pago dinamicamente
+// Utilitário para buscar configuração do Mercado Pago dinamicamente
 // Remove necessidade de hardcode de public keys
 
-// Garantir que API_BASE estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ definido
+// Garantir que API_BASE está definido
 if (!window.API_BASE) {
     (function () {
         var path = window.location.pathname || '';
@@ -11,39 +11,39 @@ if (!window.API_BASE) {
     })();
 }
 
-// FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para construir URLs usando API_BASE
+// Função para construir URLs usando API_BASE
 function getApiUrl(endpoint) {
     const url = `${window.API_BASE}/${endpoint}`;
     return url;
 }
 
-// ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para limpar cache do MercadoPago (ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºtil para debug)
+// ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã‚Â¦ Função para limpar cache do MercadoPago (ºtil para debug)
 function clearMercadoPagoCache() {
     sessionStorage.removeItem('mp_config');
-    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Cache do MercadoPago limpo');
+    console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã‚Â¦ Cache do MercadoPago limpo');
 }
 
-// Buscar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do Mercado Pago do servidor
+// Buscar configuração do Mercado Pago do servidor
 async function getMercadoPagoConfig() {
     // Verificar cache em sessionStorage
     const cached = sessionStorage.getItem('mp_config');
     if (cached) {
         try {
             const config = JSON.parse(cached);
-            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar se cache tem public_key vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida E estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ dentro do prazo
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã‚Â¦ Verificar se cache tem public_key válida E está dentro do prazo
             if (config.public_key && config.public_key !== '' && Date.now() - config.timestamp < 3600000) {
-                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Usando configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do cache:', { 
+                console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã‚Â¦ Usando configuração do cache:', { 
                     environment: config.environment, 
                     has_key: !!config.public_key 
                 });
                 return config;
             } else {
-                // Cache invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido ou public_key vazia - limpar
-                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ Cache invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido ou expirado, buscando nova configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o...');
+                // Cache inválido ou public_key vazia - limpar
+                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒÂ¢ââ€šÂ¬Ã…Â¾ Cache inválido ou expirado, buscando nova configuração...');
                 sessionStorage.removeItem('mp_config');
             }
         } catch (e) {
-            // Cache invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido, limpar e continuar
+            // Cache inválido, limpar e continuar
             sessionStorage.removeItem('mp_config');
         }
     }
@@ -51,7 +51,7 @@ async function getMercadoPagoConfig() {
     // Buscar do servidor
     try {
         const url = getApiUrl('mercadolivre/get_public_key.php');
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Buscando configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o em:', url);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â Buscando configuração em:', url);
         
         const response = await fetch(url);
         
@@ -60,14 +60,14 @@ async function getMercadoPagoConfig() {
         }
         
         const data = await response.json();
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Resposta do servidor:', data);
+        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¥ Resposta do servidor:', data);
         
         if (data.success) {
-            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Verificar se public_key estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ presente
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã‚Â¦ Verificar se public_key está presente
             if (!data.public_key || data.public_key === '') {
-                console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Servidor retornou public_key vazia!');
-                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ Verifique no .env: APP_Public_Key ou APP_Public_Keyee');
-                throw new Error('Public key nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurada no servidor. Verifique o arquivo .env');
+                console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦ââ‚¬â„¢ Servidor retornou public_key vazia!');
+                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã…â€œÃƒÂ¢ââ€šÂ¬Ã‚Â¹ Verifique no .env: APP_Public_Key ou APP_Public_Keyee');
+                throw new Error('Public key não configurada no servidor. Verifique o arquivo .env');
             }
             
             const config = {
@@ -78,9 +78,9 @@ async function getMercadoPagoConfig() {
                 timestamp: Date.now()
             };
             
-            // Salvar no cache apenas se public_key vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida
+            // Salvar no cache apenas se public_key válida
             sessionStorage.setItem('mp_config', JSON.stringify(config));
-            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o obtida com sucesso:', { 
+            console.log('ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã‚Â¦ Configuração obtida com sucesso:', { 
                 environment: config.environment, 
                 has_key: !!config.public_key,
                 has_valid_tokens: config.has_valid_tokens 
@@ -88,16 +88,16 @@ async function getMercadoPagoConfig() {
             
             return config;
         } else {
-            throw new Error(data.message || data.error || 'Resposta invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida do servidor');
+            throw new Error(data.message || data.error || 'Resposta inválida do servidor');
         }
     } catch (error) {
         // Limpar cache em caso de erro
         sessionStorage.removeItem('mp_config');
-        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Erro ao obter configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do Mercado Pago:', error);
-        throw new Error('Erro ao obter configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do Mercado Pago: ' + error.message);
+        console.error('ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦ââ‚¬â„¢ Erro ao obter configuração do Mercado Pago:', error);
+        throw new Error('Erro ao obter configuração do Mercado Pago: ' + error.message);
     }
 }
 
-// Expor funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de limpar cache globalmente (para debug)
+// Expor função de limpar cache globalmente (para debug)
 window.clearMercadoPagoCache = clearMercadoPagoCache;
 

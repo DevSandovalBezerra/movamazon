@@ -82,7 +82,7 @@ async function carregarEventos() {
 
     if (data.success) {
       eventos = data.data || [];
-      console.log('Ã¢Å“â€¦ Eventos carregados:', eventos.length);
+      console.log('âÅ“â€¦ Eventos carregados:', eventos.length);
 
       // Preencher filtro de eventos
       const selectEvento = document.getElementById('filtroEvento');
@@ -95,7 +95,7 @@ async function carregarEventos() {
         selectEvento.appendChild(option);
       });
     } else {
-      console.error('Ã¢ÂÅ’ Erro ao carregar eventos:', data.message);
+      console.error('âÂÅ’ Erro ao carregar eventos:', data.message);
     }
   } catch (error) {
     console.error('Ã°Å¸â€™Â¥ Erro na requisiÃƒÂ§ÃƒÂ£o de eventos:', error);
@@ -150,11 +150,11 @@ async function carregarInscricoes(eventoId = null, aplicarFiltrosAPI = false) {
     if (data.success) {
       inscricoes = data.data || [];
       inscricoesOriginais = data.data || []; // Manter cÃƒÂ³pia dos dados originais
-      console.log('Ã¢Å“â€¦ InscriÃƒÂ§ÃƒÂµes carregadas:', inscricoes.length);
+      console.log('âÅ“â€¦ InscriÃƒÂ§ÃƒÂµes carregadas:', inscricoes.length);
       paginaAtual = 1;
       renderizarTabela();
     } else {
-      console.error('Ã¢ÂÅ’ Erro ao carregar inscriÃƒÂ§ÃƒÂµes:', data.message);
+      console.error('âÂÅ’ Erro ao carregar inscriÃƒÂ§ÃƒÂµes:', data.message);
       mostrarErro('Erro ao carregar inscriÃƒÂ§ÃƒÂµes: ' + (data.message || 'Erro desconhecido'));
     }
   } catch (error) {
@@ -383,7 +383,7 @@ function getBadgeClass(statusClass) {
 }
 
 function mostrarErro(mensagem) {
-  console.error('Ã¢ÂÅ’ Erro:', mensagem);
+  console.error('âÂÅ’ Erro:', mensagem);
   if (typeof Swal !== 'undefined') {
     Swal.fire({ icon: 'error', title: 'Erro ao carregar inscriÃƒÂ§ÃƒÂµes', text: mensagem });
   }

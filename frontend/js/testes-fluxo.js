@@ -115,7 +115,7 @@ class TesteFluxo {
     }
 
     async testarValidacoes() {
-        console.log('Ã¢Å“â€¦ Testando ValidaÃƒÂ§ÃƒÂµes...');
+        console.log('âÅ“â€¦ Testando ValidaÃƒÂ§ÃƒÂµes...');
 
         // Teste 1: Sistema de validaÃƒÂ§ÃƒÂ£o
         await this.executarTeste('Sistema de ValidaÃƒÂ§ÃƒÂ£o', () => {
@@ -167,11 +167,11 @@ class TesteFluxo {
             if (resultado) {
                 this.testesPassaram++;
                 this.adicionarResultado(nome, 'PASSOU', 'success');
-                console.log(`Ã¢Å“â€¦ ${nome}: PASSOU`);
+                console.log(`âÅ“â€¦ ${nome}: PASSOU`);
             } else {
                 this.testesFalharam++;
                 this.adicionarResultado(nome, 'FALHOU', 'error');
-                console.log(`Ã¢ÂÅ’ ${nome}: FALHOU`);
+                console.log(`âÂÅ’ ${nome}: FALHOU`);
             }
         } catch (erro) {
             this.testesFalharam++;
@@ -217,12 +217,12 @@ class TesteFluxo {
             Ã°Å¸Â§Âª **TESTES CONCLUÃƒÂDOS**
             
             Ã°Å¸â€œÅ  **Resumo:**
-            Ã¢â‚¬Â¢ Total: ${this.testesExecutados}
-            Ã¢â‚¬Â¢ Ã¢Å“â€¦ Passaram: ${this.testesPassaram}
-            Ã¢â‚¬Â¢ Ã¢ÂÅ’ Falharam: ${this.testesFalharam}
-            Ã¢â‚¬Â¢ Ã°Å¸â€œË† Taxa de Sucesso: ${((this.testesPassaram / this.testesExecutados) * 100).toFixed(1)}%
+            ââ‚¬Â¢ Total: ${this.testesExecutados}
+            ââ‚¬Â¢ âÅ“â€¦ Passaram: ${this.testesPassaram}
+            ââ‚¬Â¢ âÂÅ’ Falharam: ${this.testesFalharam}
+            ââ‚¬Â¢ Ã°Å¸â€œË† Taxa de Sucesso: ${((this.testesPassaram / this.testesExecutados) * 100).toFixed(1)}%
             
-            ${this.testesFalharam === 0 ? 'Ã°Å¸Å½â€° Todos os testes passaram!' : 'Ã¢Å¡Â Ã¯Â¸Â Alguns testes falharam. Verifique os logs.'}
+            ${this.testesFalharam === 0 ? 'Ã°Å¸Å½â€° Todos os testes passaram!' : 'âÅ¡Â Ã¯Â¸Â Alguns testes falharam. Verifique os logs.'}
         `;
 
         console.log(resumo);
@@ -264,7 +264,7 @@ class TesteFluxo {
         const fim = performance.now();
         const tempo = fim - inicio;
 
-        console.log(`Ã¢ÂÂ±Ã¯Â¸Â ${nome} executou em ${tempo.toFixed(2)}ms`);
+        console.log(`âÂÂ±Ã¯Â¸Â ${nome} executou em ${tempo.toFixed(2)}ms`);
 
         // Considerar "lento" se demorar mais de 1 segundo
         const passou = tempo < 1000;
@@ -275,7 +275,7 @@ class TesteFluxo {
 
     // Teste de acessibilidade bÃƒÂ¡sica
     async testarAcessibilidade() {
-        console.log('Ã¢â„¢Â¿ Testando Acessibilidade...');
+        console.log('ââ„¢Â¿ Testando Acessibilidade...');
 
         // Teste 1: Imagens com alt
         await this.executarTeste('Imagens com Alt', () => {

@@ -47,7 +47,7 @@ function mostrarEstadoVazio() {
 // Carregar eventos
 async function carregarEventos() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Carregando eventos...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Carregando eventos...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
         
         if (!response.ok) {
@@ -55,18 +55,18 @@ async function carregarEventos() {
         }
         
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Resposta da API eventos:', data);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Resposta da API eventos:', data);
         
         if (data.success) {
             eventos = data.data.eventos;
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Eventos carregados:', eventos);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ Eventos carregados:', eventos);
             preencherSelectEventos();
-            console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ${eventos.length} eventos carregados`);
+            console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${eventos.length} eventos carregados`);
         } else {
             throw new Error(data.message || data.error || 'Erro ao carregar eventos');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
         Swal.fire('Erro', 'Erro ao carregar eventos: ' + error.message, 'error');
     }
 }
@@ -82,7 +82,7 @@ function preencherSelectEventos() {
     select.innerHTML = '<option value="">Selecione um evento</option>';
     
     if (!eventos || eventos.length === 0) {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â­ Nenhum evento disponÃƒÆ’Ã‚Â­vel');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â­ Nenhum evento disponÃƒÆ’Ã‚Â­vel');
         return;
     }
     
@@ -91,10 +91,10 @@ function preencherSelectEventos() {
         option.value = evento.id;
         option.textContent = evento.nome;
         select.appendChild(option);
-        console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Adicionado evento: ${evento.nome} (ID: ${evento.id})`);
+        console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ Adicionado evento: ${evento.nome} (ID: ${evento.id})`);
     });
     
-    console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Select preenchido com ${eventos.length} eventos`);
+    console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ Select preenchido com ${eventos.length} eventos`);
 }
 
 // Aplicar filtros
@@ -113,13 +113,13 @@ function aplicarFiltros() {
 // Carregar locais do evento
 async function carregarLocais(eventoId) {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Carregando locais para evento:', eventoId);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Carregando locais para evento:', eventoId);
         const response = await fetch(`${window.API_BASE || '/api'}/organizador/retirada-kits/get.php?evento_id=${eventoId}`);
         const data = await response.json();
         
         if (data.success) {
             locais = data.data || [];
-            console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ${locais.length} locais carregados`);
+            console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${locais.length} locais carregados`);
             
             // Aplicar filtro de status se houver
             const statusFiltro = document.getElementById('filtroStatus').value;
@@ -137,7 +137,7 @@ async function carregarLocais(eventoId) {
             throw new Error(data.error || 'Erro ao carregar locais');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar locais:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar locais:', error);
         Swal.fire('Erro', 'Erro ao carregar locais: ' + error.message, 'error');
         locais = [];
         mostrarEstadoVazio();
@@ -360,7 +360,7 @@ async function salvarLocal(e) {
             payload.id = localId;
         }
         
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ Salvando local...', payload);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¾ Salvando local...', payload);
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -379,7 +379,7 @@ async function salvarLocal(e) {
             Swal.fire('Erro', data.error || data.message || 'Erro ao salvar local.', 'error');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao salvar local:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao salvar local:', error);
         Swal.fire('Erro', 'Erro ao salvar local.', 'error');
     }
 }

@@ -1,7 +1,7 @@
 if (window.getApiBase) { window.getApiBase(); }
 // programacao.js
 /**
- * PÃƒÆ’Ã‚ÂGINA DE PROGRAMAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O (CHECKLIST) - GERENCIAMENTO DE CONFIGURAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES DO EVENTO
+ * PÃƒÆ’Ã‚ÂGINA DE PROGRAMAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O (CHECKLIST) - GERENCIAMENTO DE CONFIGURAÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DO EVENTO
  * 
  * Esta pÃƒÆ’Ã‚Â¡gina mantÃƒÆ’Ã‚Â©m a flexibilidade de recuperar e atualizar dados de mÃƒÆ’Ã‚Âºltiplas tabelas:
  * 
@@ -23,7 +23,7 @@ if (window.getApiBase) { window.getApiBase(); }
  *    - Exclui: excluirItemProgramacao() -> API programacao/delete.php
  *    - Campos: tipo, titulo, descricao, ordem, ativo
  * 
- * 4. FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE VERIFICAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DE CONFIGURAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES:
+ * 4. FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O DE VERIFICAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O DE CONFIGURAÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES:
  *    - A API check_implementation_status.php verifica se o evento tem programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
  *    - Verifica se hÃƒÆ’Ã‚Â¡ itens ativos na tabela programacao_evento
  *    - Esta verificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© usada pelo checklist na pÃƒÆ’Ã‚Â¡gina principal do organizador
@@ -235,17 +235,17 @@ async function carregarEventos() {
 async function carregarEventoSelecionado(eventoId) {
     if (eventoId) {
         try {
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Carregando evento ID:', eventoId);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Carregando evento ID:', eventoId);
             
             // 1. RECUPERAR DADOS DA TABELA 'eventos' (FUNCIONALIDADE ORIGINAL)
             const response = await fetch(API_BASE + `get.php?id=${eventoId}`);
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response status:', response.status);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Response status:', response.status);
             const data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados recebidos:', data);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Dados recebidos:', data);
 
             if (data.success && data.data && data.data.id) {
                 eventoAtual = data.data;
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Evento atual definido:', eventoAtual);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Evento atual definido:', eventoAtual);
 
                 // 2. CARREGAR DADOS RELACIONADOS (MÃƒÆ’Ã…Â¡LTIPLAS TABELAS)
                 // - Modalidades (tabela 'modalidades')
@@ -258,11 +258,11 @@ async function carregarEventoSelecionado(eventoId) {
                 preencherFormulario(eventoAtual);
                 document.getElementById('filtro-evento').value = eventoId;
             } else {
-                console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Evento nÃƒÆ’Ã‚Â£o encontrado na resposta:', data);
+                console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Evento nÃƒÆ’Ã‚Â£o encontrado na resposta:', data);
                 Swal.fire('Erro', 'Evento nÃƒÆ’Ã‚Â£o encontrado.', 'error');
             }
         } catch (error) {
-            console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro ao carregar evento:', error);
+            console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Erro ao carregar evento:', error);
         }
     }
 }
@@ -270,24 +270,24 @@ async function carregarEventoSelecionado(eventoId) {
 // Carregar modalidades do evento (versÃƒÆ’Ã‚Â£o dinÃƒÆ’Ã‚Â¢mica)
 async function carregarModalidades(eventoId) {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Iniciando carregamento de modalidades para evento ID:', eventoId);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Iniciando carregamento de modalidades para evento ID:', eventoId);
 
         // Mostrar loading
         mostrarLoadingModalidades();
 
         // Buscar modalidades
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Buscando modalidades...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Buscando modalidades...');
         const modalidadesResponse = await fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response modalidades status:', modalidadesResponse.status);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Response modalidades status:', modalidadesResponse.status);
         const modalidadesData = await modalidadesResponse.json();
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados modalidades:', modalidadesData);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Dados modalidades:', modalidadesData);
 
         // Buscar lotes com valores
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Buscando lotes...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Buscando lotes...');
         const lotesResponse = await fetch(`${window.API_BASE || '/api'}/organizador/lotes-inscricao/list.php?evento_id=${eventoId}`);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Response lotes status:', lotesResponse.status);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Response lotes status:', lotesResponse.status);
         const lotesData = await lotesResponse.json();
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Dados lotes:', lotesData);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Dados lotes:', lotesData);
 
         if (modalidadesData.success && lotesData.success) {
             // A API retorna modalidades diretamente no array
@@ -297,16 +297,16 @@ async function carregarModalidades(eventoId) {
             eventoAtual.modalidades = modalidades;
             eventoAtual.lotes = lotes;
 
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Renderizando modalidades dinÃƒÆ’Ã‚Â¢micas...');
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Modalidades recebidas:', modalidades);
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Lotes recebidos:', lotes);
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Total modalidades:', modalidades.length);
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Total lotes:', lotes.length);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Renderizando modalidades dinÃƒÆ’Ã‚Â¢micas...');
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Modalidades recebidas:', modalidades);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Lotes recebidos:', lotes);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Total modalidades:', modalidades.length);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Total lotes:', lotes.length);
             
             // Renderizar interface dinÃƒÆ’Ã‚Â¢mica
             renderizarModalidadesDinamicas(modalidades, lotes);
         } else {
-            console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro nas APIs:', {
+            console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Erro nas APIs:', {
                 modalidades: modalidadesData,
                 lotes: lotesData
             });
@@ -320,7 +320,7 @@ async function carregarModalidades(eventoId) {
             mostrarErroModalidades(mensagemErro);
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Erro ao carregar modalidades:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Erro ao carregar modalidades:', error);
         eventoAtual.modalidades = [];
         eventoAtual.lotes = [];
         mostrarErroModalidades('Erro ao carregar modalidades');
@@ -337,7 +337,7 @@ function aplicarFiltros() {
 
 // Preencher formulÃƒÆ’Ã‚Â¡rio com dados do evento
 function preencherFormulario(evento) {
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Preenchendo formulÃƒÆ’Ã‚Â¡rio com dados:', evento);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Preenchendo formulÃƒÆ’Ã‚Â¡rio com dados:', evento);
 
     // InformaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Gerais
     document.getElementById('nomeEvento').value = evento.nome || '';
@@ -358,8 +358,8 @@ function preencherFormulario(evento) {
     const inputRegulamentoArquivo = document.getElementById('regulamentoArquivo');
     const regulamentoPlaceholder = document.getElementById('regulamento-placeholder');
     
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Regulamento arquivo:', evento.regulamento_arquivo);
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Elementos encontrados:', {
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Regulamento arquivo:', evento.regulamento_arquivo);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Elementos encontrados:', {
         regulamentoArquivoExistente: !!regulamentoArquivoExistente,
         linkRegulamento: !!linkRegulamento,
         nomeArquivoRegulamento: !!nomeArquivoRegulamento,
@@ -384,7 +384,7 @@ function preencherFormulario(evento) {
                     btnSubstituirRegulamento.classList.add('hidden');
                 }
             }
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Regulamento: Link exibido para arquivo:', nomeArquivo);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Regulamento: Link exibido para arquivo:', nomeArquivo);
         } else {
             // NÃƒÆ’Ã‚Â£o existe arquivo: esconder link e mostrar input (se em modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
             regulamentoArquivoExistente.classList.add('hidden');
@@ -392,7 +392,7 @@ function preencherFormulario(evento) {
             if (regulamentoPlaceholder) regulamentoPlaceholder.classList.remove('hidden');
             if (modoEdicao) {
                 if (regulamentoUploadContainer) regulamentoUploadContainer.classList.remove('hidden');
-                console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Regulamento: Input de upload exibido (modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)');
+                console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Regulamento: Input de upload exibido (modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)');
             } else {
                 if (regulamentoUploadContainer) regulamentoUploadContainer.classList.add('hidden');
             }
@@ -434,8 +434,8 @@ function preencherFormulario(evento) {
     // Carregar imagem do evento usando padrÃƒÆ’Ã‚Â£o evento_{ID}
     carregarImagemEvento(evento.imagem, evento.id);
 
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - FormulÃƒÆ’Ã‚Â¡rio preenchido com sucesso');
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Campos preenchidos:');
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - FormulÃƒÆ’Ã‚Â¡rio preenchido com sucesso');
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Campos preenchidos:');
     console.log('  - Nome:', document.getElementById('nomeEvento').value);
     console.log('  - Categoria:', document.getElementById('categoriaEvento').value);
     console.log('  - Data InÃƒÆ’Ã‚Â­cio:', document.getElementById('dataInicio').value);
@@ -523,7 +523,7 @@ function limparFormulario() {
 }
 
 // =====================================================
-// FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES PARA INTERFACE DINÃƒÆ’Ã¢â‚¬Å¡MICA DE MODALIDADES
+// FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES PARA INTERFACE DINÃƒÆ’ââ‚¬Å¡MICA DE MODALIDADES
 // =====================================================
 
 // Mostrar loading das modalidades
@@ -936,7 +936,7 @@ async function atualizarValoresModalidades(eventoId) {
 }
 
 // =====================================================
-// FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES PARA CRUD DE LOTES
+// FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES PARA CRUD DE LOTES
 // =====================================================
 
 // Adicionar novo lote
@@ -1373,7 +1373,7 @@ async function salvarRegulamento() {
         const data = await response.json();
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Regulamento salvo com sucesso:', data.data);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Regulamento salvo com sucesso:', data.data);
             
             // Atualizar interface: mostrar link e esconder input
             const regulamentoArquivoExistente = document.getElementById('regulamento-arquivo-existente');
@@ -1417,13 +1417,13 @@ async function salvarRegulamento() {
             Swal.fire('Erro', data.error || 'Erro ao salvar regulamento', 'error');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao salvar regulamento:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao salvar regulamento:', error);
         Swal.fire('Erro', 'Erro ao salvar regulamento', 'error');
     }
 }
 
 // =====================================================
-// FUNÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES PARA GERENCIAR PROGRAMAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
+// FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES PARA GERENCIAR PROGRAMAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 // Carregar programaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do evento

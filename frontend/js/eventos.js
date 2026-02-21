@@ -22,7 +22,7 @@ async function carregarDashboard() {
             data = await response.json();
             console.log('Ã°Å¸â€œÅ  Dados recebidos:', data);
         } catch (error) {
-            console.log('Ã¢ÂÅ’ Erro ao parsear JSON:', error);
+            console.log('âÂÅ’ Erro ao parsear JSON:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
                 console.log('Ã°Å¸â€œâ€ž Resposta bruta:', responseText);
@@ -31,7 +31,7 @@ async function carregarDashboard() {
         }
 
         if (data.success) {
-            console.log('Ã¢Å“â€¦ Dashboard carregado com sucesso');
+            console.log('âÅ“â€¦ Dashboard carregado com sucesso');
             
             const stats = data.data.estatisticas;
             
@@ -115,10 +115,10 @@ async function carregarDashboard() {
             const inscricoesVariacaoEl = document.getElementById('inscricoes-variacao');
             if (inscricoesVariacaoEl) {
                 if (variacaoInscricoes > 0) {
-                    inscricoesVariacaoEl.textContent = `Ã¢â€ â€˜ ${Math.abs(variacaoInscricoes)}% vs mÃƒÂªs anterior`;
+                    inscricoesVariacaoEl.textContent = `ââ€ â€˜ ${Math.abs(variacaoInscricoes)}% vs mÃƒÂªs anterior`;
                     inscricoesVariacaoEl.className = 'text-xs sm:text-sm text-green-600 mt-1';
                 } else if (variacaoInscricoes < 0) {
-                    inscricoesVariacaoEl.textContent = `Ã¢â€ â€œ ${Math.abs(variacaoInscricoes)}% vs mÃƒÂªs anterior`;
+                    inscricoesVariacaoEl.textContent = `ââ€ â€œ ${Math.abs(variacaoInscricoes)}% vs mÃƒÂªs anterior`;
                     inscricoesVariacaoEl.className = 'text-xs sm:text-sm text-red-600 mt-1';
                 } else {
                     inscricoesVariacaoEl.textContent = 'Sem variaÃƒÂ§ÃƒÂ£o';
@@ -129,10 +129,10 @@ async function carregarDashboard() {
             const receitaVariacaoEl = document.getElementById('receita-variacao');
             if (receitaVariacaoEl) {
                 if (variacaoReceita > 0) {
-                    receitaVariacaoEl.textContent = `Ã¢â€ â€˜ ${Math.abs(variacaoReceita)}% vs mÃƒÂªs anterior`;
+                    receitaVariacaoEl.textContent = `ââ€ â€˜ ${Math.abs(variacaoReceita)}% vs mÃƒÂªs anterior`;
                     receitaVariacaoEl.className = 'text-xs sm:text-sm text-green-600 mt-1';
                 } else if (variacaoReceita < 0) {
-                    receitaVariacaoEl.textContent = `Ã¢â€ â€œ ${Math.abs(variacaoReceita)}% vs mÃƒÂªs anterior`;
+                    receitaVariacaoEl.textContent = `ââ€ â€œ ${Math.abs(variacaoReceita)}% vs mÃƒÂªs anterior`;
                     receitaVariacaoEl.className = 'text-xs sm:text-sm text-red-600 mt-1';
                 } else {
                     receitaVariacaoEl.textContent = 'Sem variaÃƒÂ§ÃƒÂ£o';
@@ -163,7 +163,7 @@ async function carregarDashboard() {
             }, 100);
             
             // Feedback de sucesso (sem SweetAlert para nÃƒÂ£o interromper)
-            console.log(`Ã¢Å“â€¦ Dashboard atualizado: ${data.data.eventos.length} eventos, ${stats.inscricoes_confirmadas_pagas} inscriÃƒÂ§ÃƒÂµes confirmadas`);
+            console.log(`âÅ“â€¦ Dashboard atualizado: ${data.data.eventos.length} eventos, ${stats.inscricoes_confirmadas_pagas} inscriÃƒÂ§ÃƒÂµes confirmadas`);
         } else {
             throw new Error(data.message || 'Erro ao carregar dados do dashboard');
         }
@@ -192,7 +192,7 @@ function renderizarEventos(eventos) {
     
     const container = document.getElementById('eventos-lista');
     if (!container) {
-        console.error('Ã¢ÂÅ’ Container eventos-lista nÃƒÂ£o encontrado');
+        console.error('âÂÅ’ Container eventos-lista nÃƒÂ£o encontrado');
         return;
     }
     
@@ -305,7 +305,7 @@ function renderizarEventos(eventos) {
     // Adicionar todos os eventos de uma vez (otimizado)
     container.appendChild(fragment);
     
-    console.log('Ã¢Å“â€¦ RenderizaÃƒÂ§ÃƒÂ£o de eventos concluÃƒÂ­da');
+    console.log('âÅ“â€¦ RenderizaÃƒÂ§ÃƒÂ£o de eventos concluÃƒÂ­da');
 }
 
 // FunÃƒÂ§ÃƒÂ£o para renderizar atividades recentes
@@ -314,7 +314,7 @@ function renderizarAtividades(atividades) {
     
     const container = document.getElementById('atividades-recentes');
     if (!container) {
-        console.log('Ã¢Å¡Â Ã¯Â¸Â Container atividades-recentes nÃƒÂ£o encontrado');
+        console.log('âÅ¡Â Ã¯Â¸Â Container atividades-recentes nÃƒÂ£o encontrado');
         return;
     }
     
@@ -347,7 +347,7 @@ function renderizarAtividades(atividades) {
         `;
     });
     
-    console.log('Ã¢Å“â€¦ RenderizaÃƒÂ§ÃƒÂ£o de atividades concluÃƒÂ­da');
+    console.log('âÅ“â€¦ RenderizaÃƒÂ§ÃƒÂ£o de atividades concluÃƒÂ­da');
 }
 
 // FunÃƒÂ§ÃƒÂ£o para obter URL da imagem do evento (usa window.getEventImageUrl quando disponÃƒÂ­vel)
@@ -365,7 +365,7 @@ function getEventoImagemUrl(imagemNome, eventoId = null) {
 
 // FunÃƒÂ§ÃƒÂ£o para editar evento
 async function editarEvento(eventoId) {
-    console.log('Ã¢Å“ÂÃ¯Â¸Â Editando evento ID:', eventoId);
+    console.log('âÅ“ÂÃ¯Â¸Â Editando evento ID:', eventoId);
     
     if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -400,7 +400,7 @@ async function excluirEvento(eventoId) {
     }
 
     if (result.isConfirmed) {
-        console.log('Ã¢Å“â€¦ ConfirmaÃƒÂ§ÃƒÂ£o de exclusÃƒÂ£o aceita');
+        console.log('âÅ“â€¦ ConfirmaÃƒÂ§ÃƒÂ£o de exclusÃƒÂ£o aceita');
         
         try {
             if (typeof Swal !== 'undefined') {
@@ -448,7 +448,7 @@ async function excluirEvento(eventoId) {
             }
         }
     } else {
-        console.log('Ã¢ÂÅ’ ExclusÃƒÂ£o cancelada pelo usuÃƒÂ¡rio');
+        console.log('âÂÅ’ ExclusÃƒÂ£o cancelada pelo usuÃƒÂ¡rio');
     }
 }
 

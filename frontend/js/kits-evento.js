@@ -101,7 +101,7 @@ let filtros = {
 };
 
 // =====================================================
-// INICIALIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
+// INICIALIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -224,15 +224,15 @@ async function carregarKits() {
     mostrarLoading();
 
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG kits-evento.js - Carregando kits...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Carregando kits...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/kits-evento/list.php');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG kits-evento.js - Response status:', response.status);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Response status:', response.status);
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG kits-evento.js - Dados recebidos:', data);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Dados recebidos:', data);
 
         if (data.success) {
             kits = data.data;
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG kits-evento.js - Kits carregados:', kits.length);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Kits carregados:', kits.length);
 
             // Verificar se hÃƒÆ’Ã‚Â¡ evento_id na URL ou no filtro
             const urlParams = new URLSearchParams(window.location.search);
@@ -390,8 +390,8 @@ async function carregarModalidadesKit(marcarIds = []) {
             const marcarIdsStr = marcarIds.map(id => String(id));
             const marcarIdsNum = marcarIds.map(id => Number(id));
             
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - IDs para marcar:', marcarIdsStr);
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Modalidades recebidas:', data.modalidades.map(m => ({ id: m.id, idStr: String(m.id) })));
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - IDs para marcar:', marcarIdsStr);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Modalidades recebidas:', data.modalidades.map(m => ({ id: m.id, idStr: String(m.id) })));
             
             data.modalidades.forEach(modalidade => {
                 const div = document.createElement('div');
@@ -403,7 +403,7 @@ async function carregarModalidadesKit(marcarIds = []) {
                                  marcarIdsNum.includes(modalidadeIdNum) ||
                                  marcarIds.includes(modalidade.id);
                 
-                console.log(`ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG - Modalidade ${modalidade.id}: isChecked=${isChecked}`);
+                console.log(`ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Modalidade ${modalidade.id}: isChecked=${isChecked}`);
                 
                 div.innerHTML = `
                     <input type="checkbox" name="modalidades[]" id="kit_modalidade_${modalidade.id}" value="${modalidade.id}" class="modalidade-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500" ${isChecked ? 'checked' : ''}>
@@ -467,7 +467,7 @@ function preencherModalidades() {
 }
 
 // =====================================================
-// RENDERIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
+// RENDERIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 function mostrarMensagemInicial() {
@@ -567,7 +567,7 @@ function criarCardKit(kit) {
 }
 
 // =====================================================
-// FILTROS E PAGINAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O
+// FILTROS E PAGINAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
 // =====================================================
 
 function filtrarPorEvento() {
@@ -767,8 +767,8 @@ function preencherFormularioKit(kit) {
         });
     }
     
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG preencherFormularioKit - Kit modalidades originais:', kit.modalidades);
-    console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â DEBUG preencherFormularioKit - Modalidades normalizadas:', modalidadesIds);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG preencherFormularioKit - Kit modalidades originais:', kit.modalidades);
+    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG preencherFormularioKit - Modalidades normalizadas:', modalidadesIds);
     
     // Salvar modalidades globalmente para uso no listener do select
     modalidadesKitEdicao = modalidadesIds;

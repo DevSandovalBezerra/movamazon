@@ -48,7 +48,7 @@ if (window.getApiBase) { window.getApiBase(); }
         modalIcon: document.getElementById('modal-config-icon'),
         btnSalvar: document.getElementById('btn-salvar-config'),
         
-        // Modal HistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico
+        // Modal Histórico
         modalHistorico: document.getElementById('modal-historico'),
         historicoLista: document.getElementById('historico-lista')
     };
@@ -61,7 +61,7 @@ if (window.getApiBase) { window.getApiBase(); }
             'Sistema': { icon: 'fa-cog', color: 'blue' },
             'Pagamento': { icon: 'fa-credit-card', color: 'green' },
             'Email': { icon: 'fa-envelope', color: 'red' },
-            'IntegraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes': { icon: 'fa-plug', color: 'yellow' }
+            'IntegraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes': { icon: 'fa-plug', color: 'yellow' }
         };
         return icons[categoria] || { icon: 'fa-cog', color: 'gray' };
     };
@@ -74,7 +74,7 @@ if (window.getApiBase) { window.getApiBase(); }
         els.empty?.classList.toggle('hidden', !show);
     };
 
-    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
+    // Usar função comum do AdminUtils se disponível
     const showMessage = (type, message) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, message);
@@ -87,7 +87,7 @@ if (window.getApiBase) { window.getApiBase(); }
 
     const formatValue = (valor, tipo) => {
         if (valor === null || valor === undefined) {
-            return '<span class="text-gray-400 text-sm">nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado</span>';
+            return '<span class="text-gray-400 text-sm">não configurado</span>';
         }
         if (String(valor).length > 100) {
             return `<span class="text-sm text-gray-600">${escapeHtml(String(valor).substring(0, 100))}...</span>`;
@@ -157,7 +157,7 @@ if (window.getApiBase) { window.getApiBase(); }
                         </div>
                         <div class="flex-1 min-w-0">
                             <h3 class="font-semibold text-gray-900 mb-1 truncate">${escapeHtml(cfg.chave)}</h3>
-                            <p class="text-xs text-gray-500">${cfg.descricao || 'Sem descriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o'}</p>
+                            <p class="text-xs text-gray-500">${cfg.descricao || 'Sem descrição'}</p>
                         </div>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">${escapeHtml(cfg.categoria)}</span>
@@ -177,7 +177,7 @@ if (window.getApiBase) { window.getApiBase(); }
                         <button class="btn-editar-config px-3 py-1.5 text-xs bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors" data-chave="${escapeHtml(cfg.chave)}">
                             <i class="fas fa-edit mr-1"></i> Editar
                         </button>
-                        <button class="btn-historico-config p-1.5 text-gray-400 hover:text-gray-600 transition-colors" data-chave="${escapeHtml(cfg.chave)}" title="Ver histÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico">
+                        <button class="btn-historico-config p-1.5 text-gray-400 hover:text-gray-600 transition-colors" data-chave="${escapeHtml(cfg.chave)}" title="Ver histórico">
                             <i class="fas fa-history"></i>
                         </button>
                     </div>
@@ -201,7 +201,7 @@ if (window.getApiBase) { window.getApiBase(); }
         if (openaiKey && openaiKey !== 'n/d') {
             setStatus('openai', 'connected', 'Configurado');
         } else {
-            setStatus('openai', 'disconnected', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado');
+            setStatus('openai', 'disconnected', 'Não configurado');
         }
         
         // Check Anthropic
@@ -209,7 +209,7 @@ if (window.getApiBase) { window.getApiBase(); }
         if (anthropicKey && anthropicKey !== 'n/d') {
             setStatus('anthropic', 'connected', 'Configurado');
         } else {
-            setStatus('anthropic', 'disconnected', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado');
+            setStatus('anthropic', 'disconnected', 'Não configurado');
         }
         
         // Check Gemini
@@ -217,7 +217,7 @@ if (window.getApiBase) { window.getApiBase(); }
         if (geminiKey && geminiKey !== 'n/d') {
             setStatus('gemini', 'connected', 'Configurado');
         } else {
-            setStatus('gemini', 'disconnected', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado');
+            setStatus('gemini', 'disconnected', 'Não configurado');
         }
     };
 
@@ -252,11 +252,11 @@ if (window.getApiBase) { window.getApiBase(); }
                 renderCards();
                 checkAPIStatus();
             } else {
-                showMessage('error', data.message || 'Erro ao carregar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+                showMessage('error', data.message || 'Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
             }
         } catch (err) {
             console.error(err);
-            showMessage('error', 'Erro ao carregar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            showMessage('error', 'Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         } finally {
             toggleLoading(false);
         }
@@ -269,7 +269,7 @@ if (window.getApiBase) { window.getApiBase(); }
         state.current = cfg;
         els.modalChave.value = cfg.chave;
         els.modalChaveDisplay.textContent = cfg.chave;
-        els.modalDescricao.textContent = cfg.descricao || 'Sem descriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o';
+        els.modalDescricao.textContent = cfg.descricao || 'Sem descrição';
         els.modalUpdated.textContent = cfg.updated_at 
             ? new Date(cfg.updated_at).toLocaleString('pt-BR')
             : 'Nunca';
@@ -327,7 +327,7 @@ if (window.getApiBase) { window.getApiBase(); }
             try {
                 valor = JSON.parse(inputEl.value);
             } catch {
-                showMessage('error', 'JSON invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
+                showMessage('error', 'JSON inválido');
                 return;
             }
         } else if (state.current.tipo === 'number') {
@@ -345,7 +345,7 @@ if (window.getApiBase) { window.getApiBase(); }
 
             const data = await resp.json();
             if (data.success) {
-                showMessage('success', 'ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o atualizada!');
+                showMessage('success', 'Configuração atualizada!');
                 els.modal.classList.add('hidden');
                 await carregarConfiguracoes();
             } else {
@@ -353,7 +353,7 @@ if (window.getApiBase) { window.getApiBase(); }
             }
         } catch (err) {
             console.error(err);
-            showMessage('error', 'Erro ao salvar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
+            showMessage('error', 'Erro ao salvar configuração');
         }
     };
 
@@ -391,11 +391,11 @@ if (window.getApiBase) { window.getApiBase(); }
                     </div>
                 `).join('');
             } else {
-                els.historicoLista.innerHTML = '<p class="text-center text-gray-500 py-8">Nenhum histÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico encontrado</p>';
+                els.historicoLista.innerHTML = '<p class="text-center text-gray-500 py-8">Nenhum histórico encontrado</p>';
             }
         } catch (err) {
             console.error(err);
-            els.historicoLista.innerHTML = '<p class="text-center text-red-500 py-8">Erro ao carregar histÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico</p>';
+            els.historicoLista.innerHTML = '<p class="text-center text-red-500 py-8">Erro ao carregar histórico</p>';
         }
     };
 

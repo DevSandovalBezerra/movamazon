@@ -95,31 +95,31 @@ async function carregarDados() {
 // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar produtos
 async function carregarProdutos() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Carregando produtos...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando produtos...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/produtos/list.php');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Resposta produtos:', response.status, response.statusText);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta produtos:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Dados produtos recebidos:', data);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados produtos recebidos:', data);
         } catch (error) {
             console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON produtos:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Å¾ Resposta bruta produtos:', responseText);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta produtos:', responseText);
             }
             throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
         }
         
         if (data.success) {
             produtosData = data.data;
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Produtos carregados:', produtosData.length);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Produtos carregados:', produtosData.length);
         } else {
             throw new Error(data.error || 'Erro ao carregar produtos');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar produtos:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar produtos:', error);
         throw error;
     }
 }
@@ -127,31 +127,31 @@ async function carregarProdutos() {
 // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar kits
 async function carregarKits() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Carregando kits...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando kits...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/kits-evento/list.php');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Resposta kits:', response.status, response.statusText);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta kits:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Dados kits recebidos:', data);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados kits recebidos:', data);
         } catch (error) {
             console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON kits:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Å¾ Resposta bruta kits:', responseText);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta kits:', responseText);
             }
             throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
         }
         
         if (data.success) {
             kitsData = data.data;
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Kits carregados:', kitsData.length);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Kits carregados:', kitsData.length);
         } else {
             throw new Error(data.error || 'Erro ao carregar kits');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar kits:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar kits:', error);
         throw error;
     }
 }
@@ -159,32 +159,32 @@ async function carregarKits() {
 // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar eventos
 async function carregarEventos() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Carregando eventos...');
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando eventos...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Resposta eventos:', response.status, response.statusText);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta eventos:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Dados eventos recebidos:', data);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados eventos recebidos:', data);
         } catch (error) {
             console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON eventos:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Å¾ Resposta bruta eventos:', responseText);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta eventos:', responseText);
             }
             throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
         }
         
         if (data.success) {
             eventosData = data.data;
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Eventos carregados:', eventosData.length);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Eventos carregados:', eventosData.length);
             preencherSelectEventos();
         } else {
             throw new Error(data.error || 'Erro ao carregar eventos');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
     }
 }
 
@@ -227,26 +227,26 @@ async function carregarModalidades() {
     }
     
     try {
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Carregando modalidades para evento:', eventoId);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando modalidades para evento:', eventoId);
         const response = await fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`);
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Resposta modalidades:', response.status, response.statusText);
+        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta modalidades:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Dados modalidades recebidos:', data);
+            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados modalidades recebidos:', data);
         } catch (error) {
             console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON modalidades:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Å¾ Resposta bruta modalidades:', responseText);
+                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta modalidades:', responseText);
             }
             throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
         }
         
         if (data.success) {
             modalidadesData = data.modalidades;
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Modalidades carregadas:', modalidadesData.length);
+            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Modalidades carregadas:', modalidadesData.length);
             
             // Preencher select de filtro
             selectModalidade.innerHTML = '<option value="">Todas as modalidades</option>';
@@ -271,7 +271,7 @@ async function carregarModalidades() {
             throw new Error(data.error || 'Erro ao carregar modalidades');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¥ Erro ao carregar modalidades:', error);
+        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar modalidades:', error);
     }
 }
 

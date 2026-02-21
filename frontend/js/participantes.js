@@ -55,7 +55,7 @@ async function carregarEventos() {
 
     if (data.success) {
       eventos = data.data.eventos || [];
-      console.log('Ã¢Å“â€¦ Eventos carregados:', eventos.length);
+      console.log('âÅ“â€¦ Eventos carregados:', eventos.length);
 
       // Preencher filtro de eventos
       const selectEvento = document.getElementById('filtroEvento');
@@ -68,7 +68,7 @@ async function carregarEventos() {
         selectEvento.appendChild(option);
       });
     } else {
-      console.error('Ã¢ÂÅ’ Erro ao carregar eventos:', data.message);
+      console.error('âÂÅ’ Erro ao carregar eventos:', data.message);
     }
   } catch (error) {
     console.error('Ã°Å¸â€™Â¥ Erro na requisiÃƒÂ§ÃƒÂ£o de eventos:', error);
@@ -106,9 +106,9 @@ async function carregarParticipantes(eventoId = null) {
     if (data.success) {
       participantesOriginais = data.data || [];
       aplicarFiltrosLocais();
-      console.log('Ã¢Å“â€¦ Participantes carregados:', participantesOriginais.length);
+      console.log('âÅ“â€¦ Participantes carregados:', participantesOriginais.length);
     } else {
-      console.error('Ã¢ÂÅ’ Erro ao carregar participantes:', data.message);
+      console.error('âÂÅ’ Erro ao carregar participantes:', data.message);
       mostrarErro('Erro ao carregar participantes: ' + (data.message || 'Erro desconhecido'));
     }
   } catch (error) {
@@ -341,7 +341,7 @@ async function sincronizarPagamento(inscricaoId) {
 }
 
 function mostrarErro(mensagem) {
-  console.error('Ã¢ÂÅ’ Erro:', mensagem);
+  console.error('âÂÅ’ Erro:', mensagem);
   if (typeof Swal !== 'undefined') {
     Swal.fire({ icon: 'error', title: 'Erro ao carregar participantes', text: mensagem });
   }

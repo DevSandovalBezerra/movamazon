@@ -1,12 +1,12 @@
 if (window.getApiBase) { window.getApiBase(); }
 /**
- * Script para gerenciar o formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio de contato pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico
+ * Script para gerenciar o formulário de contato pºblico
  */
 
 (function() {
     'use strict';
 
-    // Definir API_BASE se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estiver definido
+    // Definir API_BASE se não estiver definido
     if (!window.API_BASE) {
         const path = window.location.pathname || '';
         const idx = path.indexOf('/frontend/');
@@ -23,12 +23,12 @@ if (window.getApiBase) { window.getApiBase(); }
     const btnLoading = document.getElementById('btn-loading');
 
     if (!form || !btnEnviar) {
-        console.error('[CONTATO] FormulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio ou botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
+        console.error('[CONTATO] Formulário ou botão não encontrado');
         return;
     }
 
     /**
-     * Limpar erros de validaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
+     * Limpar erros de validação
      */
     function limparErros() {
         const errorSpans = document.querySelectorAll('[id^="erro-"]');
@@ -63,7 +63,7 @@ if (window.getApiBase) { window.getApiBase(); }
     }
 
     /**
-     * Validar formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
+     * Validar formulário
      */
     function validarFormulario() {
         limparErros();
@@ -76,20 +76,20 @@ if (window.getApiBase) { window.getApiBase(); }
         const mensagem = form.querySelector('[name="mensagem"]').value.trim();
 
         if (!nome) {
-            mostrarErro('nome', 'Nome ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
+            mostrarErro('nome', 'Nome é obrigatório');
             valido = false;
         }
 
         if (!email) {
-            mostrarErro('email', 'E-mail ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
+            mostrarErro('email', 'E-mail é obrigatório');
             valido = false;
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            mostrarErro('email', 'E-mail invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lido');
+            mostrarErro('email', 'E-mail inválido');
             valido = false;
         }
 
         if (!telefone) {
-            mostrarErro('telefone', 'Telefone ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio');
+            mostrarErro('telefone', 'Telefone é obrigatório');
             valido = false;
         }
 
@@ -99,7 +99,7 @@ if (window.getApiBase) { window.getApiBase(); }
         }
 
         if (!mensagem) {
-            mostrarErro('mensagem', 'Mensagem ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ria');
+            mostrarErro('mensagem', 'Mensagem é obrigatória');
             valido = false;
         } else if (mensagem.length < 10) {
             mostrarErro('mensagem', 'Mensagem deve ter pelo menos 10 caracteres');
@@ -110,7 +110,7 @@ if (window.getApiBase) { window.getApiBase(); }
     }
 
     /**
-     * Enviar formulÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
+     * Enviar formulário
      */
     async function enviarFormulario(e) {
         e.preventDefault();
@@ -119,7 +119,7 @@ if (window.getApiBase) { window.getApiBase(); }
             return;
         }
 
-        // Desabilitar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e mostrar loading
+        // Desabilitar botão e mostrar loading
         btnEnviar.disabled = true;
         btnText.textContent = 'Enviando...';
         btnLoading.classList.remove('hidden');
@@ -146,7 +146,7 @@ if (window.getApiBase) { window.getApiBase(); }
             const data = await response.json();
 
             if (!response.ok || !data.success) {
-                // Mostrar erros de validaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o se houver
+                // Mostrar erros de validação se houver
                 if (data.errors) {
                     Object.keys(data.errors).forEach(campo => {
                         mostrarErro(campo, data.errors[campo]);
@@ -177,19 +177,19 @@ if (window.getApiBase) { window.getApiBase(); }
             console.error('[CONTATO] Erro ao enviar:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erro de ConexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o',
-                text: 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel enviar sua mensagem. Verifique sua conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e tente novamente.',
+                title: 'Erro de Conexão',
+                text: 'Não foi possível enviar sua mensagem. Verifique sua conexão e tente novamente.',
                 confirmButtonColor: '#0b4340'
             });
         } finally {
-            // Reabilitar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e ocultar loading
+            // Reabilitar botão e ocultar loading
             btnEnviar.disabled = false;
             btnText.textContent = 'Enviar Mensagem';
             btnLoading.classList.add('hidden');
         }
     }
 
-    // Adicionar mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡scara de telefone
+    // Adicionar máscara de telefone
     const telefoneInput = form.querySelector('[name="telefone"]');
     if (telefoneInput) {
         telefoneInput.addEventListener('input', function(e) {

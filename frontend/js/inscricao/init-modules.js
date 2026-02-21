@@ -35,7 +35,7 @@ export function initInscricaoModules(eventoId) {
         progressTracker
     };
     
-    console.log('Ã¢Å“â€¦ MÃƒÂ³dulos de inscriÃƒÂ§ÃƒÂ£o inicializados');
+    console.log('âÅ“â€¦ MÃƒÂ³dulos de inscriÃƒÂ§ÃƒÂ£o inicializados');
     
     return {
         stateManager,

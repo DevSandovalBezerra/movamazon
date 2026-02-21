@@ -10,18 +10,18 @@ if (window.getApiBase) { window.getApiBase(); }
         window.API_BASE = idx > 0 ? path.slice(0, idx) + '/api' : '/api';
     }
 
-    // FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para normalizar caminho de imagem usando o caminho base do projeto
+    // Função para normalizar caminho de imagem usando o caminho base do projeto
     const normalizarCaminhoImagem = (caminho) => {
         if (!caminho) return '';
-        // Se jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© URL completa, retornar como estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡
+        // Se já é URL completa, retornar como está
         if (caminho.startsWith('http://') || caminho.startsWith('https://')) {
             return caminho;
         }
-        // Se comeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a com /, usar caminho base do projeto
+        // Se começa com /, usar caminho base do projeto
         if (caminho.startsWith('/')) {
             return window.API_BASE + caminho;
         }
-        // Se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a com /, adicionar caminho base + /
+        // Se não começa com /, adicionar caminho base + /
         return window.API_BASE + '/' + caminho;
     };
 
@@ -61,7 +61,7 @@ if (window.getApiBase) { window.getApiBase(); }
         modalConfirmBody: document.querySelector('#modal-confirmacao .admin-modal-body')
     };
 
-    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
+    // Usar função comum do AdminUtils se disponível
     const showMessage = (type, message) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, message);
@@ -124,7 +124,7 @@ if (window.getApiBase) { window.getApiBase(); }
         if (els.campos.imagemFile) els.campos.imagemFile.value = '';
         // Exibir preview da imagem se existir
         if (banner.imagem && els.campos.imagemPreview && els.campos.imagemPreviewImg) {
-            // Normalizar caminho da imagem usando funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o helper
+            // Normalizar caminho da imagem usando função helper
             const imagemPath = normalizarCaminhoImagem(banner.imagem);
             // Definir src e mostrar preview
             els.campos.imagemPreviewImg.src = imagemPath;
@@ -184,9 +184,9 @@ if (window.getApiBase) { window.getApiBase(); }
                             const imgPath = normalizarCaminhoImagem(banner.imagem);
                             const tituloEscapado = (banner.titulo || 'Banner').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
                             console.log('[BANNERS] Renderizando banner:', banner.titulo, '| Caminho original:', banner.imagem, '| Caminho normalizado:', imgPath);
-                            // Usar onerror simplificado - jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ tentamos com caminho normalizado
+                            // Usar onerror simplificado - já tentamos com caminho normalizado
                             return `<img src="${imgPath}" class="w-full h-full object-cover" alt="${tituloEscapado}" loading="lazy" 
-                                onerror="console.error('[BANNERS] Erro ao carregar imagem apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s normalizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:', '${imgPath.replace(/'/g, "\\'")}'); 
+                                onerror="console.error('[BANNERS] Erro ao carregar imagem após normalização:', '${imgPath.replace(/'/g, "\\'")}'); 
                                 this.onerror = null; 
                                 this.parentElement.innerHTML = '<span class=\\'text-gray-400 text-sm\\'>Erro ao carregar imagem</span>';" />`;
                         })() : '<span class="text-gray-400 text-sm">Sem imagem</span>'}
@@ -200,7 +200,7 @@ if (window.getApiBase) { window.getApiBase(); }
                         <div class="flex flex-wrap gap-3 text-xs text-gray-500">
                             ${banner.link ? `<span><i class="fas fa-link mr-1"></i>${banner.link}</span>` : ''}
                             ${banner.texto_botao ? `<span><i class="fas fa-font mr-1"></i>${banner.texto_botao}</span>` : ''}
-                            ${banner.data_inicio ? `<span><i class="fas fa-clock mr-1"></i>InÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio: ${banner.data_inicio}</span>` : ''}
+                            ${banner.data_inicio ? `<span><i class="fas fa-clock mr-1"></i>Início: ${banner.data_inicio}</span>` : ''}
                             ${banner.data_fim ? `<span><i class="fas fa-clock mr-1"></i>Fim: ${banner.data_fim}</span>` : ''}
                         </div>
                     </div>
@@ -265,7 +265,7 @@ if (window.getApiBase) { window.getApiBase(); }
         };
 
         if (!body.titulo || !body.imagem) {
-            showMessage('error', 'TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tulo e imagem sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o obrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios.');
+            showMessage('error', 'Título e imagem são obrigatórios.');
             return;
         }
 
@@ -303,14 +303,14 @@ if (window.getApiBase) { window.getApiBase(); }
             return;
         }
         
-        console.log('[BANNERS] Iniciando remoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do banner ID:', state.removeId);
+        console.log('[BANNERS] Iniciando remoção do banner ID:', state.removeId);
         
         try {
             els.btnConfirmRemocao.disabled = true;
             els.btnConfirmRemocao.textContent = 'Removendo...';
             
             const payload = { id: state.removeId };
-            console.log('[BANNERS] Enviando requisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para deletar:', payload);
+            console.log('[BANNERS] Enviando requisição para deletar:', payload);
             
             const response = await fetch(api('admin/banners/delete.php'), {
                 method: 'POST',
@@ -328,16 +328,16 @@ if (window.getApiBase) { window.getApiBase(); }
                 throw new Error(data.message || 'Erro ao remover banner');
             }
             
-            console.log('[BANNERS] ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ Banner removido com sucesso');
+            console.log('[BANNERS] ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã…â€œ Banner removido com sucesso');
             showMessage('success', data.message || 'Banner removido com sucesso');
             closeModal('modal-confirmacao');
             
-            // Aguardar um pouco antes de recarregar para o usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio ver a mensagem
+            // Aguardar um pouco antes de recarregar para o usuário ver a mensagem
             setTimeout(async () => {
                 await carregarBanners();
             }, 500);
         } catch (error) {
-            console.error('[BANNERS] ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Erro ao remover banner:', error);
+            console.error('[BANNERS] ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬ââ‚¬Â Erro ao remover banner:', error);
             showMessage('error', error.message || 'Falha ao remover banner. Verifique o console para mais detalhes.');
         } finally {
             els.btnConfirmRemocao.disabled = false;
@@ -420,7 +420,7 @@ if (window.getApiBase) { window.getApiBase(); }
             if (!file) return;
             
             if (file.size > 5 * 1024 * 1024) {
-                showMessage('error', 'Arquivo muito grande. MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ximo: 5MB');
+                showMessage('error', 'Arquivo muito grande. Máximo: 5MB');
                 e.target.value = '';
                 return;
             }
@@ -430,11 +430,11 @@ if (window.getApiBase) { window.getApiBase(); }
                 const path = await uploadImagem(file);
                 if (els.campos.imagem) els.campos.imagem.value = path;
                 if (els.campos.imagemPreview && els.campos.imagemPreviewImg) {
-                    // Normalizar caminho usando funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o helper
+                    // Normalizar caminho usando função helper
                     const imgPath = normalizarCaminhoImagem(path);
                     els.campos.imagemPreviewImg.src = imgPath;
                     els.campos.imagemPreviewImg.onerror = function() {
-                        console.error('Erro ao carregar imagem apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s upload:', imgPath);
+                        console.error('Erro ao carregar imagem após upload:', imgPath);
                         this.style.display = 'none';
                     };
                     els.campos.imagemPreviewImg.onload = function() {
@@ -456,13 +456,13 @@ if (window.getApiBase) { window.getApiBase(); }
         els.campos.imagem.addEventListener('input', (e) => {
             const url = e.target.value.trim();
             if (url && els.campos.imagemPreview && els.campos.imagemPreviewImg) {
-                // Normalizar caminho usando funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o helper
+                // Normalizar caminho usando função helper
                 const imgPath = normalizarCaminhoImagem(url);
                 // Tentar carregar a imagem
                 els.campos.imagemPreviewImg.src = imgPath;
                 els.campos.imagemPreviewImg.onerror = function() {
                     console.error('Erro ao carregar preview da imagem:', imgPath);
-                    // NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o esconder o preview, mas mostrar mensagem de erro
+                    // Não esconder o preview, mas mostrar mensagem de erro
                 };
                 els.campos.imagemPreviewImg.onload = function() {
                     this.style.display = 'block';
@@ -476,30 +476,30 @@ if (window.getApiBase) { window.getApiBase(); }
 
     if (els.btnSalvar) {
         els.btnSalvar.addEventListener('click', salvarBanner);
-        console.log('[BANNERS] Event listener adicionado ao botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o salvar');
+        console.log('[BANNERS] Event listener adicionado ao botão salvar');
     } else {
-        console.error('[BANNERS] BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o salvar nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado!');
+        console.error('[BANNERS] Botão salvar não encontrado!');
     }
     
     if (els.btnConfirmRemocao) {
         els.btnConfirmRemocao.addEventListener('click', confirmarRemocao);
-        console.log('[BANNERS] Event listener adicionado ao botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o confirmar remoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
+        console.log('[BANNERS] Event listener adicionado ao botão confirmar remoção');
     } else {
-        console.error('[BANNERS] BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o confirmar remoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado! ID: btn-confirmar-remocao');
+        console.error('[BANNERS] Botão confirmar remoção não encontrado! ID: btn-confirmar-remocao');
     }
     
     if (els.btnAtualizar) {
         els.btnAtualizar.addEventListener('click', carregarBanners);
-        console.log('[BANNERS] Event listener adicionado ao botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o atualizar');
+        console.log('[BANNERS] Event listener adicionado ao botão atualizar');
     } else {
-        console.error('[BANNERS] BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o atualizar nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado!');
+        console.error('[BANNERS] Botão atualizar não encontrado!');
     }
     
     // Verificar se o modal existe
     if (els.modalConfirm) {
-        console.log('[BANNERS] Modal de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
+        console.log('[BANNERS] Modal de confirmação encontrado');
     } else {
-        console.error('[BANNERS] Modal de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado! ID: modal-confirmacao');
+        console.error('[BANNERS] Modal de confirmação não encontrado! ID: modal-confirmacao');
     }
 
     els.lista.addEventListener('click', (event) => {
@@ -518,26 +518,26 @@ if (window.getApiBase) { window.getApiBase(); }
             const id = Number(btn.getAttribute('data-id'));
             const banner = state.banners.find((b) => b.id === id);
             
-            console.log('[BANNERS] BotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o remover clicado para banner ID:', id);
+            console.log('[BANNERS] Botão remover clicado para banner ID:', id);
             console.log('[BANNERS] Banner encontrado:', banner);
             
             if (!banner) {
-                console.error('[BANNERS] Banner nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado no state para ID:', id);
-                showMessage('error', 'Banner nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
+                console.error('[BANNERS] Banner não encontrado no state para ID:', id);
+                showMessage('error', 'Banner não encontrado');
                 return;
             }
             
             state.removeId = id;
             
-            // Atualizar mensagem do modal com o tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tulo do banner
+            // Atualizar mensagem do modal com o título do banner
             if (els.modalConfirmBody) {
                 els.modalConfirmBody.innerHTML = `
                     <p class="text-gray-700 font-semibold mb-2">Tem certeza que deseja remover este banner?</p>
-                    <p class="text-gray-600"><strong>TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tulo:</strong> ${banner.titulo || 'Sem tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tulo'}</p>
-                    <p class="text-sm text-red-600 mt-2">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Esta aÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pode ser desfeita.</p>
+                    <p class="text-gray-600"><strong>Título:</strong> ${banner.titulo || 'Sem título'}</p>
+                    <p class="text-sm text-red-600 mt-2">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Esta ação não pode ser desfeita.</p>
                 `;
             } else {
-                console.warn('[BANNERS] Corpo do modal de confirmaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado');
+                console.warn('[BANNERS] Corpo do modal de confirmação não encontrado');
             }
             
             openModal('modal-confirmacao');

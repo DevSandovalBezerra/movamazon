@@ -69,7 +69,7 @@ if (window.getApiBase) { window.getApiBase(); }
         btnSaveProvider: document.getElementById('btn-save-provider')
     };
 
-    // Usar funÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o comum do AdminUtils se disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel
+    // Usar função comum do AdminUtils se disponível
     const showMessage = (type, message) => {
         if (window.AdminUtils) {
             window.AdminUtils.showMessage(type, message);
@@ -88,7 +88,7 @@ if (window.getApiBase) { window.getApiBase(); }
         const statusText = document.getElementById(`status-text-${provider}`);
 
         if (keyStatus) {
-            keyStatus.textContent = hasKey ? 'Configurado' : 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado';
+            keyStatus.textContent = hasKey ? 'Configurado' : 'Não configurado';
             keyStatus.className = hasKey ? 'text-green-600 font-medium' : 'text-gray-400';
         }
 
@@ -101,7 +101,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 statusText.textContent = 'Configurado';
             } else {
                 statusDot.className = 'w-3 h-3 rounded-full bg-gray-300';
-                statusText.textContent = 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o configurado';
+                statusText.textContent = 'Não configurado';
             }
         }
     };
@@ -145,8 +145,8 @@ if (window.getApiBase) { window.getApiBase(); }
                 if (els.timeout) els.timeout.value = state.configs['ai.timeout'] || '120';
             }
         } catch (err) {
-            console.error('Erro ao carregar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', err);
-            showMessage('error', 'Erro ao carregar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            console.error('Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', err);
+            showMessage('error', 'Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         }
     };
 
@@ -206,18 +206,18 @@ if (window.getApiBase) { window.getApiBase(); }
             const allSuccess = results.every(async r => (await r.json()).success);
 
             if (allSuccess) {
-                showMessage('success', 'ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes salvas com sucesso!');
+                showMessage('success', 'ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes salvas com sucesso!');
                 els.modal.classList.add('hidden');
                 await carregarConfiguracoes();
             } else {
-                showMessage('error', 'Erro ao salvar algumas configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+                showMessage('error', 'Erro ao salvar algumas configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
             }
         } catch (err) {
             console.error('Erro ao salvar:', err);
-            showMessage('error', 'Erro ao salvar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            showMessage('error', 'Erro ao salvar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         } finally {
             els.btnSaveProvider.disabled = false;
-            els.btnSaveProvider.innerHTML = 'Salvar ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
+            els.btnSaveProvider.innerHTML = 'Salvar ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
         }
     };
 
@@ -240,13 +240,13 @@ if (window.getApiBase) { window.getApiBase(); }
             );
 
             await Promise.all(promises);
-            showMessage('success', 'ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes globais salvas!');
+            showMessage('success', 'ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes globais salvas!');
         } catch (err) {
             console.error('Erro ao salvar:', err);
-            showMessage('error', 'Erro ao salvar configuraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            showMessage('error', 'Erro ao salvar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
         } finally {
             els.btnSaveGeral.disabled = false;
-            els.btnSaveGeral.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
+            els.btnSaveGeral.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
         }
     };
 
@@ -276,17 +276,17 @@ if (window.getApiBase) { window.getApiBase(); }
             if (data.success) {
                 statusDot.className = 'w-3 h-3 rounded-full bg-green-500 animate-pulse';
                 statusText.textContent = 'Online';
-                showMessage('success', `${PROVIDERS[provider].name}: ConexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o bem-sucedida!`);
+                showMessage('success', `${PROVIDERS[provider].name}: Conexão bem-sucedida!`);
             } else {
                 statusDot.className = 'w-3 h-3 rounded-full bg-red-500';
                 statusText.textContent = 'Erro';
-                showMessage('error', data.message || 'Erro ao testar conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
+                showMessage('error', data.message || 'Erro ao testar conexão');
             }
         } catch (err) {
             console.error('Erro ao testar:', err);
             statusDot.className = 'w-3 h-3 rounded-full bg-red-500';
             statusText.textContent = 'Erro';
-            showMessage('error', 'Erro ao testar conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o');
+            showMessage('error', 'Erro ao testar conexão');
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalHTML;
