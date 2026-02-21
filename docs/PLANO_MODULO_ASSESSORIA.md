@@ -7,7 +7,7 @@
 | Fase 1 | Fundacao (SQL, Login, Cadastro, Middleware) | CONCLUIDA |
 | Fase 2 | Painel Dashboard, Configuracoes, Equipe | CONCLUIDA |
 | Fase 3 | Gestao de Atletas + Sistema de Convites | CONCLUIDA |
-| Fase 4 | Programas e Planos de Treino | PENDENTE |
+| Fase 4 | Programas e Planos de Treino | CONCLUIDA |
 | Fase 5 | Monitoramento e Alertas | PENDENTE |
 
 ### Migracoes SQL pendentes de execucao
@@ -53,10 +53,29 @@
 - `frontend/js/assessoria/auth.js`
 - `frontend/js/assessoria/atletas.js`
 
+**Fase 4 - API Backend:**
+- `api/assessoria/programas/list.php`
+- `api/assessoria/programas/create.php`
+- `api/assessoria/programas/get.php`
+- `api/assessoria/programas/update.php`
+- `api/assessoria/programas/delete.php`
+- `api/assessoria/programas/atletas/add.php`
+- `api/assessoria/programas/atletas/remove.php`
+- `api/assessoria/planos/list.php`
+- `api/assessoria/planos/generate.php`
+- `api/assessoria/planos/publish.php`
+
+**Fase 4 - Frontend:**
+- `frontend/paginas/assessoria/pages/programas.php` (listagem + criacao)
+- `frontend/paginas/assessoria/pages/programa_detalhe.php` (detalhe + atletas + planos + geracao IA)
+- `frontend/paginas/assessoria/pages/planos.php` (visao geral de planos)
+- `frontend/js/assessoria/programas.js`
+
 **Arquivos alterados:**
 - `api/auth/middleware.php` -- adicionado assessoria_admin/assessor no redirectByRole
 - `frontend/includes/header_index.php` -- card Assessoria aponta para login
 - `frontend/paginas/participante/index.php` -- rota convites + sidebar com badge
+- `frontend/paginas/assessoria/index.php` -- adicionado rota programa-detalhe
 
 ---
 
@@ -280,11 +299,33 @@ api/assessoria/equipe/status.php
 
 ---
 
-## FASE 4 -- Programas e Planos de Treino
+## FASE 4 -- Programas e Planos de Treino (CONCLUIDA)
 
 ### 4.1 CRUD Programas
-### 4.2 Geracao e publicacao de planos
-### 4.3 API de Programas e Planos
+- Listagem com filtros por status e tipo (cards visuais)
+- Criacao via modal (titulo, tipo evento/continuo, datas, objetivo, metodologia)
+- Edicao de programa existente
+- Exclusao inteligente (encerra se tem planos publicados, exclui se nao)
+- Pagina de detalhe do programa com abas (atletas + planos)
+
+### 4.2 Gestao de Atletas por Programa
+- Adicionar atletas ao programa (checkbox de atletas vinculados a assessoria)
+- Remover atleta do programa (status = encerrado)
+- Validacao: so atletas ativos na assessoria podem ser adicionados
+
+### 4.3 Geracao de Planos de Treino com IA
+- Geracao via OpenAI GPT-4o (mesma infraestrutura do participante)
+- Assessor configura: dias/semana, semanas, foco, metodologia, observacoes
+- Semanas calculadas automaticamente a partir da data do evento
+- Prompt montado com dados do atleta + anamnese + contexto do programa
+- Planos salvos com assessoria_id, programa_id e criado_por_usuario_id
+- Status: rascunho -> publicado -> arquivado
+
+### 4.4 Publicacao e Gestao de Planos
+- Publicar plano (torna visivel para o atleta)
+- Arquivar plano (remove da visao do atleta)
+- Visao geral de todos os planos da assessoria (pagina Planos)
+- Listagem com filtros por status
 
 ---
 
