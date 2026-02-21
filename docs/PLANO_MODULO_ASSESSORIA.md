@@ -8,12 +8,24 @@
 | Fase 2 | Painel Dashboard, Configuracoes, Equipe | CONCLUIDA |
 | Fase 3 | Gestao de Atletas + Sistema de Convites | CONCLUIDA |
 | Fase 4 | Programas e Planos de Treino | CONCLUIDA |
-| Fase 5 | Monitoramento e Alertas | PENDENTE |
+| Fase 5 | Monitoramento e Alertas | CONCLUIDA |
 
 ### Migracoes SQL pendentes de execucao
 - `migrations/2026-02-20_assessoria_modulo.sql` -- tabelas e papeis RBAC
 - `migrations/2026-02-20_assessoria_convites.sql` -- tabela de convites
 - `migrations/2026-02-20_assessoria_indexes.sql` -- indexes de performance
+
+### Arquivos criados (Fase 5)
+
+**API Backend:**
+- `api/assessoria/monitoramento/resumo.php`
+- `api/assessoria/monitoramento/atleta.php`
+- `api/assessoria/progresso/registrar.php`
+- `api/assessoria/progresso/feedback.php`
+
+**Frontend:**
+- `frontend/paginas/assessoria/pages/monitoramento.php`
+- `frontend/js/assessoria/monitoramento.js`
 
 ### Arquivos criados (Fases 1-3)
 
@@ -329,8 +341,25 @@ api/assessoria/equipe/status.php
 
 ---
 
-## FASE 5 -- Monitoramento e Alertas
+## FASE 5 -- Monitoramento e Alertas (CONCLUIDA)
 
-### 5.1 Painel de monitoramento (aderencia, alertas)
-### 5.2 Feedback do assessor no progresso
-### 5.3 API de Monitoramento
+### 5.1 Dashboard de Monitoramento
+- Cards com metricas: atletas ativos, aderencia geral, PSE medio 30d, alertas 7d
+- Aderencia por atleta com barras de progresso visuais (verde/amarelo/vermelho)
+- Lista de alertas recentes: PSE >= 9, mal-estar, glicemia > 250
+
+### 5.2 Detalhe do Atleta
+- Metricas individuais: treinos realizados, aderencia, PSE medio, duracao media
+- Filtro por periodo: 7, 30, 60, 90 dias
+- Grafico de evolucao PSE com Chart.js (pontos coloridos por faixa)
+- Historico completo de progresso com indicadores de alerta
+
+### 5.3 Feedback do Assessor
+- Botao de feedback em cada registro de progresso
+- Modal para adicionar feedback textual
+- Feedback visivel no historico do atleta
+
+### 5.4 Registro de Progresso pelo Assessor
+- Endpoint para assessor registrar progresso em nome do atleta
+- Campos: PSE, duracao, glicemia, mal-estar, sinais de alerta, observacoes
+- Marcado com fonte='assessor' para diferenciar de registros do atleta
