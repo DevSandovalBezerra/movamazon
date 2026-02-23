@@ -2,6 +2,8 @@
 
 Resumo do que foi alterado e o que precisa ser feito no servidor (hospedagem).
 
+**Deploy é manual** (FTP, cPanel, rsync, etc.) — não há GitHub Actions nem pipeline automático. Envie os arquivos e execute as migrations/SQL manualmente na hospedagem quando indicado.
+
 ---
 
 ## 1. Banco de dados
@@ -66,6 +68,14 @@ Resumo do que foi alterado e o que precisa ser feito no servidor (hospedagem).
 
 ---
 
+## 6. Correções UTF-8 / mojibake (inscrição)
+
+- **Arquivos:** `frontend/js/inscricao/pagamento.js`, `frontend/js/inscricao/progress-tracker.js`, `.htaccess`, `.editorconfig`, `.gitattributes`.
+- **No servidor:** Apenas enviar os arquivos (sobrescrever). Não é necessário rodar script nem migration.
+- **Detalhes:** Ver [DEPLOY_MANUAL_UTF8_MOJIBAKE.md](DEPLOY_MANUAL_UTF8_MOJIBAKE.md).
+
+---
+
 ## Checklist rápido para deploy
 
 1. [ ] Executar `migrations/add_payment_id_pagamentos.sql` no banco da hospedagem.
@@ -76,7 +86,8 @@ Resumo do que foi alterado e o que precisa ser feito no servidor (hospedagem).
    - `api/participante/anamnese/create.php`
    - `frontend/paginas/participante/index.php`
 3. [ ] Garantir que `frontend/includes/` existe no servidor com `mobile-menu.php` e `mobile-bottom-nav.php`.
-4. [ ] (Opcional) Acessar `diagnostico_webhook.php` após o deploy e conferir `schema_check` e recomendações.
+4. [ ] (UTF-8) Enviar arquivos da correção mojibake: `frontend/js/inscricao/pagamento.js`, `progress-tracker.js`, `.htaccess` (e opcionalmente `.editorconfig`, `.gitattributes`) — ver [DEPLOY_MANUAL_UTF8_MOJIBAKE.md](DEPLOY_MANUAL_UTF8_MOJIBAKE.md).
+5. [ ] (Opcional) Acessar `diagnostico_webhook.php` após o deploy e conferir `schema_check` e recomendações.
 
 ---
 

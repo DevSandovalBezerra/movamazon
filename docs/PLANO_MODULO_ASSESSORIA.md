@@ -15,6 +15,8 @@
 - `migrations/2026-02-20_assessoria_convites.sql` -- tabela de convites
 - `migrations/2026-02-20_assessoria_indexes.sql` -- indexes de performance
 
+**Nota:** A tabela `usuarios` do MovAmazon usa `data_cadastro` (nao `created_at`). O `register.php` da assessoria deve inserir em `usuarios` usando `data_cadastro`. As tabelas do modulo (`assessorias`, `assessoria_equipe`) usam `created_at` conforme a migration.
+
 ### Arquivos criados (Fase 5)
 
 **API Backend:**

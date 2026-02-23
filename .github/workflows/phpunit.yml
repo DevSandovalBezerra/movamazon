@@ -1,0 +1,62 @@
+name: PHPUnit
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: movamazon_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      RUN_INTEGRATION_TESTS: "1"
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: movamazon_test
+      DB_USER: root
+      DB_PASS: root
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: xdebug
+          extensions: mbstring, dom, xml, xmlwriter, curl, pdo_mysql
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run unit tests
+        run: composer test
+
+      - name: Run integration tests
+        run: composer test:integration
+
+      - name: Run coverage
+        run: php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: clover-coverage
+          path: build/logs/clover.xml

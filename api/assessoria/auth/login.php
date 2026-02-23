@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Metodo nao permitido']);
+    echo json_encode(['success' => false, 'message' => 'Método não permitido']);
     exit;
 }
 
@@ -19,7 +19,7 @@ try {
     $senha = $input['senha'] ?? '';
 
     if (empty($email) || empty($senha)) {
-        throw new Exception('Email e senha sao obrigatorios');
+        throw new Exception('E-mail e senha são obrigatórios');
     }
 
     $stmt = $pdo->prepare("
@@ -32,11 +32,11 @@ try {
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$usuario) {
-        throw new Exception('Usuario nao encontrado ou inativo');
+        throw new Exception('Usuário não encontrado ou inativo');
     }
 
     if (!password_verify($senha, $usuario['senha'])) {
-        throw new Exception('Email ou senha invalidos');
+        throw new Exception('E-mail ou senha inválidos');
     }
 
     // Verificar se tem papel de assessoria
@@ -50,7 +50,7 @@ try {
     $papeis_assessoria = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
     if (empty($papeis_assessoria)) {
-        throw new Exception('Voce nao possui acesso a area de assessoria. Cadastre-se primeiro.');
+        throw new Exception('Você não possui acesso à área de assessoria. Cadastre-se primeiro.');
     }
 
     // Buscar dados da assessoria vinculada

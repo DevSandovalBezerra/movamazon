@@ -39,22 +39,26 @@ try {
         exit();
     }
     
-    // Verificar se o produto está sendo usado em kits
+    // Verificar se o produto está sendo usado em qualquer lugar
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total_uso
         FROM (
             SELECT kp.id FROM kit_produtos kp WHERE kp.produto_id = ? AND kp.ativo = 1
             UNION ALL
             SELECT ktp.id FROM kit_template_produtos ktp WHERE ktp.produto_id = ? AND ktp.ativo = 1
+            UNION ALL
+            SELECT pep.id FROM produto_extra_produtos pep WHERE pep.produto_id = ? AND pep.ativo = 1
+            UNION ALL
+            SELECT c.id FROM camisas c WHERE c.produto_id = ? AND c.ativo = 1
         ) as usos
     ");
-    $stmt->execute([$id, $id]);
+    $stmt->execute([$id, $id, $id, $id]);
     $uso = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($uso['total_uso'] > 0) {
         echo json_encode([
             'success' => false, 
-            'error' => 'Não é possível excluir este produto pois ele está sendo usado em kits ou templates'
+            'error' => 'Não é possível excluir este produto pois ele está em uso (kits, templates, extras ou camisas)'
         ]);
         exit();
     }

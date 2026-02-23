@@ -70,6 +70,26 @@ try {
     }
     $plano = $stmt_plano->fetch(PDO::FETCH_ASSOC);
 
+    if ($plano) {
+        $periodizacao = null;
+
+        if (isset($plano['periodizacao_json']) && is_string($plano['periodizacao_json']) && trim($plano['periodizacao_json']) !== '') {
+            $decoded = json_decode($plano['periodizacao_json'], true);
+            if (is_array($decoded)) {
+                $periodizacao = $decoded;
+            }
+        }
+
+        if ($periodizacao === null && isset($plano['periodizacao']) && is_string($plano['periodizacao']) && trim($plano['periodizacao']) !== '') {
+            $decoded = json_decode($plano['periodizacao'], true);
+            if (is_array($decoded)) {
+                $periodizacao = $decoded;
+            }
+        }
+
+        $plano['periodizacao'] = $periodizacao;
+    }
+
     if (!$plano) {
         if (!$exigir_inscricao) {
             echo json_encode([

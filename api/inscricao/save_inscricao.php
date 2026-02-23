@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../helpers/inscricao_logger.php';
+require_once __DIR__ . '/inscricao_service.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -56,9 +57,8 @@ try {
         exit;
     }
 
-    // Calcular valor total
-    $valorSeguro = $seguro ? 25.0 : 0.0;
-    $valorTotal = max(0, $valorModalidades + $valorExtras + $valorSeguro - $valorDesconto);
+    // Calcular valor total via regra pura para permitir teste unitario.
+    $valorTotal = calcular_valor_total_inscricao($valorModalidades, $valorExtras, $seguro, $valorDesconto);
 
     $pdo->beginTransaction();
 

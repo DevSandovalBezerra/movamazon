@@ -53,12 +53,51 @@ if (!function_exists('envValue')) {
     }
 }
 
-// Configurações de SMTP para envio de e-mail
-define('SMTP_HOST', 'mail.movamazon.com.br');
-define('SMTP_USERNAME', 'contato@movamazon.com.br');
-define('SMTP_PASSWORD', envValue('SMTP_PASSWORD', ''));
-define('SMTP_PORT', 465);
-define('SMTP_SECURE', PHPMailer::ENCRYPTION_SMTPS);
+if (!function_exists('resolveSmtpSecureMode')) {
+    function resolveSmtpSecureMode($smtpPort, $smtpSecureEnv)
+    {
+        $secure = strtolower(trim((string) $smtpSecureEnv));
+        if ($secure === 'ssl' || $secure === 'smtps') {
+            return PHPMailer::ENCRYPTION_SMTPS;
+        }
+        if ($secure === 'tls' || $secure === 'starttls') {
+            return PHPMailer::ENCRYPTION_STARTTLS;
+        }
+        if ($secure === 'none' || $secure === '') {
+            return ((int) $smtpPort === 465) ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+        }
+        return ((int) $smtpPort === 465) ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+    }
+}
 
-define('EMAIL_FROM_ADDRESS', 'contato@movamazon.com.br');
-define('EMAIL_FROM_NAME', 'MovAmazonas');
+// SMTP settings loaded from environment with safe defaults (HostGator SSL/TLS).
+$smtpHost = envValue('SMTP_HOST', 'mail.movamazon.com.br');
+$smtpUsername = envValue('SMTP_USERNAME', 'noreply@movamazon.com.br');
+$smtpPassword = envValue('SMTP_PASSWORD', '');
+$smtpPort = (int) envValue('SMTP_PORT', '465');
+$smtpSecureEnv = envValue('SMTP_SECURE', envValue('SMTP_ENCRYPTION', ''));
+$smtpSecure = resolveSmtpSecureMode($smtpPort, $smtpSecureEnv);
+$emailFromAddress = envValue('EMAIL_FROM_ADDRESS', $smtpUsername);
+$emailFromName = envValue('EMAIL_FROM_NAME', 'MovAmazonas');
+
+if (!defined('SMTP_HOST')) {
+    define('SMTP_HOST', $smtpHost);
+}
+if (!defined('SMTP_USERNAME')) {
+    define('SMTP_USERNAME', $smtpUsername);
+}
+if (!defined('SMTP_PASSWORD')) {
+    define('SMTP_PASSWORD', $smtpPassword);
+}
+if (!defined('SMTP_PORT')) {
+    define('SMTP_PORT', $smtpPort);
+}
+if (!defined('SMTP_SECURE')) {
+    define('SMTP_SECURE', $smtpSecure);
+}
+if (!defined('EMAIL_FROM_ADDRESS')) {
+    define('EMAIL_FROM_ADDRESS', $emailFromAddress);
+}
+if (!defined('EMAIL_FROM_NAME')) {
+    define('EMAIL_FROM_NAME', $emailFromName);
+}

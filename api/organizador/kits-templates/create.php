@@ -30,24 +30,6 @@ try {
         exit();
     }
 
-    // Preparar upload (sem mover ainda)
-    $foto_kit_tmp = null;
-    $foto_kit_extension = null;
-
-    if (isset($_FILES['foto_kit']) && $_FILES['foto_kit']['error'] === UPLOAD_ERR_OK) {
-        $file_info = pathinfo($_FILES['foto_kit']['name']);
-        $extension = strtolower($file_info['extension']);
-
-        $allowed_extensions = ['jpg', 'jpeg', 'png', 'webp'];
-        if (!in_array($extension, $allowed_extensions)) {
-            echo json_encode(['success' => false, 'error' => 'Formato de imagem não suportado. Use: JPG, PNG ou WEBP']);
-            exit();
-        }
-
-        $foto_kit_tmp = $_FILES['foto_kit']['tmp_name'];
-        $foto_kit_extension = $extension;
-    }
-
     // Iniciar transação
     $pdo->beginTransaction();
 
@@ -81,22 +63,14 @@ try {
         }
     }
 
-    if ($foto_kit_tmp && $foto_kit_extension) {
-        $upload_dir = '../../../frontend/assets/img/kits/';
-
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
+    $uploaded_filename = null;
+    $upload_dir = '../../../frontend/assets/img/kits/';
+    if (isset($_FILES['foto_kit']) && $_FILES['foto_kit']['error'] === UPLOAD_ERR_OK) {
+        $uploaded_filename = salvarFotoKitTemplate($template_id, $_FILES['foto_kit'], $upload_dir, null);
+        if ($uploaded_filename) {
+            $stmt = $pdo->prepare("UPDATE kit_templates SET foto_kit = ? WHERE id = ?");
+            $stmt->execute([$uploaded_filename, $template_id]);
         }
-
-        $filename = gerarNomeKit('template', $template_id, null, $foto_kit_extension);
-        $filepath = $upload_dir . $filename;
-
-        if (!move_uploaded_file($foto_kit_tmp, $filepath)) {
-            throw new Exception('Erro ao fazer upload da imagem');
-        }
-
-        $stmt = $pdo->prepare("UPDATE kit_templates SET foto_kit = ? WHERE id = ?");
-        $stmt->execute([$filename, $template_id]);
     }
 
     // Commit da transação
@@ -140,6 +114,13 @@ try {
     // Rollback em caso de erro
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
+    }
+
+    if (!empty($uploaded_filename)) {
+        $cleanup = rtrim($upload_dir ?? '', '/\\') . DIRECTORY_SEPARATOR . $uploaded_filename;
+        if (is_file($cleanup)) {
+            @unlink($cleanup);
+        }
     }
 
     http_response_code(500);

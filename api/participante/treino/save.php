@@ -8,6 +8,71 @@ if (session_status() === PHP_SESSION_NONE) {
 $base_path = dirname(__DIR__);
 require_once $base_path . '/../db.php';
 
+function tryAcquireNamedLock(PDO $pdo, string $lockName, int $timeout = 10): bool
+{
+    $stmt = $pdo->prepare("SELECT GET_LOCK(:lock_name, :timeout) AS acquired");
+    $stmt->execute([
+        ':lock_name' => $lockName,
+        ':timeout' => $timeout
+    ]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return isset($row['acquired']) && (int)$row['acquired'] === 1;
+}
+
+function releaseNamedLock(PDO $pdo, ?string $lockName): void
+{
+    if (!$lockName) {
+        return;
+    }
+
+    try {
+        $stmt = $pdo->prepare("SELECT RELEASE_LOCK(:lock_name)");
+        $stmt->execute([':lock_name' => $lockName]);
+    } catch (Throwable $e) {
+        error_log('[SAVE_TREINO] Aviso ao liberar lock: ' . $e->getMessage());
+    }
+}
+
+function colunaExiste(PDO $pdo, string $tabela, string $coluna): bool
+{
+    static $cache = [];
+    $key = $tabela . ':' . $coluna;
+    if (array_key_exists($key, $cache)) {
+        return $cache[$key];
+    }
+
+    $stmt = $pdo->prepare("
+        SELECT 1
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = ?
+          AND COLUMN_NAME = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$tabela, $coluna]);
+    $exists = (bool)$stmt->fetchColumn();
+    $cache[$key] = $exists;
+
+    return $exists;
+}
+
+function inserirPlanoTreino(PDO $pdo, array $dados): int
+{
+    $colunas = array_keys($dados);
+    $placeholders = array_map(static fn($c) => ':' . $c, $colunas);
+
+    $sql = "INSERT INTO planos_treino_gerados (" . implode(', ', $colunas) . ")
+            VALUES (" . implode(', ', $placeholders) . ")";
+    $stmt = $pdo->prepare($sql);
+
+    foreach ($dados as $coluna => $valor) {
+        $stmt->bindValue(':' . $coluna, $valor);
+    }
+
+    $stmt->execute();
+    return (int)$pdo->lastInsertId();
+}
+
 if (!isset($_SESSION['user_id'])) {
     http_response_code(403);
     echo json_encode(["success" => false, "message" => "Acesso negado."]);
@@ -37,20 +102,69 @@ if (!isset($data['treinos']) || !is_array($data['treinos']) || empty($data['trei
 $inscricao_id = (int) $data['inscricao_id'];
 $usuario_id = $_SESSION['user_id'];
 $treinosArray = $data['treinos'];
-$bibliografia = isset($data['bibliografia']) ? trim($data['bibliografia']) : '';
+$bibliografia = '';
+if (isset($data['bibliografia'])) {
+    if (is_string($data['bibliografia'])) {
+        $bibliografia = trim($data['bibliografia']);
+    } elseif (is_array($data['bibliografia'])) {
+        $bibliografia = implode("\n", array_filter(array_map(static fn($item) => is_scalar($item) ? (string)$item : '', $data['bibliografia'])));
+    }
+}
+$periodizacao_payload = isset($data['periodizacao']) && is_array($data['periodizacao']) ? $data['periodizacao'] : null;
+$schema_version = isset($data['schema_version']) ? (string)$data['schema_version'] : null;
+$metodologia = isset($data['metodologia']) ? (string)$data['metodologia'] : null;
+$lockName = null;
 
 try {
-    $pdo->beginTransaction();
-
     $verificar_inscricao = $pdo->prepare("SELECT id FROM inscricoes WHERE id = ? AND usuario_id = ?");
     $verificar_inscricao->execute([$inscricao_id, $usuario_id]);
     
     if (!$verificar_inscricao->fetch()) {
-        $pdo->rollBack();
         http_response_code(404);
-        echo json_encode(["success" => false, "message" => "Inscrição não encontrada ou não pertence ao usuário."]);
+        echo json_encode(["success" => false, "message" => "Inscricao nao encontrada ou nao pertence ao usuario."]);
         exit;
     }
+
+    $lockName = 'movamazon_treino_save_inscricao_' . $inscricao_id;
+    $acquired = tryAcquireNamedLock($pdo, $lockName, 10);
+    if (!$acquired) {
+        http_response_code(429);
+        echo json_encode([
+            "success" => false,
+            "message" => "Salvamento de treino em andamento. Tente novamente em alguns segundos."
+        ]);
+        exit;
+    }
+
+    register_shutdown_function(function () use ($pdo, &$lockName) {
+        releaseNamedLock($pdo, $lockName);
+    });
+
+    $stmtPlanoExistente = $pdo->prepare("
+        SELECT id
+        FROM planos_treino_gerados
+        WHERE inscricao_id = ? AND usuario_id = ?
+        ORDER BY data_criacao_plano DESC
+        LIMIT 1
+    ");
+    $stmtPlanoExistente->execute([$inscricao_id, $usuario_id]);
+    $planoExistente = $stmtPlanoExistente->fetch(PDO::FETCH_ASSOC);
+    if ($planoExistente) {
+        $stmtTreinosExistentes = $pdo->prepare("SELECT id FROM treinos WHERE plano_treino_gerado_id = ? ORDER BY id ASC");
+        $stmtTreinosExistentes->execute([(int)$planoExistente['id']]);
+        $treinoIdsExistentes = $stmtTreinosExistentes->fetchAll(PDO::FETCH_COLUMN);
+
+        echo json_encode([
+            "success" => true,
+            "message" => "Plano de treino ja existente para esta inscricao.",
+            "plano_treino_gerado_id" => (int)$planoExistente['id'],
+            "treino_ids" => array_map('intval', $treinoIdsExistentes ?: []),
+            "idempotent" => true
+        ]);
+        exit;
+    }
+
+    $pdo->beginTransaction();
 
     $sqlAnamnese = "SELECT id FROM anamneses WHERE inscricao_id = ? ORDER BY data_anamnese DESC LIMIT 1";
     $stmtAnamnese = $pdo->prepare($sqlAnamnese);
@@ -70,24 +184,47 @@ try {
     $duracao_treino_geral = $treinosArray[0]['volume_total'] ?? null;
     $equipamento_geral = $treinosArray[0]['equipamento_principal'] ?? null;
 
-    $sqlInsertPlano = "INSERT INTO planos_treino_gerados (
-        usuario_id, inscricao_id, anamnese_id, bibliografia_plano, foco_primario, duracao_treino_geral, equipamento_geral
-    ) VALUES (
-        :usuario_id, :inscricao_id, :anamnese_id, :bibliografia_plano, :foco_primario, :duracao_treino_geral, :equipamento_geral
-    )";
-    
-    $stmtInsertPlano = $pdo->prepare($sqlInsertPlano);
-    $stmtInsertPlano->execute([
-        ':usuario_id' => $usuario_id,
-        ':inscricao_id' => $inscricao_id,
-        ':anamnese_id' => $anamnese_id,
-        ':bibliografia_plano' => $bibliografia,
-        ':foco_primario' => $foco_primario,
-        ':duracao_treino_geral' => $duracao_treino_geral,
-        ':equipamento_geral' => $equipamento_geral
-    ]);
+    $bibliografia_json_text = null;
+    if (isset($data['bibliografia']) && is_array($data['bibliografia'])) {
+        $tmpBiblio = json_encode($data['bibliografia'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($tmpBiblio !== false) {
+            $bibliografia_json_text = $tmpBiblio;
+            $bibliografia = implode("\n", $data['bibliografia']);
+        }
+    }
 
-    $plano_treino_gerado_id = $pdo->lastInsertId();
+    $periodizacao_json_text = null;
+    if ($periodizacao_payload !== null) {
+        $tmpPeriodizacao = json_encode($periodizacao_payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($tmpPeriodizacao !== false) {
+            $periodizacao_json_text = $tmpPeriodizacao;
+        }
+    }
+
+    $dadosPlanoInsert = [
+        'usuario_id' => $usuario_id,
+        'inscricao_id' => $inscricao_id,
+        'anamnese_id' => $anamnese_id,
+        'bibliografia_plano' => $bibliografia,
+        'foco_primario' => $foco_primario,
+        'duracao_treino_geral' => $duracao_treino_geral,
+        'equipamento_geral' => $equipamento_geral
+    ];
+
+    if (colunaExiste($pdo, 'planos_treino_gerados', 'bibliografia_json')) {
+        $dadosPlanoInsert['bibliografia_json'] = $bibliografia_json_text;
+    }
+    if (colunaExiste($pdo, 'planos_treino_gerados', 'periodizacao_json')) {
+        $dadosPlanoInsert['periodizacao_json'] = $periodizacao_json_text;
+    }
+    if (colunaExiste($pdo, 'planos_treino_gerados', 'schema_version')) {
+        $dadosPlanoInsert['schema_version'] = $schema_version ?: null;
+    }
+    if (colunaExiste($pdo, 'planos_treino_gerados', 'metodologia')) {
+        $dadosPlanoInsert['metodologia'] = $metodologia ?: null;
+    }
+
+    $plano_treino_gerado_id = inserirPlanoTreino($pdo, $dadosPlanoInsert);
 
     $sqlInsertTreino = "INSERT INTO treinos (
         anamnese_id, usuario_id, plano_treino_gerado_id,

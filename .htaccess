@@ -1,6 +1,13 @@
 RewriteEngine On
 RewriteBase /
 
+# Charset UTF-8 padrão e para JS/JSON (evita mojibake)
+<IfModule mod_mime.c>
+    AddDefaultCharset UTF-8
+    AddCharset UTF-8 .js
+    AddCharset UTF-8 .json
+</IfModule>
+
 # Inscrição: retorno Checkout Pro (sucesso/pendente/erro)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

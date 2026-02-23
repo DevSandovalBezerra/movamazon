@@ -1,19 +1,8 @@
 <?php
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../helpers/email_helper.php';
 
 error_log('--- INÍCIO RECUPERAR SENHA ---');
-
-// PHPMailer
-$autoloadPath = __DIR__ . '/../../vendor/autoload.php';
-if (file_exists($autoloadPath)) {
-    require_once $autoloadPath;
-} else {
-    require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/Exception.php';
-    require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
-    require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/SMTP.php';
-}
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -64,32 +53,18 @@ try {
         $assunto = 'Redefinição de senha - MovAmazon';
         $mensagem = "Olá,<br><br>Recebemos uma solicitação para redefinir a senha da sua conta no MovAmazon.<br><br>Para criar uma nova senha, acesse o link abaixo (válido por 1 hora):<br><a href='$link'>$link</a><br><br>Se você não solicitou esta alteração, pode ignorar este e-mail com segurança.<br><br>Equipe MovAmazon";
         
-        $mail = new PHPMailer(true);
-        try {
-            error_log('Tentando enviar e-mail para: ' . $email);
-            $mail->isSMTP();
-            $mail->Host = 'smtp.hostinger.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'movhealth@moveromundo.com.br';
-            $mail->Password = 'Moveromundo2025@';
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port = 465;
-            $mail->CharSet = 'UTF-8';
-            $mail->setFrom('movhealth@moveromundo.com.br', 'MovAmazon');
-            $mail->addAddress($email);
-            $mail->Subject = $assunto;
-            $mail->isHTML(true);
-            $mail->Body = $mensagem;
-            $mail->send();
+        error_log('Tentando enviar e-mail para: ' . $email);
+        $sent = sendEmail($email, $assunto, $mensagem);
+        if ($sent) {
             error_log('E-mail enviado com sucesso para: ' . $email);
-        } catch (Exception $e) {
-            error_log('Erro ao enviar e-mail: ' . $e->getMessage());
+        } else {
+            error_log('Erro ao enviar e-mail de recuperação para: ' . $email);
         }
     }
     
     error_log('Fluxo finalizado. Retornando resposta genérica.');
     echo json_encode(['success' => true, 'message' => 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.']);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log('Exceção no fluxo de recuperação: ' . $e->getMessage());
     echo json_encode(['success' => true, 'message' => 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.']);
 } 

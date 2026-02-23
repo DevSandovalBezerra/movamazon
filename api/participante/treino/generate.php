@@ -9,6 +9,118 @@ $base_path = dirname(__DIR__);
 require_once $base_path . '/../db.php';
 require_once $base_path . '/../helpers/config_helper.php';
 
+function normalizarDistanciaKm($raw): float
+{
+    if ($raw === null) {
+        return 0.0;
+    }
+
+    if (is_numeric($raw)) {
+        $value = (float) $raw;
+        return $value > 0 ? round($value, 2) : 0.0;
+    }
+
+    $text = strtolower(trim((string) $raw));
+    $text = str_replace(['kms', 'km', ' '], '', $text);
+    $text = str_replace(',', '.', $text);
+    $text = preg_replace('/[^0-9.]/', '', $text);
+
+    if ($text === '' || $text === null) {
+        return 0.0;
+    }
+
+    $value = (float) $text;
+    return $value > 0 ? round($value, 2) : 0.0;
+}
+
+function volumeSemanaKm(float $distanciaKm, int $semanaNumero): float
+{
+    $base = 0.60 * $distanciaKm;
+    $volume = $base * pow(1.05, max(0, $semanaNumero - 1));
+    return round($volume, 1);
+}
+
+function tryAcquireNamedLock(PDO $pdo, string $lockName, int $timeout = 10): bool
+{
+    $stmt = $pdo->prepare("SELECT GET_LOCK(:lock_name, :timeout) AS acquired");
+    $stmt->execute([
+        ':lock_name' => $lockName,
+        ':timeout' => $timeout
+    ]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return isset($result['acquired']) && (int)$result['acquired'] === 1;
+}
+
+function releaseNamedLock(PDO $pdo, ?string $lockName): void
+{
+    if (!$lockName) {
+        return;
+    }
+
+    try {
+        $stmt = $pdo->prepare("SELECT RELEASE_LOCK(:lock_name)");
+        $stmt->execute([':lock_name' => $lockName]);
+    } catch (Throwable $e) {
+        error_log('[GERAR_TREINO] Aviso ao liberar lock: ' . $e->getMessage());
+    }
+}
+
+function colunaExiste(PDO $pdo, string $tabela, string $coluna): bool
+{
+    static $cache = [];
+    $cacheKey = $tabela . ':' . $coluna;
+
+    if (array_key_exists($cacheKey, $cache)) {
+        return $cache[$cacheKey];
+    }
+
+    $sql = "SELECT 1
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = ?
+              AND COLUMN_NAME = ?
+            LIMIT 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$tabela, $coluna]);
+    $exists = (bool)$stmt->fetchColumn();
+    $cache[$cacheKey] = $exists;
+
+    return $exists;
+}
+
+function buscarPlanoExistente(PDO $pdo, int $inscricaoId, int $usuarioId, bool $exigirInscricao): ?array
+{
+    if ($exigirInscricao) {
+        $sql = "SELECT id FROM planos_treino_gerados WHERE inscricao_id = ? ORDER BY data_criacao_plano DESC LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$inscricaoId]);
+    } else {
+        $sql = "SELECT id FROM planos_treino_gerados WHERE usuario_id = ? ORDER BY data_criacao_plano DESC LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$usuarioId]);
+    }
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row ?: null;
+}
+
+function inserirPlanoTreino(PDO $pdo, array $dados): int
+{
+    $colunas = array_keys($dados);
+    $placeholders = array_map(static fn($c) => ':' . $c, $colunas);
+
+    $sql = "INSERT INTO planos_treino_gerados (" . implode(', ', $colunas) . ")
+            VALUES (" . implode(', ', $placeholders) . ")";
+    $stmt = $pdo->prepare($sql);
+
+    foreach ($dados as $coluna => $valor) {
+        $stmt->bindValue(':' . $coluna, $valor);
+    }
+
+    $stmt->execute();
+    return (int)$pdo->lastInsertId();
+}
+
 if (!isset($_SESSION['user_id'])) {
     error_log('[GERAR_TREINO] Erro: Acesso negado - usuário não autenticado');
     http_response_code(403);
@@ -38,6 +150,8 @@ if (!$inscricao_id) {
     echo json_encode(['success' => false, 'message' => 'ID da inscrição é obrigatório.']);
     exit();
 }
+
+$lockName = null;
 
 try {
     // Verificar configuração de exigência de inscrição
@@ -91,28 +205,32 @@ try {
         exit();
     }
 
-    // Regra: com inscrição obrigatória = um treino por inscrição; regra provisória = um treino por participante (usuario_id)
-    if ($exigir_inscricao) {
-        $sql_verificar_treino = "SELECT id FROM planos_treino_gerados WHERE inscricao_id = ? LIMIT 1";
-        $stmt_verificar_treino = $pdo->prepare($sql_verificar_treino);
-        $stmt_verificar_treino->execute([$inscricao_id]);
-    } else {
-        $sql_verificar_treino = "SELECT id FROM planos_treino_gerados WHERE usuario_id = ? LIMIT 1";
-        $stmt_verificar_treino = $pdo->prepare($sql_verificar_treino);
-        $stmt_verificar_treino->execute([$usuario_id]);
+    // Lock e idempotencia sem depender de UNIQUE no banco
+    $lockScope = $exigir_inscricao ? ('inscricao_' . $inscricao_id) : ('usuario_' . $usuario_id);
+    $lockName = 'movamazon_treino_' . $lockScope;
+    $acquired = tryAcquireNamedLock($pdo, $lockName, 10);
+    if (!$acquired) {
+        http_response_code(429);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Geracao de treino em andamento. Tente novamente em alguns segundos.'
+        ]);
+        exit();
     }
-    $treino_existente = $stmt_verificar_treino->fetch(PDO::FETCH_ASSOC);
 
+    register_shutdown_function(function () use ($pdo, &$lockName) {
+        releaseNamedLock($pdo, $lockName);
+    });
+
+    $treino_existente = buscarPlanoExistente($pdo, $inscricao_id, $usuario_id, $exigir_inscricao);
     if ($treino_existente) {
-        if ($exigir_inscricao) {
-            error_log('[GERAR_TREINO] Erro: Treino já existe para esta inscrição');
-            $msg = 'Já existe um treino gerado para esta corrida. Cada corrida pode ter apenas um treino.';
-        } else {
-            error_log('[GERAR_TREINO] Erro: Participante já possui um treino (regra: um treino por participante)');
-            $msg = 'Você já possui um treino gerado. Cada participante pode ter apenas um plano de treino no momento.';
-        }
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => $msg]);
+        error_log('[GERAR_TREINO] Idempotencia: plano existente retornado - ID ' . $treino_existente['id']);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Plano de treino ja existente para esta inscricao.',
+            'plano_id' => (int)$treino_existente['id'],
+            'idempotent' => true
+        ]);
         exit();
     }
 
@@ -162,9 +280,17 @@ try {
     $diferenca = $hoje->diff($evento_data);
     $semanas_restantes = max(1, (int)($diferenca->days / 7));
     $distancia_raw = $inscricao_data['distancia'] ?? 5;
-    $distancia_km = is_numeric($distancia_raw) ? (int)$distancia_raw : (int)preg_replace('/[^0-9]/', '', $distancia_raw);
+    $distancia_km = normalizarDistanciaKm($distancia_raw);
+    if ($distancia_km <= 0) {
+        $distancia_km = 5.0;
+    }
 
-    error_log('[GERAR_TREINO] Dados calculados - Semanas restantes: ' . $semanas_restantes . ', Distância: ' . $distancia_km . 'km');
+    $volumes_por_semana = [];
+    for ($sem = 1; $sem <= $semanas_restantes; $sem++) {
+        $volumes_por_semana[] = 'S' . $sem . ': ' . number_format(volumeSemanaKm($distancia_km, $sem), 1, ',', '.') . 'km';
+    }
+
+    error_log('[GERAR_TREINO] Dados calculados - Semanas restantes: ' . $semanas_restantes . ', Distancia: ' . $distancia_km . 'km');
 
     // Função para extrair dias disponíveis da string de disponibilidade
     function extrairDiasDisponiveis($disponibilidade) {
@@ -318,7 +444,8 @@ try {
     $prompt .= "- Evento: {$inscricao_data['evento_nome']}\n";
     $prompt .= "- Modalidade: {$inscricao_data['modalidade_nome']}\n";
     $prompt .= "- Data do evento: {$data_evento_formatada}\n";
-    $prompt .= "- Semanas até o evento: {$semanas_restantes}\n";
+    $prompt .= "- Semanas ate o evento: {$semanas_restantes}\n";
+    $prompt .= "- Volume semanal sugerido (referencia inicial): " . implode(', ', $volumes_por_semana) . "\n";
     
     $prompt .= "\n📋 REGRAS DE QUANTIDADE DE TREINOS E MÚLTIPLAS SEMANAS:\n";
     if ($semanas_restantes <= 1) {
@@ -579,19 +706,17 @@ try {
 
     // Verificar se a resposta foi completada ou truncada
     $finish_reason = $response_data['choices'][0]['finish_reason'] ?? 'unknown';
+    $assistant_content = (string)($response_data['choices'][0]['message']['content'] ?? '');
     error_log('[GERAR_TREINO] Finish reason: ' . $finish_reason);
-    
+
     if ($finish_reason === 'length') {
-        error_log('[GERAR_TREINO] AVISO CRÍTICO: Resposta foi truncada por limite de tokens!');
+        error_log('[GERAR_TREINO] AVISO CRITICO: Resposta foi truncada por limite de tokens!');
         error_log('[GERAR_TREINO] Tokens usados: ' . ($response_data['usage']['total_tokens'] ?? 'N/A'));
         error_log('[GERAR_TREINO] Prompt tokens: ' . ($response_data['usage']['prompt_tokens'] ?? 'N/A'));
         error_log('[GERAR_TREINO] Completion tokens: ' . ($response_data['usage']['completion_tokens'] ?? 'N/A'));
-        
-        // Tentar aumentar max_tokens na próxima tentativa ou avisar o usuário
         $assistant_content .= "\n\n[AVISO: Resposta pode estar incompleta devido ao limite de tokens]";
     }
 
-    $assistant_content = $response_data['choices'][0]['message']['content'];
     error_log('[GERAR_TREINO] Tamanho do conteúdo da IA: ' . strlen($assistant_content) . ' caracteres');
     error_log('[GERAR_TREINO] Primeiros 500 caracteres do conteúdo: ' . substr($assistant_content, 0, 500));
     error_log('[GERAR_TREINO] Últimos 500 caracteres do conteúdo: ' . substr($assistant_content, -500));
@@ -611,6 +736,7 @@ try {
 
     // Extrair JSON da resposta - tentar múltiplas estratégias
     $json_treino_string = '';
+    $content_parts = [$assistant_content];
     
     // Estratégia 1: Procurar por bloco de código JSON
     if (preg_match('/```json\s*(\{[\s\S]*?\})\s*```/', $assistant_content, $matches)) {
@@ -726,7 +852,61 @@ try {
         }
     }
     
-    if (!$treino_json || !isset($treino_json['treinos'])) {
+    $periodizacao_payload = null;
+    $schema_version = null;
+    $metodologia = null;
+
+    if (is_array($treino_json)) {
+        $schema_version = isset($treino_json['schema_version']) ? (string)$treino_json['schema_version'] : null;
+        $metodologia = isset($treino_json['metodologia']) ? (string)$treino_json['metodologia'] : null;
+        if (isset($treino_json['periodizacao']) && is_array($treino_json['periodizacao'])) {
+            $periodizacao_payload = $treino_json['periodizacao'];
+        }
+    }
+
+    if (is_array($treino_json)
+        && (!isset($treino_json['treinos']) || !is_array($treino_json['treinos']) || empty($treino_json['treinos']))
+        && isset($treino_json['plano']['semanas'])
+        && is_array($treino_json['plano']['semanas'])) {
+
+        $periodizacao_payload = $periodizacao_payload ?? $treino_json['plano'];
+        $treinos_flat = [];
+
+        foreach ($treino_json['plano']['semanas'] as $semana_idx => $semana) {
+            if (!is_array($semana)) {
+                continue;
+            }
+
+            $semana_num = isset($semana['semana_numero']) && is_numeric($semana['semana_numero'])
+                ? (int)$semana['semana_numero']
+                : ($semana_idx + 1);
+
+            $sessoes = [];
+            if (isset($semana['sessoes']) && is_array($semana['sessoes'])) {
+                $sessoes = $semana['sessoes'];
+            } elseif (isset($semana['treinos']) && is_array($semana['treinos'])) {
+                $sessoes = $semana['treinos'];
+            }
+
+            foreach ($sessoes as $sessao) {
+                if (!is_array($sessao)) {
+                    continue;
+                }
+
+                if (!isset($sessao['semana_numero']) || !is_numeric($sessao['semana_numero'])) {
+                    $sessao['semana_numero'] = $semana_num;
+                }
+
+                $treinos_flat[] = $sessao;
+            }
+        }
+
+        if (!empty($treinos_flat)) {
+            $treino_json['treinos'] = $treinos_flat;
+        }
+    }
+
+    if (!$treino_json || !isset($treino_json['treinos']) || !is_array($treino_json['treinos']) || empty($treino_json['treinos'])) {
         error_log('[GERAR_TREINO] Erro: JSON inválido ou sem treinos após todas as tentativas');
         error_log('[GERAR_TREINO] JSON parse error final: ' . json_last_error_msg());
         error_log('[GERAR_TREINO] Salvando resposta completa em: ' . $debug_file);
@@ -768,12 +948,12 @@ try {
         }
     } else if (isset($treino_json['treinos']) && is_array($treino_json['treinos'])) {
         // Estrutura direta com array de treinos
-        foreach ($treino_json['treinos'] as $treino) {
+        foreach ($treino_json['treinos'] as $index => $treino) {
             // Se não tem semana_numero, calcular baseado na posição
             if (!isset($treino['semana_numero']) || !is_numeric($treino['semana_numero'])) {
-                // Calcular semana baseado em dia_semana_id (assumindo que dias 1-7 = semana 1, 8-14 = semana 2, etc.)
-                $dia_semana_id = isset($treino['dia_semana_id']) ? (int)$treino['dia_semana_id'] : 1;
-                $treino['semana_numero'] = max(1, (int)ceil($dia_semana_id / 7));
+                // Fallback deterministico por posicao (aprox. 5 treinos/semana), sem depender de dia_semana_id.
+                $semana_calculada = (int) floor($index / 5) + 1;
+                $treino['semana_numero'] = min($semanas_restantes, max(1, $semana_calculada));
                 error_log('[GERAR_TREINO] semana_numero calculado para treino: ' . $treino['semana_numero']);
             } else {
                 $treino['semana_numero'] = (int)$treino['semana_numero'];
@@ -883,29 +1063,47 @@ try {
         $aceite_termos_treino = $termos_id_treino ? 1 : 0;
         $data_aceite_treino = $termos_id_treino ? date('Y-m-d H:i:s') : null;
 
-        $sqlInsertPlano = "INSERT INTO planos_treino_gerados (
-            usuario_id, inscricao_id, anamnese_id, bibliografia_plano, foco_primario, duracao_treino_geral, equipamento_geral,
-            aceite_termos_treino, data_aceite_termos_treino, termos_id_treino
-        ) VALUES (
-            :usuario_id, :inscricao_id, :anamnese_id, :bibliografia_plano, :foco_primario, :duracao_treino_geral, :equipamento_geral,
-            :aceite_termos_treino, :data_aceite_termos_treino, :termos_id_treino
-        )";
-        
-        $stmtInsertPlano = $pdo->prepare($sqlInsertPlano);
-        $stmtInsertPlano->execute([
-            ':usuario_id' => $usuario_id,
-            ':inscricao_id' => $inscricao_id,
-            ':anamnese_id' => $anamnese_id,
-            ':bibliografia_plano' => $bibliografia_texto,
-            ':foco_primario' => $foco_primario,
-            ':duracao_treino_geral' => $duracao_treino_geral,
-            ':equipamento_geral' => $equipamento_geral,
-            ':aceite_termos_treino' => $aceite_termos_treino,
-            ':data_aceite_termos_treino' => $data_aceite_treino,
-            ':termos_id_treino' => $termos_id_treino ?: null
-        ]);
+        $periodizacao_json_text = null;
+        if ($periodizacao_payload !== null) {
+            $encoded_periodizacao = json_encode($periodizacao_payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if ($encoded_periodizacao !== false) {
+                $periodizacao_json_text = $encoded_periodizacao;
+            }
+        }
 
-        $plano_treino_gerado_id = $pdo->lastInsertId();
+        $dadosPlanoInsert = [
+            'usuario_id' => $usuario_id,
+            'inscricao_id' => $inscricao_id,
+            'anamnese_id' => $anamnese_id,
+            'bibliografia_plano' => $bibliografia_texto,
+            'foco_primario' => $foco_primario,
+            'duracao_treino_geral' => $duracao_treino_geral,
+            'equipamento_geral' => $equipamento_geral
+        ];
+
+        if (colunaExiste($pdo, 'planos_treino_gerados', 'bibliografia_json')) {
+            $dadosPlanoInsert['bibliografia_json'] = $bibliografia_json;
+        }
+        if (colunaExiste($pdo, 'planos_treino_gerados', 'aceite_termos_treino')) {
+            $dadosPlanoInsert['aceite_termos_treino'] = $aceite_termos_treino;
+        }
+        if (colunaExiste($pdo, 'planos_treino_gerados', 'data_aceite_termos_treino')) {
+            $dadosPlanoInsert['data_aceite_termos_treino'] = $data_aceite_treino;
+        }
+        if (colunaExiste($pdo, 'planos_treino_gerados', 'termos_id_treino')) {
+            $dadosPlanoInsert['termos_id_treino'] = $termos_id_treino ?: null;
+        }
+        if (colunaExiste($pdo, 'planos_treino_gerados', 'periodizacao_json')) {
+            $dadosPlanoInsert['periodizacao_json'] = $periodizacao_json_text;
+        }
+        if (colunaExiste($pdo, 'planos_treino_gerados', 'schema_version')) {
+            $dadosPlanoInsert['schema_version'] = $schema_version ?: null;
+        }
+        if (colunaExiste($pdo, 'planos_treino_gerados', 'metodologia')) {
+            $dadosPlanoInsert['metodologia'] = $metodologia ?: 'matveev';
+        }
+
+        $plano_treino_gerado_id = inserirPlanoTreino($pdo, $dadosPlanoInsert);
         error_log('[GERAR_TREINO] Plano criado - ID: ' . $plano_treino_gerado_id);
 
         $sqlInsertTreino = "INSERT INTO treinos (

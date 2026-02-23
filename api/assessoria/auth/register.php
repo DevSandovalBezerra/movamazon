@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Metodo nao permitido']);
+    echo json_encode(['success' => false, 'message' => 'Método não permitido']);
     exit;
 }
 
@@ -28,25 +28,25 @@ try {
 
     // Validacoes
     if (empty($nome) || empty($email) || empty($senha)) {
-        throw new Exception('Nome, email e senha sao obrigatorios');
+        throw new Exception('Nome, e-mail e senha são obrigatórios');
     }
     if ($senha !== $confirmar_senha) {
-        throw new Exception('As senhas nao conferem');
+        throw new Exception('As senhas não conferem');
     }
     if (strlen($senha) < 6) {
-        throw new Exception('A senha deve ter no minimo 6 caracteres');
+        throw new Exception('A senha deve ter no mínimo 6 caracteres');
     }
     if (empty($cref)) {
-        throw new Exception('CREF e obrigatorio para assessores');
+        throw new Exception('CREF é obrigatório para assessores');
     }
     if (!in_array($tipo, ['PF', 'PJ'])) {
         throw new Exception('Tipo deve ser PF ou PJ');
     }
     if (empty($cpf_cnpj)) {
-        throw new Exception('CPF/CNPJ e obrigatorio');
+        throw new Exception('CPF/CNPJ é obrigatório');
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        throw new Exception('Email invalido');
+        throw new Exception('E-mail inválido');
     }
 
     if (empty($nome_fantasia)) {
@@ -57,14 +57,14 @@ try {
     $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
-        throw new Exception('Este email ja esta cadastrado. Faca login.');
+        throw new Exception('Este e-mail já está cadastrado. Faça login.');
     }
 
     // Verificar CPF/CNPJ unico nas assessorias
     $stmt = $pdo->prepare("SELECT id FROM assessorias WHERE cpf_cnpj = ? LIMIT 1");
     $stmt->execute([$cpf_cnpj]);
     if ($stmt->fetch()) {
-        throw new Exception('Ja existe uma assessoria cadastrada com este CPF/CNPJ');
+        throw new Exception('Já existe uma assessoria cadastrada com este CPF/CNPJ');
     }
 
     $pdo->beginTransaction();
@@ -72,7 +72,7 @@ try {
     // 1. Criar usuario
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("
-        INSERT INTO usuarios (nome_completo, email, senha, telefone, papel, status, created_at)
+        INSERT INTO usuarios (nome_completo, email, senha, telefone, papel, status, data_cadastro)
         VALUES (?, ?, ?, ?, 'participante', 'ativo', NOW())
     ");
     $stmt->execute([$nome, $email, $senha_hash, $telefone]);
@@ -83,7 +83,7 @@ try {
     $stmt->execute();
     $papel = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$papel) {
-        throw new Exception('Papel assessoria_admin nao encontrado. Execute a migracao SQL primeiro.');
+        throw new Exception('Papel assessoria_admin não encontrado. Execute a migração SQL primeiro.');
     }
 
     // 3. Atribuir papel ao usuario
@@ -110,7 +110,7 @@ try {
 
     $pdo->commit();
 
-    // Auto-login apos cadastro
+    // Auto-login após cadastro
     $_SESSION['user_id'] = $usuario_id;
     $_SESSION['user_email'] = $email;
     $_SESSION['user_name'] = $nome;

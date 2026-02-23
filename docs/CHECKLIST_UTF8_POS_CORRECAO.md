@@ -94,6 +94,16 @@ Lista de arquivos por fase do plano de correção UTF-8. Use para deploy e verif
 
 ---
 
+## Módulo Assessoria (API auth + participante sync)
+
+| Arquivo | Status |
+|---------|--------|
+| `api/assessoria/auth/login.php` | Corrigido |
+| `api/assessoria/auth/register.php` | Corrigido |
+| `api/participante/sync_payment_status.php` | Corrigido |
+
+---
+
 ## Exclusões
 
 - **`frontend/js/inscricao_EXEMPLO/`** – Não processado (backup/exemplos). Tratar por último se necessário.

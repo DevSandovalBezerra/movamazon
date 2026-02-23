@@ -1,132 +1,119 @@
 <?php
-require_once __DIR__ . '/../db.php';
-// ✅ Removido require_once config.php - será carregado no __construct
-// A função logMercadoPago() está protegida contra redeclaração
 
 class MercadoLivrePayment
 {
-    private $config;
-    private $access_token;
-    private $api_url;
-    private $notification_url;
-    private $external_reference_prefix;
+    private array $config;
+    private string $access_token;
+    private string $api_url;
+    private string $notification_url;
+    private string $external_reference_prefix;
 
-    public function __construct()
-    {
-        // ✅ Carregar config apenas uma vez no construtor
-        $this->config = require __DIR__ . '/config.php';
-        $this->access_token = $this->config['accesstoken'];
-        
-        // Validação crítica: se access_token vazio, lançar exceção
-        if (empty($this->access_token)) {
-            throw new Exception("Access token não configurado. Verifique APP_Acess_token e APP_Public_Key no .env");
+    /** @var callable */
+    private $requestExecutor;
+
+    /** @var callable */
+    private $paymentRepository;
+
+    public function __construct(
+        ?array $config = null,
+        ?callable $requestExecutor = null,
+        ?callable $paymentRepository = null
+    ) {
+        $this->config = $config ?? $this->loadDefaultConfig();
+        $this->access_token = (string) ($this->config['accesstoken'] ?? '');
+
+        if ($this->access_token === '') {
+            throw new Exception('Access token nao configurado. Verifique APP_Acess_token e APP_Public_Key no .env');
         }
-        
-        $this->api_url = 'https://api.mercadopago.com';
-        $this->notification_url = $this->config['url_notification_api'];
-        $this->external_reference_prefix = 'MOVAMAZON_';
+
+        $this->api_url = (string) ($this->config['api_url'] ?? 'https://api.mercadopago.com');
+        $this->notification_url = (string) ($this->config['url_notification_api'] ?? '');
+        $this->external_reference_prefix = (string) ($this->config['external_reference_prefix'] ?? 'MOVAMAZON_');
+
+        $this->requestExecutor = $requestExecutor ?? [$this, 'defaultRequestExecutor'];
+        $this->paymentRepository = $paymentRepository ?? [$this, 'defaultPaymentRepository'];
     }
 
-    /**
-     * Criar preferência de pagamento (para Payment Brick)
-     */
-    public function criarPagamento($dados_inscricao)
+    public function criarPagamento($dados_inscricao): array
     {
         try {
-            // Validar dados obrigatórios
             $this->validarDadosInscricao($dados_inscricao);
 
-            // Log de auditoria
             if (function_exists('logMercadoPago')) {
                 logMercadoPago('preference', 'Criando preference de pagamento', [
                     'inscricao_id' => $dados_inscricao['id'],
                     'valor_total' => $dados_inscricao['valor_total'],
-                    'environment' => $this->config['environment']
+                    'environment' => $this->config['environment'] ?? 'desconhecido',
                 ]);
             }
 
-            // Preparar dados para Mercado Pago
             $preference_data = $this->prepararDadosPreferencia($dados_inscricao);
-
-            // Criar preferência no Mercado Pago
             $response = $this->fazerRequisicao('POST', '/checkout/preferences', $preference_data);
 
             if ($response && isset($response['id'])) {
-                // Salvar dados do pagamento no banco
-                $this->salvarPagamento($dados_inscricao['id'], $response);
+                $this->salvarPagamento((int) $dados_inscricao['id'], $response);
 
                 if (function_exists('logMercadoPago')) {
                     logMercadoPago('preference', 'Preference criada com sucesso', [
                         'preference_id' => $response['id'],
-                        'inscricao_id' => $dados_inscricao['id']
+                        'inscricao_id' => $dados_inscricao['id'],
                     ]);
                 }
 
                 return [
                     'success' => true,
                     'preference_id' => $response['id'],
-                    'init_point' => $response['init_point']
+                    'init_point' => $response['init_point'] ?? null,
                 ];
             }
 
-            throw new Exception('Resposta inválida do Mercado Pago');
+            throw new Exception('Resposta invalida do Mercado Pago');
         } catch (Exception $e) {
-            // Log detalhado do erro
-            error_log("ERRO PAGAMENTO: " . $e->getMessage());
-            error_log("AMBIENTE: " . ($this->config['environment'] ?? 'desconhecido'));
-            error_log("TOKENS CONFIGURADOS: " . ($this->config['has_valid_tokens'] ? 'SIM' : 'NÃO'));
-            
+            error_log('ERRO PAGAMENTO: ' . $e->getMessage());
+            error_log('AMBIENTE: ' . ($this->config['environment'] ?? 'desconhecido'));
+            error_log('TOKENS CONFIGURADOS: ' . (($this->config['has_valid_tokens'] ?? false) ? 'SIM' : 'NAO'));
+
             if (function_exists('logMercadoPago')) {
                 logMercadoPago('error', 'Erro ao criar pagamento', [
                     'mensagem' => $e->getMessage(),
-                    'inscricao_id' => $dados_inscricao['id'] ?? null
+                    'inscricao_id' => $dados_inscricao['id'] ?? null,
                 ]);
             }
-            
+
             return [
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
     }
-    /**
-     * Processar pagamento direto (como card.php)
-     */
-    public function processarPagamentoDireto($dados_pagamento)
+
+    public function processarPagamentoDireto($dados_pagamento): array
     {
         try {
-            // Validar dados obrigatórios para pagamento direto
             $this->validarDadosPagamentoDireto($dados_pagamento);
-
-            // Preparar dados para pagamento direto
             $payment_data = $this->prepararDadosPagamentoDireto($dados_pagamento);
-
-            // Processar pagamento no Mercado Pago
             $response = $this->fazerRequisicao('POST', '/v1/payments', $payment_data);
 
             if ($response && isset($response['id'])) {
                 return [
                     'success' => true,
                     'payment_id' => $response['id'],
-                    'status' => $response['status'],
-                    'payment' => $response
+                    'status' => $response['status'] ?? null,
+                    'payment' => $response,
                 ];
             }
 
-            throw new Exception('Resposta inválida do Mercado Pago');
+            throw new Exception('Resposta invalida do Mercado Pago');
         } catch (Exception $e) {
             error_log('Erro ao processar pagamento direto MP: ' . $e->getMessage());
             return [
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
     }
 
-    /**
-     * Consultar status de um pagamento
-     */
-    public function consultarStatus($payment_id)
+    public function consultarStatus($payment_id): array
     {
         try {
             $response = $this->fazerRequisicao('GET', '/v1/payments/' . $payment_id);
@@ -134,24 +121,21 @@ class MercadoLivrePayment
             if ($response) {
                 return [
                     'success' => true,
-                    'payment' => $response
+                    'payment' => $response,
                 ];
             }
 
-            throw new Exception('Pagamento não encontrado');
+            throw new Exception('Pagamento nao encontrado');
         } catch (Exception $e) {
             error_log('Erro ao consultar status MP: ' . $e->getMessage());
             return [
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
     }
 
-    /**
-     * Processar reembolso
-     */
-    public function processarReembolso($payment_id, $amount = null)
+    public function processarReembolso($payment_id, $amount = null): array
     {
         try {
             $data = [];
@@ -164,7 +148,7 @@ class MercadoLivrePayment
             if ($response) {
                 return [
                     'success' => true,
-                    'refund' => $response
+                    'refund' => $response,
                 ];
             }
 
@@ -173,77 +157,62 @@ class MercadoLivrePayment
             error_log('Erro ao processar reembolso ML: ' . $e->getMessage());
             return [
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
     }
 
-    /**
-     * Validar dados da inscrição
-     */
-    private function validarDadosInscricao($dados)
+    private function loadDefaultConfig(): array
+    {
+        return require __DIR__ . '/config.php';
+    }
+
+    private function validarDadosInscricao($dados): void
     {
         $required_fields = ['id', 'modalidade_nome', 'valor_total', 'nome_participante', 'email'];
 
         foreach ($required_fields as $field) {
             if (!isset($dados[$field]) || empty($dados[$field])) {
-                throw new Exception("Campo obrigatório não informado: $field");
+                throw new Exception("Campo obrigatorio nao informado: $field");
             }
         }
 
         if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Email inválido');
+            throw new Exception('Email invalido');
         }
 
         if (!is_numeric($dados['valor_total']) || $dados['valor_total'] <= 0) {
-            throw new Exception('Valor total inválido');
+            throw new Exception('Valor total invalido');
         }
     }
 
-    /**
-     * Preparar dados da preferência baseado no preference.php funcional
-     */
-    private function prepararDadosPreferencia($dados_inscricao)
+    private function prepararDadosPreferencia($dados_inscricao): array
     {
         $external_reference = $this->external_reference_prefix . $dados_inscricao['id'];
-        
-        // Garantir que as URLs de retorno sejam válidas
-        $back_urls = $this->config['back_urls'];
-        
-        // Validar que todas as URLs estão definidas
-        if (empty($back_urls['success']) || empty($back_urls['pending']) || empty($back_urls['failure'])) {
-            error_log("⚠️ URLs de retorno inválidas: " . json_encode($back_urls));
-            throw new Exception('URLs de retorno não configuradas corretamente');
-        }
-        
-        // Log para debug
-        error_log("🔗 URLs de retorno configuradas:");
-        error_log("  - Success: " . $back_urls['success']);
-        error_log("  - Pending: " . $back_urls['pending']);
-        error_log("  - Failure: " . $back_urls['failure']);
-        error_log("  - Base URL: " . ($this->config['_debug_base_url'] ?? 'não definida'));
+        $back_urls = $this->config['back_urls'] ?? [];
 
-        $preference_data = [
+        if (empty($back_urls['success']) || empty($back_urls['pending']) || empty($back_urls['failure'])) {
+            error_log('URLs de retorno invalidas: ' . json_encode($back_urls));
+            throw new Exception('URLs de retorno nao configuradas corretamente');
+        }
+
+        return [
             'back_urls' => $back_urls,
             'external_reference' => $external_reference,
             'notification_url' => $this->notification_url,
-            // Remover auto_return ou usar 'all' - o Mercado Pago pode estar rejeitando 'approved'
-            // 'auto_return' => 'approved', // Comentado para evitar erro
             'items' => [
                 [
-                    'title' => $this->config['item_defaults']['title'],
-                    'description' => $this->config['item_defaults']['description'],
-                    'picture_url' => $this->config['item_defaults']['picture_url'],
-                    'category_id' => $this->config['item_defaults']['category_id'],
+                    'title' => $this->config['item_defaults']['title'] ?? 'Inscricao MovAmazon',
+                    'description' => $this->config['item_defaults']['description'] ?? 'Inscricao',
+                    'picture_url' => $this->config['item_defaults']['picture_url'] ?? '',
+                    'category_id' => $this->config['item_defaults']['category_id'] ?? 'others',
                     'quantity' => 1,
-                    'currency_id' => $this->config['item_defaults']['currency_id'],
-                    'unit_price' => (float)$dados_inscricao['valor_total']
-                ]
+                    'currency_id' => $this->config['item_defaults']['currency_id'] ?? 'BRL',
+                    'unit_price' => (float) $dados_inscricao['valor_total'],
+                ],
             ],
-            'payment_methods' => $this->config['payment_methods']
+            'payment_methods' => $this->config['payment_methods'] ?? [],
         ];
-        
-        return $preference_data;
     }
 
     private function montarDescricao(array $d): string
@@ -260,16 +229,16 @@ class MercadoLivrePayment
         }
         if (!empty($d['produtos_extras']) && is_array($d['produtos_extras'])) {
             $extras = array_map(function ($e) {
-                $q = isset($e['quantidade']) ? (int)$e['quantidade'] : 1;
+                $q = isset($e['quantidade']) ? (int) $e['quantidade'] : 1;
                 $n = isset($e['nome']) ? $e['nome'] : 'Extra';
-                $v = isset($e['valor']) ? number_format((float)$e['valor'], 2, ',', '.') : '0,00';
+                $v = isset($e['valor']) ? number_format((float) $e['valor'], 2, ',', '.') : '0,00';
                 return $n . ' x' . $q . ' (R$ ' . $v . ')';
             }, $d['produtos_extras']);
             $p[] = 'Extras: ' . implode('; ', $extras);
         }
         if (!empty($d['cupom'])) {
-            $desc = isset($d['valor_desconto']) ? number_format((float)$d['valor_desconto'], 2, ',', '.') : '0,00';
-            $p[] = 'Cupom: ' . $d['cupom'] . ' (−R$ ' . $desc . ')';
+            $desc = isset($d['valor_desconto']) ? number_format((float) $d['valor_desconto'], 2, ',', '.') : '0,00';
+            $p[] = 'Cupom: ' . $d['cupom'] . ' (-R$ ' . $desc . ')';
         }
         if (!empty($d['seguro'])) {
             $p[] = 'Seguro contratado';
@@ -277,40 +246,33 @@ class MercadoLivrePayment
         return implode(' | ', $p);
     }
 
-    /**
-     * Validar dados obrigatórios para pagamento direto
-     */
-    private function validarDadosPagamentoDireto($dados)
+    private function validarDadosPagamentoDireto($dados): void
     {
         $campos_obrigatorios = ['transaction_amount', 'payment_method_id', 'payer'];
 
         foreach ($campos_obrigatorios as $campo) {
             if (empty($dados[$campo])) {
-                throw new Exception("Campo obrigatório não informado: {$campo}");
+                throw new Exception("Campo obrigatorio nao informado: {$campo}");
             }
         }
 
         if (!is_numeric($dados['transaction_amount']) || $dados['transaction_amount'] <= 0) {
-            throw new Exception('Valor da transação deve ser um número positivo');
+            throw new Exception('Valor da transacao deve ser um numero positivo');
         }
     }
 
-    /**
-     * Preparar dados para pagamento direto (baseado no card.php)
-     */
-    private function prepararDadosPagamentoDireto($dados_pagamento)
+    private function prepararDadosPagamentoDireto($dados_pagamento): array
     {
         $payment_data = [
-            'transaction_amount' => (float)$dados_pagamento['transaction_amount'],
+            'transaction_amount' => (float) $dados_pagamento['transaction_amount'],
             'payment_method_id' => $dados_pagamento['payment_method_id'],
             'payer' => $dados_pagamento['payer'],
             'description' => $dados_pagamento['description'] ?? 'Pagamento MovAmazon',
-            'external_reference' => $this->external_reference_prefix . $dados_pagamento['inscricao_id']
+            'external_reference' => $this->external_reference_prefix . $dados_pagamento['inscricao_id'],
         ];
 
-        // Adicionar campos opcionais se existirem
         if (isset($dados_pagamento['installments'])) {
-            $payment_data['installments'] = (int)$dados_pagamento['installments'];
+            $payment_data['installments'] = (int) $dados_pagamento['installments'];
         }
 
         if (isset($dados_pagamento['issuer_id'])) {
@@ -324,33 +286,38 @@ class MercadoLivrePayment
         return $payment_data;
     }
 
-    /**
-     * Fazer requisição para API do Mercado Pago (baseado no preference.php funcional)
-     */
-    private function fazerRequisicao($method, $endpoint, $data = null)
+    private function fazerRequisicao(string $method, string $endpoint, ?array $data = null): array
     {
-        $url = $this->api_url . $endpoint;
+        return call_user_func(
+            $this->requestExecutor,
+            $method,
+            $this->api_url,
+            $endpoint,
+            $data,
+            $this->access_token
+        );
+    }
 
+    private function defaultRequestExecutor(
+        string $method,
+        string $apiUrl,
+        string $endpoint,
+        ?array $data,
+        string $accessToken
+    ): array {
+        $url = $apiUrl . $endpoint;
         $curl = curl_init();
 
-        // ✅ Headers baseados no card.php funcional
         $headers = [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . $this->access_token
+            'Authorization: Bearer ' . $accessToken,
         ];
 
-        // ✅ Adicionar X-Idempotency-Key para pagamentos diretos (como card.php)
         if ($endpoint === '/v1/payments' && $method === 'POST') {
             $headers[] = 'X-Idempotency-Key: ' . uniqid('payment_', true);
         }
 
-        // SSL sempre habilitado (produção)
-        $ssl_options = [
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-        ];
-
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -360,7 +327,9 @@ class MercadoLivrePayment
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_HTTPHEADER => $headers,
-        ) + $ssl_options);
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+        ]);
 
         if ($method === 'POST' && $data) {
             curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
@@ -371,40 +340,52 @@ class MercadoLivrePayment
         $error = curl_error($curl);
         curl_close($curl);
 
-        // Log para debug
-        error_log("ML API Request - URL: $url");
-        error_log("ML API Request - Method: $method");
-        error_log("ML API Request - Data: " . json_encode($data));
-        error_log("ML API Response - HTTP Code: $http_code");
-        error_log("ML API Response - Response: $response");
+        error_log('ML API Request - URL: ' . $url);
+        error_log('ML API Request - Method: ' . $method);
+        error_log('ML API Request - Data: ' . json_encode($data));
+        error_log('ML API Response - HTTP Code: ' . $http_code);
+        error_log('ML API Response - Response: ' . $response);
 
         if ($error) {
             throw new Exception('Erro cURL: ' . $error);
         }
 
         if ($http_code >= 200 && $http_code < 300) {
-            return json_decode($response, true);
+            $decoded = json_decode((string) $response, true);
+            return is_array($decoded) ? $decoded : [];
         }
 
-        $error_data = json_decode($response, true);
-        $error_message = $error_data['message'] ?? 'Erro na requisição MP: ' . $http_code;
+        $error_data = json_decode((string) $response, true);
+        $error_message = is_array($error_data)
+            ? ($error_data['message'] ?? ('Erro na requisicao MP: ' . $http_code))
+            : ('Erro na requisicao MP: ' . $http_code);
 
         throw new Exception($error_message);
     }
 
-    /**
-     * Salvar dados do pagamento no banco (opcional - pode ser removido se não necessário)
-     */
-    private function salvarPagamento($inscricao_id, $ml_response)
+    private function salvarPagamento(int $inscricao_id, array $ml_response): void
     {
-        global $pdo;
+        call_user_func($this->paymentRepository, $inscricao_id, $ml_response);
+    }
 
+    private function defaultPaymentRepository(int $inscricao_id, array $ml_response): void
+    {
         try {
-            // ✅ Verificar se a tabela existe antes de tentar inserir
+            $pdo = $GLOBALS['pdo'] ?? null;
+            if (!$pdo instanceof PDO) {
+                require_once __DIR__ . '/../db.php';
+                $pdo = $GLOBALS['pdo'] ?? null;
+            }
+
+            if (!$pdo instanceof PDO) {
+                error_log('PDO nao disponivel para salvar pagamento ML');
+                return;
+            }
+
             $stmt = $pdo->query("SHOW TABLES LIKE 'pagamentos_ml'");
-            if ($stmt->rowCount() == 0) {
-                error_log("Tabela pagamentos_ml não existe - pulando salvamento no banco");
-                return true; // Não é erro crítico
+            if ($stmt->rowCount() === 0) {
+                error_log('Tabela pagamentos_ml nao existe - pulando salvamento no banco');
+                return;
             }
 
             $sql = "INSERT INTO pagamentos_ml (
@@ -415,13 +396,12 @@ class MercadoLivrePayment
             $stmt->execute([
                 $inscricao_id,
                 $ml_response['id'],
-                $ml_response['init_point'] ?? null
+                $ml_response['init_point'] ?? null,
             ]);
 
-            error_log("✅ Pagamento ML salvo - Inscrição ID: $inscricao_id, Preference ID: " . $ml_response['id']);
+            error_log('Pagamento ML salvo - Inscricao ID: ' . $inscricao_id . ', Preference ID: ' . $ml_response['id']);
         } catch (Exception $e) {
             error_log('Erro ao salvar pagamento ML: ' . $e->getMessage());
-            // Não lançar exceção - não é erro crítico
         }
     }
 }

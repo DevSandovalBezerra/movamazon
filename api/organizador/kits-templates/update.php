@@ -54,39 +54,10 @@ try {
 
     // Processar upload de foto
     $foto_kit = null;
-    $novo_nome_arquivo = null;
     $upload_dir = '../../../frontend/assets/img/kits/';
 
     if (isset($_FILES['foto_kit']) && $_FILES['foto_kit']['error'] === UPLOAD_ERR_OK) {
-        $file_info = pathinfo($_FILES['foto_kit']['name']);
-        $extension = strtolower($file_info['extension']);
-
-        $allowed_extensions = ['jpg', 'jpeg', 'png', 'webp'];
-        if (!in_array($extension, $allowed_extensions)) {
-            echo json_encode(['success' => false, 'error' => 'Formato de imagem não suportado. Use: JPG, PNG ou WEBP']);
-            exit();
-        }
-
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
-        }
-
-        $novo_nome_arquivo = gerarNomeKit('template', $template_id, null, $extension);
-        $filepath = $upload_dir . $novo_nome_arquivo;
-
-        if (!move_uploaded_file($_FILES['foto_kit']['tmp_name'], $filepath)) {
-            echo json_encode(['success' => false, 'error' => 'Erro ao fazer upload da imagem']);
-            exit();
-        }
-
-        $foto_kit = $novo_nome_arquivo;
-        $foto_kit_antiga = $template['foto_kit'] ?? null;
-        if ($foto_kit_antiga && $foto_kit_antiga !== $foto_kit) {
-            $arquivo_antigo = $upload_dir . $foto_kit_antiga;
-            if (is_file($arquivo_antigo)) {
-                unlink($arquivo_antigo);
-            }
-        }
+        $foto_kit = salvarFotoKitTemplate($template_id, $_FILES['foto_kit'], $upload_dir, $template['foto_kit'] ?? null);
     }
 
     // Iniciar transação
