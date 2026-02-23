@@ -1015,3 +1015,338 @@ function fin_fechamento_gerar(PDO $pdo, int $evento_id, int $fechado_por = 0): a
         return ['success' => false, 'message' => $e->getMessage()];
     }
 }
+
+function fin_visao_geral(PDO $pdo, int $evento_id): array
+{
+    $sql = '
+        SELECT
+            COALESCE(SUM(CASE
+                WHEN origem_tipo = "pagamento"
+                 AND direcao = "credito"
+                 AND status IN ("pendente","disponivel","liquidado")
+                THEN valor ELSE 0 END), 0) AS receita_inscricoes,
+
+            COALESCE(SUM(CASE
+                WHEN origem_tipo = "repasse"
+                 AND direcao = "debito"
+                 AND status IN ("disponivel","liquidado")
+                THEN valor ELSE 0 END), 0) AS ja_repassado,
+
+            COALESCE(SUM(CASE
+                WHEN status = "pendente"
+                 AND disponivel_em IS NOT NULL
+                 AND disponivel_em > NOW()
+                 AND direcao = "credito"
+                THEN valor
+                WHEN status = "pendente"
+                 AND disponivel_em IS NOT NULL
+                 AND disponivel_em > NOW()
+                 AND direcao = "debito"
+                THEN (0 - valor)
+                ELSE 0 END), 0) AS a_liberar,
+
+            COALESCE(SUM(CASE
+                WHEN origem_tipo IN ("estorno","chargeback","ajuste_manual")
+                 AND direcao = "debito"
+                 AND status IN ("pendente","bloqueado","disponivel","liquidado")
+                THEN valor ELSE 0 END), 0) AS debitos,
+
+            COALESCE(SUM(CASE
+                WHEN direcao = "credito" AND status IN ("disponivel","liquidado")
+                THEN valor ELSE 0 END), 0) AS creditos_liquidados,
+
+            COALESCE(SUM(CASE
+                WHEN direcao = "debito" AND status IN ("disponivel","liquidado")
+                THEN valor ELSE 0 END), 0) AS debitos_liquidados,
+
+            COALESCE(SUM(CASE
+                WHEN direcao = "debito" AND status = "bloqueado"
+                THEN valor ELSE 0 END), 0) AS debitos_bloqueados
+        FROM financeiro_ledger
+        WHERE evento_id = ?
+    ';
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$evento_id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+    $saldo_disponivel = fin_saldo_disponivel($pdo, $evento_id);
+
+    return [
+        'cards' => [
+            'receita_inscricoes' => round((float) ($row['receita_inscricoes'] ?? 0), 2),
+            'ja_repassado' => round((float) ($row['ja_repassado'] ?? 0), 2),
+            'a_liberar' => round((float) ($row['a_liberar'] ?? 0), 2),
+            'debitos' => round((float) ($row['debitos'] ?? 0), 2),
+            'saldo_disponivel' => round((float) $saldo_disponivel, 2),
+        ],
+        'detalhes' => [
+            'creditos_liquidados' => round((float) ($row['creditos_liquidados'] ?? 0), 2),
+            'debitos_liquidados' => round((float) ($row['debitos_liquidados'] ?? 0), 2),
+            'debitos_bloqueados' => round((float) ($row['debitos_bloqueados'] ?? 0), 2),
+        ],
+        'gerado_em' => date('Y-m-d H:i:s'),
+    ];
+}
+
+function fin_repasses_listar(PDO $pdo, int $evento_id, array $filtros): array
+{
+    $page = isset($filtros['page']) ? max(1, (int) $filtros['page']) : 1;
+    $per = isset($filtros['per']) ? min(200, max(10, (int) $filtros['per'])) : 20;
+    $off = ($page - 1) * $per;
+
+    $where = ['r.evento_id = ?'];
+    $params = [$evento_id];
+
+    if (!empty($filtros['dt_ini'])) {
+        $where[] = 'r.solicitado_em >= ?';
+        $params[] = $filtros['dt_ini'] . ' 00:00:00';
+    }
+
+    if (!empty($filtros['dt_fim'])) {
+        $where[] = 'r.solicitado_em <= ?';
+        $params[] = $filtros['dt_fim'] . ' 23:59:59';
+    }
+
+    if (!empty($filtros['status'])) {
+        $where[] = 'r.status = ?';
+        $params[] = $filtros['status'];
+    }
+
+    if (!empty($filtros['beneficiario_id'])) {
+        $where[] = 'r.beneficiario_id = ?';
+        $params[] = (int) $filtros['beneficiario_id'];
+    }
+
+    if (!empty($filtros['busca'])) {
+        $where[] = '(CAST(r.id AS CHAR) LIKE ? OR COALESCE(b.nome, "") LIKE ? OR COALESCE(r.gateway_transfer_id, "") LIKE ? OR COALESCE(r.motivo_falha, "") LIKE ? OR CAST(r.valor_solicitado AS CHAR) LIKE ?)';
+        $busca = '%' . $filtros['busca'] . '%';
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+    }
+
+    $whereSql = 'WHERE ' . implode(' AND ', $where);
+
+    $sqlCount = "
+        SELECT COUNT(*) AS total
+        FROM financeiro_repasses r
+        LEFT JOIN financeiro_beneficiarios b ON b.id = r.beneficiario_id
+        $whereSql
+    ";
+    $stmtC = $pdo->prepare($sqlCount);
+    $stmtC->execute($params);
+    $total = (int) $stmtC->fetchColumn();
+
+    $sql = "
+        SELECT
+            r.id,
+            r.evento_id,
+            r.beneficiario_id,
+            r.conta_bancaria_id,
+            r.valor_solicitado,
+            r.valor_taxa_repasse,
+            r.valor_liquido,
+            r.status,
+            r.agendado_para,
+            r.solicitado_em,
+            r.processado_em,
+            r.comprovante_url,
+            r.gateway_transfer_id,
+            r.motivo_falha,
+            r.metadata,
+            b.nome AS beneficiario_nome,
+            b.documento AS beneficiario_documento,
+            cb.banco_codigo,
+            cb.banco_nome,
+            cb.agencia,
+            cb.conta,
+            cb.conta_dv,
+            cb.tipo_conta
+        FROM financeiro_repasses r
+        LEFT JOIN financeiro_beneficiarios b ON b.id = r.beneficiario_id
+        LEFT JOIN financeiro_contas_bancarias cb ON cb.id = r.conta_bancaria_id
+        $whereSql
+        ORDER BY r.solicitado_em DESC, r.id DESC
+        LIMIT $per OFFSET $off
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return [
+        'page' => $page,
+        'per' => $per,
+        'total' => $total,
+        'items' => $items,
+    ];
+}
+
+function fin_estornos_listar(PDO $pdo, int $evento_id, array $filtros): array
+{
+    $page = isset($filtros['page']) ? max(1, (int) $filtros['page']) : 1;
+    $per = isset($filtros['per']) ? min(200, max(10, (int) $filtros['per'])) : 20;
+    $off = ($page - 1) * $per;
+
+    $where = ['e.evento_id = ?'];
+    $params = [$evento_id];
+
+    if (!empty($filtros['dt_ini'])) {
+        $where[] = 'e.solicitado_em >= ?';
+        $params[] = $filtros['dt_ini'] . ' 00:00:00';
+    }
+
+    if (!empty($filtros['dt_fim'])) {
+        $where[] = 'e.solicitado_em <= ?';
+        $params[] = $filtros['dt_fim'] . ' 23:59:59';
+    }
+
+    if (!empty($filtros['status'])) {
+        $where[] = 'e.status = ?';
+        $params[] = $filtros['status'];
+    }
+
+    if (!empty($filtros['inscricao_id'])) {
+        $where[] = 'e.inscricao_id = ?';
+        $params[] = (int) $filtros['inscricao_id'];
+    }
+
+    if (!empty($filtros['busca'])) {
+        $where[] = '(CAST(e.id AS CHAR) LIKE ? OR COALESCE(e.motivo, "") LIKE ? OR COALESCE(e.gateway_refund_id, "") LIKE ? OR CAST(e.inscricao_id AS CHAR) LIKE ? OR COALESCE(pm.payment_id, "") LIKE ?)';
+        $busca = '%' . $filtros['busca'] . '%';
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+    }
+
+    $whereSql = 'WHERE ' . implode(' AND ', $where);
+
+    $sqlCount = "
+        SELECT COUNT(*) AS total
+        FROM financeiro_estornos e
+        LEFT JOIN pagamentos_ml pm ON pm.id = e.pagamento_ml_id
+        $whereSql
+    ";
+    $stmtC = $pdo->prepare($sqlCount);
+    $stmtC->execute($params);
+    $total = (int) $stmtC->fetchColumn();
+
+    $sql = "
+        SELECT
+            e.id,
+            e.evento_id,
+            e.inscricao_id,
+            e.pagamento_ml_id,
+            e.valor,
+            e.motivo,
+            e.status,
+            e.solicitado_em,
+            e.concluido_em,
+            e.gateway_refund_id,
+            e.raw_payload,
+            pm.payment_id
+        FROM financeiro_estornos e
+        LEFT JOIN pagamentos_ml pm ON pm.id = e.pagamento_ml_id
+        $whereSql
+        ORDER BY e.solicitado_em DESC, e.id DESC
+        LIMIT $per OFFSET $off
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return [
+        'page' => $page,
+        'per' => $per,
+        'total' => $total,
+        'items' => $items,
+    ];
+}
+
+function fin_chargebacks_listar(PDO $pdo, int $evento_id, array $filtros): array
+{
+    $page = isset($filtros['page']) ? max(1, (int) $filtros['page']) : 1;
+    $per = isset($filtros['per']) ? min(200, max(10, (int) $filtros['per'])) : 20;
+    $off = ($page - 1) * $per;
+
+    $where = ['c.evento_id = ?'];
+    $params = [$evento_id];
+
+    if (!empty($filtros['dt_ini'])) {
+        $where[] = 'c.aberto_em >= ?';
+        $params[] = $filtros['dt_ini'] . ' 00:00:00';
+    }
+
+    if (!empty($filtros['dt_fim'])) {
+        $where[] = 'c.aberto_em <= ?';
+        $params[] = $filtros['dt_fim'] . ' 23:59:59';
+    }
+
+    if (!empty($filtros['status'])) {
+        $where[] = 'c.status = ?';
+        $params[] = $filtros['status'];
+    }
+
+    if (!empty($filtros['inscricao_id'])) {
+        $where[] = 'c.inscricao_id = ?';
+        $params[] = (int) $filtros['inscricao_id'];
+    }
+
+    if (!empty($filtros['busca'])) {
+        $where[] = '(CAST(c.id AS CHAR) LIKE ? OR COALESCE(c.motivo, "") LIKE ? OR COALESCE(c.evidencias_url, "") LIKE ? OR CAST(c.inscricao_id AS CHAR) LIKE ? OR COALESCE(pm.payment_id, "") LIKE ?)';
+        $busca = '%' . $filtros['busca'] . '%';
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+        $params[] = $busca;
+    }
+
+    $whereSql = 'WHERE ' . implode(' AND ', $where);
+
+    $sqlCount = "
+        SELECT COUNT(*) AS total
+        FROM financeiro_chargebacks c
+        LEFT JOIN pagamentos_ml pm ON pm.id = c.pagamento_ml_id
+        $whereSql
+    ";
+    $stmtC = $pdo->prepare($sqlCount);
+    $stmtC->execute($params);
+    $total = (int) $stmtC->fetchColumn();
+
+    $sql = "
+        SELECT
+            c.id,
+            c.evento_id,
+            c.inscricao_id,
+            c.pagamento_ml_id,
+            c.valor,
+            c.status,
+            c.aberto_em,
+            c.encerrado_em,
+            c.motivo,
+            c.prazo_resposta,
+            c.evidencias_url,
+            c.raw_payload,
+            pm.payment_id
+        FROM financeiro_chargebacks c
+        LEFT JOIN pagamentos_ml pm ON pm.id = c.pagamento_ml_id
+        $whereSql
+        ORDER BY c.aberto_em DESC, c.id DESC
+        LIMIT $per OFFSET $off
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return [
+        'page' => $page,
+        'per' => $per,
+        'total' => $total,
+        'items' => $items,
+    ];
+}

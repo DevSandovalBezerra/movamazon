@@ -35,6 +35,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : $page_inicial;
 
 $allowedPages = [
   'dashboard',
+  'financeiro',
   'eventos',
   'criar-evento',
   'tutorial-evento',
@@ -98,8 +99,8 @@ if (!in_array($page, $allowedPages)) $page = $page_inicial;
         <a href="#" class="flex items-center px-4 py-2 rounded-lg transition disabled-link opacity-50 cursor-not-allowed" onclick="return false;">
           <i class="fas fa-chart-bar mr-2"></i> Relatórios
         </a>
-        <a href="#" class="flex items-center px-4 py-2 rounded-lg transition disabled-link opacity-50 cursor-not-allowed" onclick="return false;">
-          <i class="fas fa-credit-card mr-2"></i> Pagamentos
+        <a href="?page=financeiro" class="flex items-center px-4 py-2 rounded-lg hover:bg-brand-yellow hover:text-brand-green transition <?php if ($page == 'financeiro') echo 'bg-white text-brand-green font-bold'; ?>">
+          <i class="fas fa-wallet mr-2"></i> Financeiro
         </a>
         <div class="my-6 px-4">
           <div class="h-1 bg-gradient-to-r from-brand-yellow/10 via-brand-yellow/50 to-brand-yellow/10 rounded-full shadow-sm"></div>
