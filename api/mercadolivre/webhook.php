@@ -26,6 +26,7 @@ $queue_file = $base_path . '/logs/webhook_queue.json';
 header('Content-Type: application/json');
 $body = file_get_contents('php://input');
 $data = json_decode($body, true);
+$x_request_id = $_SERVER['HTTP_X_REQUEST_ID'] ?? '';
 
 error_log("[WEBHOOK] Body: " . substr($body, 0, 200));
 error_log("[WEBHOOK] Type: " . ($data['type'] ?? 'NULL'));
@@ -163,6 +164,9 @@ error_log("[WEBHOOK] 🔄 Iniciando processamento assíncrono...");
 require_once $base_path . '/api/db.php';
 require_once $base_path . '/api/helpers/email_helper.php';
 require_once $base_path . '/api/helpers/inscricao_logger.php';
+if (file_exists($base_path . '/api/financeiro/financeiro_service.php')) {
+    require_once $base_path . '/api/financeiro/financeiro_service.php';
+}
 
 // ✅ CONSULTAR API DO MERCADO PAGO
 $config = require __DIR__ . '/config.php';
@@ -222,6 +226,46 @@ try {
     } catch (Exception $e) {
         $hasPagamentosMl = false;
         error_log("[WEBHOOK] Aviso: tabela pagamentos_ml: " . $e->getMessage());
+    }
+
+    $hasFinanceWebhookTable = false;
+    try {
+        $stmtTblFin = $pdo->query("SHOW TABLES LIKE 'financeiro_webhook_eventos'");
+        $hasFinanceWebhookTable = $stmtTblFin && $stmtTblFin->rowCount() > 0;
+    } catch (Exception $e) {
+        $hasFinanceWebhookTable = false;
+        error_log("[WEBHOOK] Aviso: tabela financeiro_webhook_eventos: " . $e->getMessage());
+    }
+
+    if ($hasFinanceWebhookTable && function_exists('fin_webhook_registrar_evento')) {
+        $eventSignatureBase = ($data['action'] ?? 'payment') . '|' . (string)$payment_id . '|' . ($payment_data['date_last_updated'] ?? '') . '|' . ($status ?? '');
+        $webhook_event_id = !empty($x_request_id) ? ('req:' . $x_request_id) : ('hash:' . sha1($eventSignatureBase));
+
+        $isNovoEvento = fin_webhook_registrar_evento(
+            $pdo,
+            'mercadopago',
+            $webhook_event_id,
+            (string)$payment_id,
+            (string)$status,
+            [
+                'notification' => $data,
+                'payment' => [
+                    'id' => $payment_id,
+                    'status' => $status,
+                    'date_last_updated' => $payment_data['date_last_updated'] ?? null
+                ]
+            ]
+        );
+
+        if (!$isNovoEvento) {
+            @file_put_contents($log_file, date('Y-m-d H:i:s') . " [IDEMPOTENTE] Evento webhook duplicado: $webhook_event_id\n", FILE_APPEND);
+            error_log("[WEBHOOK] 🔁 Evento webhook duplicado ignorado: $webhook_event_id");
+            $queue = array_filter($queue, function($item) use ($payment_id) {
+                return $item['payment_id'] !== $payment_id;
+            });
+            @file_put_contents($queue_file, json_encode(array_values($queue), JSON_PRETTY_PRINT));
+            exit();
+        }
     }
 
     $pdo->beginTransaction();
@@ -482,6 +526,20 @@ try {
         );
         $stmt_estoque->execute([$tamanho_camiseta, $inscricao_id]);
         error_log("[WEBHOOK] 👕 Estoque atualizado: tamanho $tamanho_camiseta");
+    }
+
+    if ($novo_status_inscricao === 'pago' && function_exists('fin_registrar_receita_pagamento')) {
+        $retFin = fin_registrar_receita_pagamento(
+            $pdo,
+            (int)$inscricao_id,
+            (string)$payment_id,
+            is_array($payment_data) ? $payment_data : null,
+            0
+        );
+
+        if (!($retFin['success'] ?? false)) {
+            throw new Exception('Falha ao registrar receita no ledger: ' . ($retFin['message'] ?? 'erro desconhecido'));
+        }
     }
 
     $pdo->commit();
