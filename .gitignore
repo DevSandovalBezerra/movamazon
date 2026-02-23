@@ -32,3 +32,5 @@ form_data_example.json
 # OS
 .DS_Store
 Thumbs.db
+.phpunit.cache/
+build/logs/
