@@ -34,3 +34,7 @@ form_data_example.json
 Thumbs.db
 .phpunit.cache/
 build/logs/
+
+# Local build/cache artifacts
+api/localidades/cache_estados.json
+build/
