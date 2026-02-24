@@ -1,13 +1,13 @@
 if (window.getApiBase) { window.getApiBase(); }
 /**
- * UtilitÃƒÂ¡rio: Debounce
- * Atrasa a execuÃƒÂ§ÃƒÂ£o de uma funÃƒÂ§ÃƒÂ£o atÃƒÂ© que um perÃƒÂ­odo de tempo tenha passado
- * desde a ÃƒÂºltima vez que foi invocada.
+ * UtilitÒ¡rio: Debounce
+ * Atrasa a execuÒ§Ò£o de uma funÒ§Ò£o atÒ© que um perÒ­odo de tempo tenha passado
+ * desde a Òºltima vez que foi invocada.
  * 
- * @param {Function} func - FunÃƒÂ§ÃƒÂ£o a ser executada
+ * @param {Function} func - FunÒ§Ò£o a ser executada
  * @param {number} wait - Tempo de espera em milissegundos
  * @param {boolean} immediate - Se true, executa imediatamente na primeira chamada
- * @returns {Function} FunÃƒÂ§ÃƒÂ£o com debounce aplicado
+ * @returns {Function} FunÒ§Ò£o com debounce aplicado
  */
 export function debounce(func, wait = 300, immediate = false) {
     let timeout;

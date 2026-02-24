@@ -1,5 +1,5 @@
 if (window.getApiBase) { window.getApiBase(); }
-// VariÃƒÆ’Ã‚Â¡veis globais
+// Variáveis globais
 let modalidades = [];
 let modalidadesFiltradas = [];
 let eventos = [];
@@ -22,37 +22,37 @@ function atualizarBotaoGerenciarCategorias(eventoId) {
     }
 }
 
-// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ modalidades.js - DOM carregado, iniciando...');
+    console.log(' modalidades.js - DOM carregado, iniciando...');
     carregarEventos();
     configurarEventListeners();
     atualizarBotaoGerenciarCategorias(document.getElementById('filtroEvento')?.value || '');
-    console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o concluÃƒÆ’Ã‚Â­da');
+    console.log('... modalidades.js - Inicialização concluída');
 });
 
 // Configurar event listeners
 function configurarEventListeners() {
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â§ modalidades.js - Configurando event listeners...');
+    console.log(' modalidades.js - Configurando event listeners...');
     
     // Evento selecionado
     const filtroEvento = document.getElementById('filtroEvento');
     if (filtroEvento) {
-        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Filtro evento encontrado, adicionando listener');
+        console.log('... modalidades.js - Filtro evento encontrado, adicionando listener');
         filtroEvento.addEventListener('change', function() {
             const eventoId = this.value;
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Filtro evento alterado para:', eventoId);
+            console.log(' modalidades.js - Filtro evento alterado para:', eventoId);
             atualizarBotaoGerenciarCategorias(eventoId);
             
             if (eventoId) {
                 eventoSelecionado = eventoId;
-                console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ modalidades.js - Evento selecionado:', eventoId);
+                console.log(' modalidades.js - Evento selecionado:', eventoId);
                 document.getElementById('filtroCategoria').disabled = false;
                 carregarCategoriasDoEvento(eventoId);
                 carregarModalidades(eventoId);
             } else {
                 eventoSelecionado = null;
-                console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Nenhum evento selecionado');
+                console.log('❌ modalidades.js - Nenhum evento selecionado');
                 document.getElementById('filtroCategoria').disabled = true;
                 categorias = [];
                 preencherSelectCategorias();
@@ -61,80 +61,80 @@ function configurarEventListeners() {
             }
         });
     } else {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Filtro evento NÃƒÆ’Ã†â€™O encontrado!');
+        console.error('❌ modalidades.js - Filtro evento NÃO encontrado!');
     }
 
     // Categoria selecionada
     const filtroCategoria = document.getElementById('filtroCategoria');
     if (filtroCategoria) {
-        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Filtro categoria encontrado, adicionando listener');
+        console.log('... modalidades.js - Filtro categoria encontrado, adicionando listener');
         filtroCategoria.addEventListener('change', function() {
             const categoriaId = this.value;
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Filtro categoria alterado para:', categoriaId);
+            console.log(' modalidades.js - Filtro categoria alterado para:', categoriaId);
             if (eventoSelecionado) {
                 aplicarFiltros();
             }
         });
     } else {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Filtro categoria NÃƒÆ’Ã†â€™O encontrado!');
+        console.error('❌ modalidades.js - Filtro categoria NÃO encontrado!');
     }
     
-    console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Event listeners configurados');
+    console.log('... modalidades.js - Event listeners configurados');
 }
 
 // Carregar eventos do organizador
 async function carregarEventos() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ modalidades.js - Iniciando carregamento de eventos');
+    console.log(' modalidades.js - Iniciando carregamento de eventos');
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para API eventos');
+        console.log(' modalidades.js - Fazendo requisição para API eventos');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Status da resposta:', response.status);
+        console.log(' modalidades.js - Status da resposta:', response.status);
         
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Dados recebidos:', data);
+        console.log(' modalidades.js - Dados recebidos:', data);
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Sucesso! Eventos carregados:', data.data.eventos.length);
+            console.log('... modalidades.js - Sucesso! Eventos carregados:', data.data.eventos.length);
             eventos = data.data.eventos;
             preencherSelectEventos();
         } else {
-            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Erro na resposta:', data.error);
+            console.error('❌ modalidades.js - Erro na resposta:', data.error);
             Swal.fire('Erro', data.error || 'Erro ao carregar eventos', 'error');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ modalidades.js - Erro ao carregar eventos:', error);
+        console.error(' modalidades.js - Erro ao carregar eventos:', error);
         Swal.fire('Erro', 'Erro ao carregar eventos', 'error');
     }
 }
 
-// Carregar categorias disponÃƒÆ’Ã‚Â­veis do evento (nome ÃƒÆ’Ã‚Âºnico para evitar conflito com categorias.js)
+// Carregar categorias disponíveis do evento (nome único para evitar conflito com categorias.js)
 async function carregarCategoriasDoEvento(eventoId) {
     try {
         if (!eventoId) {
-            console.warn('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â modalidades.js - carregarCategorias chamado sem eventoId');
+            console.warn('  modalidades.js - carregarCategorias chamado sem eventoId');
             return;
         }
-        console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ modalidades.js - Iniciando carregamento de categorias do evento', eventoId);
+        console.log(' modalidades.js - Iniciando carregamento de categorias do evento', eventoId);
         const response = await fetch(`${window.API_BASE || '/api'}/categoria/list_public.php?evento_id=${encodeURIComponent(eventoId)}`);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Status da resposta categorias:', response.status);
+        console.log(' modalidades.js - Status da resposta categorias:', response.status);
         
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Dados categorias recebidos:', data);
+        console.log(' modalidades.js - Dados categorias recebidos:', data);
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Categorias carregadas:', data.categorias.length);
+            console.log('... modalidades.js - Categorias carregadas:', data.categorias.length);
             categorias = data.categorias;
             preencherSelectCategorias();
             preencherFiltroCategorias();
         } else {
-            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Erro na resposta categorias:', data.message);
+            console.error('❌ modalidades.js - Erro na resposta categorias:', data.message);
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ modalidades.js - Erro ao carregar categorias:', error);
+        console.error(' modalidades.js - Erro ao carregar categorias:', error);
     }
 }
 
-// Ouvir atualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de categorias disparada pelo painel de categorias
+// Ouvir atualização de categorias disparada pelo painel de categorias
 document.addEventListener('categorias-atualizadas', function(e) {
     try {
         const evtId = e?.detail?.eventoId;
@@ -148,29 +148,29 @@ document.addEventListener('categorias-atualizadas', function(e) {
 
 // Preencher select de eventos
 function preencherSelectEventos() {
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â§ modalidades.js - Preenchendo select de eventos');
+    console.log(' modalidades.js - Preenchendo select de eventos');
     const select = document.getElementById('filtroEvento');
     
     if (!select) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Select de eventos NÃƒÆ’Ã†â€™O encontrado!');
+        console.error('❌ modalidades.js - Select de eventos NÃO encontrado!');
         return;
     }
     
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ modalidades.js - Eventos para preencher:', eventos);
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ modalidades.js - Quantidade de eventos:', eventos.length);
+    console.log(' modalidades.js - Eventos para preencher:', eventos);
+    console.log(' modalidades.js - Quantidade de eventos:', eventos.length);
     
     select.innerHTML = '<option value="">Selecione um evento</option>';
     
     eventos.forEach((evento, index) => {
-        console.log(`ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â modalidades.js - Adicionando evento ${index + 1}:`, evento);
+        console.log(` modalidades.js - Adicionando evento ${index + 1}:`, evento);
         const option = document.createElement('option');
         option.value = evento.id;
         option.textContent = evento.nome;
         select.appendChild(option);
     });
     
-    console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Select de eventos preenchido com', eventos.length, 'eventos');
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â modalidades.js - HTML do select:', select.innerHTML);
+    console.log('... modalidades.js - Select de eventos preenchido com', eventos.length, 'eventos');
+    console.log(' modalidades.js - HTML do select:', select.innerHTML);
     atualizarBotaoGerenciarCategorias(select.value || '');
 }
 
@@ -189,62 +189,62 @@ function preencherSelectCategorias() {
 
 // Preencher filtro de categorias
 function preencherFiltroCategorias() {
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â§ modalidades.js - Preenchendo filtro de categorias');
+    console.log(' modalidades.js - Preenchendo filtro de categorias');
     const select = document.getElementById('filtroCategoria');
     
     if (!select) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Filtro categoria NÃƒÆ’Ã†â€™O encontrado!');
+        console.error('❌ modalidades.js - Filtro categoria NÃO encontrado!');
         return;
     }
     
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ modalidades.js - Categorias para preencher:', categorias);
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ modalidades.js - Quantidade de categorias:', categorias.length);
+    console.log(' modalidades.js - Categorias para preencher:', categorias);
+    console.log(' modalidades.js - Quantidade de categorias:', categorias.length);
     
     select.innerHTML = '<option value="">Todas as categorias</option>';
     
     categorias.forEach((categoria, index) => {
-        console.log(`ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â modalidades.js - Adicionando categoria ${index + 1}:`, categoria);
+        console.log(` modalidades.js - Adicionando categoria ${index + 1}:`, categoria);
         const option = document.createElement('option');
         option.value = categoria.id;
         option.textContent = categoria.nome;
         select.appendChild(option);
     });
     
-    console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Filtro de categorias preenchido com', categorias.length, 'categorias');
+    console.log('... modalidades.js - Filtro de categorias preenchido com', categorias.length, 'categorias');
 }
 
 // Carregar modalidades do evento
 async function carregarModalidades(eventoId) {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ modalidades.js - Carregando modalidades para evento ID:', eventoId);
+    console.log(' modalidades.js - Carregando modalidades para evento ID:', eventoId);
     try {
         mostrarLoading();
         
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Fazendo requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para modalidades');
+        console.log(' modalidades.js - Fazendo requisição para modalidades');
         const url = `${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`;
-        console.log('ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â modalidades.js - URL da requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', url);
+        console.log('🌐 modalidades.js - URL da requisição:', url);
         
         const response = await fetch(url);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Status da resposta modalidades:', response.status);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Headers da resposta:', response.headers);
+        console.log(' modalidades.js - Status da resposta modalidades:', response.status);
+        console.log(' modalidades.js - Headers da resposta:', response.headers);
         
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Dados modalidades recebidos:', data);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ modalidades.js - Estrutura da resposta:', Object.keys(data));
+        console.log(' modalidades.js - Dados modalidades recebidos:', data);
+        console.log(' modalidades.js - Estrutura da resposta:', Object.keys(data));
         
         if (data.success) {
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Modalidades carregadas:', data.modalidades?.length || 0);
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ modalidades.js - Array de modalidades:', data.modalidades);
+            console.log('... modalidades.js - Modalidades carregadas:', data.modalidades?.length || 0);
+            console.log(' modalidades.js - Array de modalidades:', data.modalidades);
             modalidades = data.modalidades || [];
             modalidadesFiltradas = [...modalidades];
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¾ modalidades.js - Modalidades armazenadas:', modalidades.length);
+            console.log(' modalidades.js - Modalidades armazenadas:', modalidades.length);
             renderizarModalidades();
         } else {
-            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Erro na resposta modalidades:', data.message);
+            console.error('❌ modalidades.js - Erro na resposta modalidades:', data.message);
             throw new Error(data.message);
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ modalidades.js - Erro ao carregar modalidades:', error);
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ modalidades.js - Stack trace:', error.stack);
+        console.error(' modalidades.js - Erro ao carregar modalidades:', error);
+        console.error(' modalidades.js - Stack trace:', error.stack);
         mostrarErro('Erro ao carregar modalidades: ' + error.message);
     } finally {
         ocultarLoading();
@@ -253,22 +253,22 @@ async function carregarModalidades(eventoId) {
 
 // Renderizar modalidades na tabela
 function renderizarModalidades() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ modalidades.js - Renderizando modalidades...');
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  modalidades.js - Modalidades para renderizar:', modalidadesFiltradas.length);
+    console.log(' modalidades.js - Renderizando modalidades...');
+    console.log('  modalidades.js - Modalidades para renderizar:', modalidadesFiltradas.length);
     
     const tbody = document.getElementById('modalidades-tbody');
     if (!tbody) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Tbody NÃƒÆ’Ã†â€™O encontrado!');
+        console.error('❌ modalidades.js - Tbody NÃO encontrado!');
         return;
     }
     
     if (modalidadesFiltradas.length === 0) {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â­ modalidades.js - Nenhuma modalidade para renderizar, mostrando estado vazio');
+        console.log(' modalidades.js - Nenhuma modalidade para renderizar, mostrando estado vazio');
         mostrarSemModalidades();
         return;
     }
     
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â modalidades.js - Gerando HTML para', modalidadesFiltradas.length, 'modalidades');
+    console.log(' modalidades.js - Gerando HTML para', modalidadesFiltradas.length, 'modalidades');
     tbody.innerHTML = modalidadesFiltradas.map(modalidade => `
         <tr>
             <td class="px-6 py-4 whitespace-nowrap">
@@ -323,13 +323,13 @@ function getTipoProvaLabel(tipo) {
 
 // Mostrar loading
 function mostrarLoading() {
-    console.log('ÃƒÂ¢Ã‚ÂÃ‚Â³ modalidades.js - Mostrando loading...');
+    console.log('⏳ modalidades.js - Mostrando loading...');
     const loading = document.getElementById('loading');
     if (loading) {
         loading.classList.remove('hidden');
-        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Loading mostrado');
+        console.log('... modalidades.js - Loading mostrado');
     } else {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Elemento loading NÃƒÆ’Ã†â€™O encontrado!');
+        console.error('❌ modalidades.js - Elemento loading NÃO encontrado!');
     }
     
     // Ocultar outros estados
@@ -338,7 +338,7 @@ function mostrarLoading() {
         if (element) {
             element.classList.add('hidden');
         } else {
-            console.warn(`ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â modalidades.js - Elemento ${id} NÃƒÆ’Ã†â€™O encontrado`);
+            console.warn(`  modalidades.js - Elemento ${id} NÃO encontrado`);
         }
     });
 }
@@ -378,13 +378,13 @@ function mostrarModalidadesContainer() {
 
 // Mostrar selecionar filtros
 function mostrarSelecionarFiltros() {
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â modalidades.js - Mostrando selecionar filtros...');
+    console.log(' modalidades.js - Mostrando selecionar filtros...');
     const selecionarFiltros = document.getElementById('selecionar-filtros');
     if (selecionarFiltros) {
         selecionarFiltros.classList.remove('hidden');
-        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ modalidades.js - Selecionar filtros mostrado');
+        console.log('... modalidades.js - Selecionar filtros mostrado');
     } else {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ modalidades.js - Elemento selecionar-filtros NÃƒÆ’Ã†â€™O encontrado!');
+        console.error('❌ modalidades.js - Elemento selecionar-filtros NÃO encontrado!');
     }
     
     // Ocultar outros estados
@@ -393,7 +393,7 @@ function mostrarSelecionarFiltros() {
         if (element) {
             element.classList.add('hidden');
         } else {
-            console.warn(`ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â modalidades.js - Elemento ${id} NÃƒÆ’Ã†â€™O encontrado`);
+            console.warn(`  modalidades.js - Elemento ${id} NÃO encontrado`);
         }
     });
 }
@@ -401,11 +401,11 @@ function mostrarSelecionarFiltros() {
 // Abrir modal para criar modalidade
 function abrirModalCriar() {
     if (!eventoSelecionado) {
-        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro', 'warning');
+        Swal.fire('Atenção', 'Selecione um evento primeiro', 'warning');
         return;
     }
     // Garantir categorias atualizadas para o evento selecionado
-    try { carregarCategoriasDoEvento(eventoSelecionado); } catch (e) { console.warn('NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel atualizar categorias antes da modal.', e); }
+    try { carregarCategoriasDoEvento(eventoSelecionado); } catch (e) { console.warn('Não foi possível atualizar categorias antes da modal.', e); }
     
     document.getElementById('modalTitulo').textContent = 'Criar Nova Modalidade';
     document.getElementById('formModalidade').reset();
@@ -458,7 +458,7 @@ async function salvarModalidade() {
         const modalidadeId = document.getElementById('modalidadeId').value;
         const formData = new FormData();
         
-        // Adicionar dados do formulÃƒÆ’Ã‚Â¡rio
+        // Adicionar dados do formulário
         formData.append('evento_id', document.getElementById('eventoId').value);
         formData.append('categoria_id', document.getElementById('categoriaId').value);
         formData.append('nome', document.getElementById('nomeModalidade').value);
@@ -467,9 +467,9 @@ async function salvarModalidade() {
         formData.append('tipo_prova', document.getElementById('tipoProva').value);
         formData.append('limite_vagas', document.getElementById('limiteVagas').value);
         
-        // Validar campos obrigatÃƒÆ’Ã‚Â³rios
+        // Validar campos obrigatórios
         if (!formData.get('categoria_id') || !formData.get('nome')) {
-            Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Categoria e Nome sÃƒÆ’Ã‚Â£o campos obrigatÃƒÆ’Ã‚Â³rios', 'warning');
+            Swal.fire('Atenção', 'Categoria e Nome são campos obrigatórios', 'warning');
             return;
         }
         
@@ -510,7 +510,7 @@ async function salvarModalidade() {
 async function excluirModalidade(id, nome) {
     try {
         const result = await Swal.fire({
-            title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
+            title: 'Confirmar exclusão',
             text: `Deseja realmente excluir a modalidade "${nome}"?`,
             icon: 'warning',
             showCancelButton: true,
@@ -532,7 +532,7 @@ async function excluirModalidade(id, nome) {
             const data = await response.json();
             
             if (data.success) {
-                Swal.fire('Sucesso', 'Modalidade excluÃƒÆ’Ã‚Â­da com sucesso', 'success');
+                Swal.fire('Sucesso', 'Modalidade excluída com sucesso', 'success');
                 carregarModalidades(eventoSelecionado);
             } else {
                 Swal.fire('Erro', data.message, 'error');
@@ -546,31 +546,31 @@ async function excluirModalidade(id, nome) {
 
 // Aplicar filtros
 function aplicarFiltros() {
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â modalidades.js - Aplicando filtros...');
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ modalidades.js - Evento selecionado:', eventoSelecionado);
+    console.log(' modalidades.js - Aplicando filtros...');
+    console.log(' modalidades.js - Evento selecionado:', eventoSelecionado);
     
     if (!eventoSelecionado) {
-        console.warn('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â modalidades.js - Nenhum evento selecionado');
-        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro', 'warning');
+        console.warn('  modalidades.js - Nenhum evento selecionado');
+        Swal.fire('Atenção', 'Selecione um evento primeiro', 'warning');
         return;
     }
     
     const categoriaId = document.getElementById('filtroCategoria').value;
-    console.log('ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â·ÃƒÂ¯Ã‚Â¸Ã‚Â modalidades.js - Categoria selecionada:', categoriaId);
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  modalidades.js - Total de modalidades antes do filtro:', modalidades.length);
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ modalidades.js - Modalidades disponÃƒÆ’Ã‚Â­veis:', modalidades);
+    console.log(' modalidades.js - Categoria selecionada:', categoriaId);
+    console.log('  modalidades.js - Total de modalidades antes do filtro:', modalidades.length);
+    console.log(' modalidades.js - Modalidades disponíveis:', modalidades);
     
     modalidadesFiltradas = modalidades.filter(item => {
         // Buscar a categoria da modalidade para fazer o filtro
         const categoria = categorias.find(cat => cat.id.toString() === item.categoria_id?.toString());
         const matchCategoria = !categoriaId || (categoria && categoria.id.toString() === categoriaId);
         
-        console.log(`ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â modalidades.js - Modalidade ${item.nome}: categoria_id ${item.categoria_id}, categoria encontrada:`, categoria, 'match?', matchCategoria);
+        console.log(` modalidades.js - Modalidade ${item.nome}: categoria_id ${item.categoria_id}, categoria encontrada:`, categoria, 'match?', matchCategoria);
         return matchCategoria;
     });
     
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  modalidades.js - Total de modalidades apÃƒÆ’Ã‚Â³s filtro:', modalidadesFiltradas.length);
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ modalidades.js - Modalidades filtradas:', modalidadesFiltradas);
+    console.log('  modalidades.js - Total de modalidades após filtro:', modalidadesFiltradas.length);
+    console.log(' modalidades.js - Modalidades filtradas:', modalidadesFiltradas);
     
     renderizarModalidades();
 } 

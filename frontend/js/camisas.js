@@ -1,12 +1,12 @@
 if (window.getApiBase) { window.getApiBase(); }
-// VariÃƒÆ’Ã‚Â¡veis globais
+// Variáveis globais
 let camisas = [];
 let eventos = [];
 let eventoSelecionado = null;
 
-// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ Iniciando sistema de camisas');
+    console.log(' Iniciando sistema de camisas');
     configurarEventListeners();
     carregarEventos();
 });
@@ -43,7 +43,7 @@ function mostrarEstadoVazio() {
 // Carregar eventos
 async function carregarEventos() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Carregando eventos...');
+        console.log(' Carregando eventos...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
         
         if (!response.ok) {
@@ -51,34 +51,34 @@ async function carregarEventos() {
         }
         
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Resposta da API eventos:', data);
+        console.log('  Resposta da API eventos:', data);
         
         if (data.success) {
             eventos = data.data.eventos; // Corrigido: usar estrutura original data.data.eventos
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Â¹ Eventos carregados:', eventos);
+            console.log(' Eventos carregados:', eventos);
             preencherSelectEventos();
-            console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${eventos.length} eventos carregados`);
+            console.log(`... ${eventos.length} eventos carregados`);
         } else {
             throw new Error(data.message || data.error || 'Erro ao carregar eventos');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
+        console.error(' Erro ao carregar eventos:', error);
         Swal.fire('Erro', 'Erro ao carregar eventos: ' + error.message, 'error');
     }
 }
 
 function preencherSelectEventos() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯ Preenchendo select de eventos...');
+    console.log(' Preenchendo select de eventos...');
     const select = document.getElementById('filtroEvento');
     if (!select) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Elemento filtroEvento nÃƒÆ’Ã‚Â£o encontrado');
+        console.error('❌ Elemento filtroEvento não encontrado');
         return;
     }
     
     select.innerHTML = '<option value="">Selecione um evento</option>';
     
     if (!eventos || eventos.length === 0) {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â­ Nenhum evento disponÃƒÆ’Ã‚Â­vel');
+        console.log(' Nenhum evento disponível');
         return;
     }
     
@@ -87,10 +87,10 @@ function preencherSelectEventos() {
         option.value = evento.id;
         option.textContent = evento.nome;
         select.appendChild(option);
-        console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ Adicionado evento: ${evento.nome} (ID: ${evento.id})`);
+        console.log(`... Adicionado evento: ${evento.nome} (ID: ${evento.id})`);
     });
     
-    console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ Select preenchido com ${eventos.length} eventos`);
+    console.log(`... Select preenchido com ${eventos.length} eventos`);
 }
 
 // Carregar camisas
@@ -104,7 +104,7 @@ async function carregarCamisas() {
     }
     
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Carregando camisas...');
+        console.log(' Carregando camisas...');
         const params = new URLSearchParams();
         params.append('evento_id', eventoId);
         if (status) params.append('ativo', status);
@@ -120,7 +120,7 @@ async function carregarCamisas() {
             } else {
                 mostrarEstadoVazio();
             }
-            console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${camisas.length} camisas carregadas`);
+            console.log(`... ${camisas.length} camisas carregadas`);
             
             // Carregar contador de camisas
             await carregarContadorCamisas(eventoId);
@@ -128,7 +128,7 @@ async function carregarCamisas() {
             throw new Error(data.message || 'Erro ao carregar camisas');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar camisas:', error);
+        console.error(' Erro ao carregar camisas:', error);
         Swal.fire('Erro', 'Erro ao carregar camisas.', 'error');
     }
 }
@@ -136,18 +136,18 @@ async function carregarCamisas() {
 // Carregar contador de camisas
 async function carregarContadorCamisas(eventoId) {
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Carregando contador de camisas...');
+        console.log('  Carregando contador de camisas...');
         const response = await fetch(`${window.API_BASE || '/api'}/organizador/camisas/total.php?evento_id=${eventoId}`);
         const data = await response.json();
         
         if (data.success) {
             atualizarContadorCamisas(data);
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Contador atualizado');
+            console.log('... Contador atualizado');
         } else {
-            console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao carregar contador:', data.message);
+            console.error('❌ Erro ao carregar contador:', data.message);
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar contador:', error);
+        console.error(' Erro ao carregar contador:', error);
     }
 }
 
@@ -179,17 +179,17 @@ function atualizarContadorCamisas(data) {
         barraProgresso.classList.remove('bg-blue-600', 'bg-yellow-500');
         barraProgresso.classList.add('bg-red-500');
     } else if (data.percentual >= 90) {
-        // PrÃƒÆ’Ã‚Â³ximo do limite
+        // Próximo do limite
         disponivel.classList.remove('text-green-600', 'text-red-600');
         disponivel.classList.add('text-yellow-600');
-        disponivelLabel.textContent = 'DisponÃƒÆ’Ã‚Â­vel';
+        disponivelLabel.textContent = 'Disponível';
         barraProgresso.classList.remove('bg-blue-600', 'bg-red-500');
         barraProgresso.classList.add('bg-yellow-500');
     } else {
         // Normal
         disponivel.classList.remove('text-yellow-600', 'text-red-600');
         disponivel.classList.add('text-green-600');
-        disponivelLabel.textContent = 'DisponÃƒÆ’Ã‚Â­vel';
+        disponivelLabel.textContent = 'Disponível';
         barraProgresso.classList.remove('bg-yellow-500', 'bg-red-500');
         barraProgresso.classList.add('bg-blue-600');
     }
@@ -236,7 +236,7 @@ function aplicarFiltros() {
     const eventoId = document.getElementById('filtroEvento').value;
     const contador = document.getElementById('contador-camisas');
     
-    // Esconder contador se nÃƒÆ’Ã‚Â£o hÃƒÆ’Ã‚Â¡ evento selecionado
+    // Esconder contador se não há evento selecionado
     if (!eventoId) {
         contador.classList.add('hidden');
         mostrarEstadoInicial();
@@ -250,7 +250,7 @@ function aplicarFiltros() {
 function abrirModalCriar() {
     const eventoId = document.getElementById('filtroEvento').value;
     if (!eventoId) {
-        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Selecione um evento primeiro.', 'warning');
+        Swal.fire('Atenção', 'Selecione um evento primeiro.', 'warning');
         return;
     }
     
@@ -261,13 +261,13 @@ function abrirModalCriar() {
     document.getElementById('camisa-quantidade').value = '';
     document.getElementById('camisa-status').value = '1';
     
-    // Carregar informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de limite
+    // Carregar informações de limite
     carregarInfoLimite(eventoId);
     
     document.getElementById('modal-camisa').classList.remove('hidden');
 }
 
-// Carregar informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de limite para o modal
+// Carregar informações de limite para o modal
 async function carregarInfoLimite(eventoId) {
     try {
         const response = await fetch(`${window.API_BASE || '/api'}/organizador/camisas/total.php?evento_id=${eventoId}`);
@@ -293,23 +293,23 @@ async function carregarInfoLimite(eventoId) {
             infoLimite.classList.remove('hidden');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de limite:', error);
+        console.error(' Erro ao carregar informações de limite:', error);
     }
 }
 
 function editarCamisa(id) {
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â Editando camisa:', id);
+    console.log(' Editando camisa:', id);
     fetch(`${window.API_BASE || '/api'}/organizador/camisas/get.php?id=${id}`)
         .then(r => r.json())
         .then(data => {
             if (data.success && data.camisa) {
                 preencherModalEdicao(data.camisa);
             } else {
-                Swal.fire('Erro', 'NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel carregar os dados.', 'error');
+                Swal.fire('Erro', 'Não foi possível carregar os dados.', 'error');
             }
         })
         .catch(err => {
-            console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao buscar dados para ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', err);
+            console.error(' Erro ao buscar dados para edição:', err);
             Swal.fire('Erro', 'Erro ao carregar dados.', 'error');
         });
 }
@@ -338,7 +338,7 @@ function salvarCamisa(e) {
     const ativo = document.getElementById('camisa-status').value;
     
     if (!tamanho || !quantidade) {
-        Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', 'Preencha todos os campos obrigatÃƒÆ’Ã‚Â³rios.', 'warning');
+        Swal.fire('Atenção', 'Preencha todos os campos obrigatórios.', 'warning');
         return;
     }
     
@@ -372,15 +372,15 @@ function salvarCamisa(e) {
         }
     })
     .catch(err => {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao salvar camisa:', err);
+        console.error(' Erro ao salvar camisa:', err);
         Swal.fire('Erro', 'Erro ao salvar tamanho.', 'error');
     });
 }
 
 function excluirCamisa(id) {
     Swal.fire({
-        title: 'Confirmar ExclusÃƒÆ’Ã‚Â£o',
-        text: 'Tem certeza que deseja excluir este tamanho? Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.',
+        title: 'Confirmar Exclusão',
+        text: 'Tem certeza que deseja excluir este tamanho? Esta ação não pode ser desfeita.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, excluir',
@@ -396,14 +396,14 @@ function excluirCamisa(id) {
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    Swal.fire('Sucesso', 'Tamanho excluÃƒÆ’Ã‚Â­do com sucesso!', 'success');
+                    Swal.fire('Sucesso', 'Tamanho excluído com sucesso!', 'success');
                     carregarCamisas();
                 } else {
                     Swal.fire('Erro', data.message || 'Erro ao excluir tamanho.', 'error');
                 }
             })
             .catch(err => {
-                console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao excluir camisa:', err);
+                console.error(' Erro ao excluir camisa:', err);
                 Swal.fire('Erro', 'Erro ao excluir tamanho.', 'error');
             });
         }

@@ -20,7 +20,7 @@ class SistemaLogs {
     }
 
     inicializar() {
-        console.log('Ã°Å¸â€œÂ Sistema de Logs inicializado');
+        console.log(' Sistema de Logs inicializado');
 
         // Interceptar erros globais
         this.interceptarErros();
@@ -43,7 +43,7 @@ class SistemaLogs {
                 arquivo: event.filename,
                 linha: event.lineno,
                 coluna: event.colno,
-                stack: event.error ? .stack
+                stack: event.error?.stack
             });
         });
 
@@ -64,7 +64,7 @@ class SistemaLogs {
             info: console.info
         };
 
-        // Sobrescrever mÃƒÂ©todos do console
+        // Sobrescrever mÒ©todos do console
         console.log = (...args) => {
             this.log('INFO', 'Console Log', {
                 args
@@ -95,27 +95,27 @@ class SistemaLogs {
     }
 
     monitorarPerformance() {
-        // Monitorar tempo de carregamento da pÃƒÂ¡gina
+        // Monitorar tempo de carregamento da página
         window.addEventListener('load', () => {
             const performance = window.performance;
             if (performance) {
                 const timing = performance.timing;
                 const tempoCarregamento = timing.loadEventEnd - timing.navigationStart;
 
-                this.log('INFO', 'Performance - PÃƒÂ¡gina Carregada', {
+                this.log('INFO', 'Performance - Página Carregada', {
                     tempoCarregamento: `${tempoCarregamento}ms`,
                     domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
-                    firstPaint: performance.getEntriesByType('paint')[0] ? .startTime
+                    firstPaint: performance.getEntriesByType('paint')[0]?.startTime
                 });
             }
         });
 
-        // Monitorar mudanÃƒÂ§as de performance
+        // Monitorar mudanÒ§as de performance
         if ('PerformanceObserver' in window) {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach((entry) => {
                     if (entry.entryType === 'navigation') {
-                        this.log('INFO', 'Performance - NavegaÃƒÂ§ÃƒÂ£o', {
+                        this.log('INFO', 'Performance - Navegação', {
                             tipo: entry.type,
                             tempo: `${entry.duration}ms`
                         });
@@ -128,7 +128,7 @@ class SistemaLogs {
                     entryTypes: ['navigation']
                 });
             } catch (e) {
-                this.log('WARN', 'Performance Observer nÃƒÂ£o suportado', {
+                this.log('WARN', 'Performance Observer não suportado', {
                     erro: e.message
                 });
             }
@@ -136,7 +136,7 @@ class SistemaLogs {
     }
 
     monitorarRede() {
-        // Interceptar requisiÃƒÂ§ÃƒÂµes fetch
+        // Interceptar requisições fetch
         const fetchOriginal = window.fetch;
         window.fetch = async (...args) => {
             const inicio = performance.now();
@@ -149,7 +149,7 @@ class SistemaLogs {
 
                 this.log('INFO', 'API Request', {
                     url: typeof url === 'string' ? url : url.url,
-                    metodo: args[1] ? .method || 'GET',
+                    metodo: args[1]?.method || 'GET',
                     status: response.status,
                     tempo: `${tempo.toFixed(2)}ms`,
                     sucesso: response.ok
@@ -162,7 +162,7 @@ class SistemaLogs {
 
                 this.log('ERROR', 'API Request Failed', {
                     url: typeof url === 'string' ? url : url.url,
-                    metodo: args[1] ? .method || 'GET',
+                    metodo: args[1]?.method || 'GET',
                     erro: error.message,
                     tempo: `${tempo.toFixed(2)}ms`
                 });
@@ -187,15 +187,15 @@ class SistemaLogs {
 
         this.logs.push(logEntry);
 
-        // Manter apenas os ÃƒÂºltimos logs
+        // Manter apenas os últimos logs
         if (this.logs.length > this.maxLogs) {
             this.logs.shift();
         }
 
-        // Log no console com formataÃƒÂ§ÃƒÂ£o
+        // Log no console com formatação
         this.logParaConsole(logEntry);
 
-        // Enviar para servidor se for erro crÃƒÂ­tico
+        // Enviar para servidor se for erro crÒ­tico
         if (nivel === 'CRITICAL') {
             this.enviarLogParaServidor(logEntry);
         }
@@ -240,7 +240,7 @@ class SistemaLogs {
         }
     }
 
-    // MÃƒÂ©todos pÃƒÂºblicos para logging
+    // MÒ©todos públicos para logging
     debug(mensagem, dados = {}) {
         this.log('DEBUG', mensagem, dados);
     }
@@ -324,7 +324,7 @@ class SistemaLogs {
     converterParaCSV() {
         if (this.logs.length === 0) return '';
 
-        const headers = ['Timestamp', 'NÃƒÂ­vel', 'Mensagem', 'URL', 'Dados'];
+        const headers = ['Timestamp', 'Nível', 'Mensagem', 'URL', 'Dados'];
         const linhas = [headers.join(',')];
 
         this.logs.forEach(log => {
@@ -362,7 +362,7 @@ class SistemaLogs {
         return logsAntigos.length;
     }
 
-    // EstatÃƒÂ­sticas dos logs
+    // EstatÒ­sticas dos logs
     obterEstatisticas() {
         const estatisticas = {
             total: this.logs.length,
@@ -371,7 +371,7 @@ class SistemaLogs {
             tempoMedio: 0
         };
 
-        // Contar por nÃƒÂ­vel
+        // Contar por nível
         this.logs.forEach(log => {
             estatisticas.porNivel[log.nivel] = (estatisticas.porNivel[log.nivel] || 0) + 1;
         });
@@ -389,7 +389,7 @@ class SistemaLogs {
 document.addEventListener('DOMContentLoaded', function () {
     window.sistemaLogs = new SistemaLogs();
 
-    // Log de inicializaÃƒÂ§ÃƒÂ£o
+    // Log de inicialização
     window.sistemaLogs.info('Sistema MovAmazon inicializado', {
         versao: '1.0.0',
         ambiente: window.location.hostname === 'localhost' ? 'desenvolvimento' : 'producao',

@@ -1,6 +1,6 @@
 if (window.getApiBase) { window.getApiBase(); }
 // =====================================================
-// GESTÃƒÆ’Ã†â€™Ãƒâ€ ââ‚¬â„¢O DE TEMPLATES DE KIT - JAVASCRIPT
+// GESTÃO DE TEMPLATES DE KIT - JAVASCRIPT
 // =====================================================
 
 let templates = [];
@@ -24,7 +24,7 @@ function buildKitAssetUrl(path) {
 }
 
 // =====================================================
-// INICIALIZAÃƒÆ’Ã†â€™ÃƒÂ¢ââ€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ ââ‚¬â„¢O
+// INICIALIZAÇÃO
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -153,32 +153,32 @@ async function carregarTemplates() {
 }
 
 async function carregarProdutos() {
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Iniciando carregamento de produtos...');
+    console.log(' DEBUG kits-templates.js - Iniciando carregamento de produtos...');
 
     try {
         const url = (window.API_BASE || '/api') + '/organizador/produtos/list.php';
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL da API:', url);
+        console.log(' DEBUG kits-templates.js - URL da API:', url);
 
         const response = await fetch(url);
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Response status:', response.status);
+        console.log(' DEBUG kits-templates.js - Response status:', response.status);
 
         const data = await response.json();
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Dados recebidos:', data);
+        console.log(' DEBUG kits-templates.js - Dados recebidos:', data);
 
         if (data.success) {
             produtos = data.data;
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos carregados:', produtos.length);
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Primeiro produto:', produtos[0]);
+            console.log(' DEBUG kits-templates.js - Produtos carregados:', produtos.length);
+            console.log(' DEBUG kits-templates.js - Primeiro produto:', produtos[0]);
         } else {
-            console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro na API:', data.error);
+            console.error(' DEBUG kits-templates.js - Erro na API:', data.error);
         }
     } catch (error) {
-        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro ao carregar produtos:', error);
+        console.error(' DEBUG kits-templates.js - Erro ao carregar produtos:', error);
     }
 }
 
 // =====================================================
-// RENDERIZAÃƒÆ’Ã†â€™ÃƒÂ¢ââ€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ ââ‚¬â„¢O
+// RENDERIZAÇÃO
 // =====================================================
 
 function renderizarTemplates(templatesParaRenderizar = null) {
@@ -274,7 +274,7 @@ function criarCardTemplate(template) {
 }
 
 // =====================================================
-// FILTROS E PAGINAÃƒÆ’Ã†â€™ÃƒÂ¢ââ€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ ââ‚¬â„¢O
+// FILTROS E PAGINAÇÃO
 // =====================================================
 
 function aplicarFiltros() {
@@ -312,7 +312,7 @@ function atualizarPaginacao() {
     const inicio = (paginaAtual - 1) * itensPorPagina + 1;
     const fim = Math.min(paginaAtual * itensPorPagina, templates.length);
 
-    // Atualizar botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
+    // Atualizar botões
     document.getElementById('btn-anterior').disabled = paginaAtual === 1;
     document.getElementById('btn-proximo').disabled = paginaAtual === totalPaginas;
 
@@ -364,9 +364,9 @@ function resolverCaminhoFotoKit(caminho) {
 }
 
 function abrirModalTemplate(template = null) {
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Abrindo modal template');
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Template:', template);
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos carregados:', produtos.length);
+    console.log(' DEBUG kits-templates.js - Abrindo modal template');
+    console.log(' DEBUG kits-templates.js - Template:', template);
+    console.log(' DEBUG kits-templates.js - Produtos carregados:', produtos.length);
 
     const modal = document.getElementById('modalTemplate');
     const titulo = document.getElementById('modalTemplateTitulo');
@@ -394,7 +394,7 @@ function fecharModalTemplate() {
 }
 
 function preencherFormularioTemplate(template) {
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Preenchendo formulário template:', template);
+    console.log(' DEBUG kits-templates.js - Preenchendo formulário template:', template);
 
     const idElement = document.getElementById('template_id');
     const nomeElement = document.getElementById('template_nome');
@@ -417,10 +417,10 @@ function preencherFormularioTemplate(template) {
 
     // Carregar produtos do template
     if (template.id) {
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Chamando carregarProdutosTemplate com ID:', template.id);
+        console.log(' DEBUG kits-templates.js - Chamando carregarProdutosTemplate com ID:', template.id);
         carregarProdutosTemplate(template.id);
     } else {
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Template sem ID, não carregando produtos');
+        console.log(' DEBUG kits-templates.js - Template sem ID, não carregando produtos');
     }
 }
 
@@ -442,16 +442,16 @@ function previewFotoTemplate(event) {
 }
 
 // =====================================================
-// GESTÃƒÆ’Ã†â€™Ãƒâ€ ââ‚¬â„¢O DE PRODUTOS DO TEMPLATE
+// GESTÃO DE PRODUTOS DO TEMPLATE
 // =====================================================
 
 function adicionarProdutoTemplate() {
     const container = document.getElementById('produtos-template-container');
     const produtoIndex = container.children.length;
 
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Adicionando produto template');
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos disponíveis:', produtos);
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Quantidade de produtos:', produtos.length);
+    console.log(' DEBUG kits-templates.js - Adicionando produto template');
+    console.log(' DEBUG kits-templates.js - Produtos disponíveis:', produtos);
+    console.log(' DEBUG kits-templates.js - Quantidade de produtos:', produtos.length);
 
     const produtoDiv = document.createElement('div');
     produtoDiv.className = 'flex items-center space-x-4 p-4 border border-gray-200 rounded-lg';
@@ -519,32 +519,32 @@ function limparProdutosTemplate() {
 }
 
 async function carregarProdutosTemplate(templateId) {
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Carregando produtos do template ID:', templateId);
+    console.log(' DEBUG kits-templates.js - Carregando produtos do template ID:', templateId);
 
     // Aguardar produtos serem carregados se necessário
     if (produtos.length === 0) {
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos não carregados, aguardando...');
+        console.log(' DEBUG kits-templates.js - Produtos não carregados, aguardando...');
         await carregarProdutos();
     }
 
     try {
         const url = `${window.API_BASE || '/api'}/organizador/kits-templates/get-produtos-template.php?id=${templateId}&t=${Date.now()}`;
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL da API:', url);
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL completa:', window.location.origin + '/movamazonas' + url);
+        console.log(' DEBUG kits-templates.js - URL da API:', url);
+        console.log(' DEBUG kits-templates.js - URL completa:', window.location.origin + '/movamazonas' + url);
 
         const response = await fetch(url);
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Response status:', response.status);
+        console.log(' DEBUG kits-templates.js - Response status:', response.status);
 
         const data = await response.json();
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Dados recebidos:', data);
+        console.log(' DEBUG kits-templates.js - Dados recebidos:', data);
 
         if (data.success) {
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos encontrados:', data.data.length);
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos:', data.data);
+            console.log(' DEBUG kits-templates.js - Produtos encontrados:', data.data.length);
+            console.log(' DEBUG kits-templates.js - Produtos:', data.data);
 
             limparProdutosTemplate();
             data.data.forEach(produto => {
-                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Adicionando produto:', produto);
+                console.log(' DEBUG kits-templates.js - Adicionando produto:', produto);
                 adicionarProdutoTemplateComDados(produto);
             });
             calcularCustoProdutos();
@@ -557,20 +557,20 @@ async function carregarProdutosTemplate(templateId) {
                 }, 100);
             }
         } else {
-            console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro na API:', data.error);
+            console.error(' DEBUG kits-templates.js - Erro na API:', data.error);
         }
     } catch (error) {
-        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro ao carregar produtos do template:', error);
+        console.error(' DEBUG kits-templates.js - Erro ao carregar produtos do template:', error);
     }
 }
 
 function adicionarProdutoTemplateComDados(produto) {
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Adicionando produto com dados:', produto);
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos disponíveis:', produtos.length);
+    console.log(' DEBUG kits-templates.js - Adicionando produto com dados:', produto);
+    console.log(' DEBUG kits-templates.js - Produtos disponíveis:', produtos.length);
 
     const container = document.getElementById('produtos-template-container');
     if (!container) {
-        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Container não encontrado!');
+        console.error(' DEBUG kits-templates.js - Container não encontrado!');
         return;
     }
 
@@ -579,7 +579,7 @@ function adicionarProdutoTemplateComDados(produto) {
 
     // Verificar se o produto existe na lista de produtos disponíveis
     const produtoEncontrado = produtos.find(p => p.id == produto.produto_id);
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto encontrado na lista:', produtoEncontrado);
+    console.log(' DEBUG kits-templates.js - Produto encontrado na lista:', produtoEncontrado);
 
     produtoDiv.innerHTML = `
         <div class="flex-1">
@@ -600,7 +600,7 @@ function adicionarProdutoTemplateComDados(produto) {
     `;
 
     container.appendChild(produtoDiv);
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto adicionado ao DOM');
+    console.log(' DEBUG kits-templates.js - Produto adicionado ao DOM');
 
     // Adicionar event listeners
     const select = produtoDiv.querySelector('.produto-select');
@@ -613,7 +613,7 @@ function adicionarProdutoTemplateComDados(produto) {
 }
 
 // =====================================================
-// CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂLCULO DE PREÃƒÆ’Ã†â€™ÃƒÂ¢ââ€šÂ¬Ã‚Â¡OS
+// CÁLCULO DE PREÇOS
 // =====================================================
 
 function calcularCustoProdutos() {
@@ -632,7 +632,7 @@ function calcularCustoProdutos() {
     atualizarContadorProdutos();
 
     // Log para debug
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Cálculo atualizado:', {
+    console.log(' DEBUG kits-templates.js - Cálculo atualizado:', {
         custoTotal: custoTotal.toFixed(2),
         quantidadeTotal: quantidadeTotal,
         produtosCalculados: quantidadeTotal
@@ -710,7 +710,7 @@ function calcularSomaTotal() {
                 custoTotal += custoProduto;
                 quantidadeTotal += quantidade;
 
-                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto calculado:', {
+                console.log(' DEBUG kits-templates.js - Produto calculado:', {
                     produto: option.text,
                     quantidade: quantidade,
                     precoUnitario: precoUnitario,
@@ -736,16 +736,16 @@ async function verificarContagemProdutos() {
         const data = await response.json();
 
         if (data.success) {
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Contagem de produtos por template:');
+            console.log(' DEBUG kits-templates.js - Contagem de produtos por template:');
             data.data.forEach(template => {
-                console.log(`ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Template ${template.id} (${template.nome}): ${template.total_produtos} produtos`);
+                console.log(` DEBUG kits-templates.js - Template ${template.id} (${template.nome}): ${template.total_produtos} produtos`);
                 if (template.produtos_lista) {
-                    console.log(`ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos: ${template.produtos_lista}`);
+                    console.log(` DEBUG kits-templates.js - Produtos: ${template.produtos_lista}`);
                 }
             });
         }
     } catch (error) {
-        console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Erro ao verificar contagem:', error);
+        console.error(' DEBUG kits-templates.js - Erro ao verificar contagem:', error);
     }
 }
 
@@ -794,24 +794,24 @@ async function salvarTemplate(e) {
     const produtosDivs = container.querySelectorAll('.produto-select');
     const produtosData = [];
 
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Coletando produtos do formulário');
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos encontrados no DOM:', produtosDivs.length);
+    console.log(' DEBUG kits-templates.js - Coletando produtos do formulário');
+    console.log(' DEBUG kits-templates.js - Produtos encontrados no DOM:', produtosDivs.length);
 
     produtosDivs.forEach((select, index) => {
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Processando produto', index, ':', select.value);
+        console.log(' DEBUG kits-templates.js - Processando produto', index, ':', select.value);
 
         if (select.value) {
             // Encontrar o container do produto (div pai)
             const produtoContainer = select.closest('.flex.items-center.space-x-4');
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Container encontrado:', produtoContainer);
+            console.log(' DEBUG kits-templates.js - Container encontrado:', produtoContainer);
 
             const quantidadeElement = produtoContainer ? produtoContainer.querySelector('.produto-quantidade') : null;
             const ordemElement = produtoContainer ? produtoContainer.querySelector('.produto-ordem') : null;
 
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Elementos encontrados:', {
+            console.log(' DEBUG kits-templates.js - Elementos encontrados:', {
                 quantidade: quantidadeElement ? quantidadeElement.value : '',
                 ordem: ordemElement ? ordemElement.value : '',
-                container: produtoContainer ? 'SIM' : 'NÃƒÆ’Ã†â€™Ãƒâ€ ââ‚¬â„¢O'
+                container: produtoContainer ? 'SIM' : 'NÃO'
             });
 
             if (quantidadeElement && ordemElement) {
@@ -821,23 +821,23 @@ async function salvarTemplate(e) {
                     ordem: ordemElement.value
                 };
                 produtosData.push(produto);
-                console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produto adicionado:', produto);
+                console.log(' DEBUG kits-templates.js - Produto adicionado:', produto);
             } else {
-                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Elementos não encontrados para produto:', select.value);
-                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Container:', produtoContainer);
-                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Quantidade element:', quantidadeElement);
-                console.error('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Ordem element:', ordemElement);
+                console.error(' DEBUG kits-templates.js - Elementos não encontrados para produto:', select.value);
+                console.error(' DEBUG kits-templates.js - Container:', produtoContainer);
+                console.error(' DEBUG kits-templates.js - Quantidade element:', quantidadeElement);
+                console.error(' DEBUG kits-templates.js - Ordem element:', ordemElement);
             }
         }
     });
 
     // Se não há produtos no formulário, verificar se é uma edição e manter produtos existentes
     if (produtosData.length === 0 && templateId) {
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Nenhum produto no formulário, mantendo produtos existentes');
+        console.log(' DEBUG kits-templates.js - Nenhum produto no formulário, mantendo produtos existentes');
         // Não enviar array vazio, deixar o backend manter produtos existentes
         formData.append('produtos', JSON.stringify([]));
     } else {
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Produtos finais:', produtosData);
+        console.log(' DEBUG kits-templates.js - Produtos finais:', produtosData);
         formData.append('produtos', JSON.stringify(produtosData));
     }
 
@@ -845,11 +845,11 @@ async function salvarTemplate(e) {
         const url = templateId ? (window.API_BASE || '/api') + '/organizador/kits-templates/update.php' : (window.API_BASE || '/api') + '/organizador/kits-templates/create.php';
         const method = templateId ? 'POST' : 'POST';
 
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - URL:', url);
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - Method:', method);
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js - FormData entries:');
+        console.log(' DEBUG kits-templates.js - URL:', url);
+        console.log(' DEBUG kits-templates.js - Method:', method);
+        console.log(' DEBUG kits-templates.js - FormData entries:');
         for (let [key, value] of formData.entries()) {
-            console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â DEBUG kits-templates.js -', key, ':', value);
+            console.log(' DEBUG kits-templates.js -', key, ':', value);
         }
 
         const response = await fetch(url, {
@@ -978,7 +978,7 @@ async function excluirTemplate(id) {
 }
 
 // =====================================================
-// FUNÃƒÆ’Ã†â€™ÃƒÂ¢ââ€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢ââ€šÂ¬Ã‚Â¢ES DE RESUMO E ESTATÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂSTICAS
+// FUNÇÕES DE RESUMO E ESTATÍSTICAS
 // =====================================================
 
 function atualizarResumo() {
@@ -988,7 +988,7 @@ function atualizarResumo() {
 }
 
 // =====================================================
-// UTILITÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂRIOS
+// UTILITÁRIOS
 // =====================================================
 
 function mostrarLoading() {
@@ -1002,4 +1002,4 @@ function ocultarLoading() {
     document.getElementById('templates-container').style.display = 'grid';
 }
 
-// FunçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes antigas removidas - agora usando SweetAlert para todos os feedbacks 
+// Funçções antigas removidas - agora usando SweetAlert para todos os feedbacks 

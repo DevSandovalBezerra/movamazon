@@ -1,7 +1,7 @@
 if (window.getApiBase) { window.getApiBase(); }
 /**
- * Sistema de ValidaÃƒÂ§ÃƒÂ£o MovAmazon
- * ValidaÃƒÂ§ÃƒÂµes para formulÃƒÂ¡rios de eventos, modalidades e categorias
+ * Sistema de ValidaÒ§Ò£o MovAmazon
+ * ValidaÒ§Òµes para formulÒ¡rios de eventos, modalidades e categorias
  */
 
 class ValidacaoFormulario {
@@ -15,7 +15,7 @@ class ValidacaoFormulario {
     inicializar() {
         if (!this.form) return;
 
-        // Adicionar listeners para validaÃƒÂ§ÃƒÂ£o em tempo real
+        // Adicionar listeners para validaÒ§Ò£o em tempo real
         this.regras.forEach(regra => {
             const campo = this.form.querySelector(`[name="${regra.campo}"]`);
             if (campo) {
@@ -42,20 +42,20 @@ class ValidacaoFormulario {
         let valido = true;
         let mensagem = '';
 
-        // ValidaÃƒÂ§ÃƒÂµes especÃƒÂ­ficas
+        // ValidaÒ§Òµes especÒ­ficas
         if (regra.obrigatorio && !valor) {
             valido = false;
-            mensagem = 'Este campo ÃƒÂ© obrigatÃƒÂ³rio';
+            mensagem = 'Este campo Ò© obrigatÒ³rio';
         } else if (valor) {
             if (regra.minLength && valor.length < regra.minLength) {
                 valido = false;
-                mensagem = `MÃƒÂ­nimo de ${regra.minLength} caracteres`;
+                mensagem = `MÒ­nimo de ${regra.minLength} caracteres`;
             } else if (regra.maxLength && valor.length > regra.maxLength) {
                 valido = false;
-                mensagem = `MÃƒÂ¡ximo de ${regra.maxLength} caracteres`;
+                mensagem = `MÒ¡ximo de ${regra.maxLength} caracteres`;
             } else if (regra.pattern && !regra.pattern.test(valor)) {
                 valido = false;
-                mensagem = regra.mensagemPadrao || 'Formato invÃƒÂ¡lido';
+                mensagem = regra.mensagemPadrao || 'Formato invÒ¡lido';
             } else if (regra.validacaoCustomizada) {
                 const resultado = regra.validacaoCustomizada(valor);
                 if (!resultado.valido) {
@@ -101,7 +101,7 @@ class ValidacaoFormulario {
         erroElement.id = `erro-${campo.name}`;
         erroElement.textContent = mensagem;
 
-        // Inserir apÃƒÂ³s o campo
+        // Inserir apÒ³s o campo
         campo.parentNode.appendChild(erroElement);
     }
 
@@ -128,27 +128,27 @@ class ValidacaoFormulario {
         const mensagens = Object.values(this.erros).join('\n');
         Swal.fire({
             icon: 'error',
-            title: 'Erro de ValidaÃƒÂ§ÃƒÂ£o',
+            title: 'Erro de ValidaÒ§Ò£o',
             text: 'Por favor, corrija os seguintes erros:',
             html: `<div class="text-left text-sm">${mensagens.replace(/\n/g, '<br>')}</div>`,
             confirmButtonColor: '#EF4444'
         });
     }
 
-    // MÃƒÂ©todo para validar campos especÃƒÂ­ficos
+    // MÒ©todo para validar campos especÒ­ficos
     validarCampoEspecifico(nomeCampo) {
         return this.validarCampo(nomeCampo);
     }
 
-    // MÃƒÂ©todo para verificar se formulÃƒÂ¡rio estÃƒÂ¡ vÃƒÂ¡lido
+    // MÒ©todo para verificar se formulÒ¡rio estÒ¡ vÒ¡lido
     estaValido() {
         return Object.keys(this.erros).length === 0;
     }
 }
 
-// Regras de validaÃƒÂ§ÃƒÂ£o para diferentes formulÃƒÂ¡rios
+// Regras de validaÒ§Ò£o para diferentes formulÒ¡rios
 const REGRAS_VALIDACAO = {
-    // FormulÃƒÂ¡rio de Categoria
+    // FormulÒ¡rio de Categoria
     categoria: [{
             campo: 'nome',
             obrigatorio: true,
@@ -163,7 +163,7 @@ const REGRAS_VALIDACAO = {
                 const tiposValidos = ['comunidade_academica', 'publico_geral', 'ambos'];
                 return {
                     valido: tiposValidos.includes(valor),
-                    mensagem: 'Tipo de pÃƒÂºblico invÃƒÂ¡lido'
+                    mensagem: 'Tipo de pÒºblico invÒ¡lido'
                 };
             }
         },
@@ -197,7 +197,7 @@ const REGRAS_VALIDACAO = {
         }
     ],
 
-    // FormulÃƒÂ¡rio de Modalidade
+    // FormulÒ¡rio de Modalidade
     modalidade: [{
             campo: 'nome',
             obrigatorio: true,
@@ -222,7 +222,7 @@ const REGRAS_VALIDACAO = {
                 const tiposValidos = ['corrida', 'caminhada', 'ambos'];
                 return {
                     valido: tiposValidos.includes(valor),
-                    mensagem: 'Tipo de prova invÃƒÂ¡lido'
+                    mensagem: 'Tipo de prova invÒ¡lido'
                 };
             }
         },
@@ -242,7 +242,7 @@ const REGRAS_VALIDACAO = {
         }
     ],
 
-    // FormulÃƒÂ¡rio de Evento
+    // FormulÒ¡rio de Evento
     evento: [{
             campo: 'nome',
             obrigatorio: true,
@@ -256,7 +256,7 @@ const REGRAS_VALIDACAO = {
             validacaoCustomizada: (valor) => {
                 if (!valor) return {
                     valido: false,
-                    mensagem: 'Data ÃƒÂ© obrigatÃƒÂ³ria'
+                    mensagem: 'Data Ò© obrigatÒ³ria'
                 };
 
                 const dataEvento = new Date(valor);
@@ -275,7 +275,7 @@ const REGRAS_VALIDACAO = {
             validacaoCustomizada: (valor) => {
                 return {
                     valido: valor && valor !== '',
-                    mensagem: 'HorÃƒÂ¡rio de inÃƒÂ­cio ÃƒÂ© obrigatÃƒÂ³rio'
+                    mensagem: 'HorÒ¡rio de inÒ­cio Ò© obrigatÒ³rio'
                 };
             }
         },
@@ -297,7 +297,7 @@ const REGRAS_VALIDACAO = {
                 ];
                 return {
                     valido: estadosValidos.includes(valor),
-                    mensagem: 'Estado invÃƒÂ¡lido'
+                    mensagem: 'Estado invÒ¡lido'
                 };
             }
         },
@@ -318,7 +318,7 @@ const REGRAS_VALIDACAO = {
     ]
 };
 
-// FunÃƒÂ§ÃƒÂµes de validaÃƒÂ§ÃƒÂ£o utilitÃƒÂ¡rias
+// FunÒ§Òµes de validaÒ§Ò£o utilitÒ¡rias
 const ValidacaoUtils = {
     // Validar email
     email: (email) => {
@@ -331,10 +331,10 @@ const ValidacaoUtils = {
         cpf = cpf.replace(/[^\d]/g, '');
         if (cpf.length !== 11) return false;
 
-        // Verificar dÃƒÂ­gitos repetidos
+        // Verificar dÒ­gitos repetidos
         if (/^(\d)\1{10}$/.test(cpf)) return false;
 
-        // Validar dÃƒÂ­gitos verificadores
+        // Validar dÒ­gitos verificadores
         let soma = 0;
         for (let i = 0; i < 9; i++) {
             soma += parseInt(cpf.charAt(i)) * (10 - i);
@@ -379,19 +379,19 @@ const ValidacaoUtils = {
     }
 };
 
-// Inicializar validaÃƒÂ§ÃƒÂµes quando o DOM estiver pronto
+// Inicializar validaÒ§Òµes quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function () {
-    // Inicializar validaÃƒÂ§ÃƒÂ£o de categoria se existir
+    // Inicializar validaÒ§Ò£o de categoria se existir
     if (document.getElementById('formCategoria')) {
         window.validacaoCategoria = new ValidacaoFormulario('formCategoria', REGRAS_VALIDACAO.categoria);
     }
 
-    // Inicializar validaÃƒÂ§ÃƒÂ£o de modalidade se existir
+    // Inicializar validaÒ§Ò£o de modalidade se existir
     if (document.getElementById('formModalidade')) {
         window.validacaoModalidade = new ValidacaoFormulario('formModalidade', REGRAS_VALIDACAO.modalidade);
     }
 
-    // Inicializar validaÃƒÂ§ÃƒÂ£o de evento se existir
+    // Inicializar validaÒ§Ò£o de evento se existir
     if (document.getElementById('formEvento')) {
         window.validacaoEvento = new ValidacaoFormulario('formEvento', REGRAS_VALIDACAO.evento);
     }

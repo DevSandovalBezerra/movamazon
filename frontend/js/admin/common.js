@@ -1,12 +1,12 @@
 if (window.getApiBase) { window.getApiBase(); }
 /**
- * FunÃƒÂ§ÃƒÂµes comuns para pÃƒÂ¡ginas administrativas
- * Inclui utilitÃƒÂ¡rios para SweetAlert2 e outras funcionalidades compartilhadas
+ * FunÒ§Òµes comuns para pÒ¡ginas administrativas
+ * Inclui utilitÒ¡rios para SweetAlert2 e outras funcionalidades compartilhadas
  */
 
-// Verificar se SweetAlert2 estÃƒÂ¡ disponÃƒÂ­vel
+// Verificar se SweetAlert2 estÒ¡ disponÒ­vel
 if (typeof Swal === 'undefined') {
-    console.warn('SweetAlert2 nÃƒÂ£o estÃƒÂ¡ carregado. Carregando...');
+    console.warn('SweetAlert2 nÒ£o estÒ¡ carregado. Carregando...');
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
     script.onload = () => {
@@ -18,10 +18,10 @@ if (typeof Swal === 'undefined') {
 /**
  * Exibe uma mensagem usando SweetAlert2 ou fallback para alert
  * @param {string} type - Tipo da mensagem: 'success', 'error', 'warning', 'info', 'question'
- * @param {string} title - TÃƒÂ­tulo da mensagem
+ * @param {string} title - TÒ­tulo da mensagem
  * @param {string} message - Mensagem (opcional)
- * @param {object} options - OpÃƒÂ§ÃƒÂµes adicionais do SweetAlert2
- * @returns {Promise} Promise que resolve quando o alerta ÃƒÂ© fechado
+ * @param {object} options - OpÒ§Òµes adicionais do SweetAlert2
+ * @returns {Promise} Promise que resolve quando o alerta Ò© fechado
  */
 function showMessage(type = 'info', title = '', message = '', options = {}) {
     const defaultOptions = {
@@ -48,7 +48,7 @@ function showMessage(type = 'info', title = '', message = '', options = {}) {
 }
 
 /**
- * Retorna a cor do botÃƒÂ£o baseado no tipo
+ * Retorna a cor do botÒ£o baseado no tipo
  */
 function getButtonColor(type) {
     const colors = {
@@ -62,15 +62,15 @@ function getButtonColor(type) {
 }
 
 /**
- * Exibe uma confirmaÃƒÂ§ÃƒÂ£o usando SweetAlert2
- * @param {string} title - TÃƒÂ­tulo da confirmaÃƒÂ§ÃƒÂ£o
- * @param {string} text - Texto da confirmaÃƒÂ§ÃƒÂ£o
- * @param {string} confirmText - Texto do botÃƒÂ£o de confirmaÃƒÂ§ÃƒÂ£o
- * @param {string} cancelText - Texto do botÃƒÂ£o de cancelamento
- * @param {string} icon - ÃƒÂcone: 'warning', 'question', 'error', 'info'
+ * Exibe uma confirmaÒ§Ò£o usando SweetAlert2
+ * @param {string} title - TÒ­tulo da confirmaÒ§Ò£o
+ * @param {string} text - Texto da confirmaÒ§Ò£o
+ * @param {string} confirmText - Texto do botÒ£o de confirmaÒ§Ò£o
+ * @param {string} cancelText - Texto do botÒ£o de cancelamento
+ * @param {string} icon - Òcone: 'warning', 'question', 'error', 'info'
  * @returns {Promise} Promise que resolve com {isConfirmed: boolean}
  */
-async function showConfirm(title = 'Confirmar aÃƒÂ§ÃƒÂ£o', text = 'Esta aÃƒÂ§ÃƒÂ£o nÃƒÂ£o pode ser desfeita.', confirmText = 'Sim, confirmar', cancelText = 'Cancelar', icon = 'question') {
+async function showConfirm(title = 'Confirmar aÒ§Ò£o', text = 'Esta aÒ§Ò£o nÒ£o pode ser desfeita.', confirmText = 'Sim, confirmar', cancelText = 'Cancelar', icon = 'question') {
     if (typeof Swal !== 'undefined') {
         const result = await Swal.fire({
             title: title,
@@ -95,7 +95,7 @@ async function showConfirm(title = 'Confirmar aÃƒÂ§ÃƒÂ£o', text = 'Esta 
 
 /**
  * Exibe um loading usando SweetAlert2
- * @param {string} title - TÃƒÂ­tulo do loading
+ * @param {string} title - TÒ­tulo do loading
  * @param {string} text - Texto do loading
  */
 function showLoading(title = 'Carregando...', text = 'Por favor, aguarde') {
@@ -122,10 +122,10 @@ function hideLoading() {
 }
 
 /**
- * Exibe um toast (notificaÃƒÂ§ÃƒÂ£o pequena) usando SweetAlert2
+ * Exibe um toast (notificaÒ§Ò£o pequena) usando SweetAlert2
  * @param {string} type - Tipo: 'success', 'error', 'warning', 'info'
  * @param {string} message - Mensagem
- * @param {number} duration - DuraÃƒÂ§ÃƒÂ£o em ms (padrÃƒÂ£o: 3000)
+ * @param {number} duration - DuraÒ§Ò£o em ms (padrÒ£o: 3000)
  */
 function showToast(type = 'info', message = '', duration = 3000) {
     if (typeof Swal !== 'undefined') {
@@ -154,9 +154,9 @@ function showToast(type = 'info', message = '', duration = 3000) {
 /**
  * Trata erros de API e exibe mensagem apropriada
  * @param {Error|object} error - Erro capturado
- * @param {string} defaultMessage - Mensagem padrÃƒÂ£o se nÃƒÂ£o conseguir extrair do erro
+ * @param {string} defaultMessage - Mensagem padrÒ£o se nÒ£o conseguir extrair do erro
  */
-function handleApiError(error, defaultMessage = 'Erro ao processar solicitaÃƒÂ§ÃƒÂ£o') {
+function handleApiError(error, defaultMessage = 'Erro ao processar solicitaÒ§Ò£o') {
     let message = defaultMessage;
     
     if (error instanceof Error) {
@@ -192,18 +192,18 @@ function showError(message, title = 'Erro!') {
 /**
  * Formata mensagens de aviso
  */
-function showWarning(message, title = 'AtenÃƒÂ§ÃƒÂ£o!') {
+function showWarning(message, title = 'AtenÒ§Ò£o!') {
     return showMessage('warning', title, message);
 }
 
 /**
- * Formata mensagens de informaÃƒÂ§ÃƒÂ£o
+ * Formata mensagens de informaÒ§Ò£o
  */
-function showInfo(message, title = 'InformaÃƒÂ§ÃƒÂ£o') {
+function showInfo(message, title = 'InformaÒ§Ò£o') {
     return showMessage('info', title, message);
 }
 
-// Exportar funÃƒÂ§ÃƒÂµes para uso global
+// Exportar funÒ§Òµes para uso global
 window.AdminUtils = {
     showMessage,
     showConfirm,
@@ -217,7 +217,7 @@ window.AdminUtils = {
     showInfo
 };
 
-// Compatibilidade: manter funÃƒÂ§ÃƒÂµes globais tambÃƒÂ©m
+// Compatibilidade: manter funÒ§Òµes globais tambÒ©m
 window.showMessage = showMessage;
 window.showConfirm = showConfirm;
 window.showLoading = showLoading;

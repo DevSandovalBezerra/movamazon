@@ -452,7 +452,7 @@ if (window.getApiBase) { window.getApiBase(); }
         });
     }
 
-    // Exportar funçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes para uso global
+    // Exportar funçções para uso global
     window.termosAdmin = {
         editar,
         visualizar,

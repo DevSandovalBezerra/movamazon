@@ -1,5 +1,5 @@
 if (window.getApiBase) { window.getApiBase(); }
-// JavaScript para Etapa 1: SeleÃƒÂ§ÃƒÂ£o de Modalidade
+// JavaScript para Etapa 1: SeleÒ§Ò£o de Modalidade
 class EtapaModalidade {
     constructor() {
         this.modalidadesSelecionadas = [];
@@ -13,7 +13,7 @@ class EtapaModalidade {
     }
 
     carregarDadosSessao() {
-        // Carregar modalidades jÃƒÂ¡ selecionadas da sessÃƒÂ£o
+        // Carregar modalidades jÒ¡ selecionadas da sessÒ£o
         if (window.sistemaInscricao && window.sistemaInscricao.dadosInscricao) {
             this.modalidadesSelecionadas = window.sistemaInscricao.dadosInscricao.modalidades_selecionadas || [];
         }
@@ -21,7 +21,7 @@ class EtapaModalidade {
     }
 
     bindEvents() {
-        // Event listeners para seleÃƒÂ§ÃƒÂ£o de modalidades
+        // Event listeners para seleÒ§Ò£o de modalidades
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-selecionar')) {
                 const modalidadeCard = e.target.closest('.modalidade-card');
@@ -32,7 +32,7 @@ class EtapaModalidade {
             }
         });
 
-        // Event listener para botÃƒÂ£o prÃƒÂ³ximo
+        // Event listener para botÒ£o prÒ³ximo
         const btnProximo = document.getElementById('btn-prosseguir');
         if (btnProximo) {
             btnProximo.addEventListener('click', () => {
@@ -59,7 +59,7 @@ class EtapaModalidade {
         // Buscar dados da modalidade
         const dadosModalidade = this.obterDadosModalidade(cardElement);
 
-        // Verificar se jÃƒÂ¡ nÃƒÂ£o foi adicionada
+        // Verificar se jÒ¡ nÒ£o foi adicionada
         if (!this.modalidadesSelecionadas.find(m => m.id === modalidadeId)) {
             this.modalidadesSelecionadas.push(dadosModalidade);
 
@@ -90,11 +90,11 @@ class EtapaModalidade {
 
     obterDadosModalidade(cardElement) {
         const modalidadeId = parseInt(cardElement.dataset.modalidadeId);
-        const nome = cardElement.querySelector('.modalidade-nome') ? .textContent || '';
-        const categoria = cardElement.querySelector('.categoria-badge') ? .textContent || '';
+        const nome = cardElement.querySelector('.modalidade-nome')?.textContent || '';
+        const categoria = cardElement.querySelector('.categoria-badge')?.textContent || '';
         const preco = this.extrairPreco(cardElement);
-        const kitNome = cardElement.querySelector('.kit-details h5') ? .textContent || '';
-        const distancia = cardElement.querySelector('.info-item') ? .textContent || '';
+        const kitNome = cardElement.querySelector('.kit-details h5')?.textContent || '';
+        const distancia = cardElement.querySelector('.info-item')?.textContent || '';
 
         return {
             id: modalidadeId,
@@ -118,7 +118,7 @@ class EtapaModalidade {
     }
 
     atualizarSelecoes() {
-        // Marcar cards jÃƒÂ¡ selecionados
+        // Marcar cards jÒ¡ selecionados
         this.modalidadesSelecionadas.forEach(modalidade => {
             const card = document.querySelector(`[data-modalidade-id="${modalidade.id}"]`);
             if (card) {
@@ -136,7 +136,7 @@ class EtapaModalidade {
         // Atualizar contador de modalidades selecionadas
         this.atualizarContador();
 
-        // Atualizar botÃƒÂ£o prÃƒÂ³ximo
+        // Atualizar botÒ£o prÒ³ximo
         this.atualizarBotaoProximo();
 
         // Atualizar resumo se existir
@@ -198,7 +198,7 @@ class EtapaModalidade {
             return false;
         }
 
-        // Salvar dados na sessÃƒÂ£o
+        // Salvar dados na sessÒ£o
         if (window.sistemaInscricao) {
             window.sistemaInscricao.salvarDadosEtapa({
                 modalidades_selecionadas: this.modalidadesSelecionadas,
@@ -206,7 +206,7 @@ class EtapaModalidade {
             });
         }
 
-        // Prosseguir para prÃƒÂ³xima etapa
+        // Prosseguir para prÒ³xima etapa
         if (window.sistemaInscricao) {
             window.sistemaInscricao.prosseguirEtapa();
         }
@@ -226,7 +226,7 @@ class EtapaModalidade {
         }
     }
 
-    // MÃƒÂ©todos utilitÃƒÂ¡rios
+    // MÒ©todos utilitÒ¡rios
     getModalidadesSelecionadas() {
         return this.modalidadesSelecionadas;
     }
@@ -251,7 +251,7 @@ class EtapaModalidade {
     }
 }
 
-// FunÃƒÂ§ÃƒÂ£o global para seleÃƒÂ§ÃƒÂ£o de modalidade
+// FunÒ§Ò£o global para seleÒ§Ò£o de modalidade
 function selecionarModalidade(modalidadeId) {
     if (window.etapaModalidade) {
         const cardElement = document.querySelector(`[data-modalidade-id="${modalidadeId}"]`);
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.etapaModalidade = new EtapaModalidade();
 });
 
-// Exportar para uso em outros mÃƒÂ³dulos
+// Exportar para uso em outros mÒ³dulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EtapaModalidade;
 }

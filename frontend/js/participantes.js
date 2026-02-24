@@ -1,12 +1,12 @@
 if (window.getApiBase) { window.getApiBase(); }
 let participantes = [];
-let participantesOriginais = []; // MantÃƒÂ©m dados da API para aplicar filtros locais
+let participantesOriginais = []; // Mantém dados da API para aplicar filtros locais
 let paginaAtual = 1;
 let itensPorPagina = 10;
 let eventos = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('Ã°Å¸Å¡â‚¬ DOMContentLoaded - Iniciando pÃƒÂ¡gina de participantes');
+  console.log('🚀 DOMContentLoaded - Iniciando página de participantes');
 
   // Carregar eventos primeiro para os filtros
   carregarEventos().then(() => {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (filtroStatus) filtroStatus.addEventListener('change', filtrarParticipantes);
   if (busca) busca.addEventListener('input', filtrarParticipantes);
 
-  // Event listeners para paginaÃƒÂ§ÃƒÂ£o
+  // Event listeners para paginação
   const btnAnterior = document.getElementById('anterior');
   const btnProximo = document.getElementById('proximo');
 
@@ -49,13 +49,13 @@ document.addEventListener('DOMContentLoaded', function () {
 // Carregar eventos para os filtros
 async function carregarEventos() {
   try {
-    console.log('Ã°Å¸â€œÂ¡ Carregando eventos para filtros');
+    console.log(' Carregando eventos para filtros');
     const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
     const data = await response.json();
 
     if (data.success) {
       eventos = data.data.eventos || [];
-      console.log('âÅ“â€¦ Eventos carregados:', eventos.length);
+      console.log('... Eventos carregados:', eventos.length);
 
       // Preencher filtro de eventos
       const selectEvento = document.getElementById('filtroEvento');
@@ -68,51 +68,51 @@ async function carregarEventos() {
         selectEvento.appendChild(option);
       });
     } else {
-      console.error('âÂÅ’ Erro ao carregar eventos:', data.message);
+      console.error(' Erro ao carregar eventos:', data.message);
     }
   } catch (error) {
-    console.error('Ã°Å¸â€™Â¥ Erro na requisiÃƒÂ§ÃƒÂ£o de eventos:', error);
+    console.error('💥 Erro na requisição de eventos:', error);
   }
 }
 
 async function carregarParticipantes(eventoId = null) {
   try {
-    console.log('Ã°Å¸â€œÂ¡ Carregando participantes - Evento ID:', eventoId);
+    console.log(' Carregando participantes - Evento ID:', eventoId);
 
     let url = (window.API_BASE || '/api') + '/organizador/participantes/list.php';
     if (eventoId) {
       url += `?evento_id=${eventoId}`;
     }
 
-    console.log('Ã°Å¸Å’Â URL da requisiÃƒÂ§ÃƒÂ£o:', url);
+    console.log('🌐 URL da requisição:', url);
 
     const response = await fetch(url);
-    console.log('Ã°Å¸â€œÅ  Response status:', response.status);
+    console.log(' Response status:', response.status);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const responseText = await response.text();
-    console.log('Ã°Å¸â€œâ€ž Response text:', responseText);
+    console.log(' Response text:', responseText);
 
     if (!responseText.trim()) {
       throw new Error('Resposta vazia do servidor');
     }
 
     const data = JSON.parse(responseText);
-    console.log('Ã°Å¸â€œâ€¹ Data parsed:', data);
+    console.log(' Data parsed:', data);
 
     if (data.success) {
       participantesOriginais = data.data || [];
       aplicarFiltrosLocais();
-      console.log('âÅ“â€¦ Participantes carregados:', participantesOriginais.length);
+      console.log('... Participantes carregados:', participantesOriginais.length);
     } else {
-      console.error('âÂÅ’ Erro ao carregar participantes:', data.message);
+      console.error(' Erro ao carregar participantes:', data.message);
       mostrarErro('Erro ao carregar participantes: ' + (data.message || 'Erro desconhecido'));
     }
   } catch (error) {
-    console.error('Ã°Å¸â€™Â¥ Erro na requisiÃƒÂ§ÃƒÂ£o de participantes:', error);
+    console.error('💥 Erro na requisição de participantes:', error);
     mostrarErro('Erro ao carregar participantes: ' + error.message);
   }
 }
@@ -230,17 +230,17 @@ function verDetalhes(participanteId) {
     modalContent.innerHTML = `
       <div class="space-y-4">
         <div>
-          <h4 class="font-semibold text-gray-900">InformaÃƒÂ§ÃƒÂµes Pessoais</h4>
+          <h4 class="font-semibold text-gray-900">Informações Pessoais</h4>
           <p><strong>Nome:</strong> ${participante.participante_nome || 'N/A'}</p>
           <p><strong>Email:</strong> ${participante.participante_email || 'N/A'}</p>
         </div>
         <div>
-          <h4 class="font-semibold text-gray-900">InscriÃƒÂ§ÃƒÂ£o</h4>
-          <p><strong>NÃ‚Âº InscriÃƒÂ§ÃƒÂ£o:</strong> ${participante.numero_inscricao ? participante.numero_inscricao : ('ID ' + participante.id)}</p>
+          <h4 class="font-semibold text-gray-900">Inscrição</h4>
+          <p><strong>Nº Inscrição:</strong> ${participante.numero_inscricao ? participante.numero_inscricao : ('ID ' + participante.id)}</p>
           <p><strong>Evento:</strong> ${participante.evento_nome || 'N/A'}</p>
           <p><strong>Valor:</strong> ${participante.valor_formatado || 'N/A'}</p>
           <p><strong>Status:</strong> ${participante.status || 'N/A'}</p>
-          <p><strong>Data de InscriÃƒÂ§ÃƒÂ£o:</strong> ${participante.data_inscricao_formatada || 'N/A'}</p>
+          <p><strong>Data de Inscrição:</strong> ${participante.data_inscricao_formatada || 'N/A'}</p>
         </div>
       </div>
     `;
@@ -304,7 +304,7 @@ function enviarEmail(email) {
 }
 
 async function sincronizarPagamento(inscricaoId) {
-  const ok = await showSwalConfirm('Sincronizar pagamento', 'Deseja sincronizar o status de pagamento desta inscriÃƒÂ§ÃƒÂ£o com o Mercado Pago?');
+  const ok = await showSwalConfirm('Sincronizar pagamento', 'Deseja sincronizar o status de pagamento desta inscrição com o Mercado Pago?');
   if (!ok) return;
 
   if (typeof Swal !== 'undefined') {
@@ -341,7 +341,7 @@ async function sincronizarPagamento(inscricaoId) {
 }
 
 function mostrarErro(mensagem) {
-  console.error('âÂÅ’ Erro:', mensagem);
+  console.error(' Erro:', mensagem);
   if (typeof Swal !== 'undefined') {
     Swal.fire({ icon: 'error', title: 'Erro ao carregar participantes', text: mensagem });
   }
@@ -367,11 +367,11 @@ const exportarBtn = document.getElementById('exportarBtn');
 if (exportarBtn) {
   exportarBtn.addEventListener('click', function () {
     if (participantes.length === 0) {
-      showSwalError('Nada para exportar', 'NÃƒÂ£o hÃƒÂ¡ participantes na lista para exportar.');
+      showSwalError('Nada para exportar', 'Não há participantes na lista para exportar.');
       return;
     }
     const csvContent = "data:text/csv;charset=utf-8," +
-      "Nome,Email,NÃ‚Âº InscriÃƒÂ§ÃƒÂ£o,Evento,Valor,Status,Status Pagamento,Data InscriÃƒÂ§ÃƒÂ£o\n" +
+      "Nome,Email,Nº Inscrição,Evento,Valor,Status,Status Pagamento,Data Inscrição\n" +
       participantes.map(p =>
         `"${p.participante_nome || ''}","${p.participante_email || ''}","${p.numero_inscricao || ''}","${p.evento_nome || ''}","${p.valor_formatado || ''}","${p.status || ''}","${p.status_pagamento || ''}","${p.data_inscricao_formatada || ''}"`
       ).join('\n');
@@ -392,9 +392,9 @@ const enviarComunicadoBtn = document.getElementById('enviarComunicadoBtn');
 if (enviarComunicadoBtn) {
   enviarComunicadoBtn.addEventListener('click', function () {
     if (typeof Swal !== 'undefined') {
-      Swal.fire({ icon: 'info', title: 'Enviar comunicado', text: 'Funcionalidade de envio de comunicados serÃƒÂ¡ implementada em breve.' });
+      Swal.fire({ icon: 'info', title: 'Enviar comunicado', text: 'Funcionalidade de envio de comunicados será implementada em breve.' });
     } else {
-      alert('Funcionalidade de envio de comunicados serÃƒÂ¡ implementada');
+      alert('Funcionalidade de envio de comunicados será implementada');
     }
   });
 }

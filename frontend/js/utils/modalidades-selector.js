@@ -2,7 +2,7 @@ if (window.getApiBase) { window.getApiBase(); }
 function renderizarModalidadesCheckboxes(containerId, modalidades, selecionadas = []) {
     const container = document.getElementById(containerId);
     if (!container) {
-        console.error(`Container com ID "${containerId}" nÃƒÂ£o encontrado`);
+        console.error(`Container com ID "${containerId}" nÒ£o encontrado`);
         return;
     }
 
@@ -40,7 +40,7 @@ function renderizarModalidadesCheckboxes(containerId, modalidades, selecionadas 
 function obterModalidadesSelecionadas(containerId) {
     const container = document.getElementById(containerId);
     if (!container) {
-        console.error(`Container com ID "${containerId}" nÃƒÂ£o encontrado`);
+        console.error(`Container com ID "${containerId}" nÒ£o encontrado`);
         return [];
     }
 

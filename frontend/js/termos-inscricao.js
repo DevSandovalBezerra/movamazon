@@ -1,19 +1,19 @@
 if (window.getApiBase) { window.getApiBase(); }
-// Termos de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o - JavaScript
-console.log('Termos de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o - JavaScript carregado');
+// Termos de Inscrição - JavaScript
+console.log('Termos de Inscrição - JavaScript carregado');
 
 let editor = null;
 
 function abrirModalCriar() {
     console.log('Abrindo modal para criar termo');
 
-    // Limpar formulÃƒÆ’Ã‚Â¡rio
+    // Limpar formulário
     document.getElementById('formTermo').reset();
     document.getElementById('termoId').value = '';
     document.getElementById('modalTitulo').textContent = 'Novo Termo';
     document.getElementById('ativo').checked = true;
 
-    // Inicializar CKEditor se ainda nÃƒÆ’Ã‚Â£o foi inicializado e se estiver disponÃƒÆ’Ã‚Â­vel
+    // Inicializar CKEditor se ainda não foi inicializado e se estiver disponível
     if (!editor && typeof ClassicEditor !== 'undefined') {
         ClassicEditor
             .create(document.querySelector('#conteudo'))
@@ -26,7 +26,7 @@ function abrirModalCriar() {
                 editor = null;
             });
     } else if (typeof ClassicEditor === 'undefined') {
-        console.warn('CKEditor nÃƒÆ’Ã‚Â£o estÃƒÆ’Ã‚Â¡ disponÃƒÆ’Ã‚Â­vel, usando textarea simples');
+        console.warn('CKEditor não está disponível, usando textarea simples');
     }
 
     // Mostrar modal
@@ -46,7 +46,7 @@ function fecharModal() {
 function salvarTermo() {
     console.log('Salvando termo');
 
-    // Determinar se ÃƒÆ’Ã‚Â© criaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o ou ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Determinar se é criação ou edição
     const termoId = document.getElementById('termoId').value;
     const isEdit = termoId && termoId !== '';
 
@@ -60,19 +60,19 @@ function salvarTermo() {
         ativo: document.getElementById('ativo').checked ? 1 : 0
     };
 
-    // Adicionar conteÃƒÆ’Ã‚Âºdo do editor ou textarea
+    // Adicionar conteúdo do editor ou textarea
     if (editor) {
         data.conteudo = editor.getData();
     } else {
         data.conteudo = document.getElementById('conteudo').value;
     }
 
-    // Adicionar ID se for ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Adicionar ID se for edição
     if (isEdit) {
         data.id = termoId;
     }
 
-    console.log('Dados do formulÃƒÆ’Ã‚Â¡rio:', data);
+    console.log('Dados do formulário:', data);
 
     const endpoint = isEdit ? 'update.php' : 'create.php';
     const method = 'POST';
@@ -180,7 +180,7 @@ function carregarTermos() {
 function renderizarTabela(termos) {
     const tbody = document.getElementById('termosTableBody');
     if (!tbody) {
-        console.log('Tbody nÃƒÆ’Ã‚Â£o encontrado');
+        console.log('Tbody não encontrado');
         return;
     }
 
@@ -216,7 +216,7 @@ function renderizarTabela(termos) {
     `).join('');
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para editar termo
+// Função para editar termo
 function editarTermo(id) {
     console.log('Editando termo:', id);
 
@@ -236,7 +236,7 @@ function editarTermo(id) {
             if (data.success && data.termo) {
                 console.log('Termo carregado:', data.termo);
 
-                // Preencher formulÃƒÆ’Ã‚Â¡rio
+                // Preencher formulário
                 document.getElementById('termoId').value = data.termo.id || '';
                 document.getElementById('eventoId').value = data.termo.evento_id || '';
                 document.getElementById('titulo').value = data.termo.titulo || '';
@@ -246,19 +246,19 @@ function editarTermo(id) {
                 // Carregar modalidades do evento
                 if (data.termo.evento_id) {
                     carregarModalidadesModal(data.termo.evento_id).then(() => {
-                        // Aguardar um pouco para o select carregar e entÃƒÆ’Ã‚Â£o selecionar a modalidade
+                        // Aguardar um pouco para o select carregar e então selecionar a modalidade
                         setTimeout(() => {
                             document.getElementById('modalidadeId').value = data.termo.modalidade_id || '';
                         }, 300);
                     });
                 }
 
-                // Definir conteÃƒÆ’Ã‚Âºdo no editor
+                // Definir conteúdo no editor
                 const conteudo = data.termo.conteudo || '';
                 if (editor) {
                     editor.setData(conteudo);
                 } else if (typeof ClassicEditor !== 'undefined') {
-                    // Se o editor ainda nÃƒÆ’Ã‚Â£o foi inicializado, inicializar agora
+                    // Se o editor ainda não foi inicializado, inicializar agora
                     ClassicEditor
                         .create(document.querySelector('#conteudo'))
                         .then(newEditor => {
@@ -271,12 +271,12 @@ function editarTermo(id) {
                             document.getElementById('conteudo').value = conteudo;
                         });
                 } else {
-                    // Se o CKEditor nÃƒÆ’Ã‚Â£o estiver disponÃƒÆ’Ã‚Â­vel, usar textarea normal
-                    console.warn('CKEditor nÃƒÆ’Ã‚Â£o estÃƒÆ’Ã‚Â¡ disponÃƒÆ’Ã‚Â­vel, usando textarea simples');
+                    // Se o CKEditor não estiver disponível, usar textarea normal
+                    console.warn('CKEditor não está disponível, usando textarea simples');
                     document.getElementById('conteudo').value = conteudo;
                 }
 
-                // Atualizar tÃƒÆ’Ã‚Â­tulo do modal
+                // Atualizar título do modal
                 document.getElementById('modalTitulo').textContent = 'Editar Termo';
 
                 // Mostrar modal
@@ -295,7 +295,7 @@ function editarTermo(id) {
         });
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para alternar status do termo
+// Função para alternar status do termo
 function toggleStatusTermo(id, statusAtual) {
     console.log('Alternando status do termo:', id, 'Status atual:', statusAtual);
 
@@ -341,13 +341,13 @@ function toggleStatusTermo(id, statusAtual) {
     });
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para excluir termo
+// Função para excluir termo
 function excluirTermo(id) {
     console.log('Excluindo termo:', id);
 
     Swal.fire({
-        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
-        text: 'Deseja realmente excluir este termo? Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.',
+        title: 'Confirmar exclusão',
+        text: 'Deseja realmente excluir este termo? Esta ação não pode ser desfeita.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
@@ -368,7 +368,7 @@ function excluirTermo(id) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire('Sucesso', 'Termo excluÃƒÆ’Ã‚Â­do com sucesso!', 'success');
+                        Swal.fire('Sucesso', 'Termo excluído com sucesso!', 'success');
                         // Recarregar termos
                         carregarTermos();
                     } else {
@@ -383,13 +383,13 @@ function excluirTermo(id) {
     });
 }
 
-// Carregar termos quando a pÃƒÆ’Ã‚Â¡gina carregar
+// Carregar termos quando a página carregar
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('PÃƒÆ’Ã‚Â¡gina carregada');
-    // NÃƒÆ’Ã‚Â£o carregar termos automaticamente - seguir padrÃƒÆ’Ã‚Â£o do questionÃƒÆ’Ã‚Â¡rio
+    console.log('Página carregada');
+    // Não carregar termos automaticamente - seguir padrão do questionário
     mostrarMensagemInicial();
 
-    // Event listener para filtro de evento (igual ao questionÃƒÆ’Ã‚Â¡rio)
+    // Event listener para filtro de evento (igual ao questionário)
     document.getElementById('filtroEvento').addEventListener('change', function () {
         const eventoId = this.value;
         if (eventoId) {

@@ -199,7 +199,7 @@ if (window.getApiBase) { window.getApiBase(); }
             pages.push(`<button onclick="window.problemasInscricoes?.irParaPagina(${i})" class="px-3 py-1 border rounded ${i === page ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}">${i}</button>`);
         }
         
-        // ÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡ltima página
+        // Última página
         if (page < totalPages) {
             if (page < totalPages - 1) pages.push('<span class="px-2">...</span>');
             pages.push(`<button onclick="window.problemasInscricoes?.irParaPagina(${totalPages})" class="px-3 py-1 border rounded hover:bg-gray-100">${totalPages}</button>`);
@@ -326,7 +326,7 @@ if (window.getApiBase) { window.getApiBase(); }
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <h3 class="font-semibold text-gray-700 mb-2">InformaçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes Básicas</h3>
+                            <h3 class="font-semibold text-gray-700 mb-2">Informaçções Básicas</h3>
                             <dl class="space-y-1 text-sm">
                                 ${log.inscricao_id ? `<dt class="font-medium">Inscrição ID:</dt><dd class="text-gray-600">${log.inscricao_id}</dd>` : ''}
                                 ${log.payment_id ? `<dt class="font-medium">Payment ID:</dt><dd class="text-gray-600">${log.payment_id}</dd>` : ''}
@@ -358,7 +358,7 @@ if (window.getApiBase) { window.getApiBase(); }
 
                     ${log.ip || log.user_agent ? `
                         <div>
-                            <h3 class="font-semibold text-gray-700 mb-2">InformaçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes Técnicas</h3>
+                            <h3 class="font-semibold text-gray-700 mb-2">Informaçções Técnicas</h3>
                             <dl class="space-y-1 text-sm">
                                 ${log.ip ? `<dt class="font-medium">IP:</dt><dd class="text-gray-600">${log.ip}</dd>` : ''}
                                 ${log.user_agent ? `<dt class="font-medium">User Agent:</dt><dd class="text-gray-600 text-xs">${log.user_agent}</dd>` : ''}
@@ -471,7 +471,7 @@ if (window.getApiBase) { window.getApiBase(); }
         const tipo = els.limpezaTipo?.value || '';
         const opcoes = els.limpezaOpcoes;
         
-        // Esconder todas as opçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
+        // Esconder todas as opçções
         opcoes?.querySelectorAll('[id^="opcao-"]').forEach(el => {
             el.classList.add('hidden');
         });
@@ -523,7 +523,7 @@ if (window.getApiBase) { window.getApiBase(); }
             case 'periodo':
                 const dias = parseInt(document.getElementById('limpeza-periodo-dias')?.value);
                 if (!dias || dias < 1) {
-                    showMessage('warning', 'Informe o nºmero de dias');
+                    showMessage('warning', 'Informe o número de dias');
                     return;
                 }
                 payload.periodo_dias = dias;
@@ -549,7 +549,7 @@ if (window.getApiBase) { window.getApiBase(); }
             case 'manter_ultimos':
                 const manter = parseInt(document.getElementById('limpeza-manter-ultimos')?.value);
                 if (!manter || manter < 1) {
-                    showMessage('warning', 'Informe o nºmero de dias');
+                    showMessage('warning', 'Informe o número de dias');
                     return;
                 }
                 payload.manter_ultimos_dias = manter;
@@ -592,7 +592,7 @@ if (window.getApiBase) { window.getApiBase(); }
             if (detalhes.por_nivel) {
                 html += '<div class="mt-2 space-y-1">';
                 Object.entries(detalhes.por_nivel).forEach(([nivel, total]) => {
-                    html += `<p class="text-sm">ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${nivel}: ${total} registro(s)</p>`;
+                    html += `<p class="text-sm">• ${nivel}: ${total} registro(s)</p>`;
                 });
                 html += '</div>';
             }
@@ -752,7 +752,7 @@ if (window.getApiBase) { window.getApiBase(); }
         els.btnLimpezaExecutar.addEventListener('click', executarLimpeza);
     }
 
-    // Carregar açÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes disponíveis
+    // Carregar açções disponíveis
     const carregarAcoes = async () => {
         try {
             const response = await fetch(api('admin/logs_inscricoes/list.php?per_page=1'), {
@@ -771,7 +771,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 }
             }
         } catch (error) {
-            console.error('Erro ao carregar açÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', error);
+            console.error('Erro ao carregar açções:', error);
         }
     };
 
@@ -781,7 +781,7 @@ if (window.getApiBase) { window.getApiBase(); }
         carregarLogs();
     };
 
-    // Exportar funçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes para uso global
+    // Exportar funçções para uso global
     window.problemasInscricoes = {
         verDetalhes,
         irParaPagina,

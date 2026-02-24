@@ -328,7 +328,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 throw new Error(data.message || 'Erro ao remover banner');
             }
             
-            console.log('[BANNERS] ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬Ã…â€œ Banner removido com sucesso');
+            console.log('[BANNERS]  Banner removido com sucesso');
             showMessage('success', data.message || 'Banner removido com sucesso');
             closeModal('modal-confirmacao');
             
@@ -337,7 +337,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 await carregarBanners();
             }, 500);
         } catch (error) {
-            console.error('[BANNERS] ÃƒÆ’Ã‚Â¢Ãƒâ€¦ââ‚¬Å“ÃƒÂ¢ââ€šÂ¬ââ‚¬Â Erro ao remover banner:', error);
+            console.error('[BANNERS]  Erro ao remover banner:', error);
             showMessage('error', error.message || 'Falha ao remover banner. Verifique o console para mais detalhes.');
         } finally {
             els.btnConfirmRemocao.disabled = false;
@@ -534,7 +534,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 els.modalConfirmBody.innerHTML = `
                     <p class="text-gray-700 font-semibold mb-2">Tem certeza que deseja remover este banner?</p>
                     <p class="text-gray-600"><strong>Título:</strong> ${banner.titulo || 'Sem título'}</p>
-                    <p class="text-sm text-red-600 mt-2">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Esta ação não pode ser desfeita.</p>
+                    <p class="text-sm text-red-600 mt-2">Atenção: Esta ação não pode ser desfeita.</p>
                 `;
             } else {
                 console.warn('[BANNERS] Corpo do modal de confirmação não encontrado');

@@ -136,7 +136,7 @@ function criarGraficoInscricoesMensal(dados) {
         data: {
             labels: dados.map(d => d.mes),
             datasets: [{
-                label: 'InscriçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes',
+                label: 'Inscriçções',
                 data: dados.map(d => d.total),
                 backgroundColor: '#0b4340',
                 borderColor: '#1a5f5a',
@@ -209,7 +209,7 @@ function criarGraficoTopEventos(dados) {
         data: {
             labels: dados.map(d => d.nome.length > 20 ? d.nome.substring(0, 20) + '...' : d.nome),
             datasets: [{
-                label: 'InscriçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes',
+                label: 'Inscriçções',
                 data: dados.map(d => d.total_inscricoes || 0),
                 backgroundColor: '#f5c113',
                 borderColor: '#0b4340',
@@ -265,7 +265,7 @@ function renderizarEventosRecentes(eventos) {
                     <p class="text-sm font-medium text-gray-900 truncate">${escapeHtml(evento.nome)}</p>
                     <p class="text-xs text-gray-500">${dataFormatada}</p>
                     <p class="text-xs text-gray-600 mt-1">
-                        <span class="font-semibold">${evento.total_inscricoes || 0}</span> inscriçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
+                        <span class="font-semibold">${evento.total_inscricoes || 0}</span> inscriçções
                     </p>
                 </div>
             </div>

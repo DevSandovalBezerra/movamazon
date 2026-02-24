@@ -40,7 +40,7 @@ class CriarEventoManager {
         this.log('[INIT] Inicializando manager', {
             instanceId: this.instanceId
         });
-        // Ajustar totalSteps dinamicamente, se necessÃƒÂ¡rio
+        // Ajustar totalSteps dinamicamente, se necessÒ¡rio
         const stepsCount = document.querySelectorAll('.step-content').length;
         if (typeof stepsCount === 'number' && stepsCount > 0 && stepsCount !== this.totalSteps) {
             this.log('[INIT] Atualizando totalSteps dinamicamente', {
@@ -59,7 +59,7 @@ class CriarEventoManager {
     }
 
     bindEvents() {
-        // BotÃƒÂµes de navegaÃƒÂ§ÃƒÂ£o
+        // BotÒµes de navegaÒ§Ò£o
         const btnProximo = document.getElementById('btn-proximo');
         const btnAnterior = document.getElementById('btn-anterior');
         const binds = {
@@ -91,7 +91,7 @@ class CriarEventoManager {
             //console.log('bound btn-anterior (capture)');
         }
 
-        // Submit do formulÃƒÂ¡rio
+        // Submit do formulÒ¡rio
         const form = document.getElementById('form-criar-evento');
         if (form && !form.dataset.bound) {
             form.addEventListener('submit', (e) => this.handleSubmit(e));
@@ -100,14 +100,14 @@ class CriarEventoManager {
             //console.log('bound form submit');
         }
 
-        // ValidaÃƒÂ§ÃƒÂ£o em tempo real
+        // ValidaÒ§Ò£o em tempo real
         this.setupValidation();
     }
 
     setMinDate() {
         const today = new Date().toISOString().split('T')[0];
 
-        // Verificar se os elementos existem antes de acessÃƒÂ¡-los
+        // Verificar se os elementos existem antes de acessÒ¡-los
         const dataInicio = document.getElementById('data_inicio');
         const dataFim = document.getElementById('data_fim');
         const dataRealizacao = document.getElementById('data_realizacao');
@@ -115,24 +115,24 @@ class CriarEventoManager {
         if (dataInicio) {
             dataInicio.setAttribute('min', today);
         } else {
-            console.warn('[setMinDate] Elemento data_inicio nÃƒÂ£o encontrado');
+            console.warn('[setMinDate] Elemento data_inicio nÒ£o encontrado');
         }
 
         if (dataFim) {
             dataFim.setAttribute('min', today);
         } else {
-            console.warn('[setMinDate] Elemento data_fim nÃƒÂ£o encontrado');
+            console.warn('[setMinDate] Elemento data_fim nÒ£o encontrado');
         }
 
         if (dataRealizacao) {
             dataRealizacao.setAttribute('min', today);
         } else {
-            console.warn('[setMinDate] Elemento data_realizacao nÃƒÂ£o encontrado');
+            console.warn('[setMinDate] Elemento data_realizacao nÒ£o encontrado');
         }
     }
 
     setupValidation() {
-        // ValidaÃƒÂ§ÃƒÂ£o da data de fim
+        // ValidaÒ§Ò£o da data de fim
         const dataInicioElement = document.getElementById('data_inicio');
         if (dataInicioElement) {
             dataInicioElement.addEventListener('change', (e) => {
@@ -144,7 +144,7 @@ class CriarEventoManager {
             });
         }
 
-        // ValidaÃƒÂ§ÃƒÂ£o do CEP
+        // ValidaÒ§Ò£o do CEP
         const cepElement = document.getElementById('cep');
         if (cepElement) {
             cepElement.addEventListener('input', (e) => {
@@ -193,14 +193,14 @@ class CriarEventoManager {
                 const from = this.currentStep;
                 this.currentStep++;
                 const to = this.currentStep;
-                //this.log('[STEP] AvanÃƒÂ§ando etapa', { from, to });
-                //console.log('AvanÃƒÂ§ando etapa', { from, to });
+                //this.log('[STEP] AvanÒ§ando etapa', { from, to });
+                //console.log('AvanÒ§ando etapa', { from, to });
                 this.showCurrentStep();
                 this.updateProgress();
                 this.updateButtons();
                 this.reportState('after-next');
 
-                // Se for a ÃƒÂºltima etapa, mostrar resumo
+                // Se for a Òºltima etapa, mostrar resumo
                 if (this.currentStep === this.totalSteps) {
                     this.generateResumo();
                 }
@@ -248,7 +248,7 @@ class CriarEventoManager {
             const span = indicator.nextElementSibling;
 
             if (i < this.currentStep) {
-                // Etapas concluÃƒÂ­das
+                // Etapas concluÒ­das
                 indicator.className = 'w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-medium';
                 span.className = 'ml-2 text-sm font-medium text-green-600';
             } else if (i === this.currentStep) {
@@ -268,14 +268,14 @@ class CriarEventoManager {
         const btnProximo = document.getElementById('btn-proximo');
         const btnCriar = document.getElementById('btn-criar');
 
-        // BotÃƒÂ£o anterior
+        // BotÒ£o anterior
         if (this.currentStep === 1) {
             btnAnterior.classList.add('hidden');
         } else {
             btnAnterior.classList.remove('hidden');
         }
 
-        // BotÃƒÂµes prÃƒÂ³ximo/criar
+        // BotÒµes prÒ³ximo/criar
         if (this.currentStep === this.totalSteps) {
             btnProximo.classList.add('hidden');
             btnCriar.classList.remove('hidden');
@@ -296,14 +296,14 @@ class CriarEventoManager {
 
         requiredFields.forEach(field => {
             if (!field.value.trim()) {
-                this.showFieldError(field, 'Este campo ÃƒÂ© obrigatÃƒÂ³rio');
+                this.showFieldError(field, 'Este campo Ò© obrigatÒ³rio');
                 isValid = false;
             } else {
                 this.clearFieldError(field);
             }
         });
 
-        // ValidaÃƒÂ§ÃƒÂµes especÃƒÂ­ficas por etapa
+        // ValidaÒ§Òµes especÒ­ficas por etapa
         if (this.currentStep === 1) {
             isValid = this.validateStep1() && isValid;
         } else if (this.currentStep === 2) {
@@ -317,19 +317,19 @@ class CriarEventoManager {
     validateStep1() {
         let isValid = true;
 
-        // Validar data de inÃƒÂ­cio
+        // Validar data de inÒ­cio
         const dataInicio = document.getElementById('data_inicio').value;
         const hoje = new Date().toISOString().split('T')[0];
 
         if (dataInicio < hoje) {
-            this.showFieldError(document.getElementById('data_inicio'), 'A data nÃƒÂ£o pode ser anterior a hoje');
+            this.showFieldError(document.getElementById('data_inicio'), 'A data nÒ£o pode ser anterior a hoje');
             isValid = false;
         }
 
         // Validar data de fim
         const dataFim = document.getElementById('data_fim').value;
         if (dataFim && dataFim < dataInicio) {
-            this.showFieldError(document.getElementById('data_fim'), 'A data de fim nÃƒÂ£o pode ser anterior ÃƒÂ  data de inÃƒÂ­cio');
+            this.showFieldError(document.getElementById('data_fim'), 'A data de fim nÒ£o pode ser anterior Ò  data de inÒ­cio');
             isValid = false;
         }
 
@@ -380,7 +380,7 @@ class CriarEventoManager {
             if (input.type === 'checkbox') {
                 this.formData[input.name] = input.checked;
             } else if (input.type === 'file') {
-                // Arquivos serÃƒÂ£o tratados no submit
+                // Arquivos serÒ£o tratados no submit
                 if (input.files.length > 0) {
                     this.formData[input.name] = input.files[0];
                 }
@@ -399,43 +399,43 @@ class CriarEventoManager {
             <div class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <h4 class="font-semibold text-gray-900">InformaÃƒÂ§ÃƒÂµes BÃƒÂ¡sicas</h4>
-                        <p><strong>Nome:</strong> ${this.formData.nome || 'NÃƒÂ£o informado'}</p>
-                        <p><strong>DescriÃƒÂ§ÃƒÂ£o:</strong> ${this.formData.descricao || 'NÃƒÂ£o informado'}</p>
-                        <p><strong>Data de InÃƒÂ­cio:</strong> ${this.formatDate(this.formData.data_inicio)}</p>
-                        <p><strong>Data de Fim:</strong> ${this.formatDate(this.formData.data_fim) || 'NÃƒÂ£o informado'}</p>
-                        <p><strong>Hora de InÃƒÂ­cio:</strong> ${this.formData.hora_inicio || 'NÃƒÂ£o informado'}</p>
+                        <h4 class="font-semibold text-gray-900">InformaÒ§Òµes BÒ¡sicas</h4>
+                        <p><strong>Nome:</strong> ${this.formData.nome || 'NÒ£o informado'}</p>
+                        <p><strong>DescriÒ§Ò£o:</strong> ${this.formData.descricao || 'NÒ£o informado'}</p>
+                        <p><strong>Data de InÒ­cio:</strong> ${this.formatDate(this.formData.data_inicio)}</p>
+                        <p><strong>Data de Fim:</strong> ${this.formatDate(this.formData.data_fim) || 'NÒ£o informado'}</p>
+                        <p><strong>Hora de InÒ­cio:</strong> ${this.formData.hora_inicio || 'NÒ£o informado'}</p>
                         <p><strong>Categoria:</strong> ${this.getCategoriaName(this.formData.categoria)}</p>
-                        <p><strong>GÃƒÂªnero:</strong> ${this.formData.genero || 'NÃƒÂ£o informado'}</p>
+                        <p><strong>GÒªnero:</strong> ${this.formData.genero || 'NÒ£o informado'}</p>
                         <p><strong>Status:</strong> ${this.getStatusName(this.formData.status)}</p>
                     </div>
                     
                     <div>
-                        <h4 class="font-semibold text-gray-900">LocalizaÃƒÂ§ÃƒÂ£o</h4>
-                        <p><strong>Local:</strong> ${this.formData.local || 'NÃƒÂ£o informado'}</p>
-                        <p><strong>EndereÃƒÂ§o:</strong> ${this.formatEndereco()}</p>
-                        <p><strong>Cidade:</strong> ${this.formData.cidade || 'NÃƒÂ£o informado'}</p>
-                        <p><strong>Estado:</strong> ${this.formData.estado || 'NÃƒÂ£o informado'}</p>
-                        <p><strong>CEP:</strong> ${this.formData.cep || 'NÃƒÂ£o informado'}</p>
-                        <p><strong>PaÃƒÂ­s:</strong> ${this.formData.pais || 'Brasil'}</p>
+                        <h4 class="font-semibold text-gray-900">LocalizaÒ§Ò£o</h4>
+                        <p><strong>Local:</strong> ${this.formData.local || 'NÒ£o informado'}</p>
+                        <p><strong>EndereÒ§o:</strong> ${this.formatEndereco()}</p>
+                        <p><strong>Cidade:</strong> ${this.formData.cidade || 'NÒ£o informado'}</p>
+                        <p><strong>Estado:</strong> ${this.formData.estado || 'NÒ£o informado'}</p>
+                        <p><strong>CEP:</strong> ${this.formData.cep || 'NÒ£o informado'}</p>
+                        <p><strong>PaÒ­s:</strong> ${this.formData.pais || 'Brasil'}</p>
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <h4 class="font-semibold text-gray-900">ConfiguraÃƒÂ§ÃƒÂµes</h4>
+                        <h4 class="font-semibold text-gray-900">ConfiguraÒ§Òµes</h4>
                         <p><strong>Limite de Vagas:</strong> ${this.formData.limite_vagas || 'Ilimitado'}</p>
-                        <p><strong>Data Fim InscriÃƒÂ§ÃƒÂµes:</strong> ${this.formatDate(this.formData.data_fim_inscricoes) || 'NÃƒÂ£o definido'}</p>
-                        <p><strong>Hora Fim InscriÃƒÂ§ÃƒÂµes:</strong> ${this.formData.hora_fim_inscricoes || 'NÃƒÂ£o definido'}</p>
-                        <p><strong>Taxa Setup:</strong> ${this.formatCurrency(this.formData.taxa_setup) || 'NÃƒÂ£o definido'}</p>
-                        <p><strong>Percentual Repasse:</strong> ${this.formData.percentual_repasse ? this.formData.percentual_repasse + '%' : 'NÃƒÂ£o definido'}</p>
+                        <p><strong>Data Fim InscriÒ§Òµes:</strong> ${this.formatDate(this.formData.data_fim_inscricoes) || 'NÒ£o definido'}</p>
+                        <p><strong>Hora Fim InscriÒ§Òµes:</strong> ${this.formData.hora_fim_inscricoes || 'NÒ£o definido'}</p>
+                        <p><strong>Taxa Setup:</strong> ${this.formatCurrency(this.formData.taxa_setup) || 'NÒ£o definido'}</p>
+                        <p><strong>Percentual Repasse:</strong> ${this.formData.percentual_repasse ? this.formData.percentual_repasse + '%' : 'NÒ£o definido'}</p>
                     </div>
                     
                     <div>
                         <h4 class="font-semibold text-gray-900">Taxas</h4>
-                        <p><strong>Taxa Gratuitas:</strong> ${this.formatCurrency(this.formData.taxa_gratuitas) || 'NÃƒÂ£o definido'}</p>
-                        <p><strong>Taxa Pagas:</strong> ${this.formatCurrency(this.formData.taxa_pagas) || 'NÃƒÂ£o definido'}</p>
-                        <p><strong>Retirada de Kits:</strong> ${this.formData.exibir_retirada_kit ? 'Sim' : 'NÃƒÂ£o'}</p>
+                        <p><strong>Taxa Gratuitas:</strong> ${this.formatCurrency(this.formData.taxa_gratuitas) || 'NÒ£o definido'}</p>
+                        <p><strong>Taxa Pagas:</strong> ${this.formatCurrency(this.formData.taxa_pagas) || 'NÒ£o definido'}</p>
+                        <p><strong>Retirada de Kits:</strong> ${this.formData.exibir_retirada_kit ? 'Sim' : 'NÒ£o'}</p>
                     </div>
                 </div>
                 
@@ -473,7 +473,7 @@ class CriarEventoManager {
             this.formData.numero
         ].filter(Boolean);
 
-        return parts.length > 0 ? parts.join(', ') : 'NÃƒÂ£o informado';
+        return parts.length > 0 ? parts.join(', ') : 'NÒ£o informado';
     }
 
     getCategoriaName(categoria) {
@@ -482,7 +482,7 @@ class CriarEventoManager {
             'caminhada': 'Caminhada',
             'triatlo': 'Triatlo',
             'ciclismo': 'Ciclismo',
-            'natacao': 'NataÃƒÂ§ÃƒÂ£o',
+            'natacao': 'NataÒ§Ò£o',
             'outros': 'Outros'
         };
         return categorias[categoria] || categoria;
@@ -501,7 +501,7 @@ class CriarEventoManager {
         e.preventDefault();
         this.log('[SUBMIT] Iniciando submit');
 
-        // Salvar dados da ÃƒÂºltima etapa
+        // Salvar dados da Òºltima etapa
         this.saveCurrentStepData();
 
         // Mostrar loading
@@ -514,7 +514,7 @@ class CriarEventoManager {
             // Preparar FormData para envio
             const formData = new FormData();
 
-            // Adicionar todos os dados do formulÃƒÂ¡rio
+            // Adicionar todos os dados do formulÒ¡rio
             Object.keys(this.formData).forEach(key => {
                 if (this.formData[key] instanceof File) {
                     formData.append(key, this.formData[key]);
@@ -523,7 +523,7 @@ class CriarEventoManager {
                 }
             });
 
-            // Fazer requisiÃƒÂ§ÃƒÂ£o para criar evento (caminho relativo ao index.php do painel)
+            // Fazer requisiÒ§Ò£o para criar evento (caminho relativo ao index.php do painel)
             const response = await fetch((window.API_BASE || '/api') + '/evento/create.php', {
                 method: 'POST',
                 body: formData
@@ -540,7 +540,7 @@ class CriarEventoManager {
                     text: result.message,
                     confirmButtonText: 'OK'
                 }).then(() => {
-                    // Redirecionar para a pÃƒÂ¡gina de eventos
+                    // Redirecionar para a pÒ¡gina de eventos
                     window.location.href = 'index.php';
                 });
             } else {
@@ -557,12 +557,12 @@ class CriarEventoManager {
             console.error('Erro:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erro de ConexÃƒÂ£o',
+                title: 'Erro de ConexÒ£o',
                 text: 'Ocorreu um erro ao comunicar com o servidor. Tente novamente.',
                 confirmButtonText: 'OK'
             });
         } finally {
-            // Restaurar botÃƒÂ£o
+            // Restaurar botÒ£o
             btnCriar.innerHTML = originalText;
             btnCriar.disabled = false;
         }
@@ -573,7 +573,7 @@ class CriarEventoManager {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded');
     if (window.__criarEventoManagerInitialized) {
-        console.warn('[CriarEvento] Manager jÃƒÂ¡ inicializado. Evitando dupla vinculaÃƒÂ§ÃƒÂ£o de eventos.');
+        console.warn('[CriarEvento] Manager jÒ¡ inicializado. Evitando dupla vinculaÒ§Ò£o de eventos.');
         return;
     }
     window.__criarEventoManagerInitialized = true;

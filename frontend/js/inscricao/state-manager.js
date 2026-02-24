@@ -65,12 +65,12 @@ export class InscricaoStateManager {
                     this.mergeState(sessionData.data);
                 }
             } else if (response.status !== 404) {
-                console.warn('Erro ao sincronizar com sessÃƒÆ’Ã‚Â£o:', response.status);
+                console.warn('Erro ao sincronizar com sessão:', response.status);
             }
         } catch (error) {
-            // Ignorar erros de rede silenciosamente (API pode nÃƒÆ’Ã‚Â£o existir)
+            // Ignorar erros de rede silenciosamente (API pode não existir)
             if (error.message && !error.message.includes('404')) {
-                console.warn('Erro ao sincronizar com sessÃƒÆ’Ã‚Â£o:', error);
+                console.warn('Erro ao sincronizar com sessão:', error);
             }
         }
     }
@@ -92,12 +92,12 @@ export class InscricaoStateManager {
                     return true;
                 }
             } else if (response.status !== 404) {
-                console.warn('Erro ao salvar na sessÃƒÆ’Ã‚Â£o:', response.status);
+                console.warn('Erro ao salvar na sessão:', response.status);
             }
         } catch (error) {
-            // Ignorar erros de rede silenciosamente (API pode nÃƒÆ’Ã‚Â£o existir)
+            // Ignorar erros de rede silenciosamente (API pode não existir)
             if (error.message && !error.message.includes('404')) {
-                console.warn('Erro ao salvar na sessÃƒÆ’Ã‚Â£o:', error);
+                console.warn('Erro ao salvar na sessão:', error);
             }
         }
         return false;

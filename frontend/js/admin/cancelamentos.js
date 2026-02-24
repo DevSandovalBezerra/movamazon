@@ -1,6 +1,6 @@
 if (window.getApiBase) { window.getApiBase(); }
 /**
- * JavaScript para pÃƒÂ¡gina de Cancelamentos (Admin)
+ * JavaScript para pÒ¡gina de Cancelamentos (Admin)
  */
 
 const API_BASE = (window.API_BASE || '/api') + '/admin';
@@ -57,7 +57,7 @@ function carregarCancelamentos() {
                 return;
             }
             
-            // Atualizar estatÃƒÂ­sticas
+            // Atualizar estatÒ­sticas
             if (data.stats) {
                 document.getElementById('stat-pendentes').textContent = data.stats.pendentes || 0;
                 document.getElementById('stat-aprovadas').textContent = data.stats.aprovadas || 0;
@@ -76,7 +76,7 @@ function carregarCancelamentos() {
                 container.appendChild(card);
             });
             
-            // PaginaÃƒÂ§ÃƒÂ£o
+            // PaginaÒ§Ò£o
             atualizarPaginacao(data.pagination);
         })
         .catch(error => {
@@ -103,7 +103,7 @@ function criarCardCancelamento(cancelamento) {
         <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="font-semibold text-gray-900">SolicitaÃƒÂ§ÃƒÂ£o #${cancelamento.id}</span>
+                    <span class="font-semibold text-gray-900">SolicitaÒ§Ò£o #${cancelamento.id}</span>
                     <span class="px-2 py-1 rounded text-xs font-medium ${statusClass}">
                         ${cancelamento.status.charAt(0).toUpperCase() + cancelamento.status.slice(1)}
                     </span>
@@ -126,17 +126,17 @@ function criarCardCancelamento(cancelamento) {
                         ${cancelamento.valor_reembolso ? `<div class="text-xs text-blue-600">Reembolso: R$ ${parseFloat(cancelamento.valor_reembolso).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>` : ''}
                     </div>
                     <div>
-                        <span class="font-medium">Data SolicitaÃƒÂ§ÃƒÂ£o:</span>
+                        <span class="font-medium">Data SolicitaÒ§Ò£o:</span>
                         <div>${formatarData(cancelamento.data_solicitacao)}</div>
                     </div>
                 </div>
                 <div class="mt-2 p-3 bg-gray-50 rounded text-sm">
                     <span class="font-medium">Motivo:</span>
-                    <div class="text-gray-700">${cancelamento.motivo || 'NÃƒÂ£o informado'}</div>
+                    <div class="text-gray-700">${cancelamento.motivo || 'NÒ£o informado'}</div>
                 </div>
                 ${cancelamento.motivo_rejeicao ? `
                     <div class="mt-2 p-3 bg-red-50 rounded text-sm">
-                        <span class="font-medium text-red-800">Motivo da RejeiÃƒÂ§ÃƒÂ£o:</span>
+                        <span class="font-medium text-red-800">Motivo da RejeiÒ§Ò£o:</span>
                         <div class="text-red-700">${cancelamento.motivo_rejeicao}</div>
                     </div>
                 ` : ''}
@@ -156,7 +156,7 @@ function criarCardCancelamento(cancelamento) {
         </div>
     `;
     
-    // Event listeners para botÃƒÂµes
+    // Event listeners para botÒµes
     if (cancelamento.status === 'pendente') {
         div.querySelector('.btn-aprovar')?.addEventListener('click', () => processarCancelamento(cancelamento.id, 'aprovar'));
         div.querySelector('.btn-rejeitar')?.addEventListener('click', () => processarCancelamento(cancelamento.id, 'rejeitar'));
@@ -170,17 +170,17 @@ function processarCancelamento(solicitacaoId, acao) {
         Swal.fire({
             title: 'Rejeitar Cancelamento?',
             input: 'textarea',
-            inputLabel: 'Motivo da RejeiÃƒÂ§ÃƒÂ£o',
-            inputPlaceholder: 'Informe o motivo da rejeiÃƒÂ§ÃƒÂ£o...',
+            inputLabel: 'Motivo da RejeiÒ§Ò£o',
+            inputPlaceholder: 'Informe o motivo da rejeiÒ§Ò£o...',
             inputAttributes: {
-                'aria-label': 'Motivo da rejeiÃƒÂ§ÃƒÂ£o'
+                'aria-label': 'Motivo da rejeiÒ§Ò£o'
             },
             showCancelButton: true,
             confirmButtonText: 'Rejeitar',
             cancelButtonText: 'Cancelar',
             inputValidator: (value) => {
                 if (!value) {
-                    return 'O motivo da rejeiÃƒÂ§ÃƒÂ£o ÃƒÂ© obrigatÃƒÂ³rio';
+                    return 'O motivo da rejeiÒ§Ò£o Ò© obrigatÒ³rio';
                 }
             }
         }).then(result => {
@@ -192,8 +192,8 @@ function processarCancelamento(solicitacaoId, acao) {
         Swal.fire({
             title: 'Aprovar Cancelamento?',
             html: `
-                <p>Deseja aprovar esta solicitaÃƒÂ§ÃƒÂ£o de cancelamento?</p>
-                <p class="text-sm text-gray-600 mt-2">O reembolso serÃƒÂ¡ processado automaticamente se o pagamento foi aprovado.</p>
+                <p>Deseja aprovar esta solicitaÒ§Ò£o de cancelamento?</p>
+                <p class="text-sm text-gray-600 mt-2">O reembolso serÒ¡ processado automaticamente se o pagamento foi aprovado.</p>
             `,
             icon: 'question',
             showCancelButton: true,
@@ -219,7 +219,7 @@ function enviarProcessamento(solicitacaoId, acao, motivoRejeicao = '') {
     
     Swal.fire({
         title: 'Processando...',
-        text: 'Aguarde enquanto processamos a solicitaÃƒÂ§ÃƒÂ£o.',
+        text: 'Aguarde enquanto processamos a solicitaÒ§Ò£o.',
         allowOutsideClick: false,
         didOpen: () => {
             Swal.showLoading();
@@ -250,7 +250,7 @@ function enviarProcessamento(solicitacaoId, acao, motivoRejeicao = '') {
         Swal.fire({
             icon: 'error',
             title: 'Erro',
-            text: error.message || 'NÃƒÂ£o foi possÃƒÂ­vel processar o cancelamento.',
+            text: error.message || 'NÒ£o foi possÒ­vel processar o cancelamento.',
             confirmButtonText: 'OK'
         });
     });
@@ -264,7 +264,7 @@ function aplicarFiltros() {
 }
 
 function carregarEventos() {
-    // Implementar se necessÃƒÂ¡rio
+    // Implementar se necessÒ¡rio
 }
 
 function atualizarPaginacao(pagination) {
@@ -290,7 +290,7 @@ function atualizarPaginacao(pagination) {
             <button class="btn-secondary ${!pagination.has_more ? 'opacity-50 cursor-not-allowed' : ''}" 
                     ${!pagination.has_more ? 'disabled' : ''} 
                     onclick="currentOffset = ${pagination.offset + pagination.limit}; carregarCancelamentos();">
-                PrÃƒÂ³ximo <i class="fas fa-chevron-right w-4 h-4"></i>
+                PrÒ³ximo <i class="fas fa-chevron-right w-4 h-4"></i>
             </button>
         </div>
     `;

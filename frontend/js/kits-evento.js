@@ -1,9 +1,9 @@
 if (window.getApiBase) { window.getApiBase(); }
 // =====================================================
-// GESTÃƒÆ’Ã†â€™O DE KITS DO EVENTO - JAVASCRIPT
+// GESTÃO DE KITS DO EVENTO - JAVASCRIPT
 // =====================================================
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o global para selecionar/deselecionar todas as modalidades (definida no inÃƒÆ’Ã‚Â­cio para garantir disponibilidade)
+// Função global para selecionar/deselecionar todas as modalidades (definida no início para garantir disponibilidade)
 function selecionarTodasModalidades() {
     const container = document.getElementById('kit-modalidades-container');
     const checkboxes = container.querySelectorAll('.modalidade-checkbox');
@@ -12,7 +12,7 @@ function selecionarTodasModalidades() {
     
     const todasMarcadas = Array.from(checkboxes).every(cb => cb.checked);
     
-    // Se todas estÃƒÆ’Ã‚Â£o marcadas, desmarcar todas. Caso contrÃƒÆ’Ã‚Â¡rio, marcar todas
+    // Se todas estão marcadas, desmarcar todas. Caso contrário, marcar todas
     checkboxes.forEach(cb => {
         cb.checked = !todasMarcadas;
     });
@@ -20,7 +20,7 @@ function selecionarTodasModalidades() {
     atualizarTextoBotaoSelecionarTodas();
 }
 
-// Garantir que a funÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o esteja disponÃƒÆ’Ã‚Â­vel globalmente
+// Garantir que a função esteja disponível globalmente
 window.selecionarTodasModalidades = selecionarTodasModalidades;
 
 function buildKitAssetUrl(path) {
@@ -33,9 +33,9 @@ function buildKitAssetUrl(path) {
     return (appBase ? appBase + '/' : '/') + clean;
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para montar o caminho da imagem do kit (igual ao template)
+// Função para montar o caminho da imagem do kit (igual ao template)
 function montarCaminhoImagemKit(nome, ext = 'png') {
-    // Remove espaÃƒÆ’Ã‚Â§os extras e caracteres especiais do nome
+    // Remove espaços extras e caracteres especiais do nome
     let nomeFormatado = nome.trim().replace(/\s+/g, ' ');
     // Codifica para URL
     nomeFormatado = encodeURIComponent(nomeFormatado);
@@ -50,7 +50,7 @@ function getBasePath() {
     const idx = pathname.indexOf('frontend');
     
     if (idx !== -1) {
-        // Retorna URL completa: origin + caminho atÃƒÆ’Ã‚Â© e incluindo 'frontend'
+        // Retorna URL completa: origin + caminho até e incluindo 'frontend'
         // Exemplo: http://movamazon.com.br/frontend
         // Exemplo: http://localhost/movamazon/frontend
         return origin + pathname.substring(0, idx + 'frontend'.length);
@@ -101,7 +101,7 @@ let filtros = {
 };
 
 // =====================================================
-// INICIALIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
+// INICIALIZAAÇÃO
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -123,15 +123,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function configurarEventListeners() {
-    // BotÃƒÆ’Ã‚Âµes
+    // Botões
     const btnAplicarTemplate = document.getElementById('btnAplicarTemplate');
-    if (!btnAplicarTemplate) console.warn('[DOM] btnAplicarTemplate nÃƒÆ’Ã‚Â£o encontrado');
+    if (!btnAplicarTemplate) console.warn('[DOM] btnAplicarTemplate não encontrado');
     else btnAplicarTemplate.addEventListener('click', abrirModalAplicarTemplate);
     /*  const btnNovoKit = document.getElementById('btnNovoKit');
-     if (!btnNovoKit) console.warn('[DOM] btnNovoKit nÃƒÆ’Ã‚Â£o encontrado');
+     if (!btnNovoKit) console.warn('[DOM] btnNovoKit não encontrado');
      else btnNovoKit.addEventListener('click', abrirModalKit); */
 
-    // BotÃƒÆ’Ã‚Â£o selecionar todas modalidades (usar delegaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de eventos para funcionar mesmo apÃƒÆ’Ã‚Â³s recarregar modalidades)
+    // Botão selecionar todas modalidades (usar delegação de eventos para funcionar mesmo após recarregar modalidades)
     document.addEventListener('click', function(e) {
         const btn = e.target.closest('#btn-selecionar-todas-modalidades');
         if (btn) {
@@ -140,14 +140,14 @@ function configurarEventListeners() {
             if (typeof selecionarTodasModalidades === 'function') {
                 selecionarTodasModalidades();
             } else {
-                console.error('FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o selecionarTodasModalidades nÃƒÆ’Ã‚Â£o estÃƒÆ’Ã‚Â¡ disponÃƒÆ’Ã‚Â­vel');
+                console.error('Função selecionarTodasModalidades não está disponível');
             }
         }
     });
 
     // Filtros
     const filtroEvento = document.getElementById('filtroEvento');
-    if (!filtroEvento) console.warn('[DOM] filtroEvento nÃƒÆ’Ã‚Â£o encontrado');
+    if (!filtroEvento) console.warn('[DOM] filtroEvento não encontrado');
     else filtroEvento.addEventListener('change', function () {
         const eventoId = this.value;
         if (eventoId) {
@@ -156,27 +156,27 @@ function configurarEventListeners() {
             });
         } else {
             const filtroModalidade = document.getElementById('filtroModalidade');
-            if (!filtroModalidade) console.warn('[DOM] filtroModalidade nÃƒÆ’Ã‚Â£o encontrado');
+            if (!filtroModalidade) console.warn('[DOM] filtroModalidade não encontrado');
             else {
                 filtroModalidade.innerHTML = '<option value="">Todas as modalidades</option>';
                 filtroModalidade.disabled = true;
             }
-            // Se nÃƒÆ’Ã‚Â£o hÃƒÆ’Ã‚Â¡ evento selecionado, mostrar todos os kits
+            // Se não há evento selecionado, mostrar todos os kits
             paginaAtual = 1;
             renderizarKits();
             atualizarResumo(kits);
         }
     });
     const filtroModalidade = document.getElementById('filtroModalidade');
-    if (!filtroModalidade) console.warn('[DOM] filtroModalidade nÃƒÆ’Ã‚Â£o encontrado');
+    if (!filtroModalidade) console.warn('[DOM] filtroModalidade não encontrado');
     else filtroModalidade.addEventListener('change', aplicarFiltros);
     const filtroStatus = document.getElementById('filtroStatus');
-    if (!filtroStatus) console.warn('[DOM] filtroStatus nÃƒÆ’Ã‚Â£o encontrado');
+    if (!filtroStatus) console.warn('[DOM] filtroStatus não encontrado');
     else filtroStatus.addEventListener('change', aplicarFiltros);
 
-    // PaginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Paginação
     const btnAnterior = document.getElementById('btn-anterior');
-    if (!btnAnterior) console.warn('[DOM] btn-anterior nÃƒÆ’Ã‚Â£o encontrado');
+    if (!btnAnterior) console.warn('[DOM] btn-anterior não encontrado');
     else btnAnterior.addEventListener('click', () => {
         if (paginaAtual > 1) {
             paginaAtual--;
@@ -185,7 +185,7 @@ function configurarEventListeners() {
     });
 
     const btnProximo = document.getElementById('btn-proximo');
-    if (!btnProximo) console.warn('[DOM] btn-proximo nÃƒÆ’Ã‚Â£o encontrado');
+    if (!btnProximo) console.warn('[DOM] btn-proximo não encontrado');
     else btnProximo.addEventListener('click', () => {
         const totalPaginas = Math.ceil(kits.length / itensPorPagina);
         if (paginaAtual < totalPaginas) {
@@ -194,25 +194,25 @@ function configurarEventListeners() {
         }
     });
 
-    // FormulÃƒÆ’Ã‚Â¡rios
+    // Formulários
     const formAplicarTemplate = document.getElementById('formAplicarTemplate');
-    if (!formAplicarTemplate) console.warn('[DOM] formAplicarTemplate nÃƒÆ’Ã‚Â£o encontrado');
+    if (!formAplicarTemplate) console.warn('[DOM] formAplicarTemplate não encontrado');
     else formAplicarTemplate.addEventListener('submit', aplicarTemplate);
     const formKit = document.getElementById('formKit');
-    if (!formKit) console.warn('[DOM] formKit nÃƒÆ’Ã‚Â£o encontrado');
+    if (!formKit) console.warn('[DOM] formKit não encontrado');
     else formKit.addEventListener('submit', salvarKit);
 
-    // Reaplicar template no kit (ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
+    // Reaplicar template no kit (edição)
     const btnReaplicarTemplateKit = document.getElementById('btnReaplicarTemplateKit');
-    if (!btnReaplicarTemplateKit) console.warn('[DOM] btnReaplicarTemplateKit nÃƒÆ’Ã‚Â£o encontrado');
+    if (!btnReaplicarTemplateKit) console.warn('[DOM] btnReaplicarTemplateKit não encontrado');
     else btnReaplicarTemplateKit.addEventListener('click', reaplicarTemplateNoKit);
 
     // Eventos dependentes
     const eventoIdEl = document.getElementById('evento_id');
-    if (!eventoIdEl) console.warn('[DOM] evento_id nÃƒÆ’Ã‚Â£o encontrado');
+    if (!eventoIdEl) console.warn('[DOM] evento_id não encontrado');
     else eventoIdEl.addEventListener('change', carregarModalidadesEvento);
     const kitEventoIdEl = document.getElementById('kit_evento_id');
-    if (!kitEventoIdEl) console.warn('[DOM] kit_evento_id nÃƒÆ’Ã‚Â£o encontrado');
+    if (!kitEventoIdEl) console.warn('[DOM] kit_evento_id não encontrado');
     else kitEventoIdEl.addEventListener('change', carregarModalidadesKit);
 }
 
@@ -224,17 +224,17 @@ async function carregarKits() {
     mostrarLoading();
 
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Carregando kits...');
+        console.log(' DEBUG kits-evento.js - Carregando kits...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/kits-evento/list.php');
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Response status:', response.status);
+        console.log(' DEBUG kits-evento.js - Response status:', response.status);
         const data = await response.json();
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Dados recebidos:', data);
+        console.log(' DEBUG kits-evento.js - Dados recebidos:', data);
 
         if (data.success) {
             kits = data.data;
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG kits-evento.js - Kits carregados:', kits.length);
+            console.log(' DEBUG kits-evento.js - Kits carregados:', kits.length);
 
-            // Verificar se hÃƒÆ’Ã‚Â¡ evento_id na URL ou no filtro
+            // Verificar se há evento_id na URL ou no filtro
             const urlParams = new URLSearchParams(window.location.search);
             const eventoIdUrl = urlParams.get('evento_id');
             const filtroEvento = document.getElementById('filtroEvento');
@@ -249,7 +249,7 @@ async function carregarKits() {
             } else if (filtroEvento && filtroEvento.value) {
                 aplicarFiltros();
             } else {
-                // Se nÃƒÆ’Ã‚Â£o hÃƒÆ’Ã‚Â¡ filtro, mostrar todos os kits
+                // Se não há filtro, mostrar todos os kits
                 paginaAtual = 1;
                 renderizarKits();
                 atualizarResumo(kits);
@@ -259,7 +259,7 @@ async function carregarKits() {
             mostrarErro('Erro ao carregar kits: ' + data.error);
         }
     } catch (error) {
-        console.error('Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:', error);
+        console.error('Erro na requisição:', error);
         mostrarErro('Erro ao carregar kits');
     } finally {
         ocultarLoading();
@@ -300,7 +300,7 @@ function preencherSelectEventos() {
     const selectModal = document.getElementById('evento_id');
     const selectKit = document.getElementById('kit_evento_id');
 
-    // Limpar selects mantendo apenas a primeira opÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Limpar selects mantendo apenas a primeira opção
     selectFiltro.innerHTML = '<option value="">Todos os eventos</option>';
     selectModal.innerHTML = '<option value="">Selecione um evento</option>';
     selectKit.innerHTML = '<option value="">Selecione um evento</option>';
@@ -386,24 +386,24 @@ async function carregarModalidadesKit(marcarIds = []) {
         container.innerHTML = '';
 
         if (data.success && Array.isArray(data.modalidades) && data.modalidades.length > 0) {
-            // Normalizar IDs para comparaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (todos como strings e nÃƒÆ’Ã‚Âºmeros)
+            // Normalizar IDs para comparação (todos como strings e números)
             const marcarIdsStr = marcarIds.map(id => String(id));
             const marcarIdsNum = marcarIds.map(id => Number(id));
             
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - IDs para marcar:', marcarIdsStr);
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Modalidades recebidas:', data.modalidades.map(m => ({ id: m.id, idStr: String(m.id) })));
+            console.log(' DEBUG - IDs para marcar:', marcarIdsStr);
+            console.log(' DEBUG - Modalidades recebidas:', data.modalidades.map(m => ({ id: m.id, idStr: String(m.id) })));
             
             data.modalidades.forEach(modalidade => {
                 const div = document.createElement('div');
                 div.className = 'flex items-center space-x-2';
                 const modalidadeIdStr = String(modalidade.id);
                 const modalidadeIdNum = Number(modalidade.id);
-                // Verificar tanto como string quanto como nÃƒÆ’Ã‚Âºmero
+                // Verificar tanto como string quanto como número
                 const isChecked = marcarIdsStr.includes(modalidadeIdStr) || 
                                  marcarIdsNum.includes(modalidadeIdNum) ||
                                  marcarIds.includes(modalidade.id);
                 
-                console.log(`ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG - Modalidade ${modalidade.id}: isChecked=${isChecked}`);
+                console.log(` DEBUG - Modalidade ${modalidade.id}: isChecked=${isChecked}`);
                 
                 div.innerHTML = `
                     <input type="checkbox" name="modalidades[]" id="kit_modalidade_${modalidade.id}" value="${modalidade.id}" class="modalidade-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500" ${isChecked ? 'checked' : ''}>
@@ -412,7 +412,7 @@ async function carregarModalidadesKit(marcarIds = []) {
                 container.appendChild(div);
             });
 
-            // Mostrar botÃƒÆ’Ã‚Â£o "Selecionar todas" se houver modalidades
+            // Mostrar botão "Selecionar todas" se houver modalidades
             if (btnSelecionarTodas) {
                 btnSelecionarTodas.style.display = 'block';
                 atualizarTextoBotaoSelecionarTodas();
@@ -467,7 +467,7 @@ function preencherModalidades() {
 }
 
 // =====================================================
-// RENDERIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
+// RENDERIZAAÇÃO
 // =====================================================
 
 function mostrarMensagemInicial() {
@@ -476,7 +476,7 @@ function mostrarMensagemInicial() {
         <div class="col-span-full text-center py-12">
             <i class="fas fa-calendar-alt text-gray-400 text-4xl mb-4"></i>
             <p class="text-gray-500 text-lg">Selecione um evento para visualizar os kits</p>
-            <p class="text-gray-400">Use o filtro acima para escolher um evento especÃƒÆ’Ã‚Â­fico</p>
+            <p class="text-gray-400">Use o filtro acima para escolher um evento específico</p>
         </div>
     `;
 
@@ -518,7 +518,7 @@ function criarCardKit(kit) {
     const statusClass = kit.ativo ? 'green' : 'red';
     const statusText = kit.ativo ? 'Ativo' : 'Inativo';
     const disponivelVenda = kit.disponivel_venda ?
-        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">DisponÃƒÆ’Ã‚Â­vel para venda</span>' :
+        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Disponível para venda</span>' :
         '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Apenas em kit</span>';
 
     const fotoSrc = resolverImagemKit(kit.foto_kit);
@@ -567,7 +567,7 @@ function criarCardKit(kit) {
 }
 
 // =====================================================
-// FILTROS E PAGINAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O
+// FILTROS E PAGINAAÇÃO
 // =====================================================
 
 function filtrarPorEvento() {
@@ -593,7 +593,7 @@ function aplicarFiltros() {
     const modalidadeId = document.getElementById('filtroModalidade').value;
     const status = document.getElementById('filtroStatus').value;
 
-    // Aplicar filtros aos kits (NÃƒÆ’Ã†â€™O sobrescrever a lista global)
+    // Aplicar filtros aos kits (NÃO sobrescrever a lista global)
     let kitsFiltrados = kits.slice();
 
     if (eventoId) {
@@ -622,11 +622,11 @@ function atualizarPaginacao(totalKits = kits.length) {
     const inicio = (paginaAtual - 1) * itensPorPagina + 1;
     const fim = Math.min(paginaAtual * itensPorPagina, totalKits);
 
-    // Atualizar botÃƒÆ’Ã‚Âµes
+    // Atualizar botões
     document.getElementById('btn-anterior').disabled = paginaAtual === 1;
     document.getElementById('btn-proximo').disabled = paginaAtual === totalPaginas;
 
-    // Mostrar/ocultar paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Mostrar/ocultar paginação
     const paginacao = document.getElementById('paginacao');
     if (totalPaginas > 1) {
         paginacao.style.display = 'flex';
@@ -682,22 +682,22 @@ function fecharModalAplicarTemplate() {
     document.getElementById('formAplicarTemplate').reset();
 }
 
-// VariÃƒÆ’Ã‚Â¡vel global para armazenar modalidades do kit em ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+// Variável global para armazenar modalidades do kit em edição
 let modalidadesKitEdicao = [];
 
 function abrirModalKit(kit = null) {
-    preencherSelectEventos(); // Garante que o select de eventos estÃƒÆ’Ã‚Â¡ sempre atualizado
-    preencherSelectTemplatesKitEdicao(); // Garante que o select de templates estÃƒÆ’Ã‚Â¡ sempre atualizado
+    preencherSelectEventos(); // Garante que o select de eventos está sempre atualizado
+    preencherSelectTemplatesKitEdicao(); // Garante que o select de templates está sempre atualizado
     const modal = document.getElementById('modalKit');
     const titulo = document.getElementById('modalKitTitulo');
     const btnTexto = document.getElementById('btnSalvarKitTexto');
     const form = document.getElementById('formKit');
     const selectEvento = document.getElementById('kit_evento_id');
     
-    // Limpar modalidades de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o anterior
+    // Limpar modalidades de edição anterior
     modalidadesKitEdicao = [];
     
-    // Remover listeners anteriores para evitar duplicaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Remover listeners anteriores para evitar duplicação
     const novoSelectEvento = selectEvento.cloneNode(true);
     selectEvento.parentNode.replaceChild(novoSelectEvento, selectEvento);
     
@@ -706,7 +706,7 @@ function abrirModalKit(kit = null) {
     let eventoAnterior = kit ? kit.evento_id : null;
     novoSelect.addEventListener('change', function() {
         const eventoAtual = this.value;
-        // Se hÃƒÆ’Ã‚Â¡ modalidades salvas da ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o e o evento nÃƒÆ’Ã‚Â£o mudou, usar elas
+        // Se há modalidades salvas da edição e o evento não mudou, usar elas
         if (modalidadesKitEdicao.length > 0 && eventoAnterior && eventoAtual == eventoAnterior) {
             carregarModalidadesKit(modalidadesKitEdicao);
         } else {
@@ -717,8 +717,8 @@ function abrirModalKit(kit = null) {
         eventoAnterior = eventoAtual;
     });
     
-    // Adicionar listener delegado no modal para atualizar texto do botÃƒÆ’Ã‚Â£o quando checkboxes mudarem
-    // Usar delegaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de eventos no modal para funcionar mesmo apÃƒÆ’Ã‚Â³s recarregar modalidades
+    // Adicionar listener delegado no modal para atualizar texto do botão quando checkboxes mudarem
+    // Usar delegação de eventos no modal para funcionar mesmo após recarregar modalidades
     modal.addEventListener('change', function(e) {
         if (e.target.classList.contains('modalidade-checkbox')) {
             atualizarTextoBotaoSelecionarTodas();
@@ -757,23 +757,23 @@ function preencherFormularioKit(kit) {
         selectTemplate.value = kit.kit_template_id ? String(kit.kit_template_id) : '';
     }
     
-    // Converter modalidades para array de IDs (normalizar para nÃƒÆ’Ã‚Âºmeros e strings)
+    // Converter modalidades para array de IDs (normalizar para números e strings)
     let modalidadesIds = [];
     if (Array.isArray(kit.modalidades) && kit.modalidades.length > 0) {
         modalidadesIds = kit.modalidades.map(id => {
-            // Normalizar: converter para nÃƒÆ’Ã‚Âºmero primeiro, depois para string
+            // Normalizar: converter para número primeiro, depois para string
             const numId = Number(id);
             return isNaN(numId) ? String(id) : String(numId);
         });
     }
     
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG preencherFormularioKit - Kit modalidades originais:', kit.modalidades);
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Â DEBUG preencherFormularioKit - Modalidades normalizadas:', modalidadesIds);
+    console.log(' DEBUG preencherFormularioKit - Kit modalidades originais:', kit.modalidades);
+    console.log(' DEBUG preencherFormularioKit - Modalidades normalizadas:', modalidadesIds);
     
     // Salvar modalidades globalmente para uso no listener do select
     modalidadesKitEdicao = modalidadesIds;
     
-    // Carregar modalidades apÃƒÆ’Ã‚Â³s um pequeno delay para garantir que o select foi atualizado
+    // Carregar modalidades após um pequeno delay para garantir que o select foi atualizado
     setTimeout(() => {
         carregarModalidadesKit(modalidadesIds);
     }, 100);
@@ -784,7 +784,7 @@ async function reaplicarTemplateNoKit() {
     const templateId = document.getElementById('kit_template_id')?.value;
 
     if (!kitId) {
-        mostrarErro('Para reaplicar um template, primeiro selecione um kit existente (modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o).');
+        mostrarErro('Para reaplicar um template, primeiro selecione um kit existente (modo edição).');
         return;
     }
     if (!templateId) {
@@ -821,7 +821,7 @@ async function reaplicarTemplateNoKit() {
         const data = await response.json();
 
         if (data.success) {
-            // Atualizar campos sobrescritos no formulÃƒÆ’Ã‚Â¡rio (sem mexer em nome/descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o/modalidades)
+            // Atualizar campos sobrescritos no formulário (sem mexer em nome/descrição/modalidades)
             const valorEl = document.getElementById('kit_valor');
             const disponivelEl = document.getElementById('kit_disponivel_venda');
             if (valorEl && data.data && typeof data.data.valor !== 'undefined') {
@@ -866,7 +866,7 @@ async function aplicarTemplate(e) {
         .map(cb => cb.value);
 
     if (!templateId || !eventoId || modalidadesSelecionadas.length === 0) {
-        mostrarErro('Por favor, preencha todos os campos obrigatÃƒÆ’Ã‚Â³rios');
+        mostrarErro('Por favor, preencha todos os campos obrigatórios');
         return;
     }
 
@@ -952,7 +952,7 @@ async function editarKit(id) {
 async function excluirKit(id) {
     const result = await Swal.fire({
         title: 'Tem certeza?',
-        text: 'Deseja realmente excluir este kit? Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.',
+        text: 'Deseja realmente excluir este kit? Esta ação não pode ser desfeita.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -988,7 +988,7 @@ async function excluirKit(id) {
                 renderizarKits();
                 atualizarResumo();
             }
-            mostrarSucesso('Kit excluÃƒÆ’Ã‚Â­do com sucesso!');
+            mostrarSucesso('Kit excluído com sucesso!');
         } else {
             Swal.fire({
                 icon: 'error',
@@ -1007,7 +1007,7 @@ async function excluirKit(id) {
 }
 
 // =====================================================
-// RESUMO E UTILITÃƒÆ’Ã‚ÂRIOS
+// RESUMO E UTILITÁRIOS
 // =====================================================
 
 function atualizarResumo(kitsParaResumo = kits) {
@@ -1051,7 +1051,7 @@ function mostrarSucesso(mensagem) {
     });
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar modalidades do filtro
+// Função para carregar modalidades do filtro
 async function carregarModalidadesFiltro(eventoId) {
     try {
         const response = await fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`);

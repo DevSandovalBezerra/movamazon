@@ -29,7 +29,7 @@ const inscricaoSteps = [{
   },
   {
     id: 'termos',
-    title: 'Termos e CondiçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes',
+    title: 'Termos e Condiçções',
     file: 'termos.js',
     class: 'EtapaTermos'
   },
@@ -157,7 +157,7 @@ class InscricaoFormManager {
           container.innerHTML = '<div class="text-center text-red-500">Erro ao carregar modalidades</div>';
           return;
         }
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] OpçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', resp.opcoes);
+        console.log(' [DEBUG] Opçções:', resp.opcoes);
         if (resp.opcoes.length === 0) {
           container.innerHTML = '<div class="text-center text-gray-500">Nenhuma modalidade disponível</div>';
           return;
@@ -194,14 +194,14 @@ class InscricaoFormManager {
   }
 
   carregarIdentificacao(container) {
-    //console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Carregando identificação...');
-    //console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Container:', container);
+    //console.log(' [DEBUG] Carregando identificação...');
+    //console.log(' [DEBUG] Container:', container);
 
     container.innerHTML = `
       <div class="space-y-6">
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h5 class="font-semibold text-blue-800 mb-2">Faça login ou crie sua conta</h5>
-          <p class="text-sm text-blue-600">Para continuar com a inscrição, vocª precisa estar logado.</p>
+          <p class="text-sm text-blue-600">Para continuar com a inscrição, você precisa estar logado.</p>
         </div>
         
         <!-- Tabs de Login/Registro -->
@@ -365,36 +365,36 @@ class InscricaoFormManager {
       </div>
     `;
 
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] HTML renderizado, verificando elementos...');
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab buttons encontradas:', document.querySelectorAll('.tab-btn').length);
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab contents encontradas:', document.querySelectorAll('.tab-content').length);
+    console.log(' [DEBUG] HTML renderizado, verificando elementos...');
+    console.log(' [DEBUG] Tab buttons encontradas:', document.querySelectorAll('.tab-btn').length);
+    console.log(' [DEBUG] Tab contents encontradas:', document.querySelectorAll('.tab-content').length);
 
     // BINDAR EVENTOS DIRETAMENTE - SEM DEPENDER DA CLASSE
     setTimeout(() => {
-      console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Bindando eventos diretamente...');
+      console.log(' [DEBUG] Bindando eventos diretamente...');
       this.bindarEventosIdentificacao();
     }, 100);
   }
 
   bindarEventosIdentificacao() {
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Bindando eventos de identificação diretamente...');
+    console.log(' [DEBUG] Bindando eventos de identificação diretamente...');
 
     // Event listeners para tabs
     const tabBtns = document.querySelectorAll('.tab-btn');
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab buttons encontradas para bind:', tabBtns.length);
+    console.log(' [DEBUG] Tab buttons encontradas para bind:', tabBtns.length);
 
     tabBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
-        console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab clicada:', e.target.dataset.tab);
+        console.log(' [DEBUG] Tab clicada:', e.target.dataset.tab);
         this.trocarTabIdentificacao(e.target.dataset.tab);
       });
     });
 
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Eventos de identificação bindados com sucesso!');
+    console.log(' [DEBUG] Eventos de identificação bindados com sucesso!');
   }
 
   trocarTabIdentificacao(tabName) {
-    console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Trocando para tab:', tabName);
+    console.log(' [DEBUG] Trocando para tab:', tabName);
 
     // Remover active de todas as tabs
     const allTabBtns = document.querySelectorAll('.tab-btn');
@@ -414,13 +414,13 @@ class InscricaoFormManager {
 
     if (tabBtn) {
       tabBtn.classList.add('active');
-      console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab button ativada:', tabName);
+      console.log(' [DEBUG] Tab button ativada:', tabName);
     }
 
     if (tabContent) {
       tabContent.classList.add('active');
       tabContent.style.display = 'block';
-      console.log('ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢ââ€šÂ¬Ã‚ÂÃƒâ€šÃ‚Âµ [DEBUG] Tab content ativada:', tabName);
+      console.log(' [DEBUG] Tab content ativada:', tabName);
     }
   }
 
@@ -429,7 +429,7 @@ class InscricaoFormManager {
       <div class="space-y-4">
         <div class="bg-green-50 border border-green-200 rounded-lg p-4">
           <h5 class="font-semibold text-green-800 mb-2">Confirme seus dados</h5>
-          <p class="text-sm text-green-600">Verifique e complete as informaçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes necessárias.</p>
+          <p class="text-sm text-green-600">Verifique e complete as informaçções necessárias.</p>
         </div>
         <div id="form-ficha">
           <!-- Conteºdo será carregado pelo ficha.js -->
@@ -534,7 +534,7 @@ class InscricaoFormManager {
           Swal.fire({
             icon: 'warning',
             title: 'Aceite os termos',
-            text: 'Vocª deve aceitar os termos e condiçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes para continuar'
+            text: 'Você deve aceitar os termos e condições para continuar'
           });
           return false;
         }
@@ -545,7 +545,7 @@ class InscricaoFormManager {
           Swal.fire({
             icon: 'warning',
             title: 'Login necessário',
-            text: 'Vocª deve fazer login ou criar uma conta para continuar'
+            text: 'Você deve fazer login ou criar uma conta para continuar'
           });
           return false;
         }
@@ -671,7 +671,7 @@ class InscricaoFormManager {
         <div class="flex items-start justify-between mb-3">
           <div class="flex-1">
             <h3 class="font-semibold text-gray-800">${opcao.modalidade_nome}</h3>
-            <p class="text-sm text-gray-600">${opcao.distancia} ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${opcao.categoria_nome}</p>
+            <p class="text-sm text-gray-600">${opcao.distancia} • ${opcao.categoria_nome}</p>
             ${kit ? `<p class="text-sm text-brand-green font-medium">${kit.kit_nome}</p>` : ''}
           </div>
           <div class="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -746,7 +746,7 @@ class InscricaoFormManager {
             data-termos-id="${termos.id}"
             data-versao-termos="${termos.versao}">
           <span class="text-sm text-gray-700">
-            Li e aceito os <strong>Termos e CondiçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes</strong> acima *
+            Li e aceito os <strong>Termos e Condiçções</strong> acima *
           </span>
         </label>
       </div>

@@ -1,5 +1,5 @@
 if (window.getApiBase) { window.getApiBase(); }
-// VariÃƒÆ’Ã‚Â¡veis globais
+// Variáveis globais
 let tabAtual = 'produtos';
 let produtosData = [];
 let kitsData = [];
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderizarDados();
     });
     
-    // Event listeners para botÃƒÆ’Ã‚Âµes
+    // Event listeners para botões
     document.getElementById('btnNovoProduto').addEventListener('click', abrirModalProduto);
     document.getElementById('btnNovoKit').addEventListener('click', abrirModalKit);
     
@@ -36,21 +36,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('filtroModalidade').addEventListener('change', aplicarFiltros);
     document.getElementById('busca').addEventListener('input', aplicarFiltros);
     
-    // Event listeners para formulÃƒÆ’Ã‚Â¡rios
+    // Event listeners para formulários
     document.getElementById('formProduto').addEventListener('submit', salvarProduto);
     document.getElementById('formKit').addEventListener('submit', salvarKit);
     
-    // Event listeners para paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Event listeners para paginação
     document.getElementById('btn-anterior').addEventListener('click', paginaAnterior);
     document.getElementById('btn-proximo').addEventListener('click', paginaProximo);
 });
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de inicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+// Função de inicialização
 function inicializar() {
     atualizarTabs();
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para atualizar tabs
+// Função para atualizar tabs
 function atualizarTabs() {
     const tabProdutos = document.getElementById('tabProdutos');
     const tabKits = document.getElementById('tabKits');
@@ -74,7 +74,7 @@ function atualizarTabs() {
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar dados
+// Função para carregar dados
 async function carregarDados() {
     try {
         mostrarLoading();
@@ -92,108 +92,108 @@ async function carregarDados() {
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar produtos
+// Função para carregar produtos
 async function carregarProdutos() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando produtos...');
+        console.log(' Carregando produtos...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/produtos/list.php');
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta produtos:', response.status, response.statusText);
+        console.log(' Resposta produtos:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados produtos recebidos:', data);
+            console.log('  Dados produtos recebidos:', data);
         } catch (error) {
-            console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON produtos:', error);
+            console.log('❌ Erro ao parsear JSON produtos:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta produtos:', responseText);
+                console.log(' Resposta bruta produtos:', responseText);
             }
-            throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
+            throw new Error('Resposta inválida do servidor');
         }
         
         if (data.success) {
             produtosData = data.data;
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Produtos carregados:', produtosData.length);
+            console.log('... Produtos carregados:', produtosData.length);
         } else {
             throw new Error(data.error || 'Erro ao carregar produtos');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar produtos:', error);
+        console.error(' Erro ao carregar produtos:', error);
         throw error;
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar kits
+// Função para carregar kits
 async function carregarKits() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando kits...');
+        console.log(' Carregando kits...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/kits-evento/list.php');
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta kits:', response.status, response.statusText);
+        console.log(' Resposta kits:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados kits recebidos:', data);
+            console.log('  Dados kits recebidos:', data);
         } catch (error) {
-            console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON kits:', error);
+            console.log('❌ Erro ao parsear JSON kits:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta kits:', responseText);
+                console.log(' Resposta bruta kits:', responseText);
             }
-            throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
+            throw new Error('Resposta inválida do servidor');
         }
         
         if (data.success) {
             kitsData = data.data;
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Kits carregados:', kitsData.length);
+            console.log('... Kits carregados:', kitsData.length);
         } else {
             throw new Error(data.error || 'Erro ao carregar kits');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar kits:', error);
+        console.error(' Erro ao carregar kits:', error);
         throw error;
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar eventos
+// Função para carregar eventos
 async function carregarEventos() {
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando eventos...');
+        console.log(' Carregando eventos...');
         const response = await fetch((window.API_BASE || '/api') + '/organizador/eventos/list.php');
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta eventos:', response.status, response.statusText);
+        console.log(' Resposta eventos:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados eventos recebidos:', data);
+            console.log('  Dados eventos recebidos:', data);
         } catch (error) {
-            console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON eventos:', error);
+            console.log('❌ Erro ao parsear JSON eventos:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta eventos:', responseText);
+                console.log(' Resposta bruta eventos:', responseText);
             }
-            throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
+            throw new Error('Resposta inválida do servidor');
         }
         
         if (data.success) {
             eventosData = data.data;
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Eventos carregados:', eventosData.length);
+            console.log('... Eventos carregados:', eventosData.length);
             preencherSelectEventos();
         } else {
             throw new Error(data.error || 'Erro ao carregar eventos');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar eventos:', error);
+        console.error(' Erro ao carregar eventos:', error);
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para preencher select de eventos
+// Função para preencher select de eventos
 function preencherSelectEventos() {
     const selectEvento = document.getElementById('filtroEvento');
     const selectKitEvento = document.getElementById('kit_evento_id');
     
-    // Limpar opÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes existentes
+    // Limpar opções existentes
     selectEvento.innerHTML = '<option value="">Todos os eventos</option>';
     selectKitEvento.innerHTML = '<option value="">Selecione um evento</option>';
     
@@ -212,7 +212,7 @@ function preencherSelectEventos() {
     });
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para carregar modalidades
+// Função para carregar modalidades
 async function carregarModalidades() {
     const eventoId = document.getElementById('filtroEvento').value;
     const selectModalidade = document.getElementById('filtroModalidade');
@@ -227,26 +227,26 @@ async function carregarModalidades() {
     }
     
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Carregando modalidades para evento:', eventoId);
+        console.log(' Carregando modalidades para evento:', eventoId);
         const response = await fetch(`${window.API_BASE || '/api'}/organizador/modalidades/list.php?evento_id=${eventoId}`);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¥ Resposta modalidades:', response.status, response.statusText);
+        console.log(' Resposta modalidades:', response.status, response.statusText);
         
         let data;
         try {
             data = await response.json();
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Dados modalidades recebidos:', data);
+            console.log('  Dados modalidades recebidos:', data);
         } catch (error) {
-            console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao parsear JSON modalidades:', error);
+            console.log('❌ Erro ao parsear JSON modalidades:', error);
             if (!response.bodyUsed) {
                 const responseText = await response.text();
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ Resposta bruta modalidades:', responseText);
+                console.log(' Resposta bruta modalidades:', responseText);
             }
-            throw new Error('Resposta invÃƒÆ’Ã‚Â¡lida do servidor');
+            throw new Error('Resposta inválida do servidor');
         }
         
         if (data.success) {
             modalidadesData = data.modalidades;
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Modalidades carregadas:', modalidadesData.length);
+            console.log('... Modalidades carregadas:', modalidadesData.length);
             
             // Preencher select de filtro
             selectModalidade.innerHTML = '<option value="">Todas as modalidades</option>';
@@ -271,11 +271,11 @@ async function carregarModalidades() {
             throw new Error(data.error || 'Erro ao carregar modalidades');
         }
     } catch (error) {
-        console.error('ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¥ Erro ao carregar modalidades:', error);
+        console.error(' Erro ao carregar modalidades:', error);
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para aplicar filtros
+// Função para aplicar filtros
 function aplicarFiltros() {
     const filtroEvento = document.getElementById('filtroEvento').value;
     const filtroModalidade = document.getElementById('filtroModalidade').value;
@@ -301,7 +301,7 @@ function aplicarFiltros() {
     renderizarDados(dadosFiltrados);
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para renderizar dados
+// Função para renderizar dados
 function renderizarDados(dados = null) {
     const dadosParaRenderizar = dados || (tabAtual === 'produtos' ? produtosData : kitsData);
     
@@ -312,10 +312,10 @@ function renderizarDados(dados = null) {
     }
     
     atualizarPaginacao(dadosParaRenderizar);
-    ocultarLoading(); // Ocultar loading apÃƒÆ’Ã‚Â³s renderizar dados
+    ocultarLoading(); // Ocultar loading após renderizar dados
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para renderizar produtos
+// Função para renderizar produtos
 function renderizarProdutos(produtos) {
     const container = document.getElementById('produtos-container');
     container.innerHTML = '';
@@ -325,7 +325,7 @@ function renderizarProdutos(produtos) {
             <div class="text-center py-12">
                 <i class="fas fa-cube text-gray-400 text-4xl mb-4"></i>
                 <h3 class="text-gray-600 font-semibold mb-2">Nenhum produto encontrado</h3>
-                <p class="text-gray-500">Crie seu primeiro produto para comeÃƒÆ’Ã‚Â§ar.</p>
+                <p class="text-gray-500">Crie seu primeiro produto para começar.</p>
             </div>
         `;
         return;
@@ -337,7 +337,7 @@ function renderizarProdutos(produtos) {
     });
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para renderizar kits
+// Função para renderizar kits
 function renderizarKits(kits) {
     const container = document.getElementById('kits-container');
     container.innerHTML = '';
@@ -347,7 +347,7 @@ function renderizarKits(kits) {
             <div class="text-center py-12">
                 <i class="fas fa-box text-gray-400 text-4xl mb-4"></i>
                 <h3 class="text-gray-600 font-semibold mb-2">Nenhum kit encontrado</h3>
-                <p class="text-gray-500">Crie seu primeiro kit para comeÃƒÆ’Ã‚Â§ar.</p>
+                <p class="text-gray-500">Crie seu primeiro kit para começar.</p>
             </div>
         `;
         return;
@@ -359,7 +359,7 @@ function renderizarKits(kits) {
     });
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para criar card de produto
+// Função para criar card de produto
 function criarCardProduto(produto) {
     const card = document.createElement('div');
     card.className = 'bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow';
@@ -388,7 +388,7 @@ function criarCardProduto(produto) {
                 </div>
                 <div>
                     <h3 class="font-semibold text-gray-900">${produto.nome}</h3>
-                    <p class="text-sm text-gray-600">${produto.descricao || 'Sem descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o'}</p>
+                    <p class="text-sm text-gray-600">${produto.descricao || 'Sem descrição'}</p>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipoColor[produto.tipo]}">
                         ${produto.tipo}
                     </span>
@@ -408,7 +408,7 @@ function criarCardProduto(produto) {
     return card;
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para criar card de kit
+// Função para criar card de kit
 function criarCardKit(kit) {
     const card = document.createElement('div');
     card.className = 'bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow';
@@ -427,7 +427,7 @@ function criarCardKit(kit) {
                 </div>
                 <div>
                     <h3 class="font-semibold text-gray-900">${kit.nome}</h3>
-                    <p class="text-sm text-gray-600">${kit.descricao || 'Sem descriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o'}</p>
+                    <p class="text-sm text-gray-600">${kit.descricao || 'Sem descrição'}</p>
                     <p class="text-xs text-gray-500">${kit.nome_modalidade}</p>
                 </div>
             </div>
@@ -452,7 +452,7 @@ function criarCardKit(kit) {
         
         <div class="flex items-center justify-between">
             <div class="text-sm text-gray-600">
-                OcupaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: ${kit.ocupacao_percentual}%
+                Ocupação: ${kit.ocupacao_percentual}%
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="editarKit(${kit.id})" class="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded">
@@ -468,7 +468,7 @@ function criarCardKit(kit) {
     return card;
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de estado
+// Funções de estado
 function mostrarLoading() {
     document.getElementById('loading').style.display = 'block';
     document.getElementById('error-message').style.display = 'none';
@@ -484,7 +484,7 @@ function mostrarErro(mensagem) {
     document.getElementById('error-message').querySelector('p').textContent = mensagem;
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de paginaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+// Funções de paginação
 function atualizarPaginacao(dados) {
     const totalItens = dados.length;
     const totalPaginas = Math.ceil(totalItens / itensPorPagina);
@@ -496,11 +496,11 @@ function atualizarPaginacao(dados) {
     
     document.getElementById('paginacao').style.display = 'flex';
     
-    // Atualizar botÃƒÆ’Ã‚Âµes
+    // Atualizar botões
     document.getElementById('btn-anterior').disabled = paginaAtual <= 1;
     document.getElementById('btn-proximo').disabled = paginaAtual >= totalPaginas;
     
-    // Gerar nÃƒÆ’Ã‚Âºmeros de pÃƒÆ’Ã‚Â¡gina
+    // Gerar números de página
     const paginasContainer = document.getElementById('paginas');
     paginasContainer.innerHTML = '';
     
@@ -537,7 +537,7 @@ function irParaPagina(pagina) {
     renderizarDados();
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do modal de produto
+// Funções do modal de produto
 function abrirModalProduto(produtoId = null) {
     const modal = document.getElementById('modalProduto');
     const titulo = document.getElementById('modalProdutoTitulo');
@@ -545,12 +545,12 @@ function abrirModalProduto(produtoId = null) {
     const form = document.getElementById('formProduto');
     
     if (produtoId) {
-        // Modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+        // Modo edição
         titulo.textContent = 'Editar Produto';
         btnTexto.textContent = 'Atualizar Produto';
         // TODO: Carregar dados do produto
     } else {
-        // Modo criaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+        // Modo criação
         titulo.textContent = 'Novo Produto';
         btnTexto.textContent = 'Criar Produto';
         form.reset();
@@ -563,7 +563,7 @@ function fecharModalProduto() {
     document.getElementById('modalProduto').classList.add('hidden');
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do modal de kit
+// Funções do modal de kit
 function abrirModalKit(kitId = null) {
     const modal = document.getElementById('modalKit');
     const titulo = document.getElementById('modalKitTitulo');
@@ -571,12 +571,12 @@ function abrirModalKit(kitId = null) {
     const form = document.getElementById('formKit');
     
     if (kitId) {
-        // Modo ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+        // Modo edição
         titulo.textContent = 'Editar Kit';
         btnTexto.textContent = 'Atualizar Kit';
         // TODO: Carregar dados do kit
     } else {
-        // Modo criaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+        // Modo criação
         titulo.textContent = 'Novo Kit';
         btnTexto.textContent = 'Criar Kit';
         form.reset();
@@ -591,7 +591,7 @@ function fecharModalKit() {
     document.getElementById('modalKit').classList.add('hidden');
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes para gerenciar produtos do kit
+// Funções para gerenciar produtos do kit
 function adicionarProdutoKit() {
     const container = document.getElementById('produtos-kit-container');
     const produtoId = Date.now();
@@ -642,7 +642,7 @@ function limparProdutosKit() {
     document.getElementById('produtos-kit-container').innerHTML = '';
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes para gerenciar tamanhos do kit
+// Funções para gerenciar tamanhos do kit
 function adicionarTamanhoKit() {
     const container = document.getElementById('tamanhos-kit-container');
     const tamanhoId = Date.now();
@@ -663,7 +663,7 @@ function adicionarTamanhoKit() {
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade DisponÃƒÆ’Ã‚Â­vel</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade Disponível</label>
                     <input type="number" name="tamanhos[${tamanhoId}][quantidade_disponivel]" min="1" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
                 </div>
             </div>
@@ -684,7 +684,7 @@ function limparTamanhosKit() {
     document.getElementById('tamanhos-kit-container').innerHTML = '';
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes para salvar dados
+// Funções para salvar dados
 async function salvarProduto(e) {
     e.preventDefault();
     
@@ -791,15 +791,15 @@ async function salvarKit(e) {
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes para editar e excluir
+// Funções para editar e excluir
 function editarProduto(produtoId) {
-    // TODO: Implementar ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de produto
+    // TODO: Implementar edição de produto
     console.log('Editar produto:', produtoId);
 }
 
 function excluirProduto(produtoId) {
     Swal.fire({
-        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
+        title: 'Confirmar exclusão',
         text: 'Tem certeza que deseja excluir este produto?',
         icon: 'warning',
         showCancelButton: true,
@@ -809,20 +809,20 @@ function excluirProduto(produtoId) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            // TODO: Implementar exclusÃƒÆ’Ã‚Â£o de produto
+            // TODO: Implementar exclusão de produto
             console.log('Excluir produto:', produtoId);
         }
     });
 }
 
 function editarKit(kitId) {
-    // TODO: Implementar ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de kit
+    // TODO: Implementar edição de kit
     console.log('Editar kit:', kitId);
 }
 
 function excluirKit(kitId) {
     Swal.fire({
-        title: 'Confirmar exclusÃƒÆ’Ã‚Â£o',
+        title: 'Confirmar exclusão',
         text: 'Tem certeza que deseja excluir este kit?',
         icon: 'warning',
         showCancelButton: true,
@@ -832,7 +832,7 @@ function excluirKit(kitId) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            // TODO: Implementar exclusÃƒÆ’Ã‚Â£o de kit
+            // TODO: Implementar exclusão de kit
             console.log('Excluir kit:', kitId);
         }
     });

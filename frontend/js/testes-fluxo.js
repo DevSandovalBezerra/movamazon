@@ -14,7 +14,7 @@ class TesteFluxo {
     }
 
     inicializar() {
-        console.log('Ã°Å¸Â§Âª Sistema de Testes de Fluxo inicializado');
+        console.log(' Sistema de Testes de Fluxo inicializado');
         this.criarInterfaceTestes();
     }
 
@@ -31,7 +31,7 @@ class TesteFluxo {
         painel.className = 'fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg z-50 max-w-sm';
         painel.innerHTML = `
             <div class="flex items-center justify-between mb-3">
-                <h3 class="font-bold text-sm">Ã°Å¸Â§Âª Testes de Fluxo</h3>
+                <h3 class="font-bold text-sm"> Testes de Fluxo</h3>
                 <button onclick="testeFluxo.executarTodosTestes()" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-xs">
                     Executar Todos
                 </button>
@@ -47,7 +47,7 @@ class TesteFluxo {
     }
 
     async executarTodosTestes() {
-        console.log('Ã°Å¸Å¡â‚¬ Iniciando execuÃƒÂ§ÃƒÂ£o de todos os testes...');
+        console.log(' Iniciando execução de todos os testes...');
         this.limparResultados();
 
         // Testes de API
@@ -56,10 +56,10 @@ class TesteFluxo {
         // Testes de Frontend
         await this.testarFrontend();
 
-        // Testes de ValidaÃƒÂ§ÃƒÂ£o
+        // Testes de Validação
         await this.testarValidacoes();
 
-        // Testes de Fluxo de UsuÃƒÂ¡rio
+        // Testes de Fluxo de Usuário
         await this.testarFluxoUsuario();
 
         this.atualizarInterface();
@@ -67,10 +67,10 @@ class TesteFluxo {
     }
 
     async testarAPIs() {
-        console.log('Ã°Å¸â€Å’ Testando APIs...');
+        console.log(' Testando APIs...');
 
-        // Teste 1: API de Eventos PÃƒÂºblicos
-        await this.executarTeste('API Eventos PÃƒÂºblicos', async () => {
+        // Teste 1: API de Eventos Públicos
+        await this.executarTeste('API Eventos Públicos', async () => {
             const response = await fetch((window.API_BASE || '/api') + '/evento/list_public.php');
             const data = await response.json();
             return data.success !== undefined;
@@ -92,10 +92,10 @@ class TesteFluxo {
     }
 
     async testarFrontend() {
-        console.log('Ã°Å¸Å½Â¨ Testando Frontend...');
+        console.log(' Testando Frontend...');
 
-        // Teste 1: Elementos da pÃƒÂ¡gina principal
-        await this.executarTeste('Elementos PÃƒÂ¡gina Principal', () => {
+        // Teste 1: Elementos da página principal
+        await this.executarTeste('Elementos Página Principal', () => {
             const elementos = [
                 'eventos-dinamicos',
                 'eventos-count'
@@ -108,29 +108,29 @@ class TesteFluxo {
             return typeof carregarEventos === 'function';
         });
 
-        // Teste 3: SweetAlert disponÃƒÂ­vel
-        await this.executarTeste('SweetAlert DisponÃƒÂ­vel', () => {
+        // Teste 3: SweetAlert disponível
+        await this.executarTeste('SweetAlert Disponível', () => {
             return typeof Swal !== 'undefined';
         });
     }
 
     async testarValidacoes() {
-        console.log('âÅ“â€¦ Testando ValidaÃƒÂ§ÃƒÂµes...');
+        console.log(' Testando Validações...');
 
-        // Teste 1: Sistema de validaÃƒÂ§ÃƒÂ£o
-        await this.executarTeste('Sistema de ValidaÃƒÂ§ÃƒÂ£o', () => {
+        // Teste 1: Sistema de validação
+        await this.executarTeste('Sistema de Validação', () => {
             return typeof ValidacaoFormulario !== 'undefined';
         });
 
-        // Teste 2: Regras de validaÃƒÂ§ÃƒÂ£o
-        await this.executarTeste('Regras de ValidaÃƒÂ§ÃƒÂ£o', () => {
+        // Teste 2: Regras de validação
+        await this.executarTeste('Regras de Validação', () => {
             return REGRAS_VALIDACAO &&
                 REGRAS_VALIDACAO.categoria &&
                 REGRAS_VALIDACAO.modalidade;
         });
 
-        // Teste 3: UtilitÃƒÂ¡rios de validaÃƒÂ§ÃƒÂ£o
-        await this.executarTeste('UtilitÃƒÂ¡rios de ValidaÃƒÂ§ÃƒÂ£o', () => {
+        // Teste 3: Utilitários de validação
+        await this.executarTeste('Utilitários de Validação', () => {
             return ValidacaoUtils &&
                 typeof ValidacaoUtils.email === 'function' &&
                 typeof ValidacaoUtils.cpf === 'function';
@@ -138,16 +138,16 @@ class TesteFluxo {
     }
 
     async testarFluxoUsuario() {
-        console.log('Ã°Å¸â€˜Â¤ Testando Fluxo de UsuÃƒÂ¡rio...');
+        console.log(' Testando Fluxo de Usuário...');
 
-        // Teste 1: NavegaÃƒÂ§ÃƒÂ£o entre pÃƒÂ¡ginas
-        await this.executarTeste('NavegaÃƒÂ§ÃƒÂ£o PÃƒÂ¡ginas', () => {
+        // Teste 1: Navegação entre páginas
+        await this.executarTeste('Navegação Páginas', () => {
             const links = document.querySelectorAll('a[href]');
             return links.length > 0;
         });
 
-        // Teste 2: FormulÃƒÂ¡rios funcionais
-        await this.executarTeste('FormulÃƒÂ¡rios Funcionais', () => {
+        // Teste 2: Formulários funcionais
+        await this.executarTeste('Formulários Funcionais', () => {
             const forms = document.querySelectorAll('form');
             return forms.length > 0;
         });
@@ -167,16 +167,16 @@ class TesteFluxo {
             if (resultado) {
                 this.testesPassaram++;
                 this.adicionarResultado(nome, 'PASSOU', 'success');
-                console.log(`âÅ“â€¦ ${nome}: PASSOU`);
+                console.log(` ${nome}: PASSOU`);
             } else {
                 this.testesFalharam++;
                 this.adicionarResultado(nome, 'FALHOU', 'error');
-                console.log(`âÂÅ’ ${nome}: FALHOU`);
+                console.log(` ${nome}: FALHOU`);
             }
         } catch (erro) {
             this.testesFalharam++;
             this.adicionarResultado(nome, `ERRO: ${erro.message}`, 'error');
-            console.error(`Ã°Å¸â€™Â¥ ${nome}: ERRO - ${erro.message}`);
+            console.error(`"¥ ${nome}: ERRO - ${erro.message}`);
         }
 
         this.atualizarInterface();
@@ -203,7 +203,7 @@ class TesteFluxo {
 
         if (resultados) {
             resultados.innerHTML = this.resultados
-                .slice(-5) // Mostrar apenas os ÃƒÂºltimos 5 resultados
+                .slice(-5) // Mostrar apenas os últimos 5 resultados
                 .map(r => `
                     <div class="text-xs ${r.tipo === 'success' ? 'text-green-400' : 'text-red-400'}">
                         ${r.timestamp} - ${r.nome}: ${r.status}
@@ -214,15 +214,15 @@ class TesteFluxo {
 
     mostrarResumo() {
         const resumo = `
-            Ã°Å¸Â§Âª **TESTES CONCLUÃƒÂDOS**
+             **TESTES CONCLUÍDOS**
             
-            Ã°Å¸â€œÅ  **Resumo:**
-            ââ‚¬Â¢ Total: ${this.testesExecutados}
-            ââ‚¬Â¢ âÅ“â€¦ Passaram: ${this.testesPassaram}
-            ââ‚¬Â¢ âÂÅ’ Falharam: ${this.testesFalharam}
-            ââ‚¬Â¢ Ã°Å¸â€œË† Taxa de Sucesso: ${((this.testesPassaram / this.testesExecutados) * 100).toFixed(1)}%
+             **Resumo:**
+             Total: ${this.testesExecutados}
+              Passaram: ${this.testesPassaram}
+              Falharam: ${this.testesFalharam}
+               Taxa de Sucesso: ${((this.testesPassaram / this.testesExecutados) * 100).toFixed(1)}%
             
-            ${this.testesFalharam === 0 ? 'Ã°Å¸Å½â€° Todos os testes passaram!' : 'âÅ¡Â Ã¯Â¸Â Alguns testes falharam. Verifique os logs.'}
+            ${this.testesFalharam === 0 ? ' Todos os testes passaram!' : ' ï¸ Alguns testes falharam. Verifique os logs.'}
         `;
 
         console.log(resumo);
@@ -230,14 +230,14 @@ class TesteFluxo {
         if (this.testesFalharam === 0) {
             Swal.fire({
                 icon: 'success',
-                title: 'Testes ConcluÃƒÂ­dos!',
+                title: 'Testes Concluídos!',
                 text: `Todos os ${this.testesExecutados} testes passaram com sucesso!`,
                 confirmButtonColor: '#10B981'
             });
         } else {
             Swal.fire({
                 icon: 'warning',
-                title: 'Testes ConcluÃƒÂ­dos',
+                title: 'Testes Concluídos',
                 text: `${this.testesFalharam} de ${this.testesExecutados} testes falharam. Verifique o console para detalhes.`,
                 confirmButtonColor: '#F59E0B'
             });
@@ -251,9 +251,9 @@ class TesteFluxo {
         this.testesFalharam = 0;
     }
 
-    // Testes especÃƒÂ­ficos para diferentes funcionalidades
+    // Testes específicos para diferentes funcionalidades
     async testarFuncionalidadeEspecifica(nome, funcaoTeste) {
-        console.log(`Ã°Å¸Â§Âª Testando funcionalidade especÃƒÂ­fica: ${nome}`);
+        console.log(` Testando funcionalidade específica: ${nome}`);
         await this.executarTeste(nome, funcaoTeste);
     }
 
@@ -264,7 +264,7 @@ class TesteFluxo {
         const fim = performance.now();
         const tempo = fim - inicio;
 
-        console.log(`âÂÂ±Ã¯Â¸Â ${nome} executou em ${tempo.toFixed(2)}ms`);
+        console.log(`±ï¸ ${nome} executou em ${tempo.toFixed(2)}ms`);
 
         // Considerar "lento" se demorar mais de 1 segundo
         const passou = tempo < 1000;
@@ -273,9 +273,9 @@ class TesteFluxo {
         return tempo;
     }
 
-    // Teste de acessibilidade bÃƒÂ¡sica
+    // Teste de acessibilidade básica
     async testarAcessibilidade() {
-        console.log('ââ„¢Â¿ Testando Acessibilidade...');
+        console.log('¿ Testando Acessibilidade...');
 
         // Teste 1: Imagens com alt
         await this.executarTeste('Imagens com Alt', () => {
@@ -286,8 +286,8 @@ class TesteFluxo {
             return imagensComAlt.length === imagens.length;
         });
 
-        // Teste 2: FormulÃƒÂ¡rios com labels
-        await this.executarTeste('FormulÃƒÂ¡rios com Labels', () => {
+        // Teste 2: Formulários com labels
+        await this.executarTeste('Formulários com Labels', () => {
             const inputs = document.querySelectorAll('input, select, textarea');
             if (inputs.length === 0) return true;
 
@@ -301,11 +301,11 @@ class TesteFluxo {
             return inputsComLabel.length === inputs.length;
         });
 
-        // Teste 3: Contraste de cores (bÃƒÂ¡sico)
+        // Teste 3: Contraste de cores (básico)
         await this.executarTeste('Contraste de Cores', () => {
-            // VerificaÃƒÂ§ÃƒÂ£o bÃƒÂ¡sica - em produÃƒÂ§ÃƒÂ£o seria mais robusta
+            // Verificação básica - em produção seria mais robusta
             const elementosTexto = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div');
-            return elementosTexto.length > 0; // Simplificado para demonstraÃƒÂ§ÃƒÂ£o
+            return elementosTexto.length > 0; // Simplificado para demonstração
         });
     }
 }
@@ -314,11 +314,11 @@ class TesteFluxo {
 document.addEventListener('DOMContentLoaded', function () {
     window.testeFluxo = new TesteFluxo();
 
-    // Executar testes automÃƒÂ¡ticos em desenvolvimento
+    // Executar testes automáticos em desenvolvimento
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         // Aguardar um pouco para o sistema carregar
         setTimeout(() => {
-            console.log('Ã°Å¸Å¡â‚¬ Executando testes automÃƒÂ¡ticos em 3 segundos...');
+            console.log(' Executando testes automáticos em 3 segundos...');
             setTimeout(() => {
                 testeFluxo.executarTodosTestes();
             }, 3000);
@@ -326,9 +326,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// FunÃƒÂ§ÃƒÂµes de teste utilitÃƒÂ¡rias
+// Funções de teste utilitárias
 window.TestesUtils = {
-    // Testar se uma funÃƒÂ§ÃƒÂ£o existe
+    // Testar se uma função existe
     funcaoExiste: (nomeFuncao) => {
         return typeof window[nomeFuncao] === 'function';
     },

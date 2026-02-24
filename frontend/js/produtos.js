@@ -1,6 +1,6 @@
 if (window.getApiBase) { window.getApiBase(); }
 // =====================================================
-// GESTÃƒÆ’O DE PRODUTOS - JAVASCRIPT
+// GESTÃO DE PRODUTOS - JAVASCRIPT
 // =====================================================
 
 let produtos = [];
@@ -13,7 +13,7 @@ let filtros = {
 };
 
 // =====================================================
-// INICIALIZAÃƒâ€¡ÃƒÆ’O
+// INICIALIZAÇÃO
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function configurarEventListeners() {
-    // BotÃƒÂ£o novo produto
+    // Botão novo produto
     const btnNovo = document.getElementById('btnNovoProduto');
     if (btnNovo) {
         btnNovo.addEventListener('click', abrirModalProduto);
@@ -38,7 +38,7 @@ function configurarEventListeners() {
     const filtroStatus = document.getElementById('filtroStatus');
     if (filtroStatus) filtroStatus.addEventListener('change', aplicarFiltros);
 
-    // PaginaÃƒÂ§ÃƒÂ£o
+    // Paginação
     const btnAnterior = document.getElementById('btn-anterior');
     if (btnAnterior) {
         btnAnterior.addEventListener('click', () => {
@@ -60,7 +60,7 @@ function configurarEventListeners() {
         });
     }
 
-    // FormulÃƒÂ¡rio
+    // Formulário
     const formProduto = document.getElementById('formProduto');
     if (formProduto) formProduto.addEventListener('submit', salvarProduto);
 
@@ -87,7 +87,7 @@ async function carregarProdutos() {
             mostrarErro('Erro ao carregar produtos: ' + data.error);
         }
     } catch (error) {
-        console.error('Erro na requisiÃƒÂ§ÃƒÂ£o:', error);
+        console.error('Erro na requisição:', error);
         mostrarErro('Erro ao carregar produtos');
     } finally {
         ocultarLoading();
@@ -95,7 +95,7 @@ async function carregarProdutos() {
 }
 
 // =====================================================
-// RENDERIZAÃƒâ€¡ÃƒÆ’O
+// RENDERIZAÇÃO
 // =====================================================
 
 function renderizarProdutos(produtosParaRenderizar = produtos) {
@@ -111,7 +111,7 @@ function renderizarProdutos(produtosParaRenderizar = produtos) {
             <div class="col-span-full text-center py-12">
                 <i class="fas fa-box-open text-gray-400 text-4xl mb-4"></i>
                 <p class="text-gray-500 text-lg">Nenhum produto encontrado</p>
-                <p class="text-gray-400">Crie seu primeiro produto para comeÃƒÂ§ar</p>
+                <p class="text-gray-400">Crie seu primeiro produto para começar</p>
             </div>
         `;
         return;
@@ -132,7 +132,7 @@ function criarCardProduto(produto) {
     const statusClass = produto.ativo ? 'green' : 'red';
     const statusText = produto.ativo ? 'Ativo' : 'Inativo';
     const disponivelVenda = produto.disponivel_venda ?
-        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">DisponÃƒÂ­vel para venda</span>' :
+        '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Disponível para venda</span>' :
         '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Apenas em kit</span>';
 
     const precoFormatado = produto.preco ? `R$ ${parseFloat(produto.preco).toFixed(2)}` : 'R$ 0,00';
@@ -180,7 +180,7 @@ function criarCardProduto(produto) {
 
 
 // =====================================================
-// FILTROS E PAGINAÃƒâ€¡ÃƒÆ’O
+// FILTROS E PAGINAÇÃO
 // =====================================================
 
 function aplicarFiltros() {
@@ -206,11 +206,11 @@ function atualizarPaginacao(totalProdutos = produtos.length) {
     const inicio = (paginaAtual - 1) * itensPorPagina + 1;
     const fim = Math.min(paginaAtual * itensPorPagina, totalProdutos);
 
-    // Atualizar botÃƒÂµes
+    // Atualizar botões
     document.getElementById('btn-anterior').disabled = paginaAtual === 1;
     document.getElementById('btn-proximo').disabled = paginaAtual === totalPaginas;
 
-    // Mostrar/ocultar paginaÃƒÂ§ÃƒÂ£o
+    // Mostrar/ocultar paginação
     const paginacao = document.getElementById('paginacao');
     if (totalPaginas > 1) {
         paginacao.style.display = 'flex';
@@ -339,7 +339,7 @@ async function editarProduto(id) {
 async function excluirProduto(id) {
     Swal.fire({
         title: 'Tem certeza?',
-        text: 'Esta aÃƒÂ§ÃƒÂ£o nÃƒÂ£o pode ser revertida!',
+        text: 'Esta ação não pode ser revertida!',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -363,7 +363,7 @@ async function excluirProduto(id) {
 
                 if (data.success) {
                     carregarProdutos();
-                    Swal.fire('ExcluÃƒÂ­do!', 'Produto excluÃƒÂ­do com sucesso.', 'success');
+                    Swal.fire('Excluído!', 'Produto excluído com sucesso.', 'success');
                 } else {
                     Swal.fire('Erro!', 'Erro: ' + data.error, 'error');
                 }
@@ -376,7 +376,7 @@ async function excluirProduto(id) {
 }
 
 // =====================================================
-// UTILITÃƒÂRIOS
+// UTILITÁRIOS
 // =====================================================
 
 function mostrarLoading() {
@@ -412,6 +412,6 @@ function atualizarResumo() {
     const ativos = produtos.filter(p => p.ativo).length;
     const disponiveisVenda = produtos.filter(p => p.disponivel_venda).length;
 
-    // Aqui vocÃƒÂª pode adicionar mais mÃƒÂ©tricas se necessÃƒÂ¡rio
-    console.log(`Total: ${total}, Ativos: ${ativos}, DisponÃƒÂ­veis para venda: ${disponiveisVenda}`);
+    // Aqui você pode adicionar mais métricas se necessário
+    console.log(`Total: ${total}, Ativos: ${ativos}, Disponíveis para venda: ${disponiveisVenda}`);
 }

@@ -207,7 +207,7 @@ include '../../includes/navbar.php';
                             <option value="RJ">Rio de Janeiro</option>
                             <option value="RN">Rio Grande do Norte</option>
                             <option value="RS">Rio Grande do Sul</option>
-                            <option value="RO">RondÃ´nia</option>
+                            <option value="RO">Rondônia</option>
                             <option value="RR">Roraima</option>
                             <option value="SC">Santa Catarina</option>
                             <option value="SP">São Paulo</option>

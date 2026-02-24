@@ -1,5 +1,5 @@
 if (window.getApiBase) { window.getApiBase(); }
-// JavaScript para Etapa 4: Ficha de InscriÃƒÂ§ÃƒÂ£o
+// JavaScript para Etapa 4: Ficha de InscriÒ§Ò£o
 class EtapaFicha {
     constructor() {
         this.produtosExtras = [];
@@ -16,11 +16,11 @@ class EtapaFicha {
         this.bindEvents();
         this.atualizarResumoCompra();
         this.validarFormulario();
-        console.log('[FICHA] EtapaFicha.init() fim - botÃƒÂ£o disabled=', document.getElementById('btn-prosseguir')?.disabled);
+        console.log('[FICHA] EtapaFicha.init() fim - botÒ£o disabled=', document.getElementById('btn-prosseguir')?.disabled);
     }
 
     carregarDadosSessao() {
-        // Carregar dados da sessÃƒÂ£o se existirem
+        // Carregar dados da sessÒ£o se existirem
         if (window.sistemaInscricao && window.sistemaInscricao.dadosInscricao) {
             this.produtosExtras = window.sistemaInscricao.dadosInscricao.produtos_extras || [];
             this.cupomAplicado = window.sistemaInscricao.dadosInscricao.cupom_aplicado || null;
@@ -33,7 +33,7 @@ class EtapaFicha {
     }
 
     bindEvents() {
-        // Event listener para seleÃƒÂ§ÃƒÂ£o de tamanho (radios, se existirem)
+        // Event listener para seleÒ§Ò£o de tamanho (radios, se existirem)
         document.querySelectorAll('input[name="tamanho_camiseta"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 this.tamanhoCamiseta = e.target.value;
@@ -52,7 +52,7 @@ class EtapaFicha {
             });
         }
 
-        // Event listener para questionÃƒÂ¡rio
+        // Event listener para questionÒ¡rio
         document.querySelectorAll('#questionarioForm input, #questionarioForm textarea, #questionarioForm select').forEach(input => {
             input.addEventListener('input', () => {
                 this.capturarRespostasQuestionario();
@@ -60,12 +60,12 @@ class EtapaFicha {
             });
         });
 
-        // Event listener para botÃƒÂ£o prÃƒÂ³ximo (prevenir double-call com onclick inline)
+        // Event listener para botÒ£o prÒ³ximo (prevenir double-call com onclick inline)
         const btnProximo = document.getElementById('btn-prosseguir');
         console.log('[FICHA] bindEvents btn-prosseguir=', !!btnProximo, 'disabled=', btnProximo?.disabled);
         if (btnProximo) {
             btnProximo.addEventListener('click', (e) => {
-                console.log('[FICHA] clique no botÃƒÂ£o PrÃƒÂ³ximo (listener ficha.js) - bloqueando onclick inline');
+                console.log('[FICHA] clique no botÒ£o PrÒ³ximo (listener ficha.js) - bloqueando onclick inline');
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 this.validarESalvar();
@@ -92,7 +92,7 @@ class EtapaFicha {
         const codigo = document.getElementById('cupomCodigo').value.trim();
 
         if (!codigo) {
-            this.mostrarErroCupom('Digite o cÃƒÂ³digo do cupom');
+            this.mostrarErroCupom('Digite o cÒ³digo do cupom');
             return;
         }
 
@@ -118,18 +118,18 @@ class EtapaFicha {
                     this.mostrarSucessoCupom(`Cupom aplicado! Desconto: R$ ${data.valor_desconto.toFixed(2)}`);
                     this.atualizarResumoCompra();
                 } else {
-                    this.mostrarErroCupom(data.error || 'Cupom invÃƒÂ¡lido');
+                    this.mostrarErroCupom(data.error || 'Cupom invÒ¡lido');
                 }
             })
             .catch(error => {
                 this.ocultarLoading();
-                this.mostrarErroCupom('Erro na comunicaÃƒÂ§ÃƒÂ£o com o servidor');
+                this.mostrarErroCupom('Erro na comunicaÒ§Ò£o com o servidor');
                 console.error('Erro:', error);
             });
     }
 
     adicionarProdutoExtra(produtoId, nome, valor) {
-        // Verificar se jÃƒÂ¡ foi adicionado
+        // Verificar se jÒ¡ foi adicionado
         const index = this.produtosExtras.findIndex(p => p.id === produtoId);
 
         if (index === -1) {
@@ -248,7 +248,7 @@ class EtapaFicha {
             valido = false;
         }
 
-        // Validar questionÃƒÂ¡rio obrigatÃƒÂ³rio (radio/checkbox: verificar :checked; demais: value.trim())
+        // Validar questionÒ¡rio obrigatÒ³rio (radio/checkbox: verificar :checked; demais: value.trim())
         const questionariosObrigatorios = document.querySelectorAll('#questionarioForm [required]');
         let qInvalidos = 0;
         questionariosObrigatorios.forEach(input => {
@@ -261,7 +261,7 @@ class EtapaFicha {
             }
         });
 
-        // NÃƒÂ£o desabilitar o botÃƒÂ£o: deixar sempre clicÃƒÂ¡vel; validaÃƒÂ§ÃƒÂ£o na hora do envio (salvarFicha/validarFicha)
+        // NÒ£o desabilitar o botÒ£o: deixar sempre clicÒ¡vel; validaÒ§Ò£o na hora do envio (salvarFicha/validarFicha)
         if (btnProximo && typeof console !== 'undefined' && console.log) {
             console.log('[FICHA] validarFormulario tamanhoPreenchido=', tamanhoPreenchido, 'questionarioObrig=', questionariosObrigatorios.length, 'invalidos=', qInvalidos, 'valido=', valido);
         }
@@ -272,15 +272,15 @@ class EtapaFicha {
     validarESalvar() {
         console.log('[FICHA] validarESalvar()');
         if (!this.validarFormulario()) {
-            console.log('[FICHA] validarESalvar validaÃƒÂ§ÃƒÂ£o falhou');
-            this.mostrarErro('Preencha todos os campos obrigatÃƒÂ³rios');
+            console.log('[FICHA] validarESalvar validaÒ§Ò£o falhou');
+            this.mostrarErro('Preencha todos os campos obrigatÒ³rios');
             return false;
         }
 
-        // Capturar respostas do questionÃƒÂ¡rio
+        // Capturar respostas do questionÒ¡rio
         this.capturarRespostasQuestionario();
 
-        // Salvar dados na sessÃƒÂ£o
+        // Salvar dados na sessÒ£o
         if (window.sistemaInscricao) {
             window.sistemaInscricao.salvarDadosEtapa({
                 produtos_extras: this.produtosExtras,
@@ -293,7 +293,7 @@ class EtapaFicha {
             });
         }
 
-        // Prosseguir para prÃƒÂ³xima etapa (se sistemaInscricao nÃƒÂ£o existir, usar salvarFicha global)
+        // Prosseguir para prÒ³xima etapa (se sistemaInscricao nÒ£o existir, usar salvarFicha global)
         if (window.sistemaInscricao) {
             console.log('[FICHA] validarESalvar chamando sistemaInscricao.prosseguirEtapa()');
             window.sistemaInscricao.prosseguirEtapa();
@@ -301,7 +301,7 @@ class EtapaFicha {
             console.log('[FICHA] validarESalvar chamando salvarFicha()');
             salvarFicha();
         } else {
-            console.error('[FICHA] validarESalvar salvarFicha nÃƒÂ£o definida');
+            console.error('[FICHA] validarESalvar salvarFicha nÒ£o definida');
         }
 
         return true;
@@ -320,7 +320,7 @@ class EtapaFicha {
             }
         }
 
-        // Preencher respostas do questionÃƒÂ¡rio
+        // Preencher respostas do questionÒ¡rio
         Object.keys(this.respostasQuestionario).forEach(questionarioId => {
             const input = document.getElementById(`questionario_${questionarioId}`);
             if (input) {
@@ -340,7 +340,7 @@ class EtapaFicha {
         this.validarFormulario();
     }
 
-    // FunÃƒÂ§ÃƒÂµes de feedback
+    // FunÒ§Òµes de feedback
     mostrarErroCupom(mensagem) {
         const container = document.getElementById('cupomResultado');
         if (container) {
@@ -391,7 +391,7 @@ class EtapaFicha {
         }
     }
 
-    // MÃƒÂ©todos de acesso
+    // MÒ©todos de acesso
     getProdutosExtras() {
         return this.produtosExtras;
     }
@@ -412,7 +412,7 @@ class EtapaFicha {
         return this.respostasQuestionario;
     }
 
-    // MÃƒÂ©todos utilitÃƒÂ¡rios
+    // MÒ©todos utilitÒ¡rios
     limparCupom() {
         this.cupomAplicado = null;
         this.valorDesconto = 0;
@@ -438,7 +438,7 @@ class EtapaFicha {
     }
 }
 
-// FunÃƒÂ§ÃƒÂµes globais
+// FunÒ§Òµes globais
 function aplicarCupom() {
     if (window.etapaFicha) {
         window.etapaFicha.aplicarCupom();
@@ -462,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.etapaFicha = new EtapaFicha();
 });
 
-// Exportar para uso em outros mÃƒÂ³dulos
+// Exportar para uso em outros mÒ³dulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EtapaFicha;
 }

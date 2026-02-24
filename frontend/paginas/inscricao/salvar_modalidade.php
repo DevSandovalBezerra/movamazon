@@ -1,6 +1,6 @@
 <?php
 session_start();
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Verificar se usuário está logado
 if (!isset($_SESSION['user_id'])) {

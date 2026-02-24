@@ -61,7 +61,7 @@ if (window.getApiBase) { window.getApiBase(); }
             'Sistema': { icon: 'fa-cog', color: 'blue' },
             'Pagamento': { icon: 'fa-credit-card', color: 'green' },
             'Email': { icon: 'fa-envelope', color: 'red' },
-            'IntegraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes': { icon: 'fa-plug', color: 'yellow' }
+            'Integraçções': { icon: 'fa-plug', color: 'yellow' }
         };
         return icons[categoria] || { icon: 'fa-cog', color: 'gray' };
     };
@@ -252,11 +252,11 @@ if (window.getApiBase) { window.getApiBase(); }
                 renderCards();
                 checkAPIStatus();
             } else {
-                showMessage('error', data.message || 'Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+                showMessage('error', data.message || 'Erro ao carregar configuraçções');
             }
         } catch (err) {
             console.error(err);
-            showMessage('error', 'Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            showMessage('error', 'Erro ao carregar configuraçções');
         } finally {
             toggleLoading(false);
         }

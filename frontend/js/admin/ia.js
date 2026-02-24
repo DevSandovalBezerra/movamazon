@@ -145,8 +145,8 @@ if (window.getApiBase) { window.getApiBase(); }
                 if (els.timeout) els.timeout.value = state.configs['ai.timeout'] || '120';
             }
         } catch (err) {
-            console.error('Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', err);
-            showMessage('error', 'Erro ao carregar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            console.error('Erro ao carregar configuraçções:', err);
+            showMessage('error', 'Erro ao carregar configuraçções');
         }
     };
 
@@ -206,18 +206,18 @@ if (window.getApiBase) { window.getApiBase(); }
             const allSuccess = results.every(async r => (await r.json()).success);
 
             if (allSuccess) {
-                showMessage('success', 'ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes salvas com sucesso!');
+                showMessage('success', 'Configuraçções salvas com sucesso!');
                 els.modal.classList.add('hidden');
                 await carregarConfiguracoes();
             } else {
-                showMessage('error', 'Erro ao salvar algumas configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+                showMessage('error', 'Erro ao salvar algumas configuraçções');
             }
         } catch (err) {
             console.error('Erro ao salvar:', err);
-            showMessage('error', 'Erro ao salvar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            showMessage('error', 'Erro ao salvar configuraçções');
         } finally {
             els.btnSaveProvider.disabled = false;
-            els.btnSaveProvider.innerHTML = 'Salvar ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
+            els.btnSaveProvider.innerHTML = 'Salvar Configuraçções';
         }
     };
 
@@ -240,13 +240,13 @@ if (window.getApiBase) { window.getApiBase(); }
             );
 
             await Promise.all(promises);
-            showMessage('success', 'ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes globais salvas!');
+            showMessage('success', 'Configuraçções globais salvas!');
         } catch (err) {
             console.error('Erro ao salvar:', err);
-            showMessage('error', 'Erro ao salvar configuraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            showMessage('error', 'Erro ao salvar configuraçções');
         } finally {
             els.btnSaveGeral.disabled = false;
-            els.btnSaveGeral.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar ConfiguraçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes';
+            els.btnSaveGeral.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar Configuraçções';
         }
     };
 

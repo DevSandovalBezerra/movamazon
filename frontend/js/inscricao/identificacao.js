@@ -1,10 +1,10 @@
 if (window.getApiBase) { window.getApiBase(); }
-// JavaScript para Etapa 3: IdentificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o (Login/Registro)
+// JavaScript para Etapa 3: Identificação (Login/Registro)
 class EtapaIdentificacao {
     constructor() {
         this.usuarioIdentificado = false;
         this.dadosUsuario = null;
-        // NÃƒÆ’Ã‚Â£o inicializar automaticamente - serÃƒÆ’Ã‚Â¡ chamado externamente
+        // Não inicializar automaticamente - será chamado externamente
     }
 
     init() {
@@ -35,7 +35,7 @@ class EtapaIdentificacao {
             });
         });
 
-        // Event listeners para formulÃƒÆ’Ã‚Â¡rios
+        // Event listeners para formulários
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => {
@@ -43,7 +43,7 @@ class EtapaIdentificacao {
                 this.fazerLogin();
             });
         } else {
-            console.warn('FormulÃƒÆ’Ã‚Â¡rio de login nÃƒÆ’Ã‚Â£o encontrado');
+            console.warn('Formulário de login não encontrado');
         }
 
         const registroForm = document.getElementById('registroForm');
@@ -53,7 +53,7 @@ class EtapaIdentificacao {
                 this.fazerRegistro();
             });
         } else {
-            console.warn('FormulÃƒÆ’Ã‚Â¡rio de registro nÃƒÆ’Ã‚Â£o encontrado');
+            console.warn('Formulário de registro não encontrado');
         }
 
         // Event listeners para toggle de senha
@@ -63,7 +63,7 @@ class EtapaIdentificacao {
             });
         });
 
-        // Event listeners para validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o em tempo real
+        // Event listeners para validação em tempo real
         this.bindValidacaoTempoReal();
     }
 
@@ -98,16 +98,16 @@ class EtapaIdentificacao {
             tabBtn.classList.add('active');
             console.log('Tab button ativada:', tabName);
         } else {
-            console.error('Tab button nÃƒÆ’Ã‚Â£o encontrada:', tabName);
+            console.error('Tab button não encontrada:', tabName);
         }
 
         if (tabContent) {
             tabContent.classList.add('active');
-            // ForÃƒÆ’Ã‚Â§ar visibilidade via style tambÃƒÆ’Ã‚Â©m
+            // Forçar visibilidade via style também
             tabContent.style.display = 'block';
             console.log('Tab content ativada:', tabName);
         } else {
-            console.error('Tab content nÃƒÆ’Ã‚Â£o encontrada:', tabName);
+            console.error('Tab content não encontrada:', tabName);
         }
     }
 
@@ -120,7 +120,7 @@ class EtapaIdentificacao {
     }
 
     bindValidacaoTempoReal() {
-        // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de CPF
+        // Validação de CPF
         const cpfInput = document.getElementById('registroCPF');
         if (cpfInput) {
             cpfInput.addEventListener('input', (e) => {
@@ -128,7 +128,7 @@ class EtapaIdentificacao {
             });
         }
 
-        // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de telefone
+        // Validação de telefone
         const telefoneInput = document.getElementById('registroTelefone');
         if (telefoneInput) {
             telefoneInput.addEventListener('input', (e) => {
@@ -136,7 +136,7 @@ class EtapaIdentificacao {
             });
         }
 
-        // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de confirmaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de senha
+        // Validação de confirmação de senha
         const senhaInput = document.getElementById('registroSenha');
         const confirmarSenhaInput = document.getElementById('registroConfirmarSenha');
 
@@ -173,7 +173,7 @@ class EtapaIdentificacao {
         const confirmarSenha = document.getElementById('registroConfirmarSenha').value;
 
         if (confirmarSenha && senha !== confirmarSenha) {
-            this.mostrarErroCampo('registroConfirmarSenha', 'As senhas nÃƒÆ’Ã‚Â£o coincidem');
+            this.mostrarErroCampo('registroConfirmarSenha', 'As senhas não coincidem');
         } else {
             this.removerErroCampo('registroConfirmarSenha');
         }
@@ -184,7 +184,7 @@ class EtapaIdentificacao {
         const senha = document.getElementById('loginSenha').value;
 
         if (!identificacao || !senha) {
-            this.mostrarErro('Preencha todos os campos obrigatÃƒÆ’Ã‚Â³rios');
+            this.mostrarErro('Preencha todos os campos obrigatórios');
             return;
         }
 
@@ -212,7 +212,7 @@ class EtapaIdentificacao {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Resposta do login:', data);
+                console.log(' [DEBUG] Resposta do login:', data);
 
                 if (data.success) {
                     this.usuarioIdentificado = true;
@@ -223,7 +223,7 @@ class EtapaIdentificacao {
                     Swal.fire({
                         icon: 'success',
                         title: 'Login realizado com sucesso!',
-                        text: 'Continuando para prÃƒÆ’Ã‚Â³xima etapa...',
+                        text: 'Continuando para próxima etapa...',
                         showConfirmButton: false,
                         timer: 1500,
                         timerProgressBar: true
@@ -236,7 +236,7 @@ class EtapaIdentificacao {
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro no login',
-                        text: data.error || 'Credenciais invÃƒÆ’Ã‚Â¡lidas. Verifique e tente novamente.',
+                        text: data.error || 'Credenciais inválidas. Verifique e tente novamente.',
                         confirmButtonText: 'OK'
                     });
                 }
@@ -245,28 +245,28 @@ class EtapaIdentificacao {
                 console.error('Erro no login:', error);
                 Swal.fire({
                     icon: 'error',
-                    title: 'Erro de comunicaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
-                    text: 'NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel conectar ao servidor. Verifique sua conexÃƒÆ’Ã‚Â£o e tente novamente.',
+                    title: 'Erro de comunicação',
+                    text: 'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.',
                     confirmButtonText: 'OK'
                 });
             });
     }
 
     fazerRegistro() {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ===== INICIANDO REGISTRO =====');
+        console.log(' [DEBUG] ===== INICIANDO REGISTRO =====');
         const formData = new FormData(document.getElementById('registroForm'));
         const dados = Object.fromEntries(formData.entries());
 
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados do formulÃƒÆ’Ã‚Â¡rio capturados:', dados);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] FormData entries:', Array.from(formData.entries()));
+        console.log(' [DEBUG] Dados do formulário capturados:', dados);
+        console.log(' [DEBUG] FormData entries:', Array.from(formData.entries()));
 
-        // ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Iniciando validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o dos dados...');
+        // Validações
+        console.log(' [DEBUG] Iniciando validação dos dados...');
         if (!this.validarDadosRegistro(dados)) {
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o falhou, interrompendo registro');
+            console.log(' [DEBUG] Validação falhou, interrompendo registro');
             return;
         }
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o passou, prosseguindo com registro...');
+        console.log(' [DEBUG] Validação passou, prosseguindo com registro...');
 
         // Mostrar loading com SweetAlert
         Swal.fire({
@@ -281,30 +281,30 @@ class EtapaIdentificacao {
         });
 
         // Usar FormData para compatibilidade com a API existente
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Enviando requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para:', `${window.API_BASE}/auth/register.php`);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] MÃƒÆ’Ã‚Â©todo: POST');
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Body (FormData):', formData);
+        console.log(' [DEBUG] Enviando requisição para:', `${window.API_BASE}/auth/register.php`);
+        console.log(' [DEBUG] Método: POST');
+        console.log(' [DEBUG] Body (FormData):', formData);
 
         fetch(`${window.API_BASE}/auth/register.php`, {
                 method: 'POST',
                 body: formData
             })
             .then(response => {
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Resposta recebida - Status:', response.status);
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Headers da resposta:', response.headers);
+                console.log(' [DEBUG] Resposta recebida - Status:', response.status);
+                console.log(' [DEBUG] Headers da resposta:', response.headers);
                 return response.json();
             })
             .then(data => {
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados JSON da resposta:', data);
+                console.log(' [DEBUG] Dados JSON da resposta:', data);
 
                 if (data.success) {
-                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Registro bem-sucedido!');
+                    console.log(' [DEBUG] Registro bem-sucedido!');
                     // Fechar loading
                     Swal.close();
-                    // Fazer login automÃƒÆ’Ã‚Â¡tico apÃƒÆ’Ã‚Â³s criar conta
+                    // Fazer login automático após criar conta
                     this.fazerLoginAposRegistro(dados.email, dados.senha);
                 } else {
-                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro no registro:', data.message);
+                    console.log(' [DEBUG] Erro no registro:', data.message);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro ao criar conta',
@@ -314,28 +314,28 @@ class EtapaIdentificacao {
                 }
             })
             .catch(error => {
-                console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de registro:', error);
+                console.error(' [DEBUG] Erro na requisição de registro:', error);
                 Swal.fire({
                     icon: 'error',
-                    title: 'Erro de comunicaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
-                    text: 'NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel conectar ao servidor. Verifique sua conexÃƒÆ’Ã‚Â£o e tente novamente.',
+                    title: 'Erro de comunicação',
+                    text: 'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.',
                     confirmButtonText: 'OK'
                 });
             });
     }
 
     fazerLoginAposRegistro(email, senha) {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ===== INICIANDO LOGIN AUTOMÃƒÆ’Ã‚ÂTICO =====');
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Email:', email);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Senha: [OCULTA] (tamanho:', senha.length, ')');
+        console.log(' [DEBUG] ===== INICIANDO LOGIN AUTOMÁTICO =====');
+        console.log(' [DEBUG] Email:', email);
+        console.log(' [DEBUG] Senha: [OCULTA] (tamanho:', senha.length, ')');
 
         const loginData = {
             identificacao: email,
             senha: senha
         };
 
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados do login:', loginData);
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Enviando para:', `${window.API_BASE}/auth/login.php`);
+        console.log(' [DEBUG] Dados do login:', loginData);
+        console.log(' [DEBUG] Enviando para:', `${window.API_BASE}/auth/login.php`);
 
         fetch(`${window.API_BASE}/auth/login.php`, {
                 method: 'POST',
@@ -345,17 +345,17 @@ class EtapaIdentificacao {
                 body: JSON.stringify(loginData)
             })
             .then(response => {
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Resposta do login - Status:', response.status);
+                console.log(' [DEBUG] Resposta do login - Status:', response.status);
                 return response.json();
             })
             .then(data => {
-                console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Dados do login recebidos:', data);
+                console.log(' [DEBUG] Dados do login recebidos:', data);
 
                 if (data.success) {
-                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Login automÃƒÆ’Ã‚Â¡tico bem-sucedido!');
+                    console.log(' [DEBUG] Login automático bem-sucedido!');
                     this.usuarioIdentificado = true;
                     this.dadosUsuario = data.usuario;
-                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] UsuÃƒÆ’Ã‚Â¡rio identificado:', this.dadosUsuario);
+                    console.log(' [DEBUG] Usuário identificado:', this.dadosUsuario);
 
                     this.atualizarInterface();
 
@@ -363,13 +363,13 @@ class EtapaIdentificacao {
                     Swal.fire({
                         icon: 'success',
                         title: 'Conta criada com sucesso!',
-                        text: 'Login realizado automaticamente. Continuando para prÃƒÆ’Ã‚Â³xima etapa...',
+                        text: 'Login realizado automaticamente. Continuando para próxima etapa...',
                         showConfirmButton: false,
                         timer: 2000,
                         timerProgressBar: true
                     }).then(() => {
-                        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Redirecionando para pÃƒÆ’Ã‚Â¡gina de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...');
-                        // Redirecionar para pÃƒÆ’Ã‚Â¡gina de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+                        console.log(' [DEBUG] Redirecionando para página de inscrição...');
+                        // Redirecionar para página de inscrição
                         const urlParams = new URLSearchParams(window.location.search);
                         const eventoId = urlParams.get('evento_id');
                         if (eventoId) {
@@ -379,81 +379,81 @@ class EtapaIdentificacao {
                         }
                     });
                 } else {
-                    console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro no login automÃƒÆ’Ã‚Â¡tico:', data.error);
+                    console.log(' [DEBUG] Erro no login automático:', data.error);
                     Swal.fire({
                         icon: 'warning',
                         title: 'Conta criada!',
-                        text: 'Mas houve erro no login automÃƒÆ’Ã‚Â¡tico. FaÃƒÆ’Ã‚Â§a login manualmente.',
+                        text: 'Mas houve erro no login automático. Faça login manualmente.',
                         confirmButtonText: 'OK'
                     });
                 }
             })
             .catch(error => {
-                console.error('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Erro na requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de login automÃƒÆ’Ã‚Â¡tico:', error);
-                this.mostrarErro('Conta criada, mas erro no login automÃƒÆ’Ã‚Â¡tico. FaÃƒÆ’Ã‚Â§a login manualmente.');
+                console.error(' [DEBUG] Erro na requisição de login automático:', error);
+                this.mostrarErro('Conta criada, mas erro no login automático. Faça login manualmente.');
             });
     }
 
     validarDadosRegistro(dados) {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] Validando dados de registro:', dados);
+        console.log(' [DEBUG] Validando dados de registro:', dados);
 
         // Limpar erros anteriores
         this.limparErrosRegistro();
 
         let valido = true;
 
-        // Validar nome completo (obrigatÃƒÆ’Ã‚Â³rio)
+        // Validar nome completo (obrigatório)
         if (!dados.nome_completo || dados.nome_completo.trim().length < 3) {
-            this.mostrarErroCampo('registroNome', 'Nome completo ÃƒÆ’Ã‚Â© obrigatÃƒÆ’Ã‚Â³rio (mÃƒÆ’Ã‚Â­nimo 3 caracteres)');
+            this.mostrarErroCampo('registroNome', 'Nome completo é obrigatório (mínimo 3 caracteres)');
             valido = false;
         }
 
-        // Validar email (obrigatÃƒÆ’Ã‚Â³rio)
+        // Validar email (obrigatório)
         if (!dados.email || !this.validarEmail(dados.email)) {
-            this.mostrarErroCampo('registroEmail', 'E-mail vÃƒÆ’Ã‚Â¡lido ÃƒÆ’Ã‚Â© obrigatÃƒÆ’Ã‚Â³rio');
+            this.mostrarErroCampo('registroEmail', 'E-mail válido é obrigatório');
             valido = false;
         }
 
-        // Validar data de nascimento (obrigatÃƒÆ’Ã‚Â³rio)
+        // Validar data de nascimento (obrigatório)
         if (!dados.data_nascimento || !this.validarDataNascimento(dados.data_nascimento)) {
-            this.mostrarErroCampo('registroDataNasc', 'Data de nascimento ÃƒÆ’Ã‚Â© obrigatÃƒÆ’Ã‚Â³ria (idade mÃƒÆ’Ã‚Â­nima 16 anos)');
+            this.mostrarErroCampo('registroDataNasc', 'Data de nascimento é obrigatória (idade mínima 16 anos)');
             valido = false;
         }
 
-        // Validar sexo (obrigatÃƒÆ’Ã‚Â³rio)
+        // Validar sexo (obrigatório)
         if (!dados.sexo) {
-            this.mostrarErroCampo('registroSexo', 'Sexo ÃƒÆ’Ã‚Â© obrigatÃƒÆ’Ã‚Â³rio');
+            this.mostrarErroCampo('registroSexo', 'Sexo é obrigatório');
             valido = false;
         }
 
-        // Validar telefone (obrigatÃƒÆ’Ã‚Â³rio)
+        // Validar telefone (obrigatório)
         if (!dados.telefone || dados.telefone.trim().length < 10) {
-            this.mostrarErroCampo('registroTelefone', 'Telefone ÃƒÆ’Ã‚Â© obrigatÃƒÆ’Ã‚Â³rio');
+            this.mostrarErroCampo('registroTelefone', 'Telefone é obrigatório');
             valido = false;
         }
 
         // Validar documento (se preenchido)
         if (dados.documento && dados.documento.trim() !== '' && !this.validarCPF(dados.documento.replace(/\D/g, ''))) {
-            this.mostrarErroCampo('registroCPF', 'CPF invÃƒÆ’Ã‚Â¡lido');
+            this.mostrarErroCampo('registroCPF', 'CPF inválido');
             valido = false;
         }
 
-        // Validar senha (obrigatÃƒÆ’Ã‚Â³rio)
+        // Validar senha (obrigatório)
         if (!dados.senha || dados.senha.length < 6) {
-            this.mostrarErroCampo('registroSenha', 'Senha ÃƒÆ’Ã‚Â© obrigatÃƒÆ’Ã‚Â³ria (mÃƒÆ’Ã‚Â­nimo 6 caracteres)');
+            this.mostrarErroCampo('registroSenha', 'Senha é obrigatória (mínimo 6 caracteres)');
             valido = false;
         }
 
-        // Validar confirmaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de senha (obrigatÃƒÆ’Ã‚Â³rio)
+        // Validar confirmação de senha (obrigatório)
         if (!dados.confirmar_senha) {
-            this.mostrarErroCampo('registroConfirmarSenha', 'ConfirmaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de senha ÃƒÆ’Ã‚Â© obrigatÃƒÆ’Ã‚Â³ria');
+            this.mostrarErroCampo('registroConfirmarSenha', 'Confirmação de senha é obrigatória');
             valido = false;
         } else if (dados.senha !== dados.confirmar_senha) {
-            this.mostrarErroCampo('registroConfirmarSenha', 'As senhas nÃƒÆ’Ã‚Â£o coincidem');
+            this.mostrarErroCampo('registroConfirmarSenha', 'As senhas não coincidem');
             valido = false;
         }
 
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬ÂÃ‚Âµ [DEBUG] ValidaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o concluÃƒÆ’Ã‚Â­da. VÃƒÆ’Ã‚Â¡lido:', valido);
+        console.log(' [DEBUG] Validação concluída. Válido:', valido);
         return valido;
     }
 
@@ -467,10 +467,10 @@ class EtapaIdentificacao {
     validarCPF(cpf) {
         if (cpf.length !== 11) return false;
 
-        // Verificar se todos os dÃƒÆ’Ã‚Â­gitos sÃƒÆ’Ã‚Â£o iguais
+        // Verificar se todos os dígitos são iguais
         if (/^(\d)\1{10}$/.test(cpf)) return false;
 
-        // Validar primeiro dÃƒÆ’Ã‚Â­gito verificador
+        // Validar primeiro dígito verificador
         let soma = 0;
         for (let i = 0; i < 9; i++) {
             soma += parseInt(cpf.charAt(i)) * (10 - i);
@@ -480,7 +480,7 @@ class EtapaIdentificacao {
 
         if (parseInt(cpf.charAt(9)) !== dv1) return false;
 
-        // Validar segundo dÃƒÆ’Ã‚Â­gito verificador
+        // Validar segundo dígito verificador
         soma = 0;
         for (let i = 0; i < 10; i++) {
             soma += parseInt(cpf.charAt(i)) * (11 - i);
@@ -535,8 +535,8 @@ class EtapaIdentificacao {
     }
 
     verificarUsuarioLogado() {
-        // Verificar se jÃƒÆ’Ã‚Â¡ existe usuÃƒÆ’Ã‚Â¡rio logado na sessÃƒÆ’Ã‚Â£o
-        // Fazer uma requisiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para verificar o status da sessÃƒÆ’Ã‚Â£o
+        // Verificar se já existe usuário logado na sessão
+        // Fazer uma requisição para verificar o status da sessão
         fetch(`${window.API_BASE}/auth/check_session.php`)
             .then(response => response.json())
             .then(data => {
@@ -547,13 +547,13 @@ class EtapaIdentificacao {
                 }
             })
             .catch(error => {
-                console.log('VerificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de sessÃƒÆ’Ã‚Â£o falhou:', error);
+                console.log('Verificação de sessão falhou:', error);
             });
     }
 
     atualizarInterface() {
         if (this.usuarioIdentificado) {
-            // Mostrar interface de usuÃƒÆ’Ã‚Â¡rio logado
+            // Mostrar interface de usuário logado
             this.mostrarInterfaceUsuarioLogado();
         } else {
             // Mostrar interface de login/registro
@@ -573,17 +573,17 @@ class EtapaIdentificacao {
         if (loginTab) loginTab.style.display = 'none';
         if (registroTab) registroTab.style.display = 'none';
 
-        // Mostrar interface do usuÃƒÆ’Ã‚Â¡rio logado
+        // Mostrar interface do usuário logado
         const usuarioContainer = document.querySelector('.usuario-logado-container');
         if (usuarioContainer) {
             usuarioContainer.style.display = 'block';
 
-            // Atualizar dados do usuÃƒÆ’Ã‚Â¡rio
+            // Atualizar dados do usuário
             const nomeElement = document.getElementById('usuario-nome');
             const emailElement = document.getElementById('usuario-email');
 
             if (nomeElement && this.dadosUsuario) {
-                nomeElement.textContent = this.dadosUsuario.nome_completo || this.dadosUsuario.name || 'UsuÃƒÆ’Ã‚Â¡rio';
+                nomeElement.textContent = this.dadosUsuario.nome_completo || this.dadosUsuario.name || 'Usuário';
             }
             if (emailElement && this.dadosUsuario) {
                 emailElement.textContent = this.dadosUsuario.email || 'email@exemplo.com';
@@ -601,7 +601,7 @@ class EtapaIdentificacao {
         if (loginTab) loginTab.style.display = 'block';
         if (registroTab) registroTab.style.display = 'none';
 
-        // Ocultar interface do usuÃƒÆ’Ã‚Â¡rio logado
+        // Ocultar interface do usuário logado
         const usuarioContainer = document.querySelector('.usuario-logado-container');
         if (usuarioContainer) {
             usuarioContainer.style.display = 'none';
@@ -615,7 +615,7 @@ class EtapaIdentificacao {
         }
     }
 
-    // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes globais
+    // Funções globais
     alterarUsuario() {
         this.usuarioIdentificado = false;
         this.dadosUsuario = null;
@@ -624,7 +624,7 @@ class EtapaIdentificacao {
 
     confirmarUsuario() {
         if (this.usuarioIdentificado && this.dadosUsuario) {
-            // Salvar dados na sessÃƒÆ’Ã‚Â£o
+            // Salvar dados na sessão
             if (window.sistemaInscricao) {
                 window.sistemaInscricao.salvarDadosEtapa({
                     usuario_id: this.dadosUsuario.id,
@@ -632,7 +632,7 @@ class EtapaIdentificacao {
                 });
             }
 
-            // Redirecionar para pÃƒÆ’Ã‚Â¡gina de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+            // Redirecionar para página de inscrição
             const urlParams = new URLSearchParams(window.location.search);
             const eventoId = urlParams.get('evento_id');
             if (eventoId) {
@@ -644,12 +644,12 @@ class EtapaIdentificacao {
     }
 
     recuperarSenha() {
-        // Implementar recuperaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de senha
-        this.mostrarErro('Funcionalidade de recuperaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de senha serÃƒÆ’Ã‚Â¡ implementada em breve');
+        // Implementar recuperação de senha
+        this.mostrarErro('Funcionalidade de recuperação de senha será implementada em breve');
     }
 
     inicializarMascaras() {
-        // Inicializar mÃƒÆ’Ã‚Â¡scaras de input apenas se os elementos existirem
+        // Inicializar máscaras de input apenas se os elementos existirem
         const cpfInput = document.getElementById('registroCPF');
         const telefoneInput = document.getElementById('registroTelefone');
 
@@ -661,7 +661,7 @@ class EtapaIdentificacao {
         }
     }
 
-    // UtilitÃƒÆ’Ã‚Â¡rios
+    // Utilitários
     mostrarLoading(mensagem) {
         if (window.sistemaInscricao) {
             window.sistemaInscricao.mostrarLoading(mensagem);
@@ -698,7 +698,7 @@ class EtapaIdentificacao {
         }
     }
 
-    // MÃƒÆ’Ã‚Â©todos de acesso
+    // Métodos de acesso
     getUsuarioIdentificado() {
         return this.usuarioIdentificado;
     }
@@ -707,7 +707,7 @@ class EtapaIdentificacao {
         return this.dadosUsuario;
     }
 
-    // MÃƒÆ’Ã‚Â©todo para testar tabs manualmente
+    // Método para testar tabs manualmente
     testarTabs() {
         console.log('=== TESTE DE TABS ===');
         const tabBtns = document.querySelectorAll('.tab-btn');
@@ -729,7 +729,7 @@ class EtapaIdentificacao {
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes globais
+// Funções globais
 function alterarUsuario() {
     if (window.etapaIdentificacao) {
         window.etapaIdentificacao.alterarUsuario();
@@ -748,16 +748,16 @@ function recuperarSenha() {
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o global para testar tabs
+// Função global para testar tabs
 function testarTabsIdentificacao() {
     if (window.sistemaInscricao && window.sistemaInscricao.etapas.identificacao) {
         window.sistemaInscricao.etapas.identificacao.testarTabs();
     } else {
-        console.error('Sistema de identificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o encontrado');
+        console.error('Sistema de identificação não encontrado');
     }
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o global simples para testar tabs diretamente
+// Função global simples para testar tabs diretamente
 function testarTabsSimples() {
     console.log('=== TESTE SIMPLES DE TABS ===');
 
@@ -780,13 +780,13 @@ function testarTabsSimples() {
         console.log('Clicando na tab registro...');
         registroBtn.click();
     } else {
-        console.error('Tab registro nÃƒÆ’Ã‚Â£o encontrada');
+        console.error('Tab registro não encontrada');
     }
 }
 
-// NÃƒÆ’Ã‚Â£o inicializar automaticamente - serÃƒÆ’Ã‚Â¡ inicializado pelo sistema de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
+// Não inicializar automaticamente - será inicializado pelo sistema de inscrições
 
-// Exportar para uso em outros mÃƒÆ’Ã‚Â³dulos
+// Exportar para uso em outros módulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EtapaIdentificacao;
 }

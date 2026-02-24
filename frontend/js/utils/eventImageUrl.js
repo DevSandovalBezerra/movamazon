@@ -1,8 +1,8 @@
 if (window.getApiBase) { window.getApiBase(); }
 /**
- * URL da imagem do evento - script global para pÃƒÂ¡ginas que nÃƒÂ£o usam ES modules.
+ * URL da imagem do evento - script global para pÒ¡ginas que nÒ£o usam ES modules.
  * Define window.getEventImageBase e window.getEventImageUrl.
- * Mesma lÃƒÂ³gica que formatters.js (getEventImageBase / getEventImageUrl).
+ * Mesma lÒ³gica que formatters.js (getEventImageBase / getEventImageUrl).
  */
 (function () {
     'use strict';

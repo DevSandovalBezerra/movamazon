@@ -107,16 +107,16 @@ export class InscricaoValidator {
 
     getDefaultMessage(ruleName, params = []) {
         const messages = {
-            required: 'Este campo ÃƒÂ© obrigatÃƒÂ³rio',
-            email: 'E-mail invÃƒÂ¡lido',
-            cpf: 'CPF invÃƒÂ¡lido',
-            telefone: 'Telefone invÃƒÂ¡lido',
-            minLength: `MÃƒÂ­nimo de ${params[0]} caracteres`,
-            maxLength: `MÃƒÂ¡ximo de ${params[0]} caracteres`,
-            numeric: 'Deve ser um nÃƒÂºmero',
-            date: 'Data invÃƒÂ¡lida'
+            required: 'Este campo Ò© obrigatÒ³rio',
+            email: 'E-mail invÒ¡lido',
+            cpf: 'CPF invÒ¡lido',
+            telefone: 'Telefone invÒ¡lido',
+            minLength: `MÒ­nimo de ${params[0]} caracteres`,
+            maxLength: `MÒ¡ximo de ${params[0]} caracteres`,
+            numeric: 'Deve ser um nÒºmero',
+            date: 'Data invÒ¡lida'
         };
-        return messages[ruleName] || 'Valor invÃƒÂ¡lido';
+        return messages[ruleName] || 'Valor invÒ¡lido';
     }
 
     clearErrors(field = null) {

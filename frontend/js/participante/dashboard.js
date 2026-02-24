@@ -1,7 +1,7 @@
 
 /**
  * Dashboard do Participante
- * Gerencia o carregamento e exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de dados do dashboard
+ * Gerencia o carregamento e exibição de dados do dashboard
  */
 
 import { getInscricoes } from '../api/participante.js';
@@ -13,7 +13,7 @@ const CACHE_KEY_INSCRICOES = 'dashboard_inscricoes';
 const CACHE_KEY_EVENTOS = 'dashboard_eventos';
 
 /**
- * Formata data para exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+ * Formata data para exibição
  * @param {string} dateString - Data no formato YYYY-MM-DD
  * @returns {string} Data formatada como DD/MM/YYYY
  */
@@ -24,7 +24,7 @@ function formatarData(dateString) {
 }
 
 /**
- * Formata status de pagamento para exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+ * Formata status de pagamento para exibição
  * @param {string} status - Status do pagamento
  * @returns {string} Status formatado
  */
@@ -39,8 +39,8 @@ function formatarStatusPagamento(status) {
 }
 
 /**
- * Formata status da inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o para exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
- * @param {string} status - Status da inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+ * Formata status da inscrição para exibição
+ * @param {string} status - Status da inscrição
  * @returns {string} Status formatado
  */
 function formatarStatus(status) {
@@ -53,7 +53,7 @@ function formatarStatus(status) {
 }
 
 /**
- * ObtÃƒÆ’Ã‚Â©m URL da imagem do evento ou placeholder
+ * Obtém URL da imagem do evento ou placeholder
  * @param {string} imagem - Caminho da imagem
  * @returns {string} URL da imagem
  */
@@ -71,15 +71,15 @@ function getEventoImagem(imagem) {
 }
 
 /**
- * Renderiza cards de estatÃƒÆ’Ã‚Â­sticas
- * @param {Object} stats - EstatÃƒÆ’Ã‚Â­sticas calculadas
+ * Renderiza cards de estatísticas
+ * @param {Object} stats - Estatísticas calculadas
  */
 function renderizarEstatisticas(stats) {
     const { inscricoesAtivas, proximosEventos, kitsPendentes, pagamentosOk } = stats;
 
     const statCards = [
-        { id: 'inscricoes-ativas', value: inscricoesAtivas, label: 'InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes Ativas' },
-        { id: 'proximos-eventos-count', value: proximosEventos, label: 'PrÃƒÆ’Ã‚Â³ximos Eventos' },
+        { id: 'inscricoes-ativas', value: inscricoesAtivas, label: 'Inscrições Ativas' },
+        { id: 'proximos-eventos-count', value: proximosEventos, label: 'Próximos Eventos' },
         { id: 'kits-pendentes', value: kitsPendentes, label: 'Kits Pendentes' },
         { id: 'pagamentos-ok', value: pagamentosOk, label: 'Pagamentos OK' }
     ];
@@ -88,16 +88,16 @@ function renderizarEstatisticas(stats) {
         const element = document.getElementById(stat.id);
         if (element) {
             element.textContent = stat.value;
-            console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ Atualizado ${stat.id}: ${stat.value}`);
+            console.log(`... Atualizado ${stat.id}: ${stat.value}`);
         } else {
-            console.warn(`ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Elemento nÃƒÆ’Ã‚Â£o encontrado: ${stat.id}`);
+            console.warn(`  Elemento não encontrado: ${stat.id}`);
         }
     });
 }
 
 /**
- * Renderiza lista de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes recentes
- * @param {Array} inscricoes - Array de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
+ * Renderiza lista de inscrições recentes
+ * @param {Array} inscricoes - Array de inscrições
  */
 function renderizarInscricoes(inscricoes) {
     const container = document.getElementById('inscricoes-recentes');
@@ -109,8 +109,8 @@ function renderizarInscricoes(inscricoes) {
                 <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <p class="text-gray-600">VocÃƒÆ’Ã‚Âª ainda nÃƒÆ’Ã‚Â£o tem inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes</p>
-                <p class="text-sm text-gray-500 mt-1">Explore os eventos disponÃƒÆ’Ã‚Â­veis e faÃƒÆ’Ã‚Â§a sua primeira inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o!</p>
+                <p class="text-gray-600">Você ainda não tem inscrições</p>
+                <p class="text-sm text-gray-500 mt-1">Explore os eventos disponíveis e faça sua primeira inscrição!</p>
             </div>
         `;
         return;
@@ -145,7 +145,7 @@ function renderizarInscricoes(inscricoes) {
 }
 
 /**
- * Renderiza lista de prÃƒÆ’Ã‚Â³ximos eventos
+ * Renderiza lista de próximos eventos
  * @param {Array} eventos - Array de eventos
  */
 function renderizarProximosEventos(eventos) {
@@ -158,7 +158,7 @@ function renderizarProximosEventos(eventos) {
                 <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <p class="text-gray-600">Nenhum evento prÃƒÆ’Ã‚Â³ximo encontrado</p>
+                <p class="text-gray-600">Nenhum evento próximo encontrado</p>
             </div>
         `;
         return;
@@ -187,9 +187,9 @@ function renderizarProximosEventos(eventos) {
 }
 
 /**
- * Calcula estatÃƒÆ’Ã‚Â­sticas das inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
- * @param {Array} inscricoes - Array de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
- * @returns {Object} Objeto com estatÃƒÆ’Ã‚Â­sticas
+ * Calcula estatísticas das inscrições
+ * @param {Array} inscricoes - Array de inscrições
+ * @returns {Object} Objeto com estatísticas
  */
 function calcularEstatisticas(inscricoes) {
     const hoje = new Date();
@@ -210,14 +210,14 @@ function calcularEstatisticas(inscricoes) {
 
     return {
         inscricoesAtivas,
-        proximosEventos: 0, // SerÃƒÆ’Ã‚Â¡ atualizado depois com eventos
+        proximosEventos: 0, // Será atualizado depois com eventos
         kitsPendentes,
         pagamentosOk
     };
 }
 
 /**
- * Atualiza contador de prÃƒÆ’Ã‚Â³ximos eventos
+ * Atualiza contador de próximos eventos
  * @param {number} count - Quantidade de eventos
  */
 function atualizarContadorEventos(count) {
@@ -251,60 +251,60 @@ function removerLoading() {
 
 /**
  * Carrega dados do dashboard
- * @param {boolean} forceRefresh - ForÃƒÆ’Ã‚Â§a atualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o ignorando cache
+ * @param {boolean} forceRefresh - Força atualização ignorando cache
  */
 export async function carregarDashboard(forceRefresh = false) {
     try {
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Âââ‚¬Å¾ Iniciando carregamento do dashboard...');
+        console.log(' Iniciando carregamento do dashboard...');
         
         // Mostrar loading states
         mostrarLoading();
 
-        // Buscar inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes (com cache)
+        // Buscar inscrições (com cache)
         let inscricoes = forceRefresh ? null : getCache(CACHE_KEY_INSCRICOES);
         
         if (!inscricoes) {
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Buscando inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes da API...');
+            console.log(' Buscando inscrições da API...');
             const result = await getInscricoes();
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Resultado da API de inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:', result);
+            console.log('  Resultado da API de inscrições:', result);
             
             if (result.success) {
                 inscricoes = result.inscricoes || [];
-                console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${inscricoes.length} inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes encontradas`);
+                console.log(`... ${inscricoes.length} inscrições encontradas`);
                 setCache(CACHE_KEY_INSCRICOES, inscricoes);
             } else {
-                console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao buscar inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes:', result.message);
-                throw new Error(result.message || 'Erro ao carregar inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes');
+                console.error(' Erro ao buscar inscrições:', result.message);
+                throw new Error(result.message || 'Erro ao carregar inscrições');
             }
         } else {
-            console.log(`ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¾ Usando ${inscricoes.length} inscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do cache`);
+            console.log(` Usando ${inscricoes.length} inscrições do cache`);
         }
 
-        // Buscar prÃƒÆ’Ã‚Â³ximos eventos (com cache)
+        // Buscar próximos eventos (com cache)
         let eventos = forceRefresh ? null : getCache(CACHE_KEY_EVENTOS);
         
         if (!eventos) {
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‚Â¡ Buscando eventos da API...');
+            console.log(' Buscando eventos da API...');
             const result = await getProximosEventos(5);
-            console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  Resultado da API de eventos:', result);
+            console.log('  Resultado da API de eventos:', result);
             
             if (result.success) {
                 eventos = result.eventos || [];
-                console.log(`ÃƒÂ¢Ã…â€œââ‚¬Â¦ ${eventos.length} eventos encontrados`);
+                console.log(`... ${eventos.length} eventos encontrados`);
                 setCache(CACHE_KEY_EVENTOS, eventos);
             } else {
-                console.warn('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Erro ao carregar eventos:', result.message);
+                console.warn('  Erro ao carregar eventos:', result.message);
                 eventos = [];
             }
         } else {
-            console.log(`ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¾ Usando ${eventos.length} eventos do cache`);
+            console.log(` Usando ${eventos.length} eventos do cache`);
         }
 
-        // Calcular estatÃƒÆ’Ã‚Â­sticas
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã‹â€  Calculando estatÃƒÆ’Ã‚Â­sticas...');
+        // Calcular estatísticas
+        console.log('  Calculando estatísticas...');
         const stats = calcularEstatisticas(inscricoes);
         stats.proximosEventos = eventos.length;
-        console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“Ã…Â  EstatÃƒÆ’Ã‚Â­sticas calculadas:', stats);
+        console.log('  Estatísticas calculadas:', stats);
 
         // Renderizar componentes
         removerLoading();
@@ -313,10 +313,10 @@ export async function carregarDashboard(forceRefresh = false) {
         renderizarInscricoes(inscricoes);
         renderizarProximosEventos(eventos);
         
-        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ Dashboard carregado com sucesso!');
+        console.log('... Dashboard carregado com sucesso!');
 
     } catch (error) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Erro ao carregar dashboard:', error);
+        console.error(' Erro ao carregar dashboard:', error);
         removerLoading();
         
         // Mostrar mensagem de erro
@@ -342,20 +342,20 @@ export async function carregarDashboard(forceRefresh = false) {
 }
 
 /**
- * Inicializa o dashboard quando a pÃƒÆ’Ã‚Â¡gina carrega
+ * Inicializa o dashboard quando a página carrega
  */
 export function initDashboard() {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡ââ€šÂ¬ Inicializando dashboard...');
-    console.log('ÃƒÂ°Ã…Â¸ââ‚¬Å“ââ‚¬Å¾ DOM readyState:', document.readyState);
+    console.log(' Inicializando dashboard...');
+    console.log(' DOM readyState:', document.readyState);
     
     if (document.readyState === 'loading') {
-        console.log('ÃƒÂ¢Ã‚ÂÃ‚Â³ Aguardando DOMContentLoaded...');
+        console.log(' Aguardando DOMContentLoaded...');
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ DOM carregado, iniciando dashboard...');
+            console.log('... DOM carregado, iniciando dashboard...');
             carregarDashboard();
         });
     } else {
-        console.log('ÃƒÂ¢Ã…â€œââ‚¬Â¦ DOM jÃƒÆ’Ã‚Â¡ carregado, iniciando dashboard...');
+        console.log('... DOM já carregado, iniciando dashboard...');
         carregarDashboard();
     }
 }

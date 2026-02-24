@@ -1,10 +1,10 @@
 if (window.getApiBase) { window.getApiBase(); }
-// VariÃƒÆ’Ã‚Â¡veis globais
+// Variáveis globais
 let lotes = [];
 let modalidadesDisponiveis = [];
 let loteEditando = null;
 
-// InicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     carregarLotes();
     configurarEventos();
@@ -20,24 +20,24 @@ function configurarEventos() {
             const container = document.getElementById('modalidades-container');
             
             if (!container) {
-                console.warn('Container modalidades-container nÃƒÆ’Ã‚Â£o encontrado. Modal pode nÃƒÆ’Ã‚Â£o estar aberto.');
+                console.warn('Container modalidades-container não encontrado. Modal pode não estar aberto.');
                 return;
             }
             
             if (eventoId) {
                 carregarModalidades(eventoId);
             } else {
-                container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponÃƒÆ’Ã‚Â­veis</p>';
+                container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponíveis</p>';
             }
         });
     }
 
-    // Event listener para mudanÃƒÆ’Ã‚Â§a no filtro de evento
+    // Event listener para mudança no filtro de evento
     document.getElementById('filtroEvento').addEventListener('change', function() {
         carregarLotes();
     });
 
-    // Auto-complete para preÃƒÆ’Ã‚Â§o por extenso
+    // Auto-complete para preço por extenso
 document.getElementById('preco').addEventListener('input', function() {
         const preco = parseFloat(this.value) || 0;
         const extenso = converterParaExtenso(preco);
@@ -98,7 +98,7 @@ function renderizarLotes() {
                     </div>
                     <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900">${lote.modalidade_completa}</div>
-                        <div class="text-sm text-gray-500">${lote.tipo_publico_formatado} ÃƒÂ¢ââ€šÂ¬Ã‚Â¢ ${lote.faixa_etaria}</div>
+                        <div class="text-sm text-gray-500">${lote.tipo_publico_formatado} • ${lote.faixa_etaria}</div>
                     </div>
                 </div>
             </td>
@@ -111,7 +111,7 @@ function renderizarLotes() {
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">${lote.data_inicio_formatada}</div>
-                <div class="text-sm text-gray-500">atÃƒÆ’Ã‚Â© ${lote.data_fim_formatada}</div>
+                <div class="text-sm text-gray-500">até ${lote.data_fim_formatada}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(lote.status)}">
@@ -138,7 +138,7 @@ function renderizarLotes() {
     `).join('');
 }
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de status
+// Funções de status
 function getStatusClass(status) {
     switch (status) {
         case 'ativo': return 'bg-green-100 text-green-800';
@@ -184,12 +184,12 @@ async function carregarModalidades(eventoId) {
 function renderizarModalidades(selecionadas = []) {
     const container = document.getElementById('modalidades-container');
     if (!container) {
-        console.warn('Container modalidades-container nÃƒÆ’Ã‚Â£o encontrado. Modal pode nÃƒÆ’Ã‚Â£o estar aberto.');
+        console.warn('Container modalidades-container não encontrado. Modal pode não estar aberto.');
         return;
     }
     
     if (modalidadesDisponiveis.length === 0) {
-        container.innerHTML = '<div class="text-gray-400 text-sm">Nenhuma modalidade disponÃƒÆ’Ã‚Â­vel</div>';
+        container.innerHTML = '<div class="text-gray-400 text-sm">Nenhuma modalidade disponível</div>';
         return;
     }
     
@@ -199,13 +199,13 @@ function renderizarModalidades(selecionadas = []) {
 // Abrir modal para criar novo lote
 function abrirModalCriar() {
     loteEditando = null;
-    document.getElementById('modal-title').textContent = 'Novo Lote de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o';
+    document.getElementById('modal-title').textContent = 'Novo Lote de Inscrição';
     document.getElementById('btn-salvar-text').textContent = 'Salvar Lote';
     document.getElementById('form-lote').reset();
     document.getElementById('lote-id').value = '';
     const container = document.getElementById('modalidades-container');
     if (container) {
-        container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponÃƒÆ’Ã‚Â­veis</p>';
+        container.innerHTML = '<p class="text-gray-500 text-sm">Selecione um evento para ver as modalidades disponíveis</p>';
     }
     document.getElementById('modal-lote').classList.remove('hidden');
 }
@@ -219,7 +219,7 @@ async function editarLote(loteId) {
         if (data.success) {
             loteEditando = data.lote;
             preencherFormulario(data.lote);
-            document.getElementById('modal-title').textContent = 'Editar Lote de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o';
+            document.getElementById('modal-title').textContent = 'Editar Lote de Inscrição';
             document.getElementById('btn-salvar-text').textContent = 'Atualizar Lote';
             document.getElementById('modal-lote').classList.remove('hidden');
         } else {
@@ -231,7 +231,7 @@ async function editarLote(loteId) {
     }
 }
 
-// Preencher formulÃƒÆ’Ã‚Â¡rio com dados do lote (estrutura otimizada)
+// Preencher formulário com dados do lote (estrutura otimizada)
 function preencherFormulario(lote) {
     document.getElementById('lote-id').value = lote.id;
     document.getElementById('evento-id').value = lote.evento_id;
@@ -268,10 +268,10 @@ function fecharModal() {
 // Salvar lote (criar ou atualizar)
 async function salvarLote(dados) {
     try {
-        // Validar seleÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de modalidades
+        // Validar seleção de modalidades
         const validacao = validarSelecaoModalidades('modalidades-container', 1);
         if (!validacao.valido) {
-            Swal.fire('AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o', validacao.mensagem, 'warning');
+            Swal.fire('Atenção', validacao.mensagem, 'warning');
             return;
         }
         
@@ -314,12 +314,12 @@ async function duplicarLote(loteId) {
         
         if (data.success) {
             const lote = data.lote;
-            lote.numero_lote = lote.numero_lote + 1; // Incrementar nÃƒÆ’Ã‚Âºmero do lote
-            lote.preco_por_extenso = ''; // Limpar preÃƒÆ’Ã‚Â§o por extenso
+            lote.numero_lote = lote.numero_lote + 1; // Incrementar número do lote
+            lote.preco_por_extenso = ''; // Limpar preço por extenso
             
-            loteEditando = null; // NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o, ÃƒÆ’Ã‚Â© criaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+            loteEditando = null; // Não é edição, é criação
             preencherFormulario(lote);
-            document.getElementById('modal-title').textContent = 'Duplicar Lote de InscriÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o';
+            document.getElementById('modal-title').textContent = 'Duplicar Lote de Inscrição';
             document.getElementById('btn-salvar-text').textContent = 'Salvar Lote';
             document.getElementById('modal-lote').classList.remove('hidden');
         } else {
@@ -336,12 +336,12 @@ async function toggleLote(loteId, ativo) {
     const acao = ativo ? 'ativar' : 'desativar';
     
     const result = await Swal.fire({
-        title: 'Confirmar aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
+        title: 'Confirmar ação',
         text: `Deseja ${acao} este lote?`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Sim',
-        cancelButtonText: 'NÃƒÆ’Ã‚Â£o'
+        cancelButtonText: 'Não'
     });
     
     if (result.isConfirmed) {
@@ -372,11 +372,11 @@ async function toggleLote(loteId, ativo) {
     }
 }
 
-// Event listener para o formulÃƒÆ’Ã‚Â¡rio (estrutura otimizada)
+// Event listener para o formulário (estrutura otimizada)
 document.getElementById('form-lote').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // Coletar dados do formulÃƒÆ’Ã‚Â¡rio
+    // Coletar dados do formulário
     const dados = {
         evento_id: parseInt(document.getElementById('evento-id').value),
         numero_lote: parseInt(document.getElementById('numero-lote').value),
@@ -400,7 +400,7 @@ document.getElementById('form-lote').addEventListener('submit', async function(e
     await salvarLote(dados);
 });
 
-// FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes auxiliares
+// Funções auxiliares
 function mostrarLoading() {
     document.getElementById('loading-lotes').classList.remove('hidden');
     document.getElementById('tabela-lotes').classList.add('hidden');
@@ -415,9 +415,9 @@ function mostrarErro(mensagem) {
     document.getElementById('error-message').textContent = mensagem;
 }
 
-// Converter nÃƒÆ’Ã‚Âºmero para extenso
+// Converter número para extenso
 function converterParaExtenso(numero) {
-    const UNIDADES = ['', 'um', 'dois', 'trÃƒÆ’Ã‚Âªs', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+    const UNIDADES = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
     const DEZ_A_DEZENOVE = ['dez', 'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
     const DEZENAS = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
     const CENTENAS = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
@@ -449,8 +449,8 @@ function converterParaExtenso(numero) {
         const milhares = Math.floor((n % 1_000_000) / 1000);
         const centenas = n % 1000;
 
-        if (bilhoes) partes.push(`${bloco(bilhoes)} ${bilhoes === 1 ? 'bilhÃƒÆ’Ã‚Â£o' : 'bilhÃƒÆ’Ã‚Âµes'}`);
-        if (milhoes) partes.push(`${bloco(milhoes)} ${milhoes === 1 ? 'milhÃƒÆ’Ã‚Â£o' : 'milhÃƒÆ’Ã‚Âµes'}`);
+        if (bilhoes) partes.push(`${bloco(bilhoes)} ${bilhoes === 1 ? 'bilhão' : 'bilhões'}`);
+        if (milhoes) partes.push(`${bloco(milhoes)} ${milhoes === 1 ? 'milhão' : 'milhões'}`);
         if (milhares) partes.push(`${bloco(milhares)} mil`);
         if (centenas) partes.push(bloco(centenas));
 

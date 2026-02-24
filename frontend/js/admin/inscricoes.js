@@ -1,12 +1,12 @@
 if (window.getApiBase) { window.getApiBase(); }
 let inscricoes = [];
-let inscricoesOriginais = []; // MantÃƒÂ©m dados originais para filtros locais
+let inscricoesOriginais = []; // MantÒ©m dados originais para filtros locais
 let paginaAtual = 1;
 let itensPorPagina = 10;
 let eventos = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('Ã°Å¸Å¡â‚¬ DOMContentLoaded - Iniciando pÃƒÂ¡gina de inscriÃƒÂ§ÃƒÂµes');
+  console.log(' DOMContentLoaded - Iniciando página de inscrições');
 
   // Carregar eventos primeiro para os filtros
   carregarEventos().then(() => {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (filtroStatusPagamento) filtroStatusPagamento.addEventListener('change', filtrarInscricoes);
   if (busca) busca.addEventListener('input', filtrarInscricoes);
 
-  // Event listeners para paginaÃƒÂ§ÃƒÂ£o
+  // Event listeners para paginação
   const btnAnterior = document.getElementById('anterior');
   const btnProximo = document.getElementById('proximo');
 
@@ -52,11 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
   if (exportarBtn) {
     exportarBtn.addEventListener('click', function () {
       if (inscricoes.length === 0) {
-        showSwalError('Nada para exportar', 'NÃƒÂ£o hÃƒÂ¡ inscriÃƒÂ§ÃƒÂµes na lista para exportar.');
+        showSwalError('Nada para exportar', 'Não hÒ¡ inscrições na lista para exportar.');
         return;
       }
       const csvContent = "data:text/csv;charset=utf-8," +
-        "Nome,Email,Evento,Modalidade,Valor,Status,Status Pagamento,Data InscriÃƒÂ§ÃƒÂ£o\n" +
+        "Nome,Email,Evento,Modalidade,Valor,Status,Status Pagamento,Data Inscrição\n" +
         inscricoes.map(i =>
           `"${i.participante_nome || ''}","${i.participante_email || ''}","${i.evento_nome || ''}","${i.modalidade_nome || ''}","${i.valor_formatado || ''}","${i.status || ''}","${i.status_pagamento || ''}","${i.data_inscricao_formatada || ''}"`
         ).join('\n');
@@ -76,13 +76,13 @@ document.addEventListener('DOMContentLoaded', function () {
 // Carregar eventos para os filtros
 async function carregarEventos() {
   try {
-    console.log('Ã°Å¸â€œÂ¡ Carregando eventos para filtros');
+    console.log(' Carregando eventos para filtros');
     const response = await fetch((window.API_BASE || '/api') + '/admin/eventos/list.php');
     const data = await response.json();
 
     if (data.success) {
       eventos = data.data || [];
-      console.log('âÅ“â€¦ Eventos carregados:', eventos.length);
+      console.log(' Eventos carregados:', eventos.length);
 
       // Preencher filtro de eventos
       const selectEvento = document.getElementById('filtroEvento');
@@ -95,16 +95,16 @@ async function carregarEventos() {
         selectEvento.appendChild(option);
       });
     } else {
-      console.error('âÂÅ’ Erro ao carregar eventos:', data.message);
+      console.error(' Erro ao carregar eventos:', data.message);
     }
   } catch (error) {
-    console.error('Ã°Å¸â€™Â¥ Erro na requisiÃƒÂ§ÃƒÂ£o de eventos:', error);
+    console.error('"¥ Erro na requisição de eventos:', error);
   }
 }
 
 async function carregarInscricoes(eventoId = null, aplicarFiltrosAPI = false) {
   try {
-    console.log('Ã°Å¸â€œÂ¡ Carregando inscriÃƒÂ§ÃƒÂµes - Evento ID:', eventoId, 'Aplicar filtros API:', aplicarFiltrosAPI);
+    console.log(' Carregando inscrições - Evento ID:', eventoId, 'Aplicar filtros API:', aplicarFiltrosAPI);
 
     let url = (window.API_BASE || '/api') + '/admin/inscricoes/list.php';
     const params = new URLSearchParams();
@@ -113,7 +113,7 @@ async function carregarInscricoes(eventoId = null, aplicarFiltrosAPI = false) {
       params.append('evento_id', eventoId);
     }
     
-    // SÃƒÂ³ aplicar filtros na API se evento estiver selecionado
+    // SÒ³ aplicar filtros na API se evento estiver selecionado
     if (aplicarFiltrosAPI && eventoId) {
       const status = document.getElementById('filtroStatus')?.value;
       const statusPagamento = document.getElementById('filtroStatusPagamento')?.value;
@@ -128,38 +128,38 @@ async function carregarInscricoes(eventoId = null, aplicarFiltrosAPI = false) {
       url += '?' + params.toString();
     }
 
-    console.log('Ã°Å¸Å’Â URL da requisiÃƒÂ§ÃƒÂ£o:', url);
+    console.log(' URL da requisição:', url);
 
     const response = await fetch(url);
-    console.log('Ã°Å¸â€œÅ  Response status:', response.status);
+    console.log(' Response status:', response.status);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const responseText = await response.text();
-    console.log('Ã°Å¸â€œâ€ž Response text:', responseText);
+    console.log(' Response text:', responseText);
 
     if (!responseText.trim()) {
       throw new Error('Resposta vazia do servidor');
     }
 
     const data = JSON.parse(responseText);
-    console.log('Ã°Å¸â€œâ€¹ Data parsed:', data);
+    console.log(' Data parsed:', data);
 
     if (data.success) {
       inscricoes = data.data || [];
-      inscricoesOriginais = data.data || []; // Manter cÃƒÂ³pia dos dados originais
-      console.log('âÅ“â€¦ InscriÃƒÂ§ÃƒÂµes carregadas:', inscricoes.length);
+      inscricoesOriginais = data.data || []; // Manter cÒ³pia dos dados originais
+      console.log(' Inscrições carregadas:', inscricoes.length);
       paginaAtual = 1;
       renderizarTabela();
     } else {
-      console.error('âÂÅ’ Erro ao carregar inscriÃƒÂ§ÃƒÂµes:', data.message);
-      mostrarErro('Erro ao carregar inscriÃƒÂ§ÃƒÂµes: ' + (data.message || 'Erro desconhecido'));
+      console.error(' Erro ao carregar inscrições:', data.message);
+      mostrarErro('Erro ao carregar inscrições: ' + (data.message || 'Erro desconhecido'));
     }
   } catch (error) {
-    console.error('Ã°Å¸â€™Â¥ Erro na requisiÃƒÂ§ÃƒÂ£o de inscriÃƒÂ§ÃƒÂµes:', error);
-    mostrarErro('Erro ao carregar inscriÃƒÂ§ÃƒÂµes: ' + error.message);
+    console.error('"¥ Erro na requisição de inscrições:', error);
+    mostrarErro('Erro ao carregar inscrições: ' + error.message);
   }
 }
 
@@ -207,7 +207,7 @@ function renderizarTabela() {
       <tr>
         <td colspan="8" class="px-6 py-4 text-center text-gray-500">
           <i class="fas fa-clipboard-list text-4xl mb-2"></i>
-          <p>Nenhuma inscriÃƒÂ§ÃƒÂ£o encontrada</p>
+          <p>Nenhuma inscrição encontrada</p>
         </td>
       </tr>
     `;
@@ -252,33 +252,33 @@ function renderizarTabela() {
     tbody.appendChild(tr);
   });
 
-  // Atualizar informaÃƒÂ§ÃƒÂµes de paginaÃƒÂ§ÃƒÂ£o
+  // Atualizar informações de paginação
   document.getElementById('inicio').textContent = inscricoes.length > 0 ? inicio + 1 : 0;
   document.getElementById('fim').textContent = Math.min(fim, inscricoes.length);
   document.getElementById('total').textContent = inscricoes.length;
 }
 
 function filtrarInscricoes() {
-  console.log('Ã°Å¸â€Â Aplicando filtros de inscriÃƒÂ§ÃƒÂµes');
+  console.log(' Aplicando filtros de inscrições');
 
   const filtroEvento = document.getElementById('filtroEvento').value;
   const filtroStatus = document.getElementById('filtroStatus').value;
   const filtroStatusPagamento = document.getElementById('filtroStatusPagamento').value;
   const busca = document.getElementById('busca').value.toLowerCase();
 
-  console.log('Ã°Å¸â€œâ€¹ Filtros aplicados:', {
+  console.log(' Filtros aplicados:', {
     filtroEvento,
     filtroStatus,
     filtroStatusPagamento,
     busca
   });
 
-  // Se hÃƒÂ¡ filtro de evento, recarregar dados da API
+  // Se hÒ¡ filtro de evento, recarregar dados da API
   if (filtroEvento) {
     carregarInscricoes(filtroEvento, true);
   } else {
     // Aplicar filtros locais nos dados originais
-    // Se nÃƒÂ£o hÃƒÂ¡ dados carregados, carregar primeiro
+    // Se não hÒ¡ dados carregados, carregar primeiro
     if (inscricoesOriginais.length === 0) {
       carregarInscricoes();
       return;
@@ -308,20 +308,20 @@ function verDetalhes(inscricaoId) {
     modalContent.innerHTML = `
       <div class="space-y-4">
         <div>
-          <h4 class="font-semibold text-gray-900">InformaÃƒÂ§ÃƒÂµes Pessoais</h4>
+          <h4 class="font-semibold text-gray-900">Informações Pessoais</h4>
           <p><strong>Nome:</strong> ${inscricao.participante_nome || 'N/A'}</p>
           <p><strong>Email:</strong> ${inscricao.participante_email || 'N/A'}</p>
         </div>
         <div>
-          <h4 class="font-semibold text-gray-900">InscriÃƒÂ§ÃƒÂ£o</h4>
+          <h4 class="font-semibold text-gray-900">Inscrição</h4>
           <p><strong>Evento:</strong> ${inscricao.evento_nome || 'N/A'}</p>
           <p><strong>Modalidade:</strong> ${inscricao.modalidade_nome || 'N/A'}</p>
           <p><strong>Valor:</strong> ${inscricao.valor_formatado || 'N/A'}</p>
           <p><strong>Status:</strong> ${inscricao.status || 'N/A'}</p>
           <p><strong>Status Pagamento:</strong> ${inscricao.status_pagamento || 'N/A'}</p>
-          <p><strong>NÃƒÂºmero de InscriÃƒÂ§ÃƒÂ£o:</strong> ${inscricao.numero_inscricao || 'N/A'}</p>
+          <p><strong>Número de Inscrição:</strong> ${inscricao.numero_inscricao || 'N/A'}</p>
           <p><strong>Protocolo:</strong> ${inscricao.protocolo || 'N/A'}</p>
-          <p><strong>Data de InscriÃƒÂ§ÃƒÂ£o:</strong> ${inscricao.data_inscricao_formatada || 'N/A'}</p>
+          <p><strong>Data de Inscrição:</strong> ${inscricao.data_inscricao_formatada || 'N/A'}</p>
         </div>
       </div>
     `;
@@ -335,7 +335,7 @@ function fecharModal() {
 }
 
 async function sincronizarPagamento(inscricaoId) {
-  const ok = await showSwalConfirm('Sincronizar pagamento', 'Deseja sincronizar o status de pagamento desta inscriÃƒÂ§ÃƒÂ£o com o Mercado Pago?');
+  const ok = await showSwalConfirm('Sincronizar pagamento', 'Deseja sincronizar o status de pagamento desta inscrição com o Mercado Pago?');
   if (!ok) return;
 
   if (typeof Swal !== 'undefined') {
@@ -383,9 +383,9 @@ function getBadgeClass(statusClass) {
 }
 
 function mostrarErro(mensagem) {
-  console.error('âÂÅ’ Erro:', mensagem);
+  console.error(' Erro:', mensagem);
   if (typeof Swal !== 'undefined') {
-    Swal.fire({ icon: 'error', title: 'Erro ao carregar inscriÃƒÂ§ÃƒÂµes', text: mensagem });
+    Swal.fire({ icon: 'error', title: 'Erro ao carregar inscrições', text: mensagem });
   }
   const tbody = document.getElementById('inscricoesTable');
   if (tbody) {
@@ -393,7 +393,7 @@ function mostrarErro(mensagem) {
       <tr>
         <td colspan="8" class="px-6 py-4 text-center text-red-500">
           <i class="fas fa-exclamation-triangle text-4xl mb-2"></i>
-          <p class="font-semibold">Erro ao carregar inscriÃƒÂ§ÃƒÂµes</p>
+          <p class="font-semibold">Erro ao carregar inscrições</p>
           <p class="text-sm">${mensagem}</p>
         </td>
       </tr>

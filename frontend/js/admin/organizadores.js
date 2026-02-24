@@ -111,7 +111,7 @@ if (window.getApiBase) { window.getApiBase(); }
         .replace(/'/g, '&#039;');
 
     const formatDate = (dateStr) => {
-        if (!dateStr) return 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â';
+        if (!dateStr) return '-';
         const date = new Date(dateStr);
         return date.toLocaleDateString('pt-BR');
     };
@@ -141,10 +141,10 @@ if (window.getApiBase) { window.getApiBase(); }
                     ${escapeHtml(org.email)}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${escapeHtml(org.empresa || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}
+                    ${escapeHtml(org.empresa || '-')}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${escapeHtml(org.regiao || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}
+                    ${escapeHtml(org.regiao || '-')}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -335,19 +335,19 @@ if (window.getApiBase) { window.getApiBase(); }
                         <div class="space-y-2 text-sm">
                             <div><strong>Nome:</strong> ${escapeHtml(org.nome_completo)}</div>
                             <div><strong>Email:</strong> ${escapeHtml(org.email)}</div>
-                            <div><strong>Telefone:</strong> ${escapeHtml(org.telefone || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Celular:</strong> ${escapeHtml(org.celular || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Telefone:</strong> ${escapeHtml(org.telefone || '-')}</div>
+                            <div><strong>Celular:</strong> ${escapeHtml(org.celular || '-')}</div>
                             <div><strong>Status:</strong> <span class="badge ${org.status === 'ativo' ? 'badge-success' : 'badge-muted'}">${org.status}</span></div>
                         </div>
                     </div>
                     <div>
                         <h4 class="font-semibold text-gray-900 mb-2">Dados do Organizador</h4>
                         <div class="space-y-2 text-sm">
-                            <div><strong>Empresa:</strong> ${escapeHtml(org.empresa || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Região:</strong> ${escapeHtml(org.regiao || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Modalidade:</strong> ${escapeHtml(org.modalidade_esportiva || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Quantidade Eventos:</strong> ${escapeHtml(org.quantidade_eventos || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
-                            <div><strong>Regulamento:</strong> ${escapeHtml(org.regulamento || 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬ÃƒÂ¢ââ€šÂ¬Ã‚Â')}</div>
+                            <div><strong>Empresa:</strong> ${escapeHtml(org.empresa || '-')}</div>
+                            <div><strong>Região:</strong> ${escapeHtml(org.regiao || '-')}</div>
+                            <div><strong>Modalidade:</strong> ${escapeHtml(org.modalidade_esportiva || '-')}</div>
+                            <div><strong>Quantidade Eventos:</strong> ${escapeHtml(org.quantidade_eventos || '-')}</div>
+                            <div><strong>Regulamento:</strong> ${escapeHtml(org.regulamento || '-')}</div>
                         </div>
                     </div>
                 </div>
@@ -565,7 +565,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 }
             }
         } catch (error) {
-            console.error('Erro ao carregar regiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes:', error);
+            console.error('Erro ao carregar regiões:', error);
         }
     };
 
