@@ -3,7 +3,7 @@ if (window.getApiBase) { window.getApiBase(); }
 let categoriasData = [];
 let categoriaEditando = null;
 
-// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CONTROLE DA JANELA CORTINA =====
+// ===== FUNÇÕES DE CONTROLE DA JANELA CORTINA =====
 
 function abrirPanelCategorias() {
     const panel = document.getElementById('categoriasPanel');
@@ -23,7 +23,7 @@ function abrirPanelCategorias() {
     // Configurar contadores de caracteres
     configurarContadores();
 
-    // Configurar validaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de idade
+    // Configurar validação de idade
     configurarValidacaoIdade();
 }
 
@@ -35,16 +35,16 @@ function fecharPanelCategorias() {
     panel.classList.add('translate-x-full');
     panel.classList.remove('abrir');
 
-    // Ocultar overlay apÃƒÆ’Ã‚Â³s animaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // Ocultar overlay após animação
     setTimeout(() => {
         overlay.classList.add('hidden');
     }, 300);
 
-    // Limpar formulÃƒÆ’Ã‚Â¡rio
+    // Limpar formulário
     limparFormCategoria();
 }
 
-// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE TOGGLE =====
+// ===== FUNÇÕES DE TOGGLE =====
 
 function configurarToggles() {
     // Toggle de status
@@ -55,20 +55,20 @@ function configurarToggles() {
         statusLabel.textContent = this.checked ? 'Ativo' : 'Inativo';
     });
 
-    // Toggle de exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o geral
+    // Toggle de exibição geral
     const exibirGeralToggle = document.getElementById('exibirInscricaoGeral');
     exibirGeralToggle.addEventListener('change', function () {
-        // LÃƒÆ’Ã‚Â³gica adicional se necessÃƒÆ’Ã‚Â¡rio
+        // Lógica adicional se necessário
     });
 
-    // Toggle de exibiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o grupos
+    // Toggle de exibição grupos
     const exibirGruposToggle = document.getElementById('exibirInscricaoGrupos');
     exibirGruposToggle.addEventListener('change', function () {
-        // LÃƒÆ’Ã‚Â³gica adicional se necessÃƒÆ’Ã‚Â¡rio
+        // Lógica adicional se necessário
     });
 }
 
-// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CONTADORES =====
+// ===== FUNÇÕES DE CONTADORES =====
 
 function configurarContadores() {
     const nomeInput = document.getElementById('nomeCategoria');
@@ -89,13 +89,13 @@ function configurarContadores() {
     });
 }
 
-// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE VALIDAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O DE IDADE =====
+// ===== FUNÇÕES DE VALIDAÇÃO DE IDADE =====
 
 function configurarValidacaoIdade() {
     const idadeMin = document.getElementById('idadeMin');
     const idadeMax = document.getElementById('idadeMax');
 
-    // Validar idade mÃƒÆ’Ã‚Â­nima nÃƒÆ’Ã‚Â£o pode ser maior que mÃƒÆ’Ã‚Â¡xima
+    // Validar idade mínima não pode ser maior que máxima
     idadeMin.addEventListener('change', function () {
         const min = parseInt(this.value) || 0;
         const max = parseInt(idadeMax.value) || 100;
@@ -105,7 +105,7 @@ function configurarValidacaoIdade() {
         }
     });
 
-    // Validar idade mÃƒÆ’Ã‚Â¡xima nÃƒÆ’Ã‚Â£o pode ser menor que mÃƒÆ’Ã‚Â­nima
+    // Validar idade máxima não pode ser menor que mínima
     idadeMax.addEventListener('change', function () {
         const max = parseInt(this.value) || 100;
         const min = parseInt(idadeMin.value) || 0;
@@ -118,7 +118,7 @@ function configurarValidacaoIdade() {
 
 
 
-// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE FORMULÃƒÆ’Ã‚ÂRIO =====
+// ===== FUNÇÕES DE FORMULÁRIO =====
 
 function limparFormCategoria() {
     document.getElementById('formCategoria').reset();
@@ -129,7 +129,7 @@ function limparFormCategoria() {
     document.getElementById('contadorNome').textContent = '350';
     document.getElementById('contadorDescricao').textContent = '450';
 
-    // Resetar campos de idade para valores padrÃƒÆ’Ã‚Â£o
+    // Resetar campos de idade para valores padrão
     document.getElementById('idadeMin').value = '0';
     document.getElementById('idadeMax').value = '100';
 
@@ -139,7 +139,7 @@ function limparFormCategoria() {
 function editarCategoria(categoria) {
     categoriaEditando = categoria;
 
-    // Preencher formulÃƒÆ’Ã‚Â¡rio
+    // Preencher formulário
     document.getElementById('categoriaIdEdit').value = categoria.id;
     document.getElementById('nomeCategoria').value = categoria.nome;
     document.getElementById('statusCategoria').checked = categoria.ativo;
@@ -152,13 +152,13 @@ function editarCategoria(categoria) {
     document.getElementById('idadeMin').value = categoria.idade_min || 0;
     document.getElementById('idadeMax').value = categoria.idade_max || 100;
 
-    // Configurar tipo de pÃƒÆ’Ã‚Âºblico
+    // Configurar tipo de público
     document.getElementById('tipoPublico').value = categoria.tipo_publico || 'ambos';
 
     // Configurar desconto para idosos
     document.getElementById('descontoIdoso').checked = categoria.desconto_idoso || false;
 
-    // Atualizar tÃƒÆ’Ã‚Â­tulo
+    // Atualizar título
     document.getElementById('formCategoriaTitulo').textContent = 'Editar Categoria';
 
     // Atualizar contadores
@@ -166,7 +166,7 @@ function editarCategoria(categoria) {
     document.getElementById('contadorDescricao').textContent = 450 - (categoria.descricao?.length || 0);
 }
 
-// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CRUD =====
+// ===== FUNÇÕES DE CRUD =====
 
 async function salvarCategoria() {
     const form = document.getElementById('formCategoria');
@@ -189,12 +189,12 @@ async function salvarCategoria() {
     formData.append('idade_max', document.getElementById('idadeMax').value || 100);
     formData.append('desconto_idoso', document.getElementById('descontoIdoso').checked ? 1 : 0);
 
-    // Escopo por evento: obter do seletor de eventos da pÃƒÆ’Ã‚Â¡gina
+    // Escopo por evento: obter do seletor de eventos da página
     const eventoSelect = document.getElementById('filtroEvento');
     const eventoId = parseInt(eventoSelect?.value || '0', 10);
     if (!eventoId) {
         Swal.fire({
-            title: 'AtenÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o',
+            title: 'Atenção',
             text: 'Selecione um evento antes de salvar a categoria.',
             icon: 'warning',
             confirmButtonColor: '#F59E0B'
@@ -203,7 +203,7 @@ async function salvarCategoria() {
     }
     formData.append('evento_id', eventoId);
 
-    // ID para ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
+    // ID para edição
     if (categoriaEditando) {
         formData.append('id', categoriaEditando.id);
     }
@@ -222,7 +222,7 @@ async function salvarCategoria() {
 
         if (data.success) {
             Swal.fire({
-                title: 'Sucesso! ÃƒÂ°Ã…Â¸Ã…Â½ââ‚¬Â°',
+                title: 'Sucesso!',
                 text: categoriaEditando ? 'Categoria atualizada com sucesso!' : 'Categoria criada com sucesso!',
                 icon: 'success',
                 confirmButtonColor: '#10B981'
@@ -239,7 +239,7 @@ async function salvarCategoria() {
                     }
                 }));
             } catch (e) {
-                console.warn('categorias.js - nÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel disparar evento de atualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de categorias', e);
+                console.warn('categorias.js - não foi possível disparar evento de atualização de categorias', e);
             }
         } else {
             throw new Error(data.message || 'Erro ao salvar categoria');
@@ -247,7 +247,7 @@ async function salvarCategoria() {
     } catch (error) {
         console.error('Erro:', error);
         Swal.fire({
-            title: 'Erro! ÃƒÂ¢Ã‚ÂÃ…â€™',
+            title: 'Erro! ❌',
             text: error.message || 'Ocorreu um erro ao salvar a categoria',
             icon: 'error',
             confirmButtonColor: '#EF4444'
@@ -257,8 +257,8 @@ async function salvarCategoria() {
 
 async function excluirCategoria(categoriaId) {
     const result = await Swal.fire({
-        title: 'Confirmar ExclusÃƒÆ’Ã‚Â£o',
-        text: 'Tem certeza que deseja excluir esta categoria? Esta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o nÃƒÆ’Ã‚Â£o pode ser desfeita.',
+        title: 'Confirmar Exclusão',
+        text: 'Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#EF4444',
@@ -283,8 +283,8 @@ async function excluirCategoria(categoriaId) {
 
             if (data.success) {
                 Swal.fire({
-                    title: 'ExcluÃƒÆ’Ã‚Â­da! ÃƒÂ¢Ã…â€œââ‚¬Â¦',
-                    text: 'Categoria excluÃƒÆ’Ã‚Â­da com sucesso!',
+                    title: 'Excluída! ...',
+                    text: 'Categoria excluída com sucesso!',
                     icon: 'success',
                     confirmButtonColor: '#10B981'
                 });
@@ -299,7 +299,7 @@ async function excluirCategoria(categoriaId) {
                         }
                     }));
                 } catch (e) {
-                    console.warn('categorias.js - nÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel disparar evento apÃƒÆ’Ã‚Â³s exclusÃƒÆ’Ã‚Â£o', e);
+                    console.warn('categorias.js - não foi possível disparar evento após exclusão', e);
                 }
             } else {
                 throw new Error(data.message || 'Erro ao excluir categoria');
@@ -307,7 +307,7 @@ async function excluirCategoria(categoriaId) {
         } catch (error) {
             console.error('Erro:', error);
             Swal.fire({
-                title: 'Erro! ÃƒÂ¢Ã‚ÂÃ…â€™',
+                title: 'Erro! ❌',
                 text: error.message || 'Ocorreu um erro ao excluir a categoria',
                 icon: 'error',
                 confirmButtonColor: '#EF4444'
@@ -316,14 +316,14 @@ async function excluirCategoria(categoriaId) {
     }
 }
 
-// ===== FUNÃƒÆ’ââ‚¬Â¡ÃƒÆ’ââ‚¬Â¢ES DE CARREGAMENTO =====
+// ===== FUNÇÕES DE CARREGAMENTO =====
 
 async function carregarCategorias() {
     try {
         const eventoSelect = document.getElementById('filtroEvento');
         const eventoId = parseInt(eventoSelect?.value || '0', 10);
         if (!eventoId) {
-            // Sem evento selecionado, nÃƒÆ’Ã‚Â£o chama API
+            // Sem evento selecionado, não chama API
             categoriasData = [];
             renderizarCategorias();
             return;
@@ -340,8 +340,8 @@ async function carregarCategorias() {
     } catch (error) {
         console.error('Erro ao carregar categorias:', error);
         Swal.fire({
-            title: 'Erro! ÃƒÂ¢Ã‚ÂÃ…â€™',
-            text: 'NÃƒÆ’Ã‚Â£o foi possÃƒÆ’Ã‚Â­vel carregar as categorias',
+            title: 'Erro! ❌',
+            text: 'Não foi possível carregar as categorias',
             icon: 'error',
             confirmButtonColor: '#EF4444'
         });
@@ -379,7 +379,7 @@ function renderizarCategorias() {
                                          <div class=\"flex items-center gap-4 text-xs text-gray-500\">
                          <span class="flex items-center gap-1">
                              <i class="fas fa-users"></i>
-                             ${categoria.tipo_publico || 'ÃƒÂ¢ââ€šÂ¬ââ‚¬Â'}
+                             ${categoria.tipo_publico || '-'}
                          </span>
                          <span class="flex items-center gap-1">
                              <i class="fas fa-birthday-cake"></i>
@@ -387,7 +387,7 @@ function renderizarCategorias() {
                          </span>
                          <span class="flex items-center gap-1">
                              <i class="fas fa-eye"></i>
-                             ${categoria.exibir_inscricao_geral ? 'Geral' : 'NÃƒÆ’Ã‚Â£o'}, ${categoria.exibir_inscricao_grupos ? 'Grupos' : 'NÃƒÆ’Ã‚Â£o'}
+                             ${categoria.exibir_inscricao_geral ? 'Geral' : 'Não'}, ${categoria.exibir_inscricao_grupos ? 'Grupos' : 'Não'}
                          </span>
                      </div>
                 </div>
@@ -407,7 +407,7 @@ function renderizarCategorias() {
     `).join('');
 }
 
-// ===== INICIALIZAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O =====
+// ===== INICIALIZAÇÃO =====
 
 document.addEventListener('DOMContentLoaded', function () {
     // Fechar panel ao clicar no overlay

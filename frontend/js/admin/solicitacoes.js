@@ -79,7 +79,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                     <div>
                         <h4 class="text-lg font-semibold text-gray-900">${item.nome_evento}</h4>
-                        <p class="text-sm text-gray-500">Responsável: ${item.responsavel_nome} ÃƒÆ’Ã‚Â¢ÃƒÂ¢ââ‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${item.responsavel_email}</p>
+                        <p class="text-sm text-gray-500">Responsável: ${item.responsavel_nome} • ${item.responsavel_email}</p>
                         <p class="text-xs text-gray-400">Criado em: ${item.criado_em_formatado || ''}</p>
                     </div>
                     <div class="flex flex-wrap gap-2 items-center">
@@ -118,7 +118,7 @@ if (window.getApiBase) { window.getApiBase(); }
             renderCards();
         } catch (error) {
             console.error(error);
-            showMessage('error', 'Falha ao carregar solicitaçÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes');
+            showMessage('error', 'Falha ao carregar solicitações');
         } finally {
             toggleLoading(false);
         }
@@ -191,7 +191,7 @@ if (window.getApiBase) { window.getApiBase(); }
                 <div class="space-y-3 pt-4">
                     <h4 class="text-lg font-semibold text-gray-900">Outros</h4>
                     ${formatLinha('Indicação', s.indicacao)}
-                    ${formatLinha('Preferªncia contato', s.preferencia_contato)}
+                    ${formatLinha('Preferência contato', s.preferencia_contato)}
                     ${formatLinha('Status', badgeStatus(s.status))}
                 </div>
             `;

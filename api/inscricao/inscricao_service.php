@@ -57,17 +57,18 @@ if (!function_exists('buscar_cupom_valido_para_evento')) {
      */
     function buscar_cupom_valido_para_evento(PDO $pdo, int $eventoId, string $codigo): ?array
     {
+        $hoje = date('Y-m-d');
         $sql = "SELECT id, titulo, codigo_remessa, valor_desconto, tipo_valor, tipo_desconto, max_uso, usos_atuais, evento_id, data_inicio, data_validade
                 FROM cupons_remessa
                 WHERE (evento_id = ? OR evento_id IS NULL)
                   AND codigo_remessa = ?
                   AND status = 'ativo'
-                  AND CURDATE() >= data_inicio
-                  AND CURDATE() <= data_validade
+                  AND ? >= data_inicio
+                  AND ? <= data_validade
                 LIMIT 1";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$eventoId, $codigo]);
+        $stmt->execute([$eventoId, $codigo, $hoje, $hoje]);
         $cupom = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return is_array($cupom) ? $cupom : null;

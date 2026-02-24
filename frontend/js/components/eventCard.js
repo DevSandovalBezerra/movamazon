@@ -6,8 +6,8 @@
 import * as Formatters from '../utils/formatters.js?v=20260220';
 if (window.getApiBase) { window.getApiBase(); }
 
-const corrigirMojibake = typeof Formatters.corrigirMojibake === 'function'
-    ? Formatters.corrigirMojibake
+const normalizarTexto = typeof Formatters.normalizarTexto === 'function'
+    ? Formatters.normalizarTexto
     : (texto) => texto;
 const formatarHora = Formatters.formatarHora;
 const formatarLocal = Formatters.formatarLocal;
@@ -21,9 +21,9 @@ const getNomeOrganizador = Formatters.getNomeOrganizador;
  * @returns {HTMLElement} Elemento DOM do card
  */
 export function renderizarCard(evento, index) {
-    const nomeEvento = corrigirMojibake(evento?.nome || 'Evento');
-    const dataFormatada = corrigirMojibake(evento?.data_formatada || '') || 'Data não informada';
-    const localFormatado = corrigirMojibake(evento?.local || '') || formatarLocal(evento?.cidade, evento?.estado);
+    const nomeEvento = normalizarTexto(evento?.nome || 'Evento');
+    const dataFormatada = normalizarTexto(evento?.data_formatada || '') || 'Data não informada';
+    const localFormatado = normalizarTexto(evento?.local || '') || formatarLocal(evento?.cidade, evento?.estado);
     const horaFormatada = formatarHora(evento?.hora_inicio) || '--:--';
     const nomeOrganizador = getNomeOrganizador(evento);
     const inscritos = Number(evento?.inscritos || 0);

@@ -52,6 +52,56 @@ jobs:
       - name: Run integration tests
         run: composer test:integration
 
+      - name: UTF-8 Header Audit
+        shell: pwsh
+        run: |
+          ./scripts/utf8_audit.ps1
+          $report = Get-Content build/utf8_audit_report.json -Raw | ConvertFrom-Json
+          if ($report.json_headers_without_charset -ne 0 -or $report.html_headers_without_charset -ne 0 -or $report.invalid_utf8_files -ne 0) {
+            Write-Error "UTF-8 header audit failed. JSON sem charset: $($report.json_headers_without_charset) | HTML sem charset: $($report.html_headers_without_charset) | Arquivos invalidos UTF-8: $($report.invalid_utf8_files)"
+            exit 1
+          }
+
+      - name: Start PHP built-in server
+        run: |
+          php -S 127.0.0.1:8000 -t . > /tmp/php-server.log 2>&1 &
+          echo $! > /tmp/php-server.pid
+
+      - name: Wait for HTTP server
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS "http://127.0.0.1:8000/frontend/paginas/public/index.php" > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "PHP server did not start in time"
+          cat /tmp/php-server.log || true
+          exit 1
+
+      - name: Run smoke test (pre-deploy flow)
+        shell: pwsh
+        env:
+          SMOKE_EMAIL: ${{ secrets.SMOKE_EMAIL }}
+          SMOKE_PASSWORD: ${{ secrets.SMOKE_PASSWORD }}
+        run: |
+          ./scripts/smoke_test.ps1 -BaseUrl "http://127.0.0.1:8000"
+
+      - name: Upload smoke test artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-report
+          path: logs/smoke_test_*.json
+          if-no-files-found: warn
+
+      - name: Stop PHP built-in server
+        if: always()
+        run: |
+          if [ -f /tmp/php-server.pid ]; then
+            kill "$(cat /tmp/php-server.pid)" || true
+          fi
+
       - name: Run coverage
         run: php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 

@@ -11,6 +11,13 @@ RewriteRule ^(.*)$ $1.php [L]
 
 # Permitir acesso direto a arquivos PHP
 <FilesMatch "\.php$">
-    Order Allow,Deny
-    Allow from all
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        <IfModule mod_access_compat.c>
+            Order allow,deny
+            Allow from all
+        </IfModule>
+    </IfModule>
 </FilesMatch>

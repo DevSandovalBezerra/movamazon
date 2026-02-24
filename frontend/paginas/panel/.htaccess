@@ -14,7 +14,14 @@ Options -Indexes
 </IfModule>
 
 <FilesMatch "\.(log|sql|bak|backup)$">
-    Order allow,deny
-    Deny from all
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        <IfModule mod_access_compat.c>
+            Order allow,deny
+            Deny from all
+        </IfModule>
+    </IfModule>
 </FilesMatch>
 

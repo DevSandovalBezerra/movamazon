@@ -5,7 +5,8 @@
   "scripts": {
     "build:css": "npx tailwindcss -i ./frontend/assets/css/tailwind-input.css -o ./frontend/assets/css/tailwind.min.css --minify",
     "watch:css": "npx tailwindcss -i ./frontend/assets/css/tailwind-input.css -o ./frontend/assets/css/tailwind.min.css --watch",
-    "dev:css": "npx tailwindcss -i ./frontend/assets/css/tailwind-input.css -o ./frontend/assets/css/tailwind.min.css --watch"
+    "dev:css": "npx tailwindcss -i ./frontend/assets/css/tailwind-input.css -o ./frontend/assets/css/tailwind.min.css --watch",
+    "smoke:test": "powershell -ExecutionPolicy Bypass -File scripts/smoke_test.ps1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",

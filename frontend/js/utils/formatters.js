@@ -1,34 +1,17 @@
-if (window.getApiBase) { window.getApiBase(); }
+﻿if (window.getApiBase) { window.getApiBase(); }
 /**
- * Utilitários: Formatadores
- * Funções para formatar dados exibidos na interface
+ * Utilitarios: formatadores
+ * Funcoes para formatar dados exibidos na interface
  */
 
-function countMojibakeMarkers(texto) {
-    const matches = (texto || '').match(/Ã|Â|â€|Å|�/g);
-    return matches ? matches.length : 0;
-}
-
 /**
- * Tenta corrigir textos que vieram em UTF-8 lido como latin1/windows-1252.
- * Mantém o valor original quando não detecta melhoria.
+ * Normaliza texto para exibicao sem recodificacao em runtime.
  */
-export function corrigirMojibake(texto) {
+export function normalizarTexto(texto) {
     if (typeof texto !== 'string' || texto === '') {
         return texto;
     }
-
-    if (!/[ÃÂâÅ�]/.test(texto)) {
-        return texto;
-    }
-
-    try {
-        const bytes = Uint8Array.from(texto, (char) => char.charCodeAt(0) & 0xff);
-        const decodificado = new TextDecoder('utf-8').decode(bytes);
-        return countMojibakeMarkers(decodificado) < countMojibakeMarkers(texto) ? decodificado : texto;
-    } catch (_) {
-        return texto;
-    }
+    return texto.normalize('NFC');
 }
 
 /**
@@ -49,11 +32,11 @@ export function formatarHora(hora) {
 }
 
 /**
- * Formata localização (cidade/estado)
+ * Formata localizacao (cidade/estado)
  */
 export function formatarLocal(cidade, estado) {
-    const cidadeSafe = corrigirMojibake(cidade);
-    const estadoSafe = corrigirMojibake(estado);
+    const cidadeSafe = normalizarTexto(cidade);
+    const estadoSafe = normalizarTexto(estado);
 
     if (!cidadeSafe && !estadoSafe) return 'Local não informado';
     if (cidadeSafe && estadoSafe) return `${cidadeSafe}/${estadoSafe}`;
@@ -61,10 +44,10 @@ export function formatarLocal(cidade, estado) {
 }
 
 /**
- * Trunca texto se exceder o tamanho máximo
+ * Trunca texto se exceder o tamanho maximo
  */
 export function truncarTexto(texto, maxCaracteres = 20) {
-    const textoSafe = corrigirMojibake(texto);
+    const textoSafe = normalizarTexto(texto);
     if (!textoSafe || textoSafe.length <= maxCaracteres) {
         return textoSafe;
     }
@@ -72,7 +55,7 @@ export function truncarTexto(texto, maxCaracteres = 20) {
 }
 
 /**
- * Obtém a base para URLs de assets (até a pasta frontend).
+ * Obtem a base para URLs de assets (ate a pasta frontend).
  */
 export function getEventImageBase() {
     const pathname = (window.location.pathname || '').replace(/\\/g, '/');
@@ -91,7 +74,7 @@ export function getEventImageUrl(imagem) {
         return 'https://placehold.co/640x360?text=Evento';
     }
 
-    const imagemSafe = corrigirMojibake(String(imagem).trim());
+    const imagemSafe = normalizarTexto(String(imagem).trim());
 
     if (/^https?:\/\//i.test(imagemSafe)) {
         return imagemSafe;
@@ -111,7 +94,7 @@ export function getEventImageUrl(imagem) {
 }
 
 /**
- * Obtém o caminho correto da imagem do evento.
+ * Obtem o caminho correto da imagem do evento.
  */
 export function getImagemEvento(imagem) {
     return getEventImageUrl(imagem);
@@ -121,13 +104,11 @@ export function getImagemEvento(imagem) {
  * Determina o nome correto da empresa organizadora
  */
 export function getNomeOrganizador(evento) {
-    const nomeEvento = corrigirMojibake(evento?.nome || '');
+    const nomeEvento = normalizarTexto(evento?.nome || '');
     if (nomeEvento.includes('SAUIM DE COLEIRA')) {
         return 'UEA - APOIO TÉCNICO MENTE DE CORREDOR';
     }
 
-    const organizador = corrigirMojibake(evento?.organizador || evento?.organizadora || '');
+    const organizador = normalizarTexto(evento?.organizador || evento?.organizadora || '');
     return organizador || 'Organizador não informado';
 }
-
-
