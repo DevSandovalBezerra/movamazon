@@ -182,7 +182,7 @@ logMessage("=== FIM DA RENOMEAÇÃO ===", $log_file);
 
 // Retornar JSON se for requisição AJAX
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'success' => true,
         'message' => 'Renomeação concluída',

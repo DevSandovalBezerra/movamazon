@@ -297,7 +297,7 @@ try {
     error_log('[ADMIN_DASHBOARD] Erro PDO: ' . $e->getMessage());
     error_log('[ADMIN_DASHBOARD] Stack trace: ' . $e->getTraceAsString());
     http_response_code(500);
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'success' => false, 
         'message' => 'Erro ao buscar dados do dashboard',
@@ -307,7 +307,7 @@ try {
     error_log('[ADMIN_DASHBOARD] Erro: ' . $e->getMessage());
     error_log('[ADMIN_DASHBOARD] Stack trace: ' . $e->getTraceAsString());
     http_response_code(500);
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'success' => false, 
         'message' => 'Erro ao buscar dados do dashboard',

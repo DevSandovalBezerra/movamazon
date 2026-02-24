@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Validar parâmetros
 $inscricao_id = $_GET['inscricao_id'] ?? null;

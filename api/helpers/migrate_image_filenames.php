@@ -86,7 +86,7 @@ if ($is_web) {
         echo json_encode(['success' => false, 'message' => 'Acesso negado. Apenas administradores.']);
         exit;
     }
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
 }
 
 logMessage("=== INÍCIO DA MIGRAÇÃO DE NOMES DE ARQUIVOS ===", $log_file);

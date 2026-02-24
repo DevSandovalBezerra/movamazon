@@ -1,7 +1,7 @@
 <?php
 require_once '../db.php';
 require_once '../helpers/inscricao_logger.php';
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 $data = json_decode(file_get_contents('php://input'), true);
 $evento_id = isset($data['evento_id']) ? (int)$data['evento_id'] : 0;
 $cupom = isset($data['cupom']) ? trim($data['cupom']) : '';

@@ -128,7 +128,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error_log('[GERAR_TREINO] Erro: Método não permitido - ' . $_SERVER['REQUEST_METHOD']);

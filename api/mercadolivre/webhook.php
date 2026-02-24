@@ -23,7 +23,7 @@ $log_file = $base_path . '/logs/webhook_mp.log';
 $queue_file = $base_path . '/logs/webhook_queue.json';
 
 // ✅ RESPOSTA RÁPIDA: Capturar dados e responder IMEDIATAMENTE
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 $body = file_get_contents('php://input');
 $data = json_decode($body, true);
 $x_request_id = $_SERVER['HTTP_X_REQUEST_ID'] ?? '';

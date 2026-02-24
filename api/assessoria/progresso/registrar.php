@@ -3,7 +3,7 @@
  * Assessor registra progresso de um treino para um atleta
  */
 session_start();
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../../assessoria/middleware.php';
 requireAssessorAPI();

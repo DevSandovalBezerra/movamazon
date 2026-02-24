@@ -4,7 +4,7 @@
  * Usada na etapa Ficha para aplicar cupom e obter valor_desconto (em R$).
  * Tabela: cupons_remessa (coluna codigo_remessa, status, data_inicio, data_validade).
  */
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../helpers/inscricao_logger.php';

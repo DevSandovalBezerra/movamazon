@@ -18,7 +18,7 @@ if (!function_exists('require_organizador')) {
 
 require_organizador();
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 $data = json_decode(file_get_contents('php://input'), true);
 $ctx = requireOrganizadorContext($pdo);
 $usuario_id = $ctx['usuario_id'];

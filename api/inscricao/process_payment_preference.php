@@ -1,5 +1,5 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require_once '../db.php';
 require_once '../helpers/inscricao_logger.php';
 require_once '../mercadolivre/MercadoPagoClient.php';

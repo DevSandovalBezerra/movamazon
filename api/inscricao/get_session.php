@@ -12,7 +12,7 @@ require_once __DIR__ . '/../helpers/inscricao_logger.php';
 
 // ✅ Limpar qualquer output acidental antes de enviar header
 ob_clean();
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 try {
     if (!isset($_SESSION['user_id'])) {

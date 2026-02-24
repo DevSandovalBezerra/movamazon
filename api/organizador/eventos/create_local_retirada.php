@@ -3,7 +3,7 @@ session_start();
 require_once '../../db.php';
 require_once __DIR__ . '/../../helpers/organizador_context.php';
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 if (!isset($_SESSION['user_id']) && isset($_SESSION['usuario_id'])) {
     $_SESSION['user_id'] = $_SESSION['usuario_id'];

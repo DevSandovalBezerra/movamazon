@@ -1,6 +1,6 @@
 <?php
 require_once '../db.php';
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 $evento_id = isset($_GET['evento_id']) ? (int)$_GET['evento_id'] : 0;
 if (!$evento_id) {
     http_response_code(400);

@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['papel'] !== 'organizador') {
     exit;
 }
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);

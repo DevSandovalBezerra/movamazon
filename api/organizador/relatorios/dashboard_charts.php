@@ -9,7 +9,7 @@ $ctx = requireOrganizadorContext($pdo);
 $usuario_id = $ctx['usuario_id'];
 $organizador_id = $ctx['organizador_id'];
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 $evento_id = $_GET['evento_id'] ?? 0;
 
 if (!$evento_id) {
